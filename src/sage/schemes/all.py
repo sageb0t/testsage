@@ -26,4 +26,6 @@ from plane_curves.all import *
 
 from elliptic_curves.all import *
 
+from plane_quartics.all import *
+
 from generic.all import *

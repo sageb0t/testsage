@@ -278,7 +278,7 @@ class Singular(Expect):
                         restart_on_ctrlc = True,
                         verbose_start = False,
                         logfile = logfile,
-                        eval_using_file_cutoff=1000)
+                        eval_using_file_cutoff=500)
         self.__libs  = []
 
     def _start(self, alt_message=None):
@@ -338,8 +338,10 @@ class Singular(Expect):
             x += ';'
 
         s = Expect.eval(self, x)
+
         if s.find("error") != -1 or s.find("Segment fault") != -1:
             raise RuntimeError, 'Singular error:\n%s'%s
+
         #print "output: %s"%s
         return s
 
@@ -377,8 +379,12 @@ class Singular(Expect):
 
     def _create(self, value, type='def'):
         name = self._next_var_name()
+        #self._last_name = name
         self.set(type, name, value)
         return name
+
+    #def _last_created_varname(self):
+    #    return self._last_name
 
     def __call__(self, x, type='def'):
         """

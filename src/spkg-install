@@ -44,3 +44,8 @@ ln -sf $E sage
 
 cd $E
 python setup.py install
+
+if [ $? -ne 0 ]; then
+    echo "ERROR installing SAGE"
+    exit 1
+fi

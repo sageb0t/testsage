@@ -1,1 +1,3 @@
 from constructor import HyperellipticCurve
+from hyperelliptic_generic import is_HyperellipticCurve
+from kummer_surface import KummerSurface

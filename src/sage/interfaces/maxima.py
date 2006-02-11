@@ -905,6 +905,11 @@ class Maxima(Expect):
             self('plot2d('+cmd+','+options+')')
 
 class MaximaElement(ExpectElement):
+    def __call__(self, x):
+        self._check_valid()
+        P = self.parent()
+        return P('%s[%s]'%(self.name(), x))
+
     def numer(self):
         return self.comma('numer')
 
