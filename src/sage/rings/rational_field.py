@@ -183,7 +183,8 @@ class RationalField(_uniq, field.Field):
         else:
             raise ValueError, "No %sth root of unity in rational field"%n
 
-Q = RationalField()
+QQ = RationalField()
+Q = QQ
 
 def is_RationalField(x):
     return isinstance(x, RationalField)

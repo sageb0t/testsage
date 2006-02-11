@@ -249,7 +249,8 @@ class IntegerRing(principal_ideal_domain.PrincipalIdealDomain, _uniq_int):
         else:
             raise ValueError, "No %sth root of unity in integer ring"%n
 
-Z = IntegerRing()
+ZZ = IntegerRing()
+Z = ZZ
 
 def factor(n, algorithm='pari'):
     """
