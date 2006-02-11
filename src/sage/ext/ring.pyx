@@ -20,6 +20,10 @@ Abstract base class for rings
 import random
 import sage.rings.coerce
 
+import sage.rings.finite_field
+import sage.rings.integer_ring
+import sage.rings.rational_field
+
 cdef class Ring(gens.Generators):
     """
     Generic ring class.
@@ -104,6 +108,9 @@ cdef class Ring(gens.Generators):
 
     def _coerce_(self, x):
         return self(x)
+
+    def base_ring(self):
+        return sage.rings.integer_ring.Z
 
     def category(self):
         """
@@ -422,6 +429,20 @@ cdef class Field(PrincipalIdealDomain):
     """
     Generic field
     """
+    def base_ring(self):
+        """
+        Return the base ring of this field.  This is the prime
+        subfield of this field.
+        """
+        p = self.characteristic()
+        if p == 0:
+            return sage.rings.rational_field.Q
+        return sage.rings.finite_field.GF(p)
+
+    def category(self):
+        from sage.categories.all import Fields
+        return Fields()
+
     def fraction_field(self):
         """
         Return the fraction field of self.

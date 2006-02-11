@@ -292,7 +292,7 @@ class MPolynomialRing_polydict(MPolynomialRing_generic):
         c = self.base_ring()(x)
         return multi_polynomial_element.MPolynomial_polydict(self, {self._zero_tuple:c})
 
-class MPolynomialRing_polydict_domain(MPolynomialRing_polydict, integral_domain.IntegralDomain):
+class MPolynomialRing_polydict_domain(integral_domain.IntegralDomain, MPolynomialRing_polydict):
     pass
 
 class MPolynomialRing_singular_repr(MPolynomialRing_polydict):
