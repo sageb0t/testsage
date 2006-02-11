@@ -17,3 +17,8 @@ from psage import PSage
 
 # signal handling
 from get_sigs import *
+
+interfaces = ['gap', 'gp', 'mathematica', 'gnuplot', \
+              'kash', 'magma', 'maple', 'maxima', \
+              'mathematica', 'mwrank', 'octave', \
+              'singular', 'sage0', 'sage']
