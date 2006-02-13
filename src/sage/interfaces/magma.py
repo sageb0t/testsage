@@ -203,6 +203,9 @@ class Magma(Expect):
     def version(self):
         return magma_version()
 
+    def help(self, s):
+        print magma.eval('? %s'%s)
+
 class MagmaFunctionElement(FunctionElement):
     def __call__(self, *args, **kwds):
         nvals = 1
@@ -219,7 +222,7 @@ class MagmaFunctionElement(FunctionElement):
     def help(self):
         M = self._obj.parent()
         t = str(self.Type())
-        return M(self._name)
+        print M(self._name)
 
 class MagmaElement(ExpectElement):
     def __getattr__(self, attrname):
