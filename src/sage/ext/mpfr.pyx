@@ -230,7 +230,8 @@ cdef class RealField(ring.Field):
                     and mpfr_prec_max(). In the current implementation,
                     mpfr_prec_min() is equal to 2.
 
-            sci_not -- (default: False) whether or not to display using scientific notation
+            sci_not -- (default: True) whether or not to display
+                    using scientific notation
 
             rnd -- (string) the rounding mode
                     RNDN -- round to nearest
@@ -482,11 +483,11 @@ cdef class RealField(ring.Field):
     def scientific_notation(self, status=None):
         """
         Set or return the scientific notation printing flag.  If this flag
-        is true then real numbers with this space as parent print using
+        is True then real numbers with this space as parent print using
         scientific notation.
 
         INPUT:
-            status -- optional flag
+            status -- (bool --) optional flag
         """
         if status is None:
             return bool(self.sci_not)
@@ -869,10 +870,20 @@ cdef class RealNumber(element.RingElement):
         return mpfr_get_d(self.value, self._parent.rnd)
 
     def __int__(self):
-        return int(float(self))
+        """
+        Returns integer truncation of this real number.
+        """
+        s = self.str(32)
+        i = s.find('.')
+        return int(s[:i], 32)
 
     def __long__(self):
-        return long(float(self))
+        """
+        Returns long integer truncation of this real number.
+        """
+        s = self.str(32)
+        i = s.find('.')
+        return long(s[:i], 32)
 
     def __complex__(self):
         return complex(float(self))
@@ -933,7 +944,9 @@ cdef class RealNumber(element.RingElement):
         """
         cdef RealNumber x
         x = RealNumber(self._parent, None)
+        _sig_on
         mpfr_sqrt(x.value, self.value, self._parent.rnd)
+        _sig_off
         return x
 
     def cube_root(self):
@@ -942,13 +955,17 @@ cdef class RealNumber(element.RingElement):
         """
         cdef RealNumber x
         x = RealNumber(self._parent, None)
+        _sig_on
         mpfr_cbrt(x.value, self.value, self._parent.rnd)
+        _sig_off
         return x
 
     def __pow(self, RealNumber exponent):
         cdef RealNumber x
         x = RealNumber(self._parent, None)
+        _sig_on
         mpfr_pow(x.value, self.value, exponent.value, self._parent.rnd)
+        _sig_off
         return x
 
     def __pow__(self, exponent, modulus):
@@ -984,43 +1001,57 @@ cdef class RealNumber(element.RingElement):
         """
         cdef RealNumber x
         x = RealNumber(self._parent, None)
+        _sig_on
         mpfr_log(x.value, self.value, self._parent.rnd)
+        _sig_off
         return x
 
     def log2(self):
         cdef RealNumber x
         x = RealNumber(self._parent, None)
+        _sig_on
         mpfr_log2(x.value, self.value, self._parent.rnd)
+        _sig_off
         return x
 
     def log10(self):
         cdef RealNumber x
         x = RealNumber(self._parent, None)
+        _sig_on
         mpfr_log10(x.value, self.value, self._parent.rnd)
+        _sig_off
         return x
 
     def exp(self):
         cdef RealNumber x
         x = RealNumber(self._parent, None)
+        _sig_on
         mpfr_exp(x.value, self.value, self._parent.rnd)
+        _sig_off
         return x
 
     def exp2(self):
         cdef RealNumber x
         x = RealNumber(self._parent, None)
+        _sig_on
         mpfr_exp2(x.value, self.value, self._parent.rnd)
+        _sig_off
         return x
 
     def exp10(self):
         cdef RealNumber x
         x = RealNumber(self._parent, None)
+        _sig_on
         mpfr_exp10(x.value, self.value, self._parent.rnd)
+        _sig_off
         return x
 
     def cos(self):
         cdef RealNumber x
         x = RealNumber(self._parent, None)
+        _sig_on
         mpfr_cos(x.value, self.value, self._parent.rnd)
+        _sig_off
         return x
 
     ##########################################################
@@ -1041,13 +1072,17 @@ cdef class RealNumber(element.RingElement):
         """
         cdef RealNumber x
         x = RealNumber(self._parent, None)
+        _sig_on
         mpfr_sin(x.value, self.value, self._parent.rnd)
+        _sig_off
         return x
 
     def tan(self):
         cdef RealNumber x
         x = RealNumber(self._parent, None)
+        _sig_on
         mpfr_tan(x.value, self.value, self._parent.rnd)
+        _sig_off
         return x
 
     def sincos(self):
@@ -1063,7 +1098,9 @@ cdef class RealNumber(element.RingElement):
         cdef RealNumber x,y
         x = RealNumber(self._parent, None)
         y = RealNumber(self._parent, None)
+        _sig_on
         mpfr_sin_cos(x.value, y.value, self.value, self._parent.rnd)
+        _sig_off
         return x,y
 
     # int mpfr_sin_cos (mpfr_t rop, mpfr_t op, mpfr_t, mp_rnd_t rnd)
@@ -1071,19 +1108,25 @@ cdef class RealNumber(element.RingElement):
     def acos(self):
         cdef RealNumber x
         x = RealNumber(self._parent, None)
+        _sig_on
         mpfr_acos(x.value, self.value, self._parent.rnd)
+        _sig_off
         return x
 
     def asin(self):
         cdef RealNumber x
         x = RealNumber(self._parent, None)
+        _sig_on
         mpfr_asin(x.value, self.value, self._parent.rnd)
+        _sig_off
         return x
 
     def atan(self):
         cdef RealNumber x
         x = RealNumber(self._parent, None)
+        _sig_on
         mpfr_atan(x.value, self.value, self._parent.rnd)
+        _sig_off
         return x
 
     #int mpfr_acos _PROTO ((mpfr_ptr, mpfr_srcptr, mp_rnd_t));
@@ -1093,37 +1136,49 @@ cdef class RealNumber(element.RingElement):
     def cosh(self):
         cdef RealNumber x
         x = RealNumber(self._parent, None)
+        _sig_on
         mpfr_cosh(x.value, self.value, self._parent.rnd)
+        _sig_off
         return x
 
     def sinh(self):
         cdef RealNumber x
         x = RealNumber(self._parent, None)
+        _sig_on
         mpfr_sinh(x.value, self.value, self._parent.rnd)
+        _sig_off
         return x
 
     def tanh(self):
         cdef RealNumber x
         x = RealNumber(self._parent, None)
+        _sig_on
         mpfr_tanh(x.value, self.value, self._parent.rnd)
+        _sig_off
         return x
 
     def acosh(self):
         cdef RealNumber x
         x = RealNumber(self._parent, None)
+        _sig_on
         mpfr_acosh(x.value, self.value, self._parent.rnd)
+        _sig_off
         return x
 
     def asinh(self):
         cdef RealNumber x
         x = RealNumber(self._parent, None)
+        _sig_on
         mpfr_asinh(x.value, self.value, self._parent.rnd)
+        _sig_off
         return x
 
     def atanh(self):
         cdef RealNumber x
         x = RealNumber(self._parent, None)
+        _sig_on
         mpfr_atanh(x.value, self.value, self._parent.rnd)
+        _sig_off
         return x
 
     def agm(self, other):
@@ -1141,7 +1196,9 @@ cdef class RealNumber(element.RingElement):
         else:
             _other = other
         x = RealNumber(self._parent, None)
+        _sig_on
         mpfr_agm(x.value, self.value, _other.value, self._parent.rnd)
+        _sig_off
         return x
 
     def erf(self):
@@ -1155,7 +1212,9 @@ cdef class RealNumber(element.RingElement):
         """
         cdef RealNumber x
         x = RealNumber(self._parent, None)
+        _sig_on
         mpfr_erf(x.value, self.value, self._parent.rnd)
+        _sig_off
         return x
 
     def gamma(self):
@@ -1171,25 +1230,42 @@ cdef class RealNumber(element.RingElement):
         """
         cdef RealNumber x
         x = RealNumber(self._parent, None)
+        _sig_on
         mpfr_gamma(x.value, self.value, self._parent.rnd)
+        _sig_off
         return x
 
     def zeta(self):
         """
         Return the Riemann zeta function evaluated at this real number.
 
+        \note{PARI is vastly more efficient at computing the Riemann zeta
+        function.   See the example below for how to use it.}
+
         EXAMPLES:
-           sage: R = RealField()
-           sage: R(2).zeta()
-           1.6449340668482264
-           sage: R.pi()^2/6
-           1.6449340668482264
-           sage: R(-2).zeta()
-           0.00000000000000000
-           sage: R(1).zeta()
-           +infinity
+            sage: R = RealField()
+            sage: R(2).zeta()
+            1.6449340668482264
+            sage: R.pi()^2/6
+            1.6449340668482264
+            sage: R(-2).zeta()
+            0.00000000000000000
+            sage: R(1).zeta()
+            +infinity
+
+        Computing zeta using PARI is much more efficient in difficult cases.
+        Here's how to compute zeta with at least a given precision:
+             sage: z = pari.new_with_bits_prec(2, 53).zeta(); z
+             1.6449340668482264364724151666460      # 32-bit
+             1.6449340668482264365                  # 64-bit
+             sage: type(z)
+             <type 'gen.gen'>
+             sage: R(z)
+             1.6449340668482264
         """
         cdef RealNumber x
         x = RealNumber(self._parent, None)
+        _sig_on
         mpfr_zeta(x.value, self.value, self._parent.rnd)
+        _sig_off
         return x

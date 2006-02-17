@@ -776,7 +776,7 @@ cdef class Integer(element.EuclideanDomainElement):
         return x
 
     def _mpfr_(self, R):
-        return R(str(self))  # TODO: use base 16 or something (!)
+        return R(self.str(32), 32)
 
     def sqrt(self, bits=None):
         r"""
