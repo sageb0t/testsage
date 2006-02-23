@@ -1889,6 +1889,9 @@ cdef extern from 'pari/pari.h':
     extern GEN geuler
     extern GEN gpi
 
+#cdef extern from 'pari/paridecl.h':
+#    GEN     mkintn(long n, ...);
+
 cdef extern from 'pari/paripriv.h':
 #cdef extern from 'pari/pari.h':
     struct __x:
