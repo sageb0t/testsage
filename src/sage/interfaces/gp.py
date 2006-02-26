@@ -211,6 +211,9 @@ class Gp(Expect):
     def _false_symbol(self):
         return '0'
 
+    def _equality_symbol(self):
+        return '=='
+
     def help(self, command):
         print self.eval('?%s'%command)
 
