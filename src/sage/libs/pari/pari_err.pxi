@@ -1,3 +1,5 @@
+# vim:ft=pyrex:
+
 cdef extern from 'pari_err.h':
     int _pari_catch
     int _pari_endcatch
