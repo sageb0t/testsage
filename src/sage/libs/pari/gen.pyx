@@ -827,7 +827,7 @@ cdef class gen:
             sage: pari('x+y').Pol('y')
             Traceback (most recent call last):
             ...
-            RuntimeError
+            PariError:  (8)
 
         INPUT:
             x -- gen
@@ -1430,7 +1430,7 @@ cdef class gen:
             sage: pari('x').component(0)
             Traceback (most recent call last):
             ...
-            RuntimeError
+            PariError:  (8)
         """
         _sig_on
         return P.new_gen(compo(x.g, n))
@@ -1457,7 +1457,7 @@ cdef class gen:
             sage: pari('Mod(x,x^3-3)').conj()
             Traceback (most recent call last):
             ...
-            RuntimeError
+            PariError: incorrect type (20)
         """
         _sig_on
         return P.new_gen(gconj(x.g))
@@ -1538,7 +1538,7 @@ cdef class gen:
             sage: pari('"hello world"').floor()
             Traceback (most recent call last):
             ...
-            RuntimeError
+            PariError: incorrect type (20)
         """
         _sig_on
         return P.new_gen(gfloor(x.g))
@@ -1561,7 +1561,7 @@ cdef class gen:
             sage: pari('sqrt(-2)').frac()
             Traceback (most recent call last):
             ...
-            RuntimeError
+            PariError: incorrect type (20)
         """
         _sig_on
         return P.new_gen(gfrac(x.g))
