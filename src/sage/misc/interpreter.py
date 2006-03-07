@@ -134,7 +134,7 @@ def do_prefilter_paste(line, continuation):
         line = line.lstrip()
     line = line.rstrip()
 
-    if not line[:7] == 'attach ' and line[:5] != 'load ':
+    if not line[:7] == 'attach ' and not line[:5] == 'load ':
         for F in attached.keys():
             tm = attached[F]
             if os.path.exists(F) and os.path.getmtime(F) > tm:
