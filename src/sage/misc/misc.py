@@ -154,7 +154,7 @@ def verbose(mesg="", t=0, level=1, caller_name=None):
     frame = sys._getframe(1).f_code
     file_name = frame.co_filename
     lineno = frame.co_firstlineno
-    if 'all' in verbose_files:
+    if 'all' in verbose_files or level<0:
         show = True
     else:
         show = False
@@ -162,6 +162,7 @@ def verbose(mesg="", t=0, level=1, caller_name=None):
             if file_name.find(X) != -1:
                 show = True
                 break
+
     if not show:
         return cputime()
 
