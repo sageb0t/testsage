@@ -427,7 +427,7 @@ class ComplexNumber(ring_element.RingElement):
         so that $-\pi < \theta \leq \pi$.
 
         EXAMPLES:
-            sage: i = ComplexField().gen()
+            sage: i = CC.0
             sage: (i^2).argument()
             3.1415926535897931
             sage: (1+i).argument()
@@ -436,7 +436,7 @@ class ComplexNumber(ring_element.RingElement):
             1.5707963267948966
             sage: (-i).argument()
             -1.5707963267948966
-            sage: (-0.001 - i).argument()
+            sage: (RR('-0.001') - i).argument()
             -1.5717963264615633
         """
         return self.parent()(self._pari_().arg())
@@ -446,7 +446,7 @@ class ComplexNumber(ring_element.RingElement):
         Same as argument.
 
         EXAMPLES:
-            sage: i = ComplexField().gen()
+            sage: i = CC.0
             sage: (i^2).arg()
             3.1415926535897931
         """
@@ -457,7 +457,7 @@ class ComplexNumber(ring_element.RingElement):
         Return the complex conjugate of this complex number.
 
         EXAMPLES:
-            sage: i = ComplexField().gen()
+            sage: i = CC.0
             sage: (1+i).conjugate()
             1.0000000000000000 - 1.0000000000000000*I
         """
@@ -471,7 +471,7 @@ class ComplexNumber(ring_element.RingElement):
         Compute exp(z).
 
         EXAMPLES:
-            sage: i = ComplexField(300).gen()
+            sage: i = ComplexField(300).0
             sage: z = 1 + i
             sage: z.exp()
             1.4686939399158851571389675973266042613269567366290087227976756763109369658595121387227244973 + 2.2873552871788423912081719067005018089555862566683556809386581141036471601893454092673448502*I   # 32-bit
@@ -484,7 +484,7 @@ class ComplexNumber(ring_element.RingElement):
         Return the Gamma function evaluated at this complex number.
 
         EXAMPLES:
-            sage: i = ComplexField(30).gen()
+            sage: i = ComplexField(30).0
             sage: (1+i).gamma()
             0.49801566778 - 0.15494982828*I
         """
