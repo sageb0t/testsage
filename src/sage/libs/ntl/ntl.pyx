@@ -101,10 +101,27 @@ def make_new_ZZ(x='0'):
     _sig_off
     return n
 
-def ZZ_random(n):
-    cdef ntl_ZZ _n
-    _n = n
-    return make_ZZ(ZZ_random_bound(_n.x))
+# Random-number generation
+def randomBnd(long n):
+    r"""
+    Returns cryptographically-secure random number in the range [0,n)
+    Slightly faster that Python's \code{random.randint}
+
+    EXAMPLES:
+        sage: w=[ntl.ZZ_random(99999) for i in range(5)]
+        sage: 0 in w
+        False
+
+    """
+    _sig_on
+    return ZZ_randomBnd(n)
+
+def randomBits(long n):
+    r"""
+    Return a pseudo-random number between 0 and $2^n-1$
+    """
+    _sig_on
+    return ZZ_randomBits(n)
 
 ##############################################################################
 #
