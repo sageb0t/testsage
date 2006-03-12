@@ -101,6 +101,11 @@ def make_new_ZZ(x='0'):
     _sig_off
     return n
 
+def ZZ_random(n):
+    cdef ntl_ZZ _n
+    _n = n
+    return make_ZZ(ZZ_random_bound(_n.x))
+
 ##############################################################################
 #
 # ZZX: polynomials over the integers
