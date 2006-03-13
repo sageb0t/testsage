@@ -581,7 +581,7 @@ class MPolynomial_polydict(MPolynomial):
         monomial_coefficients = self._MPolynomial__element.dict()
 
         if( not self.is_constant() ):
-            var_idx = self.__variable_indices()[0] #variable
+            var_idx = self._variable_indices_()[0] #variable
         else:
             var_idx = 0; #constant
             if( len(monomial_coefficients.keys())==0 ):
@@ -600,7 +600,7 @@ class MPolynomial_polydict(MPolynomial):
         #construct polynomial
         return R(coefficients)
 
-    def __variable_indices(self):
+    def _variable_indices_(self):
         m_coefficients = self._MPolynomial__element.dict()
         variable_dict = dict()
 
@@ -626,7 +626,7 @@ class MPolynomial_polydict(MPolynomial):
             sage: g.variables()
             [y]
         """
-        return [self.parent().gen(index) for index in self.__variable_indices() ]
+        return [self.parent().gen(index) for index in self._variable_indices_() ]
 
     def variable(self,i):
         """
@@ -656,7 +656,7 @@ class MPolynomial_polydict(MPolynomial):
             sage: g.nvariables ()
             1
         """
-        return len(self.__variable_indices())
+        return len(self._variable_indices_())
 
     def is_constant(self):
         """
@@ -671,7 +671,7 @@ class MPolynomial_polydict(MPolynomial):
             sage: g.is_constant()
             True
         """
-        if( len(self.__variable_indices()) == 0 ):
+        if( len(self._variable_indices_()) == 0 ):
             return True
         else:
             return False
