@@ -1463,6 +1463,8 @@ class Matrix(module_element.ModuleElement, Mutability):
         return M
 
     def __mul__(self, right):
+        if isinstance(right, sage.modules.free_module_element.FreeModuleElement):
+            return self.transpose().vector_matrix_multiply(right)
         if not isinstance(right, Matrix):
             return self._right_scalar_multiply(right)
         if self.base_ring() != right.base_ring():
@@ -3253,6 +3255,8 @@ class Matrix_generic_sparse(Matrix):
         self.__entries[ij] = x
 
     def __mul__(self, right):
+        if isinstance(right, sage.modules.free_module_element.FreeModuleElement):
+            return self.transpose().vector_matrix_multiply(right)
         if not isinstance(right, Matrix):
             return self._right_scalar_multiply(right)
         if not isinstance(right, Matrix_generic_sparse):
@@ -3595,6 +3599,8 @@ class Matrix_dense_rational(Matrix_rational):
         self.__matrix[ij] = x
 
     def __mul__(self, right):
+        if isinstance(right, sage.modules.free_module_element.FreeModuleElement):
+            return self.transpose().vector_matrix_multiply(right)
         if not isinstance(right, Matrix_dense_rational):
             # FIXME: this coerces too much, e.g
             #   sage: Matrix(QQ,1,1,[3]) * Matrix(GF(3),1,1,[1])
@@ -3925,6 +3931,8 @@ class Matrix_sparse_rational(Matrix_rational):
         self.__matrix[ij] = x
 
     def __mul__(self, B):
+        if isinstance(B, sage.modules.free_module_element.FreeModuleElement):
+            return self.transpose().vector_matrix_multiply(B)
         if isinstance(B, Matrix_sparse_rational):
             P = self.matrix_space(self.nrows(), B.ncols())
             return Matrix_sparse_rational(P, self.__matrix.matrix_multiply(B.__matrix),
