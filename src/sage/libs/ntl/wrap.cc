@@ -88,6 +88,12 @@ struct ZZ* ZZ_copy(struct ZZ* x)
 }
 
 /*Random-number generation */
+
+void setSeed(const struct ZZ* n)
+{
+  SetSeed(*n);
+}
+
 struct ZZ* ZZ_randomBnd(const struct ZZ* n)
 {
   ZZ *z = new ZZ();
