@@ -4204,6 +4204,17 @@ cdef class gen:
         _sig_on
         return self.new_gen(matsnf0(self.g, flag))
 
+    def matfrobenius(self, flag=0):
+        """
+        matfrobenius(M,{flag}): Return the Frobenius form of the
+        square matrix M. If flag is 1, return only the elementary
+        divisors. If flag is 2, return a two-components vector [F,B]
+        where F is the Frobenius form and B is the basis change
+        so that M=B^-1*F*B.
+        """
+        _sig_on
+        return self.new_gen(matfrobenius(self.g, flag))
+
     ###########################################
     # 9: SUMS, products, integrals and similar functions
     ###########################################
