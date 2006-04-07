@@ -171,6 +171,11 @@ cdef class ModuleElement(Element):
     def __radd__(self, left):
         return self.parent()(left) + self
 
+    def __rmul__(self, n):
+        if not isinstance(n, (int, long)):
+            raise TypeError, "multiplication on by %s not defined"%n
+        return self*n
+
     ##################################################
     def order(self):
         """
@@ -215,7 +220,6 @@ cdef class MonoidElement(Element):
     def __pow__(self, n, dummy):
         cdef int i
 
-        import integer
         if isinstance(n, float):
             raise TypeError, "raising %s to the power of the float %s not defined"%(self, n)
 
@@ -260,7 +264,7 @@ cdef class AdditiveGroupElement(ModuleElement):
     def _mul_(self, m):
         m = int(m)
         if m<0:
-            return (-m)*(-self)
+            return (-self)*(-m)
         if m==1:
             return self
         P = self.scheme()(0)
@@ -384,7 +388,6 @@ cdef class RingElement(Element):
 
     def __pow__(self, n, dummy):
         cdef int i
-        import integer
         if isinstance(n, float):
             raise TypeError, "raising %s to the power of the float %s not defined"%(self, n)
 
