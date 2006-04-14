@@ -141,7 +141,7 @@ class Graphics(SageObject):
         # Todo -- mainly for testing.
         t = '/tmp/sage.png'
         self.save(t, xmin, xmax, ymin, ymax)
-        os.system('gqview %s &'%t)
+        os.system('gqview %s >/dev/null&'%t)
 
     def save(self, filename, xmin=None, xmax=None,
              ymin=None, ymax=None):
@@ -373,7 +373,7 @@ class Plot(GraphicPrimitiveFactory):
     def _reset(self):
         o = self.options
         o['plot_points'] = 25
-        o['plot_division'] = 1000000   # change when fix adapter
+        o['plot_division'] = 1000      # change when fix adapter
         o['max_bend'] = 0.1            # change when fix adapter
 
     def __repr__(self):
