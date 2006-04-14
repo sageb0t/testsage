@@ -4711,6 +4711,7 @@ cdef class PariInstance:
         """
         cdef gen g
         g = _new_gen(x)
+
         global top, avma
         avma = top
         _sig_off
@@ -5182,7 +5183,6 @@ cdef int init_stack(size_t size) except -1:
     else:
         # Decide on size
         s = fix_size(size)
-
         # Alocate memory for new stack using Python's memory allocator.
         # As explained in the python/C api reference, using this instead
         # of malloc is much better (and more platform independent, etc.)
@@ -5236,9 +5236,11 @@ cdef gen _new_gen(GEN x):
     cdef GEN h
     cdef pari_sp address
     cdef gen y
+    _sig_on
     h = deepcopy_to_python_heap(x, &address)
     y = gen()
     y.init(h, address)
+    _sig_off
     return y
 
 def min(x,y):
@@ -5301,22 +5303,21 @@ class PariError (RuntimeError):
     def __str__(self):
         return "%s (%d)"%(self.errmessage(self.args[0]),self.args[0])
 
-# we expose a trap function to C
-# if this function returns without raising an exception,
+# We expose a trap function to C.
+# If this function returns without raising an exception,
 # the code is retried. Beware of infinite recursion!
 # This is a proof-of-concept example.
 # The stack should be indeed enlarged!
 # THE TRY CODE IS NOT REENTRANT -- NO CALLS TO PARI FROM HERE !!!
+#              - Gonzalo Tornario
+
 cdef void _pari_trap "_pari_trap" (long errno, long retries) except *:
     if retries > 100:
         raise RuntimeError, "_pari_trap recursion too deep"
     if errno == errpile:
-        if retries < 5:
-            print "stack overflow! (%d retries so far)"%retries
-            # enlarge the stack!
-            P.allocatemem()
-        else:
-            raise MemoryError, "the PARI stack overflowed %d times!"%retries
+        #print "Stack overflow! (%d retries so far)"%retries
+        #print " enlarge the stack."
+        P.allocatemem(silent=True)
     elif errno == user:
         raise Exception, "PARI user exception"
     else:
