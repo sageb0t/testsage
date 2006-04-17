@@ -159,7 +159,7 @@ class Test:
         d = M._cuspidal_new_subspace_dimension_formula()
         if d != V1.dimension():
             assert False, "Test failed for M=\"%s\", where computed dimension is %s but formula dimension is %s."%(
-                     M, d)
+                     M, V1.dimension(), d)
 
     def test_decomposition(self):
         M = self._modular_symbols_space()
