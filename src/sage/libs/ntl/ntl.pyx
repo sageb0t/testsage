@@ -2679,6 +2679,10 @@ cdef class ntl_mat_GF2E:
             sage: m=ntl.mat_GF2E(10,10,[ntl.GF2E_random() for x in xrange(10*10)])
 
         """
+
+        if nrows is _INIT:
+            return
+
         cdef unsigned long _nrows, _ncols
         _nrows = nrows
         _ncols = ncols
@@ -2686,9 +2690,6 @@ cdef class ntl_mat_GF2E:
             raise "NoModulus"
         cdef unsigned long i, j
         cdef ntl_GF2E tmp
-
-        if _nrows is _INIT:
-            return
 
         from sage.matrix.matrix import Matrix
         if isinstance(v,Matrix):
