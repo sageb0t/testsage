@@ -915,6 +915,7 @@ class ModularSymbolsAmbient_wtk_g0_Q(ModularSymbolsAmbient):
         return m * dims.dimension_cusp_forms_gamma0(N, k)
 
     def _degeneracy_raising_matrix(self, level):
+        level = int(level)
         N = self.level()
         M = self.hecke_module_of_level(level)
 
@@ -989,8 +990,9 @@ class ModularSymbolsAmbient_wtk_g0_Q(ModularSymbolsAmbient):
             sage: M.modular_symbols_of_level(12)
             Full Modular Symbols space for Gamma_1(12) of weight 2 with sign 0 and dimension 9 over Rational Field
         """
-        return modsym.ModularSymbols(congroup.Gamma0(N),
-                                     self.weight(), sign=self.sign(), base_ring=self.base_ring())
+        return modsym.ModularSymbols(congroup.Gamma0(rings.Integer(N)),
+                                     self.weight(), sign=self.sign(),
+                                     base_ring=self.base_ring())
 
 class ModularSymbolsAmbient_wt2_g0_Q(ModularSymbolsAmbient_wtk_g0_Q):
     """
@@ -1163,8 +1165,10 @@ class ModularSymbolsAmbient_wtk_g1_Q(ModularSymbolsAmbient):
 ##         R = congroup.degeneracy_coset_representatives_gamma1(M.level(), self.level(), 1)
 ##         return self._matrix_of_operator_on_modular_symbols(M, R)
 
-    def _degeneracy_raising_matrix(self, M):
+    def _degeneracy_raising_matrix(self, level):
+        level = int(level)
         N = self.level()
+        M = self.hecke_module_of_level(level)
 
         # 1. Find coset representatives H for Gamma_0(M.level()) \ Gamma_0(self.level())
         H = congroup.degeneracy_coset_representatives_gamma1(M.level(), N, 1)
@@ -1313,8 +1317,10 @@ class ModularSymbolsAmbient_wtk_eps(ModularSymbolsAmbient):
 ##         R = congroup.degeneracy_coset_representatives_gamma0(M.level(), self.level(), 1)
 ##         return self._matrix_of_operator_on_modular_symbols(M, R, character_twist = True)
 
-    def _degeneracy_raising_matrix(self, M):
+    def _degeneracy_raising_matrix(self, level):
+        level = int(level)
         N = self.level()
+        M = self.hecke_module_of_level(level)
 
         # 1. Find coset representatives H for Gamma_0(M.level()) \ Gamma_0(self.level())
         H = congroup.degeneracy_coset_representatives_gamma0(M.level(), N, 1)

@@ -511,7 +511,7 @@ class ModularSymbolsSpace(hecke.HeckeModule_free_module):
         """
         See the documentation for self.modular_symbols_of_level(level)
         """
-        return self.modular_symbols_of_level(level)
+        return self.modular_symbols_of_level(Integer(level))
 
     def sign(self):
         """
