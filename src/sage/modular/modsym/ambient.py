@@ -183,10 +183,9 @@ class ModularSymbolsAmbient(space.ModularSymbolsSpace, hecke.AmbientHeckeModule)
         The allowed inputs for x are as follows:
         \begin{itemize}
         \item
-            \class{Vector} -- a vector of the same degree, over the
-                      same base field as self.  This defines the
-                      corresponding linear combination of the basis of
-                      self.
+            \class{Vector} -- a vector of the same degree.  This
+                      defines the corresponding linear combination of
+                      the basis of self.
 
         \item
             \class{ManinSymbol} -- a Manin symbol of the same weight as the
@@ -216,9 +215,9 @@ class ModularSymbolsAmbient(space.ModularSymbolsSpace, hecke.AmbientHeckeModule)
             if x.degree() != self.dimension():
                 raise TypeError, "Incompatible degrees: x has degree %s but modular symbols space has dimension %s"%(
                     x.degree(), self.dimension())
-            if x.parent().base_ring() != self.base_ring():
-                raise TypeError, "Vector x is over %s, but modular symbols space is over %s."%(
-                    x.parent().base_ring(), self.base_ring())
+            #if x.parent().base_ring() != self.base_ring():
+            #    raise TypeError, "Vector x is over %s, but modular symbols space is over %s."%(
+            #        x.parent().base_ring(), self.base_ring())
             return element.ModularSymbolsElement(self, x)
 
         elif isinstance(x, (manin_symbols.ManinSymbol, element.ModularSymbolsElement)):
@@ -947,7 +946,7 @@ class ModularSymbolsAmbient_wtk_g0_Q(ModularSymbolsAmbient):
         A = MS(rows)
         return A
 
-    def _cuspidal_new_subspace_dimension_formula(self):
+    def _cuspidal_new_submodule_dimension_formula(self):
         N, k, sign = self.level(), self.weight(), self.sign()
         if sign == 0:
             m = 2
@@ -1029,7 +1028,7 @@ class ModularSymbolsAmbient_wt2_g0_Q(ModularSymbolsAmbient_wtk_g0_Q):
             m = 1
         return m * dims.dimension_cusp_forms_gamma0(self.level(), 2)
 
-    def _cuspidal_new_subspace_dimension_formula(self):
+    def _cuspidal_new_submodule_dimension_formula(self):
         if self.sign() == 0:
             m = 2
         else:
@@ -1151,7 +1150,7 @@ class ModularSymbolsAmbient_wtk_g1_Q(ModularSymbolsAmbient):
             m = 1
         return m * dims.dimension_cusp_forms_gamma1(self.level(), self.weight())
 
-    def _cuspidal_new_subspace_dimension_formula(self):
+    def _cuspidal_new_submodule_dimension_formula(self):
         if self.sign() == 0:
             m = 2
         else:
@@ -1276,7 +1275,7 @@ class ModularSymbolsAmbient_wtk_eps(ModularSymbolsAmbient):
             m = 1
         return m * dims.dimension_cusp_forms_eps(self.character(), self.weight())
 
-    def _cuspidal_new_subspace_dimension_formula(self):
+    def _cuspidal_new_submodule_dimension_formula(self):
         if self.sign() == 0:
             m = 2
         else:
