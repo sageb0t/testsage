@@ -147,7 +147,6 @@ def trunc(x, digits_before_the_decimal):
     t = s[:i - digits_before_the_decimal]
     if digits_before_the_decimal > 0:
         t += '0'* digits_before_the_decimal
-    print "t = ", t
     return float(eval(t))
 
 def tasteless_ticks(minval, maxval, num_pieces):
@@ -182,11 +181,9 @@ def find_axes(minval, maxval):
 	raise ValueError, "maxval >= minval is required"
 
     if (abs((maxval - minval)/float(max(abs(maxval),abs(minval)))) < 0.2):
-        print "tasteless: %s, %s"%(minval, maxval)
         tslmajor, oppaxis, step = tasteless_ticks(minval, maxval, 10)
 
     else:
-        print "tasteful"
         tslmajor, oppaxis, step = tasteful_ticks(minval, maxval)
 
     tslminor = srange(minval-0.2*2*step, maxval+2*0.2*step, 0.2*step)
