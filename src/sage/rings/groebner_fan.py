@@ -88,6 +88,8 @@ class GroebnerFan(SageObject):
         """
         self.__is_groebner_basis = is_groebner_basis
         self.__symmetry = symmetry
+        if symmetry:
+            print "WARNING! Symmetry option not yet implemented!!"
         self.__verbose = verbose
         if not is_MPolynomialIdeal(I):
             raise TypeError, "I (=%s) is a multivariate polynomial ideal"%I
@@ -246,7 +248,9 @@ class GroebnerFan(SageObject):
 
     def _gfan_mod(self):
         """
-        Return modifier to gfan command to account for modulus.
+        Return the extra options to the gfan command that are used by
+        this object to account for working modulo a prime or in the
+        presence of extra symmetries.
         """
         try:
             return self.__gfan_mod
