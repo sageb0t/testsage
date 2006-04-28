@@ -879,6 +879,20 @@ def tmp_dir(name):
     return os.path.abspath(tmp)
 
 #################################################################
+# temporary filename
+#################################################################
+
+def tmp_filename(name='tmp'):
+    name = str(name)
+    n = 0
+    while True:
+        tmp = "%s/%s_%s"%(SAGE_TMP, name, n)
+        if not os.path.exists(tmp):
+            break
+        n += 1
+    return tmp
+
+#################################################################
 # 32/64-bit computer?
 #################################################################
 is_64_bit = sys.maxint >= 9223372036854775807
