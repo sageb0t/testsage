@@ -507,6 +507,12 @@ class GroebnerFan(SageObject):
         self.__tropical_basis = B
         return B
 
+    def interactive(self, *args, **kwds):
+        """
+        See the documentation for self[0].interative()
+        """
+        self[0].interactive(*args, **kwds)
+
 class ReducedGroebnerBasis(SageObject, list):
     def __init__(self, groebner_fan, gens, gfan_gens):
         self.__groebner_fan = groebner_fan
