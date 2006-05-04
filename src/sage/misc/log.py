@@ -455,6 +455,7 @@ class log_dvi(Log):
     def _title(self):
         return '\\SAGE Log %s'%self._time
 
+#
 # Coarse MathML logger
 class log_html_mathml(Log):
     r"""
