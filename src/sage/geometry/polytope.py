@@ -35,7 +35,7 @@ path = '%s/polymake/bin/'%os.environ['SAGE_LOCAL']
 polymake_command = path + 'polymake'
 
 if os.path.exists(path):
-    os.environ['PATH'] += ':%s'%path
+    os.environ['PATH'] = '%s:'%path + os.environ['PATH']
 
 tmp_file = '%s/tmp.poly'%SAGE_TMP
 
