@@ -1423,7 +1423,7 @@ class FreeModule_generic_pid(FreeModule_generic):
         generators, where R is the base ring of self.
 
         INPUT:
-            gens  -- a list of free module elements
+            gens  -- a list of free module elements or a free module
             check -- (default: True) whether or not to verify
                       that the gens are in self.
 
@@ -1469,6 +1469,8 @@ class FreeModule_generic_pid(FreeModule_generic):
 #            [1 1 0]
 #            [2 0 1]
 #       """
+        if is_FreeModule(gens):
+            gens = gens.gens()
         if not isinstance(gens, (list, tuple)):
             raise TypeError, "gens (=%s) must be a list or tuple"%gens
         V = self.span(gens, check=True)
@@ -1597,6 +1599,8 @@ class FreeModule_generic_pid(FreeModule_generic):
             Basis matrix:
             [  1 3/2   2]
         """
+        if is_FreeModule(gens):
+            gens = gens.gens()
         if not isinstance(gens, (list, tuple)):
             raise TypeError, "gens must be a list"
         return FreeModule_submodule_field(self.ambient_vector_space(),
@@ -1844,6 +1848,8 @@ class FreeModule_generic_field(FreeModule_generic_pid):
             Basis matrix:
             [1 1 1]
         """
+        if is_FreeModule(gens):
+            gens = gens.gens()
         if not isinstance(gens, (list, tuple)):
             raise TypeError, "gens (=%s) must be a list or tuple"%gens
 
@@ -2992,6 +2998,8 @@ class FreeModule_submodule_field(FreeModule_submodule_with_basis_field):
             [ 1  0 -1]
             [ 0  1  2]
         """
+        if is_FreeModule(gens):
+            gens = gens.gens()
         if not isinstance(gens, (list, tuple)):
             raise TypeError, "gens (=%s) must be a list or tuple"%gens
         FreeModule_submodule_with_basis_field.__init__(self, ambient, gens, check,
