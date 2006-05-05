@@ -1469,6 +1469,8 @@ class FreeModule_generic_pid(FreeModule_generic):
 #            [1 1 0]
 #            [2 0 1]
 #       """
+        if not isinstance(gens, (list, tuple)):
+            raise TypeError, "gens (=%s) must be a list or tuple"%gens
         V = self.span(gens, check=True)
         if check:
             if not V.is_submodule(self):
@@ -1595,7 +1597,7 @@ class FreeModule_generic_pid(FreeModule_generic):
             Basis matrix:
             [  1 3/2   2]
         """
-        if not isinstance(gens, list):
+        if not isinstance(gens, (list, tuple)):
             raise TypeError, "gens must be a list"
         return FreeModule_submodule_field(self.ambient_vector_space(),
                                         gens, check=check)
@@ -1842,6 +1844,9 @@ class FreeModule_generic_field(FreeModule_generic_pid):
             Basis matrix:
             [1 1 1]
         """
+        if not isinstance(gens, (list, tuple)):
+            raise TypeError, "gens (=%s) must be a list or tuple"%gens
+
         return FreeModule_submodule_field(self.ambient_module(), gens, check=check)
 
     def span_of_basis(self, basis, check=True):
@@ -2373,7 +2378,7 @@ class FreeModule_submodule_with_basis_pid(FreeModule_generic_pid):
         """
         if not isinstance(ambient, FreeModule_ambient_pid):
             raise TypeError, "ambient (=%s) must be ambient."%ambient
-        if not isinstance(basis, list):
+        if not isinstance(basis, (list, tuple)):
             raise TypeError, "basis (=%s) must be a list"%basis
         if check:
             V = ambient.vector_space()
@@ -2940,7 +2945,8 @@ class FreeModule_submodule_with_basis_field(FreeModule_generic_field, FreeModule
             [1 2 3]
             [4 5 6]
         """
-        FreeModule_submodule_with_basis_pid.__init__(self, ambient, basis,
+        FreeModule_submodule_with_basis_pid.__init__(self, ambient,
+                                                     basis,
                                                      check,
                                                      echelonize=echelonize,
                                                      inner_product_matrix=inner_product_matrix,
@@ -2986,6 +2992,8 @@ class FreeModule_submodule_field(FreeModule_submodule_with_basis_field):
             [ 1  0 -1]
             [ 0  1  2]
         """
+        if not isinstance(gens, (list, tuple)):
+            raise TypeError, "gens (=%s) must be a list or tuple"%gens
         FreeModule_submodule_with_basis_field.__init__(self, ambient, gens, check,
                                                        echelonize=True,
                     inner_product_matrix=inner_product_matrix)
