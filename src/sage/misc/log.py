@@ -468,8 +468,8 @@ class log_html_mathml(Log):
     def _init(self):
         SAGE_ROOT = os.environ['SAGE_ROOT']
         os.system('ln -sf %s/devel/doc/commontex/macros.tex %s/macros.tex'%(SAGE_ROOT, self._dir))
-        os.system('ln -sf /home/dfdeshom/custom/hermes-0.9.4/dlt.tex %s/dlt.tex'% self._dir)
-        os.system('ln -sf /home/dfdeshom/custom/hermes-0.9.4/*.xsl %s/'% self._dir)
+        os.system('ln -sf $SAGE_ROOT/data/hermes/dlt.tex %s/dlt.tex'% self._dir)
+        os.system('ln -sf $SAGE_ROOT/data/hermes/*.xsl %s/'% self._dir)
         self._in_verbatim = False
 
     def __repr__(self):
@@ -488,7 +488,7 @@ class log_html_mathml(Log):
 
         # turn to xml
         cmd += '; hermes %s > %s' %(dvi, lib)
-        pubfile = '/home/dfdeshom/custom/hermes-0.9.4/pub.xslt'
+        pubfile = '$SAGE_ROOT/data/hermes/pub.xslt'
         cmd += ';xsltproc %s %s > %s '%(pubfile, lib, pub)
         os.system(cmd)
 
@@ -508,9 +508,8 @@ class log_html_mathml(Log):
         else:
             viewer = BROWSER
         self._build()
-        F = os.path.splitext(self._filename)[0] + '.pub.xml'
-        print F
-        os.system('%s  %s &' %('/home/dfdeshom/firefox/firefox', F))
+
+        os.system('%s  %s &' %(BROWSER, self._filename[:-4]+'.pub.xml'))
 
     def _get_input(self, n, followed_by_output):
         if n >= len(self._input):
@@ -538,7 +537,7 @@ class log_html_mathml(Log):
         return s
 
     def _filename(self):
-        return 'sagelog.tex'
+        return 'sagelog.pub.xml'
 
     def _header(self):
         return """
