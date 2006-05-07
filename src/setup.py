@@ -373,6 +373,8 @@ setup(name        = 'sage',
                      'sage.schemes.elliptic_curves',
                      'sage.schemes.hyperelliptic_curves',
 
+                     'sage.server',
+
                      'sage.structure',
                      ],
 

@@ -114,6 +114,11 @@ class Sage(Expect):
                         )
         self._preparse = preparse
 
+    def quit(self):
+        if not self._expect is None:
+            self._eval_line('quit_sage()')
+        Expect.quit(self)
+
     def _remote_tmpfile(self):
         try:
             return self.__remote_tmpfile
