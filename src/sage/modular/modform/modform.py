@@ -1,9 +1,9 @@
 """
 Modular Forms
 
-TODO:
-    - write doctests
-    - pickling is broken -- why???
+[[overview of what is here.]]
+
+EXAMPLES:
 
 DESIGN NOTES:
 
@@ -395,7 +395,7 @@ class ModularFormsSpace(hecke.HeckeModule_generic):
 
 _objsModularForms = {}
 class _uniqModularForms(object):
-    def __new__(cls, group, weight, base_field=rings.RationalField()):
+    def __new__(cls, group, weight=2, base_field=rings.RationalField()):
         key = (weight, group, base_field)
         if _objsModularForms.has_key(key):
             x = _objsModularForms[key]()
@@ -405,7 +405,7 @@ class _uniqModularForms(object):
         _objsModularForms[key] = weakref.ref(R)
         return R
 
-class ModularForms(_uniqModularForms, ModularFormsSpace):
+class ModularForms_ambient(_uniqModularForms, ModularFormsSpace):
     """
     An ambient space of modular forms.  Create using the command
 
@@ -417,7 +417,7 @@ class ModularForms(_uniqModularForms, ModularFormsSpace):
         base_field -- a field (default rings.RationalField)
     """
 
-    def __init__(self, group, weight, base_field=rings.RationalField()):
+    def __init__(self, group, weight=2, base_field=rings.RationalField()):
         weight = int(weight)
         if not isinstance(group, congroup.CongruenceSubgroup):
             group = congroup.Gamma0(group)
@@ -611,7 +611,7 @@ class ModularForms(_uniqModularForms, ModularFormsSpace):
 
 _objsModularForms_chars = {}
 class _uniqModularForms_chars(object):
-    def __new__(cls, character, weight, base_field=None):
+    def __new__(cls, character, weight=2, base_field=None):
         if base_field==None:  base_field=character.base_ring()
         key = (character, weight, base_field)
         if _objsModularForms_chars.has_key(key):
@@ -622,11 +622,11 @@ class _uniqModularForms_chars(object):
         _objsModularForms_chars[key] = weakref.ref(R)
         return R
 
-class ModularFormsWithCharacter(_uniqModularForms_chars, ModularForms):
+class ModularFormsWithCharacter(_uniqModularForms_chars, ModularForms_ambient):
     """
     A space of modular forms with character.
     """
-    def __init__(self, character, weight, base_field=None):
+    def __init__(self, character, weight=2, base_field=None):
         """
         weight -- int
         character -- dirichlet.DirichletCharacter
