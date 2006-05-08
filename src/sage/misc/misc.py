@@ -858,8 +858,8 @@ set_trace = pdb.set_trace
 #################################################################
 
 def tmp_dir(name):
-    """
-    Create and return a temporary directory in $HOME/.sage/tmp/pid/
+    r"""
+    Create and return a temporary directory in \code{\$HOME/.sage/tmp/pid/}
     """
     name = str(name)
     n = 0
