@@ -1,3 +1,7 @@
+"""nodoctest
+Elements of modular forms spaces.
+"""
+
 class ModularFormElement:
     """
     An element of a space of modular forms.
