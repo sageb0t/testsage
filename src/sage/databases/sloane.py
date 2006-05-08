@@ -260,6 +260,8 @@ def sloane_sequence(number):
     j = t.find("</pre>")
     if i == -1 or j == -1:
         #return []
+        print s
+        print "url = ", url
         raise ValueError, "sequence '%s' not found"%number
     text = s[i+5:j].strip()
 
