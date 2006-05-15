@@ -3654,7 +3654,6 @@ class Matrix_generic_dense_domain(Matrix_domain, Matrix_generic_dense):
         """
         Tries to coerce this matrix to a singular matrix.
         """
-
         try:
             self.base_ring()._singular_()
         except (NotImplementedError, AttributeError):
@@ -3667,6 +3666,24 @@ class Matrix_generic_sparse_domain(Matrix_domain, Matrix_generic_sparse):
                        coerce_entries=True,
                        copy=True):
         Matrix_generic_sparse.__init__(self, parent, entries, coerce_entries, copy)
+
+    def _singular_(self, singular=singular_default):
+        """
+        Tries to coerce this matrix to a singular matrix.
+        """
+        try:
+            self.base_ring()._singular_()
+        except (NotImplementedError, AttributeError):
+            raise TypeError, "Cannot coerce to Singular"
+
+        As = singular.matrix(self.nrows(),self.ncols())
+
+        sstr = "".join( "%s[%s,%s]=%s;"%(As.name(),i+1,j+1,e)
+                        for (i,j),e in self._Matrix_generic_sparse__entries.iteritems() )
+
+        singular.eval(sstr, allow_semicolon=True)
+
+        return As
 
 class Matrix_generic_dense_pid(Matrix_pid, Matrix_generic_dense):
     def __init__(self, parent, entries=0,
