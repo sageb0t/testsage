@@ -370,7 +370,8 @@ class HTML_Interface(BaseHTTPServer.BaseHTTPRequestHandler):
 
 sage0=None
 def server_http1(name=None, port=8000, address='localhost', ncols=90,
-                 nrows=8, dir=None, viewer=True, log=None):
+                 nrows=8, dir=None, viewer=True, log=None,
+                 max_tries=10):
     """
     Start a SAGE http server at the given port.
 
@@ -386,6 +387,8 @@ def server_http1(name=None, port=8000, address='localhost', ncols=90,
                 in the state you left it (though of course none of the
                 blocks will have been evaluated).
         port -- port on computer where the server is served
+        max_tries -- maximum number of ports > port to try in case
+                port can't be opened.
     """
     global directory, fulltext_log, current_log, \
            files, numcols, numrows, sage0, save_name
@@ -414,6 +417,7 @@ def server_http1(name=None, port=8000, address='localhost', ncols=90,
     sage0.eval('os.chdir("%s")'%directory)
     HTML_Interface.protocol_version = "HTTP/1.0"
 
+    tries = 0
     while True:
         try:
             server_address = (address, int(port))
@@ -423,6 +427,10 @@ def server_http1(name=None, port=8000, address='localhost', ncols=90,
         except socket.error, msg:
             print msg
             port += 1
+            tries += 1
+            if tries > max_tries:
+                print "Not trying any more ports.  Probably your network is down."
+                break
             print "Trying next port (=%s)"%port
         else:
             break
