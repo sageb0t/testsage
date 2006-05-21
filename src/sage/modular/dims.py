@@ -353,6 +353,8 @@ def dimension_cusp_forms_gamma0(N,k=2):
     EXAMPLES:
         sage: dimension_cusp_forms_gamma0(11,2)
         1
+        sage: dimension_cusp_forms_gamma0(11,0)
+        0
         sage: dimension_cusp_forms_gamma0(1,12)
         1
         sage: dimension_cusp_forms_gamma0(1,2)
@@ -365,6 +367,8 @@ def dimension_cusp_forms_gamma0(N,k=2):
         97
         sage: dimension_cusp_forms_gamma0(2005,2)
         199
+        sage: dimension_cusp_forms_gamma0(11,1)
+        0
     """
     if N <= 0:
         raise ArithmeticError, "the level N (=%s) must be positive"%N
@@ -402,6 +406,11 @@ def dimension_cusp_forms_gamma1(N,k=2):
         18721
         sage: dimension_cusp_forms_gamma1(2005,2)
         159201
+
+        sage: dimension_cusp_forms_gamma1(11,1)
+        Traceback (most recent call last):
+        ...
+        NotImplementedError: computation of dimensions of spaces of weight 1 modular forms not implemented in general.
     """
     if N <= 0:
         raise ArithmeticError, "the level N (=%s) must be positive"%N
@@ -410,7 +419,7 @@ def dimension_cusp_forms_gamma1(N,k=2):
     elif k == 0:
         return Z(0)
     if k == 1:
-        raise NotImplementedError, "Computation of dimensions of spaces of weight 1 modular forms not implemented."
+        raise NotImplementedError, "computation of dimensions of spaces of weight 1 modular forms not implemented in general."
     #if k == 1:
     #    print "WARNING: Returning *FAKE* dimension 0 for weight 1 cusp forms for testing!!!"
     #    print "(This message is on line 264 of dims.py.)"
