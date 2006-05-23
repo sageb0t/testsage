@@ -362,7 +362,7 @@ class ModularSymbolsAmbient(space.ModularSymbolsSpace, hecke.AmbientHeckeModule)
         return b - a
 
     def _compute_dual_hecke_matrix(self, n):
-        self._dual_hecke_matrices[n] = self.hecke_matrix(n).transpose()
+        return self.hecke_matrix(n).transpose()
 
     def _compute_hecke_matrix_prime(self, p):
         """
@@ -463,7 +463,7 @@ class ModularSymbolsAmbient(space.ModularSymbolsSpace, hecke.AmbientHeckeModule)
         tm = misc.verbose("start matrix multiply",tm)
         Tp = W*R
         misc.verbose("done matrix multiply",tm)
-        self._hecke_matrices[p] = Tp.dense_matrix()
+        Tp = Tp.dense_matrix()
         misc.verbose("done making matrix",tm)
         return Tp
 
