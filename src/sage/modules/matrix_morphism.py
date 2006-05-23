@@ -42,12 +42,13 @@ AUTHOR:
     - William Stein (2005-01-07): added __reduce__
 """
 
+import sage.categories.all
+import sage.categories.homset
 import sage.matrix.all as matrix
 import sage.misc.misc as misc
 import sage.modules.free_module as free_module
 import sage.rings.coerce
-import sage.categories.all
-import sage.categories.homset
+from   sage.structure.all import Sequence
 
 def is_MatrixMorphism(x):
     return isinstance(x, MatrixMorphism)
@@ -153,10 +154,11 @@ class MatrixMorphism(sage.categories.all.Morphism):
         D = self.domain()
         E = self.__matrix.decomposition(is_diagonalizable=is_diagonalizable)
         if D.is_ambient():
-            return [D.submodule(V) for V, _ in E]
+            return Sequence([D.submodule(V) for V, _ in E], cr=True, check=False)
         else:
             B = D.basis_matrix()
-            return [D.submodule((V.basis_matrix() * B).row_space()) for V, _ in E]
+            return Sequence([D.submodule((V.basis_matrix() * B).row_space()) for V, _ in E],
+                            cr=True, check=False)
 
     def det(self):
         """
