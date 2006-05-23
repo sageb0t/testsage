@@ -130,7 +130,7 @@ copyright = license
 #
 #copyright = __Copyright2()
 
-def save_session(state, name='default_session', verbose=True):
+def save_session(state, name='default_session', verbose=False):
     """
     Save all variables defined during this session (that can be saved)
     to the given filename.  The variables will be saved to a dictionary,
