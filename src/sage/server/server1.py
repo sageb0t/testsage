@@ -60,20 +60,23 @@ DONE
 #                  http://www.gnu.org/licenses/
 ###########################################################################
 
+# Standard Python libraries
 import BaseHTTPServer
-import socket
-
-from StringIO import StringIO
-import os, sys
-import shutil
 import cgi
+import os, sys
 import select
+import shutil
+import socket
+from   StringIO import StringIO
+
+# SAGE libraries
 import sage.interfaces.sage0
-import sage.misc.preparser
-import sage.misc.misc
+
 import sage.misc.banner
-from sage.misc.log import BROWSER
-from sage.ext.sage_object import load, SageObject
+import sage.misc.misc
+import sage.misc.preparser
+from   sage.misc.viewer     import BROWSER
+from   sage.ext.sage_object import load, SageObject
 
 class IO_Line:
     def __init__(self, cmd='', out=''):
@@ -413,7 +416,7 @@ class HTML_Interface(BaseHTTPServer.BaseHTTPRequestHandler):
                 #    import time
                 #    time.sleep(0.5)
 
-                #o = sage.misc.misc.word_wrap(o, ncols=numcols)
+                o = sage.misc.misc.word_wrap(o, ncols=numcols)
 
                 fulltext_log += '\n'.join(o.split('\n')) + '\n'
 
@@ -504,10 +507,12 @@ def server_http1(name=None, port=8000, address='localhost', ncols=90,
     numcols = int(ncols)
     numrows = int(nrows)
     files = os.listdir(directory)
-    save_name = name
+    if isinstance(name, str):
+        if name[-5:] != '.sobj':
+            name += '.sobj'
+    save_name = name[:-5]
     fulltext_log = ''
-    if log is None and (not name is None) and \
-           (os.path.exists(name) or os.path.exists(name + '.sobj')):
+    if log is None and (not name is None) and os.path.exists(name):
         try:
             log = load(name)
         except IOError:
@@ -552,7 +557,7 @@ def server_http1(name=None, port=8000, address='localhost', ncols=90,
 
         if viewer:
             #os.system('%s file:///%s&'%(BROWSER, logfile))
-            os.system('%s http://%s:%s 2>/dev/null 1>/dev/null &'%(BROWSER, address, port))
+            os.system('%s http://%s:%s 1>&2 >/dev/null &'%(BROWSER, address, port))
         print "Press Control-C to interrupt a running calculation."
         print "If no calculation is running, press Control-C to return to SAGE."
         httpd.serve_forever()
