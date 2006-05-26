@@ -31,13 +31,15 @@ import sage.rings.arith as arith
 import sage.rings.polynomial_ring as polynomial_ring
 import sage.rings.all as rings
 
+from sage.ext.sage_object import SageObject
+
 import sage.rings.polynomial_pyx as poly
 X = poly.Polynomial_rational(); X[1]=1
 
 def is_ManinSymbol(x):
     return isinstance(x, ManinSymbol)
 
-class ManinSymbolList:
+class ManinSymbolList(SageObject):
     """
     All Manin symbols for a given group, weight, and character.
     """
@@ -488,7 +490,7 @@ class ManinSymbolList_gamma1(ManinSymbolList):
         u,v = self.__G1.normalize(x[1],x[2])
         return (x[0],u,v)
 
-class ManinSymbol:
+class ManinSymbol(SageObject):
     r"""
     A Manin symbol $[X^i\cdot Y^{k-2-i},(u,v)]$.
     """
@@ -522,12 +524,15 @@ class ManinSymbol:
         return self.__t[2]
     v = property(__get_v)
 
-    def __repr__(self):
+    def _repr_(self):
         if self.weight() > 2:
             polypart = _print_polypart(self.i, self.weight()-2-self.i)
             return "[%s,(%s,%s)]"%\
                    (polypart, self.u, self.v)
         return "(%s,%s)"%(self.u, self.v)
+
+    def _latex_(self):
+        return self._repr_()
 
     def __cmp__(self, other):
         if not isinstance(other, ManinSymbol):
