@@ -273,6 +273,7 @@ class Dokchitser(SageObject):
         gp.eval('initLdata("Avec[k]"),%s,"Bvec[k]"'%cutoff)
 
     def __to_CC(self, s):
+        s = s.replace('.E','.0E').replace(' ','')
         return self.__CC(sage_eval(s, {'I':self.__CC.gen(0)}))
 
     def __call__(self, s, c=None):
@@ -356,7 +357,7 @@ class Dokchitser(SageObject):
             verbose(msg, level=-1)
             z = z[i+1:]
         t = self.__CC[[var]].gen(0)
-        z = z.replace('S',var).replace('.E','.0E').replace(' E','E')
+        z = z.replace('S',var).replace('.E','.0E').replace(' ','')
         f = sage_eval(z, {var:t})
         return f
 
