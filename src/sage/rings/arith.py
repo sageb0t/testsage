@@ -1438,7 +1438,7 @@ def kronecker_symbol(x,y):
     return sage.rings.integer.Integer(pari(x).kronecker(y).python())
 
 def kronecker(x,y):
-    """
+    r"""
     Synonym for \code{kronecker_symbol}.
     """
     return kronecker_symbol(x,y)
@@ -1626,9 +1626,6 @@ def moebius(n):
         if e >= 2:
             return 0
     return (-1)**len(F)
-
-def kronecker(a, b):
-    return pari(a).kronecker(b)
 
 def farey(v, lim):
     """
