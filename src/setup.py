@@ -369,6 +369,7 @@ setup(name        = 'sage',
                      'sage.monoids',
 
                      'sage.plot',
+                     'sage.plot.mpl3d',
 
                      'sage.rings',
                      'sage.rings.number_field',
