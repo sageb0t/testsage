@@ -98,6 +98,7 @@ import sage.ext.dense_matrix_pyx
 
 from sage.interfaces.all import singular as singular_default
 
+from sage.libs.ntl.all import mat_ZZ
 cputime = misc.cputime
 
 def is_Matrix(x):
@@ -2376,6 +2377,15 @@ class Matrix_integer(Matrix_pid):
             for i in range(n):
                 U[i,n-1] = - U[i,n-1]
         return U
+
+    def _ntl_(self):
+        """
+        ntl.mat_ZZ representation of self.
+
+        \note{NTL only knows dense matrices, so if you provide a
+        sparse matrix NTL will allocate memory for every zero entry.}
+        """
+        return mat_ZZ(self.nrows(),self.ncols(),self.list())
 
 #############################################
 ## Generic matrices over a field
