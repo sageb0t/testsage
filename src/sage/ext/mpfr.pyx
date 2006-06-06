@@ -1365,7 +1365,7 @@ cdef class RealNumber(element.RingElement):
         Returns the cosine of this number
 
         EXAMPLES:
-            sage: t=R.pi()/2
+            sage: t=RR.pi()/2
             sage: t.cos()
             0.000000000000000061232339957367660
         """
@@ -1406,10 +1406,10 @@ cdef class RealNumber(element.RingElement):
         Returns the tangent of this number
 
         EXAMPLES:
-            sage: q = R.pi()/3
+            sage: q = RR.pi()/3
             sage: q.tan()
             1.7320508075688767
-            sage: q = R.pi()/6
+            sage: q = RR.pi()/6
             sage: q.tan()
             0.57735026918962573
         """
@@ -1445,7 +1445,7 @@ cdef class RealNumber(element.RingElement):
         Returns the inverse cosine of this number
 
         EXAMPLES:
-            sage: q = R.pi()/3
+            sage: q = RR.pi()/3
             sage: i = q.cos()
             sage: i.acos() == q
             True
@@ -1462,7 +1462,7 @@ cdef class RealNumber(element.RingElement):
         Returns the inverse sine of this number
 
         EXAMPLES:
-            sage: q = R.pi()/5
+            sage: q = RR.pi()/5
             sage: i = q.sin()
             sage: i.asin() == q
             True
@@ -1479,7 +1479,7 @@ cdef class RealNumber(element.RingElement):
         Returns the inverse tangent of this number
 
         EXAMPLES:
-            sage: q = R.pi()/5
+            sage: q = RR.pi()/5
             sage: i = q.tan()
             sage: i.atan() == q
             True
@@ -1500,7 +1500,7 @@ cdef class RealNumber(element.RingElement):
         Returns the hyperbolic cosine of this number
 
         EXAMPLES:
-            sage: q = R.pi()/12
+            sage: q = RR.pi()/12
             sage: q.cosh()
             1.0344656400955106
         """
@@ -1516,7 +1516,7 @@ cdef class RealNumber(element.RingElement):
         Returns the hyperbolic sine of this number
 
         EXAMPLES:
-            sage: q = R.pi()/12
+            sage: q = RR.pi()/12
             sage: q.sinh()
             0.26480022760227073
 
@@ -1533,7 +1533,7 @@ cdef class RealNumber(element.RingElement):
         Returns the hyperbolic tangent of this number
 
         EXAMPLES:
-            sage: q = R.pi()/11
+            sage: q = RR.pi()/11
             sage: q.tanh()
             0.27807942929585028
         """
@@ -1549,7 +1549,7 @@ cdef class RealNumber(element.RingElement):
         Returns the hyperbolic inverse cosine of this number
 
         EXAMPLES:
-            sage: q = R.pi()/2
+            sage: q = RR.pi()/2
             sage: i = q.cosh() ; i
             2.5091784786580567
             sage: i.acosh() == q
@@ -1567,7 +1567,7 @@ cdef class RealNumber(element.RingElement):
         Returns the hyperbolic inverse sine of this number
 
         EXAMPLES:
-            sage: q = R.pi()/7
+            sage: q = RR.pi()/7
             sage: i = q.sinh() ; i
             0.46401763049299094
             sage: i.asinh() == q
@@ -1585,7 +1585,7 @@ cdef class RealNumber(element.RingElement):
         Returns the hyperbolic inverse tangent of this number
 
         EXAMPLES:
-            sage: q = R.pi()/7
+            sage: q = RR.pi()/7
             sage: i = q.tanh() ; i
             0.42091124104853489
             sage: i.atanh() == q

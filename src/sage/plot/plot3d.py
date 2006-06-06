@@ -18,7 +18,7 @@ import matplotlib.numerix as nx
 
 class Graphics3d(SageObject):
     def __init__(self):
-        print "WARNING: 3d Graphics -- WORK IN PROGRESS!!"
+        #print "WARNING: 3d Graphics -- WORK IN PROGRESS!!"
         self.__xmin = -1
         self.__xmax = 1
         self.__ymin = -1
@@ -33,7 +33,7 @@ class Graphics3d(SageObject):
     def xmax(self):
         """
 	sage: G = Graphics3d(); G
-	Graphics object consisting of 0 graphics primitives:
+	3d Graphics object consisting of 0 graphics primitives:
 	sage: G.xmax()
 	1
         """
@@ -42,7 +42,7 @@ class Graphics3d(SageObject):
     def xmin(self):
 	"""
 	sage: G = Graphics3d(); G
-	Graphics object consisting of 0 graphics primitives:
+	3d Graphics object consisting of 0 graphics primitives:
 	sage: G.xmin()
 	-1
 	"""
@@ -51,7 +51,7 @@ class Graphics3d(SageObject):
     def ymax(self):
 	"""
 	sage: G = Graphics3d(); G
-	Graphics object consisting of 0 graphics primitives:
+	3d Graphics object consisting of 0 graphics primitives:
 	sage: G.ymax()
 	1
 	"""
@@ -60,7 +60,7 @@ class Graphics3d(SageObject):
     def ymin(self):
 	"""
 	sage: G = Graphics3d(); G
-	Graphics object consisting of 0 graphics primitives:
+	3d Graphics object consisting of 0 graphics primitives:
 	sage: G.ymin()
 	-1
 	"""
@@ -69,7 +69,7 @@ class Graphics3d(SageObject):
     def zmax(self):
 	"""
 	sage: G = Graphics3d(); G
-	Graphics object consisting of 0 graphics primitives:
+	3d Graphics object consisting of 0 graphics primitives:
 	sage: G.ymax()
 	1
 	"""
@@ -78,7 +78,7 @@ class Graphics3d(SageObject):
     def zmin(self):
 	"""
 	sage: G = Graphics3d(); G
-	Graphics object consisting of 0 graphics primitives:
+        3d Graphics object consisting of 0 graphics primitives:
 	sage: G.ymin()
 	-1
 	"""

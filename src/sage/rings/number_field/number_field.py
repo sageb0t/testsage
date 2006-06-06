@@ -90,6 +90,7 @@ def NumberField(polynomial, name='a', check=True):
         2
 
     EXAMPLES: Constructing a relative number field
+        sage: R.<x> = PolynomialRing(QQ)
         sage: K.<a> = NumberField(x^2 - 2)
         sage: R.<t> = K['t']
         sage: L = K.extension(t^3+t+a); L
@@ -142,6 +143,7 @@ def is_CyclotomicField(x):
 class NumberField_generic(field.Field):
     """
     EXAMPLES:
+        sage: R.<x> = PolynomialRing(QQ)
         sage: K = NumberField(x^3 - 2); K
         Number Field in a with defining polynomial x^3 - 2
         sage: loads(K.dumps()) == K
@@ -231,6 +233,7 @@ class NumberField_generic(field.Field):
         concerned with ideals in a field but in its ring of integers.
 
         EXAMPLES:
+            sage: R.<x> = PolynomialRing(QQ)
             sage: K.<a> = NumberField(x^3-2)
             sage: K.ideal([a])
             Fractional ideal (a) of Number Field in a with defining polynomial x^3 - 2
@@ -375,6 +378,7 @@ class NumberField_generic(field.Field):
         $Norm(a) = n$, where a can be any integer in this number field.
 
         EXAMPLES:
+            sage: R.<x> = PolynomialRing(QQ)
             sage: K.<a> = NumberField(x^2+1)
             sage: K.elements_of_norm(3)
             []
@@ -391,6 +395,7 @@ class NumberField_generic(field.Field):
         Return the relative extension of this field by a given polynomial.
 
         EXAMPLES:
+            sage: R.<x> = PolynomialRing(QQ)
             sage: K.<a> = NumberField(x^3 - 2)
             sage: t = K['x'].gen()
             sage: L = K.extension(t^2 + a); L
@@ -407,6 +412,7 @@ class NumberField_generic(field.Field):
         Here we show how to factor gaussian integers.
         First we form a number field defined by $x^2 + 1$:
 
+            sage: R.<x> = PolynomialRing(QQ)
             sage: K.<I> = NumberField(x^2 + 1); K
             Number Field in I with defining polynomial x^2 + 1
 
@@ -461,6 +467,8 @@ class NumberField_generic(field.Field):
         is a number field.
 
         EXAMPLES:
+            sage: R.<x> = PolynomialRing(QQ)
+
             sage: NumberField(x^3-2).galois_group(pari_group=True)
             PARI group [6, -1, 2, "S3"] of degree 3
 
@@ -505,6 +513,7 @@ class NumberField_generic(field.Field):
         Return the narrow class group of this field.
 
         EXAMPLES:
+            sage: R.<x> = PolynomialRing(QQ)
             sage: NumberField(x^3+x+9).narrow_class_group()
             Multiplicative Abelian Group isomorphic to C2
         """
@@ -541,7 +550,7 @@ class NumberField_generic(field.Field):
         Return the polynomial quotient ring isomorphic to this number field.
 
         EXAMPLES:
-            sage: R = PolynomialRing(RationalField(), 'x'); x = R.gen()
+            sage: R.<x> = PolynomialRing(QQ)
             sage: K = NumberField(x^3 + 2*x - 5, 'alpha')
             sage: K.polynomial_quotient_ring()
             Univariate Quotient Polynomial Ring in alpha over Rational Field with modulus x^3 + 2*x - 5
@@ -556,6 +565,7 @@ class NumberField_generic(field.Field):
         the SAGE default.
 
         EXAMPLES:
+            sage: R.<x> = PolynomialRing(QQ)
             sage: NumberField(x^2-2).regulator()
             0.88137358701954305
             sage: NumberField(x^4+x^3+x^2+x+1).regulator()
@@ -575,6 +585,7 @@ class NumberField_generic(field.Field):
         and pairs of complex embeddings of this field, respectively.
 
         EXAMPLES:
+            sage: R.<x> = PolynomialRing(QQ)
             sage: NumberField(x^2+1).signature()
             (0, 1)
             sage: NumberField(x^3-2).signature()
@@ -591,7 +602,7 @@ class NumberField_generic(field.Field):
         list $v$.
 
         EXAMPLES:
-            sage: x = QQ['x'].0
+            sage: R.<x> = PolynomialRing(QQ)
             sage: K.<z> = NumberField(x^2 + 3, 'zeta3')
             sage: K.trace_pairing([1,z])
             [ 2  0]
@@ -689,6 +700,7 @@ class NumberField_generic(field.Field):
         of this field as a Dirichlet series.
 
         EXAMPLE:
+            sage: x = QQ['x'].0
             sage: NumberField(x^2+1).zeta_coefficients(10)
             [1, 1, 0, 1, 2, 0, 0, 1, 1, 2]
         """
@@ -697,6 +709,7 @@ class NumberField_generic(field.Field):
 class NumberField_extension(NumberField_generic):
     """
     EXAMPLES:
+        sage: R.<x> = PolynomialRing(QQ)
         sage: K.<a> = NumberField(x^3 - 2)
         sage: t = K['x'].gen()
         sage: L = K.extension(t^2+t+a); L
@@ -762,6 +775,7 @@ class NumberField_extension(NumberField_generic):
         Return a \LaTeX representation of the extension.
 
         EXAMPLE:
+            sage: x = QQ['x'].0
             sage: K.<a> = NumberField(x^3 - 2)
             sage: t = K['x'].gen()
             sage: K.extension(t^2+t+a)._latex_()
@@ -888,6 +902,7 @@ class NumberField_extension(NumberField_generic):
         should be fixed and the \code{certify} parameter removed.
 
         EXAMPLE:
+            sage: x = QQ['x'].0
             sage: K.<i> = NumberField(x^2+1)
             sage: t = K['x'].gen()
             sage: L.<b> = K.extension(t^4-i)
@@ -914,6 +929,7 @@ class NumberField_extension(NumberField_generic):
         is a number field.
 
         EXAMPLE:
+            sage: x = QQ['x'].0
             sage: K = NumberField(x^2 + 1); R = K['x']
             sage: a, t = K.gen(), R.gen()
             sage: L = K.extension(t^5-t+a)
@@ -928,6 +944,7 @@ class NumberField_extension(NumberField_generic):
         a free $\mathcal{O}_K$-module).
 
         EXAMPLES:
+            sage: x = QQ['x'].0
             sage: K = NumberField(x^2+6)
             sage: L = K.extension(K['x'].gen()^2 + 3) ## extend by x^2+3
             sage: L.is_free()
@@ -944,16 +961,17 @@ class NumberField_extension(NumberField_generic):
         or raise a ValueError if it is not possible.
 
         EXAMPLES:
-        sage: K = NumberField(x^3 - 2, 'a')
-        sage: R = K['x']
-        sage: L = K.extension(R.gen()^2 - K.gen(), 'b')
-        sage: b = L.gen()
-        sage: L.lift_to_base(b^4)
-        a^2
-        sage: L.lift_to_base(b)
-        Traceback (most recent call last):
-        ...
-        ValueError: The element b is not in the base field
+            sage: x = QQ['x'].0
+            sage: K = NumberField(x^3 - 2, 'a')
+            sage: R = K['x']
+            sage: L = K.extension(R.gen()^2 - K.gen(), 'b')
+            sage: b = L.gen()
+            sage: L.lift_to_base(b^4)
+            a^2
+            sage: L.lift_to_base(b)
+            Traceback (most recent call last):
+            ...
+            ValueError: The element b is not in the base field
         """
         element_x = str(element).replace(self.variable_name(), 'x')
         poly_xy = str(self.pari_rnf().rnfeltabstorel(element_x)).replace('^','**')
@@ -1241,6 +1259,7 @@ class NumberField_quadratic(NumberField_generic):
         implementation is quite fast.}
 
         EXAMPLES:
+            sage: x = QQ['x'].0
             sage: K = NumberField(x^2 + 23)
             sage: K.hilbert_class_polynomial()
             x^3 + x^2 - 1
@@ -1264,6 +1283,7 @@ class NumberField_quadratic(NumberField_generic):
         is amazingly fast.}
 
         EXAMPLES:
+            sage: x = QQ['x'].0
             sage: K = NumberField(x^2 + 23, 'a')
             sage: K.hilbert_class_polynomial()
             x^3 + x^2 - 1
