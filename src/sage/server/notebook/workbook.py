@@ -363,6 +363,8 @@ class Workbook:
         return '\n'.join(u)
 
     def check_for_system_switching(self, s):
+        if len(s) == 0:
+            return False, s
         if s[0] == '%':
             i = s.find('\n')
             if i == -1:
