@@ -248,9 +248,9 @@ div.attached_filename:hover {
    cursor:pointer;
 }
 
-/************ WORKBOOKS **************************/
+/************ WORKSHEETS **************************/
 
-span.pane div.workbooks_topbar {
+span.pane div.worksheets_topbar {
    color:black;
    height: 2ex;
    top: 0ex;
@@ -262,7 +262,7 @@ span.pane div.workbooks_topbar {
    width: 174px;
 }
 
-span.pane div.workbook_list {
+span.pane div.worksheet_list {
    font-size:11px;
    top:0ex;
    height:25ex;
@@ -271,7 +271,7 @@ span.pane div.workbook_list {
    width: 180px;
 }
 
-a.new_workbook {
+a.new_worksheet {
    font-family: arial, monospace;
    font-size:8pt;
    text-decoration:underline;
@@ -279,11 +279,11 @@ a.new_workbook {
    color: #0000aa
 }
 
-a.new_workbook:hover {
+a.new_worksheet:hover {
   cursor:pointer;
 }
 
-a.upload_workbook {
+a.upload_worksheet {
    font-family: arial, monospace;
    font-size:8pt;
    text-decoration:underline;
@@ -291,11 +291,11 @@ a.upload_workbook {
    color: #0000aa
 }
 
-a.upload_workbook:hover {
+a.upload_worksheet:hover {
   cursor:pointer;
 }
 
-span.pane a.workbook_current {
+span.pane a.worksheet_current {
    font-size:11px;
    padding-left:1ex;
    border-top:1px solid #b5edbc;
@@ -304,7 +304,7 @@ span.pane a.workbook_current {
    color:black;
  }
 
-span.pane a.workbook_current_computing {
+span.pane a.worksheet_current_computing {
    font-size:11px;
    padding-left:1ex;
    border-top:1px solid #c3d9ff;
@@ -313,7 +313,7 @@ span.pane a.workbook_current_computing {
    color:black;
  }
 
-span.pane a.workbook_other {
+span.pane a.worksheet_other {
    font-size:11px;
    padding-left:1ex;
    border-top:1px solid #b5edbc;
@@ -322,13 +322,13 @@ span.pane a.workbook_other {
    color:black;
 }
 
-span.pane a.workbook_other:hover {
+span.pane a.worksheet_other:hover {
    background-color:#b5edbc;
    text-decoration:none;
    cursor:pointer;
 }
 
-span.pane a.workbook_other_computing {
+span.pane a.worksheet_other_computing {
    font-size:11px;
    padding-left:1ex;
    border-top:1px solid #c3d9ff;
@@ -398,9 +398,9 @@ span.control:hover a.cs, span.control a:hover.cs {
     border:1px solid #333333;
 }
 
-/************ WORKBOOK **************************/
+/************ WORKSHEET **************************/
 
-div.workbook {
+div.worksheet {
   position:fixed;
   overflow:auto;
   z-index:1;
@@ -416,7 +416,7 @@ div.workbook {
   float: right;
 }
 
-span.workbook_title {
+span.worksheet_title {
    padding-top: 3px;
    font-family:arial;
    font-size:22px;
