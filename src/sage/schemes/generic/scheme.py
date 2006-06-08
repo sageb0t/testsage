@@ -19,7 +19,8 @@ AUTHORS:
 
 from sage.ext.sage_object import SageObject
 from sage.categories.all import Schemes
-from sage.rings.all import IntegerRing, is_CommutativeRing, is_Field, Z, is_RingHomomorphism
+from sage.rings.all import (IntegerRing, is_CommutativeRing, is_Field,
+                            ZZ, is_RingHomomorphism)
 
 SCH = Schemes()
 
@@ -148,10 +149,10 @@ class Scheme(SageObject):
         Return the base extension of self to Y.
 
         EXAMPLES:
-            sage: A = AffineSpace(3, Z)
+            sage: A = AffineSpace(3, ZZ)
             sage: A
             Affine Space of dimension 3 over Integer Ring
-            sage: A/Q
+            sage: A/QQ
             Affine Space of dimension 3 over Rational Field
             sage: A/GF(7)
             Affine Space of dimension 3 over Finite Field of size 7
@@ -167,7 +168,7 @@ class Scheme(SageObject):
             elif hasattr(self, '_base_scheme'):
                 self._base_ring = self._base_scheme.coordinate_ring()
             else:
-                self._base_ring = Z
+                self._base_ring = ZZ
             return self._base_ring
 
     def base_scheme(self):
@@ -278,8 +279,8 @@ class AffineScheme(Scheme):
         EXAMPLES:
         We construct the inclusion from $\Spec(\Q)$ into $\Spec(\Z)$
         induced by the inclusion from $\Z$ into $\Q$.
-            sage: X = Spec(Q)
-            sage: X.hom(Z.hom(Q))
+            sage: X = Spec(QQ)
+            sage: X.hom(ZZ.hom(QQ))
             Affine Scheme morphism:
               From: Spectrum of Rational Field
               To:   Spectrum of Integer Ring

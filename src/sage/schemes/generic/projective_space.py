@@ -9,13 +9,13 @@ The simplest projective space:
     Projective Space of dimension 0 over Integer Ring
 
 A slightly bigger projective space over $\Q$:
-    sage: X = ProjectiveSpace(1000, Q); X
+    sage: X = ProjectiveSpace(1000, QQ); X
     Projective Space of dimension 1000 over Rational Field
     sage: X.dimension()
     1000
 
 We can use ``over'' notation to create projective spaces over various base rings.
-    sage: X = ProjectiveSpace(5)/Q; X
+    sage: X = ProjectiveSpace(5)/QQ; X
     Projective Space of dimension 5 over Rational Field
     sage: X/CC
     Projective Space of dimension 5 over Complex Field with 53 bits of precision
@@ -23,7 +23,7 @@ We can use ``over'' notation to create projective spaces over various base rings
 The third argument specifies the printing names of the generators of the homogenous
 coordinate ring.  Using objgens() you can obtain both the space and the generators
 as ready to use variables.
-    sage: P2, (x,y,z) = ProjectiveSpace(2, Q, 'xyz').objgens()
+    sage: P2, (x,y,z) = ProjectiveSpace(2, QQ, 'xyz').objgens()
     sage: P2
     Projective Space of dimension 2 over Rational Field
     sage: x.parent()
@@ -53,7 +53,7 @@ from sage.rings.all import (MPolynomialRing,
                             is_Ring,
                             is_CommutativeRing,
                             is_MPolynomialRing,
-                            Z)
+                            ZZ)
 from sage.modules.all import VectorSpace
 
 from sage.misc.all import latex
@@ -108,7 +108,7 @@ def ProjectiveSpace(n, R=None, names=None):
         A._coordinate_ring = n
         return A
     if R is None:
-        R = Z  # default is the integers
+        R = ZZ  # default is the integers
     if is_Field(R):
         if is_FiniteField(R):
             return ProjectiveSpace_finite_field(n, R, names)
@@ -126,7 +126,7 @@ class ProjectiveSpace_ring(ambient_space.AmbientSpace):
     Projective space of dimension $n$ over the ring $R$.
 
     EXAMPLES:
-        sage: X = ProjectiveSpace(3, Q, 'xyzw')
+        sage: X.<x,y,z,w> = ProjectiveSpace(3, QQ)
         sage: X.base_scheme()
         Spectrum of Rational Field
         sage: X.base_ring()
@@ -143,7 +143,7 @@ class ProjectiveSpace_ring(ambient_space.AmbientSpace):
         sage: loads(X.dumps()) == X
         True
     """
-    def __init__(self, n, R=Z, names=None):
+    def __init__(self, n, R=ZZ, names=None):
         ambient_space.AmbientSpace.__init__(self, n, R)
         self.__names = names
 
@@ -166,7 +166,7 @@ class ProjectiveSpace_ring(ambient_space.AmbientSpace):
             sage: ProjectiveSpace(3).coordinate_ring()
             Polynomial Ring in x0, x1, x2, x3 over Integer Ring
 
-            sage: ProjectiveSpace(2, Q, ['alpha', 'beta', 'gamma']).coordinate_ring()
+            sage: ProjectiveSpace(2, QQ, ['alpha', 'beta', 'gamma']).coordinate_ring()
             Polynomial Ring in alpha, beta, gamma over Rational Field
         """
         try:
@@ -217,7 +217,7 @@ class ProjectiveSpace_ring(ambient_space.AmbientSpace):
             X -- a list or tuple of equations
 
         EXAMPLES:
-            sage: A, (x,y,z) = ProjectiveSpace(2, Q).objgens('xyz')
+            sage: A, (x,y,z) = ProjectiveSpace(2, QQ).objgens('xyz')
             sage: X = A.subscheme([x*z^2, y^2*z, x*y^2]); X
             Closed subscheme of Projective Space of dimension 2 over Rational Field defined by:
               x*z^2
@@ -402,13 +402,13 @@ class ProjectiveSpace_rational_field(ProjectiveSpace_field):
         i = int(n)
         while not i < 0:
             P = [ 0 for _ in range(n+1) ]; P[i] = 1
-            m = Z(0)
+            m = ZZ(0)
             pts.append(self(P))
             iters = [ iter(R) for _ in range(i) ]
             j = 0
             while j < i:
                 try:
-                    aj = Z(iters[j].next())
+                    aj = ZZ(iters[j].next())
                     m = m.gcd(aj)
                     P[j] = aj
                     for ai in Q:
@@ -416,7 +416,7 @@ class ProjectiveSpace_rational_field(ProjectiveSpace_field):
                         if m.gcd(ai) == 1:
                             pts.append(self(P))
                     j = 0
-                    m = Z(0)
+                    m = ZZ(0)
                 except StopIteration:
                     iters[j] = iter(R)  # reset
                     iters[j].next() # put at zero
