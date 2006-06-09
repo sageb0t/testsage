@@ -10,6 +10,8 @@ BUGS:
  [] update attach list doesn't work.
 
  [] tabbed worksheets.
+ [] fix that this happens:
+    s() if not __x__ in __SAGENB__globals and __x__[0] != "_" and str(type(globals( )[__x__])) != "function"]) ' ()
 
 IDEAS:
 
