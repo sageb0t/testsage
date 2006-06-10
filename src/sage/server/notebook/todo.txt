@@ -1,3 +1,5 @@
+[] rename workbook...
+
 BUGS:
  [] attached files list doesn't get updated
  [] fails if load a deleted worksheet.
@@ -14,6 +16,10 @@ BUGS:
     s() if not __x__ in __SAGENB__globals and __x__[0] != "_" and str(type(globals( )[__x__])) != "function"]) ' ()
 
 IDEAS:
+
+[] restart should start on same worksheet as before.
+
+[] quit function should do something
 
 [] workbooks -- link
 
