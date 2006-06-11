@@ -463,6 +463,8 @@ class MapleFunctionElement(FunctionElement):
 
 class MapleElement(ExpectElement):
     def __getattr__(self, attrname):
+        if attrname[:1] == "_":
+            raise AttributeError
         return MapleFunctionElement(self, attrname)
 
     def __float__(self):
