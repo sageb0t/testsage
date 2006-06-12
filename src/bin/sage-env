@@ -101,10 +101,6 @@ LD_LIBRARY_PATH="$SAGE_ROOT/local/lib:$LD_LIBRARY_PATH" && export LD_LIBRARY_PAT
 # Singular install).
 DYLD_LIBRARY_PATH="$LD_LIBRARY_PATH:$DYLD_LIBRARY_PATH" && export DYLD_LIBRARY_PATH
 
-if [ "$IPYTHONRC" = "" ]; then
-    IPYTHONRC="$SAGE_ROOT"/ipythonrc && export IPYTHONRC
-fi
-
 if [ "$1" = "-short" ]; then
     exit 0
 fi
