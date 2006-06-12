@@ -10,10 +10,18 @@ Pager for showing strings
 #                  http://www.gnu.org/licenses/
 #############################################################################
 
-# Currently we just use the Ipython pager.  If we want to use
-# something else, we can just change this function.  Any code
-# in sage that uses a pager should use this pager.
+# Currently we just use the Ipython pager when not in embedded mode.
+# If we want to use something else, we can just change this function.
+# Any code in sage that uses a pager should use this pager.
 
-import IPython.genutils
+EMBEDDED_MODE = False
 
-pager = IPython.genutils.page
+def cat(x):
+    print x
+
+def pager():
+    if EMBEDDED_MODE:
+        return cat
+    else:
+        import IPython.genutils
+        return IPython.genutils.page

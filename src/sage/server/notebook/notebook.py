@@ -285,7 +285,7 @@ import socket
 
 # SAGE libraries
 from   sage.ext.sage_object import SageObject, load
-from   sage.misc.viewer     import BROWSER
+from   sage.misc.viewer     import browser
 from   sage.misc.misc       import alarm
 
 # SAGE Notebook
@@ -446,7 +446,7 @@ class Notebook(SageObject):
         print "WARNING!!! Currently the SAGE Notebook *only* works with Firefox."
 
         if open_viewer:
-            cmd = '%s http://%s:%s 1>&2 >/dev/null &'%(BROWSER, address, port)
+            cmd = '%s http://%s:%s 1>&2 >/dev/null &'%(browser(), address, port)
             os.system(cmd)
         notebook_server.serve()
         self.save()
