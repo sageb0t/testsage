@@ -1,6 +1,9 @@
-def css():
-    return r"""
+import os
 
+from sage.misc.misc import DOT_SAGE
+
+def css():
+    s = r"""
 /**** TOP CONTROL BAR ************************/
 
 div.top_control_bar {
@@ -333,6 +336,17 @@ a.new_worksheet:hover {
   cursor:pointer;
 }
 
+div.worksheet_bottom_padding {
+   height:20%;
+}
+
+div.worksheet_top_padding {
+   height:5%;
+}
+
+div.worksheet_cell_list {
+}
+
 a.delete_worksheet {
    font-family: arial, monospace;
    font-size:8pt;
@@ -554,17 +568,11 @@ textarea.cell_input_active {
   width: 100%;
 }
 
-/*textarea.cell_input:hover {
-  border: 2px solid #73a6ff;
-}
-*/
-
 div.cell_output {
   width: 100%;
   margin: 0px;
   padding: 2px;
   border-left: 2px solid #000088;
-/*  background: #eff2ff */
 }
 
 div.cell_output:hover {
@@ -726,3 +734,8 @@ td.help_window_how {
 }
 
 """
+    user_css = DOT_SAGE + '/notebook.css'
+    if os.path.exists(user_css):
+        s += '\n' + open(user_css).read()
+
+    return s
