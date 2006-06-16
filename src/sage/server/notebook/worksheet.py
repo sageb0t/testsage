@@ -249,7 +249,7 @@ class Worksheet:
         try:
             done, out = S._so_far()
         except RuntimeError:
-            verbose("Computation was interrrupted or failed. Restarting.")
+            verbose("Computation was interrupted or failed. Restarting.")
             self.__comp_is_running = False
             self.start_next_comp()
             return 'w', C
@@ -257,7 +257,7 @@ class Worksheet:
         out = self.postprocess_output(out, C.completions())
         if not done:
             # Still computing
-            C.set_output_text(out)
+            C.set_output_text(out, C.files_html())
             return 'w', C
 
         # Finished a computation.
@@ -266,7 +266,7 @@ class Worksheet:
             tm = S._eval_line('print "CPU time: %.2f s,  Wall time: %.2f s"%(cputime(__t__), walltime(__w__))')
             out = tm + '\n' + out
         out = self._process_output(out)
-        C.set_output_text(out + C.files_html())
+        C.set_output_text(out, C.files_html())
         del self.__queue[0]
         return 'd', C
 
