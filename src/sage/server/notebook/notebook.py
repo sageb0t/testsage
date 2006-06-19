@@ -329,8 +329,11 @@ MAX_HISTORY_LENGTH = 1000
 WRAP_NCOLS = 85
 
 class Notebook(SageObject):
-    def __init__(self, dir='sage_notebook', username=None, password=None):
+    def __init__(self, dir='sage_notebook',
+                 username=None, password=None,
+                 color='default'):
         self.__dir = dir
+        self.__color = color
         if not (username is None):
             self.set_auth(username,password)
         self.__worksheets = {}
@@ -344,6 +347,13 @@ class Notebook(SageObject):
         W = self.create_new_worksheet('_scratch_')
         self.__default_worksheet = W
         self.save()
+
+    def color(self):
+        try:
+            return self.__color
+        except AttributeError:
+            self.__color = 'default'
+            return self.__color
 
     def set_directory(self, dir):
         if dir == self.__dir:
@@ -633,7 +643,7 @@ class Notebook(SageObject):
     def _html_head(self, worksheet_id):
         worksheet = self.get_worksheet_with_id(worksheet_id)
         head = '<title>%s (%s)</title>'%(worksheet.name(), self.directory())
-        head += '<style>' + css.css() + '</style>\n'
+        head += '<style>' + css.css(self.color()) + '</style>\n'
         head += '<script language=javascript>' + js.javascript() + '</script>\n'
         return head
 
@@ -883,7 +893,8 @@ def notebook(dir       ='sage_notebook',
              open_viewer    = False,
              max_tries = 10,
              username  = None,
-             password  = None):
+             password  = None,
+             color     = 'default'):
     r"""
     Start a SAGE notebook web server at the given port.
 
@@ -903,6 +914,10 @@ def notebook(dir       ='sage_notebook',
                      case given port can't be opened.
         username -- user name used for authenticated logins
         password -- password used for authenticated logins
+        color -- string or pair of html colors, e.g.,
+                    'gmail'
+                    'grey'
+                    ('#ff0000', '#0000ff')
 
     NOTES:
 
