@@ -641,6 +641,14 @@ span.banner{
   margin: 0px;
 }
 
+span.banner a.banner {
+    text-decoration:none;
+}
+
+span.banner a.banner:hover {
+   background-color:<color2>;
+}
+
 input.btn {
   font-family: courier;
   font-size:13pt;
