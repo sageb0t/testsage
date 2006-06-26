@@ -651,6 +651,11 @@ class Notebook(SageObject):
             os.system(cmd)
         notebook_server.serve()
         self.save()
+        self.quit()
+
+    def quit(self):
+        for W in self.__worksheets.itervalues():
+            W.quit()
 
     def worksheet_list_html(self, current_worksheet=None):
         s = []
@@ -1028,7 +1033,7 @@ def notebook(dir       ='sage_notebook',
     nb.save()
     shutil.copy('%s/nb.sobj'%dir, '%s/nb-older-backup.sobj'%dir)
     nb.start(port, address, max_tries, open_viewer)
-    alarm(1)
+    alarm(3)
     from sage.interfaces.quit import expect_quitall
     expect_quitall(verbose=False)
     from sage.misc.misc import delete_tmpfiles

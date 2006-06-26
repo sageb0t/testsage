@@ -12,5 +12,6 @@ def expect_quitall(verbose=False):
                 print "Quitting %s"%R
             try:
                 R.quit()
-            except RuntimeError:
-                pass
+            except RuntimeError, msg:
+                if verbose:
+                    print msg
