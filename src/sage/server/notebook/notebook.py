@@ -691,23 +691,12 @@ class Notebook(SageObject):
 
         add_new_worksheet_menu = """
              <div class="add_new_worksheet_menu" id="add_worksheet_menu">
-             <input id="new_worksheet_box" class="add_new_worksheet_menu"></input>
-             <button class="add_new_worksheet_menu" onClick="process_new_worksheet_menu_submit();">add</button>
+             <input id="new_worksheet_box" class="add_new_worksheet_menu"
+                    onKeyPress="if(is_submit(event)) process_new_worksheet_menu_submit();"></input>
+             <button class="add_new_worksheet_menu"  onClick="process_new_worksheet_menu_submit();">add</button>
              &nbsp;&nbsp;&nbsp;<span class="X" onClick="hide_add_new_worksheet_menu()">X</span>
              </div>
         """
-
-##         upload_worksheet_menu = """
-##              <div class="upload_worksheet_menu" id="upload_worksheet_menu">
-##              <form method="post" action="upload_worksheet"
-##                    name="upload" enctype="multipart/form-data">
-##              <input class="upload_worksheet_menu" type="file" name="fileField" id="upload_worksheet_filename"></input><br>
-##              <button class="upload_worksheet_menu" onClick="process_upload_worksheet_menu_submit();">upload</button>
-##              &nbsp;&nbsp;&nbsp;<span class="X" onClick="hide_upload_worksheet_menu()">X</span>
-##              </form><br>
-##              (only works if server is running locally)
-##              </div>
-##         """
 
         upload_worksheet_menu = """
              <div class="upload_worksheet_menu" id="upload_worksheet_menu">
@@ -720,7 +709,8 @@ class Notebook(SageObject):
 
         delete_worksheet_menu = """
              <div class="delete_worksheet_menu" id="delete_worksheet_menu">
-             <input id="delete_worksheet_box" class="delete_worksheet_menu"></input>
+             <input id="delete_worksheet_box" class="delete_worksheet_menu"
+                    onKeyPress="if(is_submit(event)) process_delete_worksheet_menu_submit();"></input>
              <button class="delete_worksheet_menu" onClick="process_delete_worksheet_menu_submit();">delete</button>
              &nbsp;&nbsp;&nbsp;<span class="X" onClick="hide_delete_worksheet_menu()">X</span>
              </div>
@@ -876,6 +866,26 @@ class Notebook(SageObject):
         s += '</table></div>'
         return s
 
+    def upload_window(self):
+        return """
+          <html>
+            <head>
+              <title>Upload File</title>
+              <style>%s</style>
+              <script language=javascript>%s</script>
+            </head>
+            <body onLoad="if(window.focus) window.focus()">
+              <div class="upload_worksheet_menu" id="upload_worksheet_menu">
+              <form method="POST" action="upload_worksheet" target="_new"
+                    name="upload" enctype="multipart/form-data">
+              <input class="upload_worksheet_menu" type="file" name="fileField" id="upload_worksheet_filename"></input><br>
+              <input type="button" class="upload_worksheet_menu" value="upload" onClick="form.submit(); window.close();">
+              </form><br>
+              </div>
+            </body>
+          </html>
+         """%(css.css(self.color()),js.javascript())
+
     def html(self, worksheet_id=None, authorized=False):
         if worksheet_id is None:
             W = self.default_worksheet()
@@ -909,11 +919,13 @@ class Notebook(SageObject):
         <table>
         <tr><td>
           <span class="username">Username:</span></td>
-          <td><input name="username" class="username"></td>
+          <td><input name="username" class="username"
+                      onKeyPress="if(is_submit(event)) login(username.value, password.value)"></td>
         </tr>
         <tr><td>
            <span class="password">Password:</span></td>
-           <td><input name="password" class="username" type="password"></td>
+           <td><input name="password" class="username" type="password"
+                      onKeyPress="if(is_submit(event)) login(username.value, password.value)"></td>
         </tr>
         <td>&nbsp</td>
         <td>
