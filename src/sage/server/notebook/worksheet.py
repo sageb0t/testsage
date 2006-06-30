@@ -541,7 +541,6 @@ class Worksheet:
         corresponding to attached files that have changed.
         """
         A = self.attached_files()
-        print A
         for F, tm in A.iteritems():
             try:
                 new_tm = os.path.getmtime(F)
@@ -722,6 +721,7 @@ class Worksheet:
         return True, t
 
     def preparse_input(self, input, C):
+        input = input.replace('\\\n','')
         introspect = C.introspect()
         if introspect:
             before_prompt, after_prompt = introspect
