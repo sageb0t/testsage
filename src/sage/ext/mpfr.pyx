@@ -254,7 +254,7 @@ cdef class RealField(ring.Field):
        range is much wider and subnormal numbers are not
        implemented."
     """
-    cdef int prec, sci_not
+    cdef int __prec, sci_not
     cdef mp_rnd_t rnd
     cdef object rnd_str
 
@@ -262,7 +262,7 @@ cdef class RealField(ring.Field):
         if prec < MPFR_PREC_MIN or prec > MPFR_PREC_MAX:
             raise ValueError, "prec (=%s) must be >= %s and <= %s."%(
                 prec, MPFR_PREC_MIN, MPFR_PREC_MAX)
-        self.prec = prec
+        self.__prec = prec
         if not isinstance(rnd, str):
             raise TypeError, "rnd must be a string"
         self.sci_not = sci_not
@@ -273,7 +273,7 @@ cdef class RealField(ring.Field):
         self.rnd_str = rnd
 
     def _repr_(self):
-        s = "Real Field with %s bits of precision"%self.prec
+        s = "Real Field with %s bits of precision"%self.__prec
         if self.rnd != GMP_RNDN:
             s = s + " and rounding %s"%(self.rnd_str)
         return s
@@ -308,7 +308,7 @@ cdef class RealField(ring.Field):
             K = x.parent()
             if K is self:
                 return x
-            elif K.prec >= self.prec:
+            elif K.__prec >= self.__prec:
                 return self(x)
             else:
                 raise TypeError
@@ -339,7 +339,7 @@ cdef class RealField(ring.Field):
             return -1
         cdef RealField _other
         _other = other  # to access C structure
-        if self.prec == _other.prec and self.rnd == _other.rnd \
+        if self.__prec == _other.__prec and self.rnd == _other.rnd \
                and self.sci_not == _other.sci_not:
             return 0
         return 1
@@ -352,13 +352,19 @@ cdef class RealField(ring.Field):
             True
         """
         return sage.rings.real_field.__reduce__RealField, \
-                (self.prec, self.sci_not, self.rnd_str)
+                (self.__prec, self.sci_not, self.rnd_str)
 
     def gen(self, i=0):
         if i == 0:
             return self(1)
         else:
             raise IndexError
+
+    def complex_field(self):
+        """
+        Return complex field of the same precision.
+        """
+        return sage.rings.complex_field.ComplexField(self.prec())
 
     def ngens(self):
         return 1
@@ -406,13 +412,16 @@ cdef class RealField(ring.Field):
         return 0
 
     def name(self):
-        return "RealField%s_%s"%(self.prec,self.rnd)
+        return "RealField%s_%s"%(self.__prec,self.rnd)
 
     def __hash__(self):
         return hash(self.name())
 
     def precision(self):
-        return self.prec
+        return self.__prec
+
+    def prec(self):
+        return self.__prec
 
     # int mpfr_const_pi (mpfr_t rop, mp_rnd_t rnd)
     def pi(self):
@@ -585,7 +594,7 @@ cdef class RealNumber(element.RingElement):
         if parent is None:
             raise TypeError
         self._parent = parent
-        mpfr_init2(self.value, parent.prec)
+        mpfr_init2(self.value, parent.__prec)
         self.init = 1
         if x is None: return
         cdef RealNumber _x, n, d
@@ -895,7 +904,7 @@ cdef class RealNumber(element.RingElement):
         return mpfr_sgn(self.value)
 
     def prec(self):
-        return self._parent.prec
+        return self._parent.__prec
 
     ###################
     # Rounding etc
@@ -1049,7 +1058,7 @@ cdef class RealNumber(element.RingElement):
         return sage.rings.complex_field.ComplexField(self.prec())(self)
 
     def _pari_(self):
-        return sage.libs.pari.all.pari.new_with_bits_prec(str(self), self._parent.prec)
+        return sage.libs.pari.all.pari.new_with_bits_prec(str(self), self._parent.__prec)
 
     ###########################################
     # Comparisons: ==, !=, <, <=, >, >=
