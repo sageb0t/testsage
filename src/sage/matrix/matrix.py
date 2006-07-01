@@ -81,7 +81,7 @@ import sage.modules.free_module
 import sage.matrix.matrix_space
 import matrix_space
 import sage.libs.pari.all as pari
-import sage.modules.module_element  as module_element
+
 import berlekamp_massey
 import sage.rings.polynomial_ring as polynomial_ring
 import sage.rings.integer_ring as integer_ring
@@ -100,6 +100,8 @@ from sage.interfaces.all import singular as singular_default
 
 from sage.libs.ntl.all import mat_ZZ
 cputime = misc.cputime
+
+from sage.matrix.matrix_pyx import Matrix
 
 def is_Matrix(x):
     return isinstance(x, Matrix)
@@ -616,10 +618,6 @@ class Matrix(module_element.ModuleElement, Mutability):
             [3 4 5]
             sage: A.columns()
             [(0, 3), (1, 4), (2, 5)]
-
-            sage: MatrixSpace(RationalField(), 2,3) (sxrange(6))
-            [0 1 2]
-            [3 4 5]
         """
         return self.transpose().rows()
 
@@ -4433,27 +4431,3 @@ class Matrix_sparse_rational(Matrix_rational):
 
     def _set_row_to_negative_of_row_of_A_using_subset_of_columns(self, i, A, r, cols):
         self.__matrix.set_row_to_negative_of_row_of_A_using_subset_of_columns(i, A.__matrix, r, cols)
-
-def _combinations(sequence, number):
-    """
-    Generate all combinations of \code{number} elements from list
-    \code{sequence}.
-
-    Based on code from \code{test/test_generators.py}.
-
-    AUTHOR:
-        -- Jaap Spies (2006-02-18)
-    """
-    if number > len(sequence):
-	return
-    if number == 0:
-	yield []
-    else:
-	first, rest = sequence[0], sequence[1:]
-        # first in combination
-	for result in _combinations(rest, number-1):
-	    result.insert(0, first)
-	    yield result
-        # first not in combination
-	for result in _combinations(rest, number):
-	    yield result
