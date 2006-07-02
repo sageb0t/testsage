@@ -274,7 +274,7 @@ class Dokchitser(SageObject):
 
     def __to_CC(self, s):
         s = s.replace('.E','.0E').replace(' ','')
-        return self.__CC(sage_eval(s, {'I':self.__CC.gen(0)}))
+        return self.__CC(sage_eval(s, locals={'I':self.__CC.gen(0)}))
 
     def __call__(self, s, c=None):
         """
@@ -358,7 +358,7 @@ class Dokchitser(SageObject):
             z = z[i+1:]
         t = self.__CC[[var]].gen(0)
         z = z.replace('S',var).replace('.E','.0E').replace(' ','')
-        f = sage_eval(z, {var:t})
+        f = sage_eval(z, locals={var:t})
         return f
 
     def check_functional_equation(self, T=1.2):

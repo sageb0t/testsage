@@ -364,7 +364,7 @@ class Genus2reduction(SageObject):
         x = QQ['x'].gen(0)
         i = s.find('y^2 = ') + len('y^2 = ')
         j = i + s[i:].find('\n')
-        minimal_equation = sage_eval(s[i:j], {'x':x})
+        minimal_equation = sage_eval(s[i:j], locals={'x':x})
 
         s = s[j+1:]
         i = s.find('[')
