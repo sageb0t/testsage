@@ -26,6 +26,7 @@ import random
 import sage.misc.all
 import sage.matrix.sparse_matrix_pyx
 import sage.rings.integer_ring
+import sage.rings.finite_field
 import sage.rings.arith
 
 cimport rational
@@ -41,6 +42,8 @@ cimport arith
 import arith
 cdef arith.arith_int ai
 ai = arith.arith_int()
+
+cimport sage.matrix.matrix_pyx
 
 include "cdefs.pxi"
 include "gmp.pxi"
@@ -488,7 +491,7 @@ cdef class Vector_modint:
         for i from 0 <= i < sparcity:
             self[random.randrange(self.v.degree)] = random.randrange(1,bound)
 
-cdef class Matrix_modint:
+cdef class Matrix_modint(sage.matrix.matrix_pyx.Matrix):
     cdef c_vector_modint* rows
     cdef public int nr, nc, p
     cdef object __pivots
@@ -534,6 +537,9 @@ cdef class Matrix_modint:
 
     def pivots(self):
         return self.__pivots
+
+    def base_ring(self):
+        return sage.rings.finite_field.GF(self.p)
 
     def lift_row_to_dict(self, int i):
         """
