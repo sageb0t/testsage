@@ -29,6 +29,8 @@ from   sage.misc.misc import word_wrap
 
 import notebook
 
+import worksheet
+
 class Cell:
     def __init__(self, id, input, out, worksheet):
         self.__id    = int(id)
@@ -197,6 +199,9 @@ class Cell:
         self.__in = new_text
 
     def set_output_text(self, output, html, sage=None):
+        i = output.find(worksheet.SAGE_VARS)
+        if i != -1:
+            output = output[:i]
         if len(output) > MAX_OUTPUT:
             output = 'WARNING: Output truncated!\n' + output[:MAX_OUTPUT] + '\n(truncated)'
         self.__out = output.strip()
