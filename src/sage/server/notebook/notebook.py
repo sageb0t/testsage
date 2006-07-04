@@ -928,6 +928,13 @@ class Notebook(SageObject):
 
     def completions_format(self, cell_id, completions):
         lists = []
+
+        # compute the width of each column
+        column_width = []
+        if len(completions) > 0:
+            for i in range(len(completions[0])):
+                column_width.append(max([len(x[i]) for x in completions if i < len(x)]))
+
         for i in range(len(completions)):
             row = completions[i]
             for j in range(len(row)):
@@ -938,7 +945,8 @@ class Notebook(SageObject):
     <a onClick='do_replacement(%s, "%s")'
        onMouseOver='select_replacement(%s,%s);'
     >%s</a>
-   </li>"""%(cell_id, i, j, cell_id, row[j], i,j, row[j])
+   </li>"""%(cell_id, i, j, cell_id, row[j], i,j,
+             row[j] + '&nbsp;'*(column_width[j]-len(row[j])) )
                 lists[j].append(cell)
 
         grid = "<ul class='menu_one'>"
