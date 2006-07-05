@@ -1299,7 +1299,7 @@ function show_help_window(worksheet) {
 }
 
 /********************* js math ***************************/
-jsmath_font_msg = "need fonts!";
+jsmath_font_msg = '<a href="http://www.math.union.edu/~dpvc/jsMath/download/jsMath-fonts.html">Click here to download and install the tex fonts (this is easy).</a><br>';
 
 function jsmath_init() {
     try {
@@ -1312,7 +1312,7 @@ function jsmath_init() {
 }
 
 function font_warning() {
-    alert(jsmath_font_msg);
+/*    alert(jsmath_font_msg); */
 }
 
 """
