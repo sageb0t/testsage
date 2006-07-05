@@ -930,8 +930,13 @@ function set_output_text(id, text, wrapped_text, output_html, status, introspect
     if (status == 'd') {
          cell_set_done(id);
          if (text.indexOf('class="math"') != -1 || text.indexOf("class='math'") != -1) {
-             jsMath.ProcessBeforeShowing(cell_output);
+             try {
+                 jsMath.ProcessBeforeShowing(cell_output);
              /* jsMath.ProcessBeforeShowing(cell_output_nowrap); */
+             } catch(e) {
+                 cell_output.innerHTML = jsmath_font_msg + cell_output.innerHTML;
+                 cell_output_nowrap.innerHTML = jsmath_font_msg + cell_output_nowrap.innerHTML;
+             }
          }
     } else {
          cell_set_running(id);
@@ -1291,6 +1296,23 @@ function print_window(worksheet) {
 function show_help_window(worksheet) {
     help = window.open ("__help__.html","",
     "menubar=1,scrollbars=1,width=700,height=600");
+}
+
+/********************* js math ***************************/
+jsmath_font_msg = "need fonts!";
+
+function jsmath_init() {
+    try {
+        jsMath.Process();
+      /*  jsMath.ProcessBeforeShowing();  */
+    } catch(e) {
+        font_warning();
+    }
+
+}
+
+function font_warning() {
+    alert(jsmath_font_msg);
 }
 
 """
