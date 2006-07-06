@@ -69,7 +69,7 @@ class Cell:
     def __repr__(self):
         return 'Cell %s; in=%s, out=%s'%(self.__id, self.__in, self.__out)
 
-    def plain_text(self, ncols=0, prompts=True):
+    def plain_text(self, ncols=0, prompts=True, max_out=None):
         if ncols == 0:
             ncols = self.notebook().defaults()['word_wrap_cols']
         s = ''
@@ -131,6 +131,9 @@ class Cell:
                 out = '# ' + '\n# '.join(out)
             else:
                 out = ''
+
+        if not max_out is None and len(out) > max_out:
+            out = out[:max_out] + '...'
 
         s = s.strip() + '\n' + out.strip()
 
