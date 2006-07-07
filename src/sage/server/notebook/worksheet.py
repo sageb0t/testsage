@@ -700,6 +700,9 @@ class Worksheet:
             pass
 
     def _normalized_filenames(self, L):
+        i = L.find('#')
+        if i != -1:
+            L = L[:i]
         a = []
         OBJECTS = os.path.abspath(self.notebook().object_directory())
         for filename in L.split():
