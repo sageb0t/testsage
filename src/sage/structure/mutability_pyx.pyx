@@ -66,3 +66,8 @@ cdef class Mutability:
             return not self._is_immutable
         except AttributeError:
             return True
+
+    def __reduce__(self):
+        import sage.structure.mutability
+        return sage.structure.mutability.__reduce__Mutability, \
+               tuple([self._is_immutable])

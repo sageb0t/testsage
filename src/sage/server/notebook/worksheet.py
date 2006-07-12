@@ -478,7 +478,7 @@ class Worksheet:
                 except:
                     pass
             rows.append(row)
-        return self.__notebook.completions_format(id, rows)
+        return self.__notebook.format_completions_as_html(id, rows)
 
     def _strip_synchro_from_start_of_output(self, s):
         z = SAGE_BEGIN+str(self.synchro())
