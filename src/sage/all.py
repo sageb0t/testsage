@@ -65,6 +65,7 @@ import sage.edu.all   as edu
 
 from sage.plot.all       import *
 from sage.coding.all     import *
+from sage.combinat.all     import *
 
 from sage.lfunctions.all import *
 
