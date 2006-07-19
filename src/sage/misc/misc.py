@@ -623,7 +623,7 @@ class xsrange:
         self.__b = b
         self.__step = step
 
-    def _repr_(self):
+    def __repr__(self):
         return 'xrange(%s, %s, %s)'%(self.__a, self.__b, self.__step)
 
     def __len__(self):
