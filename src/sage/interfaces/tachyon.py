@@ -79,10 +79,11 @@ class TachyonRT:
         elif verbose == 0:
             opts += '  1>/dev/null'
 
-        if not block:
-            opts += ' &'
-
         cmd = 'tachyon %s %s; rm -f "%s"'%(modelfile,opts, modelfile)
+
+        if not block:
+            cmd += ' &'
+
         if verbose:
             print cmd
         os.system(cmd)

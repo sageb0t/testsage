@@ -227,4 +227,4 @@ class Sphere:
 def tostr(s):
     if isinstance(s, str):
         return s
-    return '%s %s %s'%(float(s[0]), float(s[1]), float(s[2]))
+    return ' %s %s %s '%(float(s[0]), float(s[1]), float(s[2]))
