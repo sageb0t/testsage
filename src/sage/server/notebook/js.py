@@ -77,9 +77,10 @@ try{
 
 var after_cursor, before_cursor, before_replacing_word;
 
-var updating = false;
-
 var update_timeout = -1;
+
+var updating = false;
+var update_time = -1;
 
 var jsmath_font_msg = '<a href="SAGE_URL/jsmath">jsMath temporarily disabled while we resolve a windows firefox hang bug</a><br>';
 /*var jsmath_font_msg = '<a href="SAGE_URL/jsmath">Click to download and install tex fonts.</a><br>'; */
@@ -1080,6 +1081,7 @@ function check_for_cell_update() {
         return;
     }
     var cell_id = active_cell_list[0];
+    update_time = getTime();
     async_request('async_obj_cell_update', '/cell_update',
                     check_for_cell_update_callback,
                     'cell_id=' + cell_id + '&worksheet_id='+worksheet_id);
@@ -1087,14 +1089,12 @@ function check_for_cell_update() {
 
 function start_update_check() {
     if(updating) return;
+    updating = true;
     if (active_cell_list.length > 0) {
-        updating = true;
-        update_timeout = setTimeout('check_for_cell_update()', cell_output_delta);
         check_for_cell_update();
     } else {
         cancel_update_check();
     }
-
 }
 
 function cancel_update_check() {
@@ -1245,7 +1245,13 @@ function check_for_cell_update_callback(status, response_text) {
         set_object_list(object_list);
         set_attached_files_list(attached_files_list);
     }
-    update_timeout = setTimeout('check_for_cell_update()', cell_output_delta);
+    var time_left = getTime() - update_time - cell_output_delta;
+
+    if(time_left > 0) {
+        update_timeout = setTimeout('check_for_cell_update()', time_left);
+    } else {
+        check_for_cell_update();
+    }
 }
 
 function set_cell_evaluated(id) {
@@ -1434,7 +1440,6 @@ function restart_sage_callback(status, response_text) {
     var link = get_element("restart_sage");
     link.className = "restart_sage";
     link.innerHTML = "Restart";
-    updating = false;
     set_variable_list('');
     var v = cell_id_list;
     var n = v.length;
