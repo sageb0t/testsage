@@ -280,7 +280,7 @@ class Singular(Expect):
         Expect.__init__(self,
                         name = 'singular',
                         prompt = '> ',
-                        command = "Singular -t",
+                        command = "Singular -t --ticks-per-sec 1000", #no tty and fine grained cputime()
                         maxread = maxread,
                         server = server,
                         script_subdirectory = script_subdirectory,
@@ -429,6 +429,12 @@ class Singular(Expect):
             return getattr(x, '_singular_')(self)
 
         return SingularElement(self, type, x, False)
+
+    def cputime(self, t=None):
+        if t:
+            return float(self.eval('timer-%d'%(int(1000*t))))/1000.0
+        else:
+            return float(self.eval('timer'))/1000.0
 
     ###################################################################
     # Singular libraries
