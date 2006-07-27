@@ -960,15 +960,16 @@ function evaluate_cell(id, action) {
     var cell_input = get_cell(id);
     var I = cell_input.value
     var input = escape0(I);
+
     get_element('interrupt').className = 'interrupt';
     async_request('async_obj_evaluate', '/eval' + action, evaluate_cell_callback,
             'id=' + id + '&input='+input)
-    start_update_check();
 }
 
 function evaluate_cell_introspection(id, before, after) {
     var cell_input = get_cell(id);
 
+    replacing = false;
     if(before == null) {
         var in_text = text_cursor_split(cell_input);
         before_cursor = before = in_text[0];
@@ -983,7 +984,6 @@ function evaluate_cell_introspection(id, before, after) {
 
         var last_char_before = before.charAt(before.length-1);
         if(last_char_before == "?") {
-            replacing = false;
         } else if(m) {
             replacing = true;
             replacing_word  = m[1];
@@ -997,6 +997,8 @@ function evaluate_cell_introspection(id, before, after) {
     } else {
         sub_introspecting = true;
     }
+    if(!replacing && browser_op)
+        focus(id,true);
 
     update_introspection_text();
     var before_cursor_e = escape0(before);
@@ -1004,7 +1006,6 @@ function evaluate_cell_introspection(id, before, after) {
     cell_set_running(id);
     async_request('async_obj_evaluate', '/introspect', evaluate_cell_callback,
           'id=' + id + '&before_cursor='+before_cursor_e + '&after_cursor='+after_cursor_e);
-    start_update_check();
 }
 
 function evaluate_cell_callback(status, response_text) {
@@ -1028,6 +1029,7 @@ function evaluate_cell_callback(status, response_text) {
         // jump_to_cell(X[0], 0);
         focus(X[0]);
     }
+    start_update_check();
 }
 
 function cell_output_set_type(id, typ) {
@@ -1147,8 +1149,8 @@ function set_input_text(id, text) {
 
     try {
         pos = text.length - after_cursor.length;
-        cell_input.selectionEnd = pos;
         cell_input.selectionStart = pos;
+        cell_input.selectionEnd = pos;
     }catch(e){}
     try{
         var range = document.selection.createRange();
