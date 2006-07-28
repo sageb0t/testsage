@@ -421,6 +421,7 @@ setup(name        = 'sage',
                      'sage.server',
                      'sage.server.server1',
                      'sage.server.notebook',
+                     'sage.server.wiki',
 
                      'sage.structure',
                      ],
