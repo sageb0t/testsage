@@ -113,7 +113,7 @@ try{
 } catch(e){}
 
 function get_keyboard() {
-  var b,o;
+  var b,o,warn=false;
 
   input_keypress = cell_input_key_event;
   debug_keypress = debug_input_key_event;
@@ -126,10 +126,12 @@ function get_keyboard() {
     document.onkeydown = key_listen_ie;
     input_keypress = true_function;
     debug_keypress = true_function;
+    warn = true;
   } else if(browser_saf) {
     b = "s";
   } else if(browser_konq) {
     b = "k";
+    warn = true;
   } else {
     b = "m";
   }
@@ -140,6 +142,10 @@ function get_keyboard() {
     o = "l";
   } else {
     o = "w"
+  }
+
+  if(b == null || o == null || warn) {
+    alert("Your browser / OS combination is not supported.  \nPlease use Firefox or Opera under linux, windows, or mac OSX, or Safari.")
   }
 
   async_request('keyboard', '__keyboard_'+b+o+'__.js', get_keyboard_callback, null);
@@ -1069,6 +1075,12 @@ function cell_set_evaluated(id) {
     D.className = "cell_evaluated";
 }
 
+function cell_set_not_evaluated(id) {
+    var D = get_element('cell_'+id);
+    D.className = "cell_not_evaluated";
+    cell_set_done(id);
+}
+
 function cell_set_running(id) {
     cell_output_set_type(id, 'wrap');
     var cell_div = get_element('cell_div_output_' + id);
@@ -1386,6 +1398,9 @@ function append_new_cell(id, html) {
 function interrupt_callback(status, response_text) {
     if (response_text == "restart") {
         alert("The SAGE kernel had to be restarted (your variables are no longer defined).");
+        restart_callback('success', response_text);
+    } else if(status == "success") {
+        halt_active_cells()
     }
     var link = get_element("interrupt");
     link.className = "interrupt";
@@ -1445,7 +1460,7 @@ function show_all() {
 
 function halt_active_cells() {
     for(i = 0; i < active_cell_list.length; i++)
-        cell_set_done(active_cell_list[i]);
+        cell_set_not_evaluated(active_cell_list[i]);
     active_cell_list = []
 }
 
@@ -1455,15 +1470,6 @@ function restart_sage_callback(status, response_text) {
     link.className = "restart_sage";
     link.innerHTML = "Restart";
     set_variable_list('');
-    var v = cell_id_list;
-    var n = v.length;
-    var i;
-    for(i=0; i<n; i++) {
-        var c = get_element('cell_div_output_'+v[i]);
-        if (c.className ==  'cell_output_running') {
-            c.className = 'cell_output_wrap';
-        }
-    }
 }
 
 function restart_sage() {
