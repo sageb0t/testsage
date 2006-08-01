@@ -990,7 +990,7 @@ class ModularSymbolsAmbient_wtk_g0_Q(ModularSymbolsAmbient):
             raise TypeError, "sign must be an int in [-1,0,1]"
 
         ModularSymbolsAmbient.__init__(self, weight=k, group=congroup.Gamma0(N),
-                            sign=sign, base_ring=rational_field.RationalField())
+                                       sign=sign, base_ring=rational_field.RationalField())
 
     def _dimension_formula(self):
         N, k, sign = self.level(), self.weight(), self.sign()
