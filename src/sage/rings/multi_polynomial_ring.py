@@ -576,6 +576,12 @@ class TermOrder(SageObject):
         else:
             self.__macaulay2_str = name
 
+    def _tuple_cmpfn(self):
+        """
+        Returns tuple com function of self
+        """
+        return tuple_cmp[self.__singular_str]
+
     def _repr_(self):
         if self.__name == 'lex':
             s = 'Lexicographic'
@@ -598,3 +604,11 @@ class TermOrder(SageObject):
             else:
                 return -1
         return cmp(self.__name, other.__name)
+
+rev = lambda x: tuple(reversed(x))
+tuple_cmp = {
+    "lp" : lambda f,g:                                           f  >     g    and f or g, \
+    "rp" : lambda f,g:                                       rev(f) < rev(g)   and f or g, \
+    "Dp" : lambda f,g: (sum(f)>sum(g) or (sum(f)==sum(g) and     f  >     g )) and f or g, \
+    "dp" : lambda f,g: (sum(f)>sum(g) or (sum(f)==sum(g) and rev(f) < rev(g))) and f or g
+}
