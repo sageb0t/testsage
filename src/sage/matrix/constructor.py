@@ -20,7 +20,7 @@ Constructor for making matrices
 import sage.rings.all as rings
 import sage.matrix.matrix_space as matrix_space
 
-def Matrix(R, nrows, ncols, entries=0, sparse=False):
+def Matrix(R, nrows, ncols=0, entries=0, sparse=False):
     """
     Create a matrix.
 
@@ -61,7 +61,9 @@ def Matrix(R, nrows, ncols, entries=0, sparse=False):
         entries = ncols
         ncols = len(entries) / nrows
     (nrows, ncols) = (rings.Integer(nrows), rings.Integer(ncols))
-    return matrix_space.MatrixSpace(R, nrows, ncols, sparse=sparse)(list(entries))
+    if isinstance(entries, tuple):
+        entries = list(entries)
+    return matrix_space.MatrixSpace(R, nrows, ncols, sparse=sparse)(entries)
 
 matrix = Matrix
 

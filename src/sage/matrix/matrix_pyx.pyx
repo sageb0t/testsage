@@ -68,7 +68,7 @@ EXAMPLES:
     0
     sage: A[0,0] = 5
     sage: A.determinant()
-    7
+    1
     sage: A.set_immutable()
     sage: A[0,0] = 5
     Traceback (most recent call last):
