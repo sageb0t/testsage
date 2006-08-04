@@ -20,6 +20,9 @@ all.py -- export of abelian groups to SAGE
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
 
+from dual_abelian_group import *
+from dual_abelian_group_element import *
+
 from abelian_group import AbelianGroup,is_AbelianGroup,AbelianGroup_class,AbelianGroup_subgroup, word_problem
 
 from abelian_group_element import AbelianGroupElement,is_AbelianGroupElement
