@@ -64,7 +64,7 @@ class ComplexField_class(field.Field):
         sage: C(S.gen())
         Traceback (most recent call last):
         ...
-        TypeError: unable to coerce (x,0) to a ComplexNumber
+        TypeError: unable to coerce to a ComplexNumber
 
     This illustrates precision.
         sage: CC = ComplexField(10); CC(1/3, 2/3)
@@ -153,7 +153,7 @@ class ComplexField_class(field.Field):
 
     def gen(self, n=0):
         if n != 0:
-            raise IndexError, "n (=%s) must be 0"%n
+            raise IndexError, "n must be 0"
         return complex_number.ComplexNumber(self, 0, 1)
 
     def is_field(self):

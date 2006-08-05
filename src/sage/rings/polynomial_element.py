@@ -243,7 +243,7 @@ class Polynomial(Element_cmp_, ring_element.RingElement):
 
     def _integer_(self):
         if self.degree() > 0:
-            raise TypeError, "cannot coerce nonconstant polynomial %s to int"%self
+            raise TypeError, "cannot coerce nonconstant polynomial"
         return integer.Integer(self[0])
 
     def __invert__(self):
@@ -816,7 +816,7 @@ class Polynomial(Element_cmp_, ring_element.RingElement):
         try:
             return self.polynomial([0] + [self[n]/(n+1) for n in xrange(0,self.degree()+1)])
         except TypeError:
-            raise ArithmeticError, "coefficients of integral of %s cannot be coerced into the base ring"%self
+            raise ArithmeticError, "coefficients of integral cannot be coerced into the base ring"
 
     def dict(self):
         X = {}
@@ -1632,7 +1632,7 @@ class Polynomial_generic_field(Polynomial,
         """
         other = self.parent()(other)
         if other.is_zero():
-            raise ZeroDivisionError, "other (=%s) must be nonzero"%other
+            raise ZeroDivisionError, "other must be nonzero"
 
         # This is algorithm 3.1.1 in Cohen GTM 138
         A = self
@@ -1691,7 +1691,7 @@ class Polynomial_rational_dense(Polynomial_generic_field):
 
         if fraction_field_element.is_FractionFieldElement(x):
             if x.denominator() != 1:
-                raise TypeError, "denominator (=%s) must be 1"%x.denominator()
+                raise TypeError, "denominator must be 1"
             else:
                 x = x.numerator()
 
@@ -1830,7 +1830,7 @@ class Polynomial_rational_dense(Polynomial_generic_field):
         """
         from sage.groups.all import PariGroup, PermutationGroup, TransitiveGroup
         if not self.is_irreducible():
-            raise ValueError, "polynomial (=%s) must be irreducible"%self
+            raise ValueError, "polynomial must be irreducible"
         if self.degree() > 11 or use_kash:
             # TODO -- maybe use KASH if available or print message that user should install KASH?
             try:
@@ -1884,7 +1884,7 @@ class Polynomial_rational_dense(Polynomial_generic_field):
             raise ValueError, "the generator cannot be changed"
         n = int(n)
         if n < 0:
-            raise IndexError, "n (=%s) must be >= 0"%n
+            raise IndexError, "n must be >= 0"
         if n <= self.__poly.poldegree():
             self.__poly[n] = QQ(value)
         else:
@@ -1955,7 +1955,7 @@ class Polynomial_rational_dense(Polynomial_generic_field):
         """
         p = integer.Integer(p)
         if not p.is_prime():
-            raise ValueError, "p (=%s) must be prime"%p
+            raise ValueError, "p must be prime"
         G = self._pari_().factormod(p)
         K = finite_field.FiniteField(p)
         R = sage.rings.polynomial_ring.PolynomialRing(K, name=self.parent().variable_name())
@@ -1974,10 +1974,10 @@ class Polynomial_rational_dense(Polynomial_generic_field):
         """
         p = integer.Integer(p)
         if not p.is_prime():
-            raise ValueError, "p (=%s) must be prime"%p
+            raise ValueError, "p must be prime"
         prec = integer.Integer(prec)
         if prec <= 0:
-            raise ValueError, "prec (=%s) must be positive"%prec
+            raise ValueError, "prec must be positive"
         G = self._pari_().factorpadic(p, prec)
         K = padic_field.pAdicField(p)
         R = sage.rings.polynomial_ring.PolynomialRing(K, name=self.parent().variable_name())
@@ -2056,10 +2056,10 @@ class Polynomial_rational_dense(Polynomial_generic_field):
         """
         p = integer.Integer(p)
         if not p.is_prime():
-            raise ValueError, "p (=%s) must be prime"%p
+            raise ValueError, "p must be prime"
         e = integer.Integer(e)
         if e < 1:
-            raise ValueError, "e (=%s) must be at least 1"%e
+            raise ValueError, "e must be at least 1"
         F = self.factor_mod(p)
         y = []
         for g, n in F:
@@ -2260,7 +2260,7 @@ class Polynomial_integer_dense(Polynomial, integral_domain_element.IntegralDomai
             raise ValueError, "the generator cannot be changed"
         n = int(n)
         if n < 0:
-            raise IndexError, "n (=%s) must be >= 0"%n
+            raise IndexError, "n must be >= 0"
         self.__poly[n] = int(value)
 
     def complex_roots(self, flag=0):
@@ -2338,7 +2338,7 @@ class Polynomial_integer_dense(Polynomial, integral_domain_element.IntegralDomai
         """
         p = integer.Integer(p)
         if not p.is_prime():
-            raise ValueError, "p (=%s) must be prime"%p
+            raise ValueError, "p must be prime"
         f = self._pari_()
         if f * pari('Mod(1,%s)'%p) == pari(0):
             raise ValueError, "factorization of 0 not defined"
@@ -2360,10 +2360,10 @@ class Polynomial_integer_dense(Polynomial, integral_domain_element.IntegralDomai
         """
         p = integer.Integer(p)
         if not p.is_prime():
-            raise ValueError, "p (=%s) must be prime"%p
+            raise ValueError, "p must be prime"
         prec = integer.Integer(prec)
         if prec <= 0:
-            raise ValueError, "prec (=%s) must be positive"%prec
+            raise ValueError, "prec must be positive"
         G = self._pari_().factorpadic(p, prec)
         K = padic_field.pAdicField(p)
         R = sage.rings.polynomial_ring.PolynomialRing(K, name=self.parent().variable_name())
@@ -2574,7 +2574,7 @@ class Polynomial_dense_mod_n(Polynomial):
             raise ValueError, "the generator cannot be changed"
         n = int(n)
         if n < 0:
-            raise IndexError, "n (=%s) must be >= 0"%n
+            raise IndexError, "n must be >= 0"
         self.parent()._ntl_set_modulus()
         self.__poly[n] = int(value)
 
