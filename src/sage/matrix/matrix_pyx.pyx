@@ -1970,17 +1970,18 @@ cdef class Matrix(ModuleElement):
         \end{verbatim}
 
         AUTHOR:
-            Robert Bradshaw (2007-08-05)
+           -- Robert Bradshaw (2007-08-05)
 
-        TODO: Right now calls generic submatrix multiply code, should call Strassen code for multiplies...
+        TODO: Right now calls generic submatrix multiply code, should
+              call Strassen code for multiplies...
         TODO: Random permutations for non-singular submatrices?
 
         """
 
         if not self.is_square():
             raise ArithmeticError, "self must be a square matrix"
-        if not self.determinant().is_unit():
-            raise ZeroDivisionError, "self is not invertible"
+        #if not self.determinant().is_unit():
+        #    raise ZeroDivisionError, "self is not invertible"
 
         return self._strassen_invert_inner(0, 0, self.nrows(), cutoff)
 
