@@ -335,6 +335,7 @@ def pyrex(ext_modules):
 for D in os.listdir("sage/libs/"):
     if os.path.isdir('sage/libs/%s'%D):
         os.system("cp sage/ext/interrupt.h sage/libs/%s/"%D)
+        os.system("cp sage/ext/interrupt.h %s/include/"%SAGE_LOCAL)
         os.system("cp sage/ext/interrupt.pxi sage/libs/%s/"%D)
 
 ##########################################
