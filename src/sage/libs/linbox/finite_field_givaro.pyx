@@ -27,7 +27,7 @@ from sage.rings.coerce import bin_op
 from sage.ext.sage_object cimport SageObject
 import operator
 import sage.rings.arith
-from sage.ext.integer import Integer
+
 import sage.interfaces.gap
 from sage.libs.pari.all import pari
 from sage.libs.pari.gen import gen
@@ -249,6 +249,7 @@ cdef class GFq(FiniteField):
         from sage.rings.finite_field_element import FiniteFieldElement
         from sage.rings.integer_mod import IntegerMod
         from sage.rings.rational import Rational
+        from sage.ext.integer import Integer
 
         cdef int res
         cdef int g
@@ -322,6 +323,7 @@ cdef class GFq(FiniteField):
         from sage.rings.finite_field_element import FiniteFieldElement
         from sage.rings.integer_mod import IntegerMod
         from sage.rings.integer_mod_ring import IntegerModRing_generic
+        from sage.ext.integer import Integer
 
         if isinstance(x, (int, long, Integer)):
             return self(x)
