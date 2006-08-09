@@ -71,6 +71,8 @@ from sage.lfunctions.all import *
 
 from sage.geometry.all import *
 
+from sage.quadratic_forms.all import *
+
 try:
     from sage_user.all import *
 except ImportError, msg:
