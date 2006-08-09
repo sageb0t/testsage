@@ -11,6 +11,7 @@ Web Server Component of SAGE Notebook
 
 # Python libraries
 import BaseHTTPServer
+import socket
 import cgi
 import os, sys
 import select
@@ -619,6 +620,7 @@ class NotebookServer:
     def __init__(self, notebook, port, address):
         self.__notebook = notebook
         self.__httpd = BaseHTTPServer.HTTPServer((address,int(port)), WebServer)
+        self.__httpd.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
         self.__address = address
         self.__port = port
 
