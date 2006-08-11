@@ -1,6 +1,3 @@
-cimport matrix_dense
-import  matrix_dense
-
 cdef class MatrixWindow:
 
     def __init__(MatrixWindow self, matrix, int row, int col, int nrows, int ncols):
