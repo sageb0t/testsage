@@ -17,6 +17,10 @@ cdef class MatrixWindow:
         """
         Returns a actual matrix object representing this view. (Copy)
         """
+        m = self._matrix.new_matrix(self._nrows, self._ncols)
+        w = m.window()
+        w.set_to(self)
+        return m
 
     def window(MatrixWindow self, int row, int col, int n_rows, int n_cols):
         """
