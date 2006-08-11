@@ -225,10 +225,9 @@ cdef class MatrixWindow:
                 self._matrix._entries[self_ix] = A._matrix._entries[A_ix]
                 A_ix = A_ix + 1
 
-    def set_to_zero(MatrixWindow self, MatrixWindow A):
+    def set_to_zero(MatrixWindow self):
         cdef int i, j
         cdef int start, self_ix
-        cdef int A_ix
         zero = self._matrix.base_ring(0)
         for i from 0 <= i < self._nrows:
             for self_ix from self._row_indices[i+self._row] + self._col <= self_ix < self_start + self._ncols:
@@ -239,7 +238,7 @@ cdef class MatrixWindow:
         cdef int start, self_ix
         cdef int A_ix
         for i from 0 <= i < self._nrows:
-            A_ix = self._matrix._row_indices[i+A._row] + a._col
+            A_ix = A._matrix._row_indices[i+A._row] + A._col
             for self_ix from self._row_indices[i+self._row] + self._col <= self_ix < self_start + self._ncols:
                 self._matrix._entries[self_ix] = slef._matrix._entries[self_ix] + A._matrix._entries[A_ix]
                 A_ix = A_ix + 1
@@ -249,7 +248,7 @@ cdef class MatrixWindow:
         cdef int start, self_ix
         cdef int A_ix
         for i from 0 <= i < self._nrows:
-            A_ix = self._matrix._row_indices[i+A._row] + a._col
+            A_ix = A._matrix._row_indices[i+A._row] + a._col
             for self_ix from self._row_indices[i+self._row] + self._col <= self_ix < self_start + self._ncols:
                 self._matrix._entries[self_ix] = self._matrix._entries[self_ix] - A._matrix._entries[A_ix]
                 A_ix = A_ix + 1
@@ -259,8 +258,8 @@ cdef class MatrixWindow:
         cdef int start, self_ix
         cdef int A_ix
         for i from 0 <= i < self._nrows:
-            A_ix = self._matrix._row_indices[i+A._row] + a._col
-            B_ix = self._matrix._row_indices[i+B._row] + b._col
+            A_ix = A._matrix._row_indices[i+A._row] + A._col
+            B_ix = B._matrix._row_indices[i+B._row] + B._col
             for self_ix from self._row_indices[i+self._row] + self._col <= self_ix < self_start + self._ncols:
                 self._matrix._entries[self_ix] = A._matrix._entries[A_ix] + B._matrix._entries[B_ix]
                 A_ix = A_ix + 1
@@ -271,8 +270,8 @@ cdef class MatrixWindow:
         cdef int start, self_ix
         cdef int A_ix
         for i from 0 <= i < self._nrows:
-            A_ix = self._matrix._row_indices[i+A._row] + a._col
-            B_ix = self._matrix._row_indices[i+B._row] + b._col
+            A_ix = A._matrix._row_indices[i+A._row] + A._col
+            B_ix = B._matrix._row_indices[i+B._row] + B._col
             for self_ix from self._row_indices[i+self._row] + self._col <= self_ix < self_start + self._ncols:
                 self._matrix._entries[self_ix] = A._matrix._entries[A_ix] - B._matrix._entries[B_ix]
                 A_ix = A_ix + 1
