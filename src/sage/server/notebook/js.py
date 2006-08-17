@@ -1102,6 +1102,7 @@ function cell_set_not_evaluated(id) {
 }
 
 function cell_set_running(id) {
+    set_output_text(id, '', '', '', '', '');
     cell_output_set_type(id, 'wrap');
     var cell_div = get_element('cell_div_output_' + id);
     cell_div.className = 'cell_output_running';
