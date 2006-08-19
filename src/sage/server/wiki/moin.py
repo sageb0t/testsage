@@ -2,6 +2,8 @@ import os, sys
 
 import sage.misc.misc as misc
 
+from   sage.misc.viewer     import browser
+
 def wiki_create_instance(directory='sage_wiki'):
     try:
         from MoinMoin.server.standalone import StandaloneConfig, run
@@ -25,7 +27,10 @@ def wiki_create_instance(directory='sage_wiki'):
     os.system('cp %s/config/wikiconfig.py %s/'%(share,directory))
     os.system('cp %s/server/moin.py %s/'%(share,directory))
 
-def wiki(directory='sage_wiki', port=9000, address='localhost'):
+def wiki(directory='sage_wiki',
+         port=9000,
+         address='localhost',
+         open_viewer = False):
     r"""
     Create (if necessary) and start up a Moin Moin wiki.
 
@@ -126,6 +131,10 @@ def wiki(directory='sage_wiki', port=9000, address='localhost'):
         # Hotshot profile (default commented)
         # Not compatible with threads - use with SimpleServer only.
         ## hotshotProfile = name + '.prof'
+
+    if open_viewer:
+        cmd = '%s http://%s:%s 1>&2 >/dev/null &'%(browser(), address, port)
+        os.system(cmd)
 
     run(Config)
     return True
