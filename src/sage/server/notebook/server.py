@@ -407,6 +407,8 @@ class WebServer(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_header("Content-type", 'text/plain')
         elif self.path[-4:] == '.eps':
             self.send_header("Content-type", 'image/x-eps')
+        elif self.path[-4:] == '.pdf':
+            self.send_header("Content-type", 'image/x-pdf')
         elif self.path[-4:] == '.ico':
             self.send_header("Content-type", 'image/x-icon')
         elif self.path[-4:] == '.svg':
@@ -466,7 +468,7 @@ class WebServer(BaseHTTPServer.BaseHTTPRequestHandler):
 
         verbose(self.path)
 
-        if self.path[-4:] in ['.eps', '.png', '.bmp', '.svg', '.tex', \
+        if self.path[-4:] in ['.eps', '.pdf', '.png', '.bmp', '.svg', '.tex', \
                               '.dvi', '.log', \
                               '.txt', '.ico', '.sws'] or \
                self.path[-5:] in ['.sobj', '.html'] or \

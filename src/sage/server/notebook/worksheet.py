@@ -255,6 +255,11 @@ class Worksheet:
 
         return S
 
+    def _enqueue_auto_cells(self):
+        for c in self.__cells:
+            if c.is_auto_cell():
+                self.enqueue(c)
+
     def _new_cell(self, id=None):
         D = self.__notebook.defaults()
         if id is None:
@@ -280,11 +285,25 @@ class Worksheet:
     def queue(self):
         return self.__queue
 
+    def _enqueue_auto(self):
+        for c in self.__cells:
+            if c.is_auto_cell():
+                self.__queue.append(c)
+
     def enqueue(self, C):
         if not isinstance(C, Cell):
             raise TypeError
         if C.worksheet() != self:
             raise ValueError, "C must be have self as worksheet."
+        # If the SAGE server hasn't started and the queue is empty,
+        # first enqueue the auto cells:
+        if len(self.__queue) == 0:
+            try:
+                self.__sage
+            except AttributeError:
+                self._enqueue_auto()
+
+        # Now enqueue the requested cell.
         if not (C in self.__queue):
             self.__queue.append(C)
         self.start_next_comp()
