@@ -276,6 +276,10 @@ ext_modules = [ \
               ['sage/matrix/matrix_pyx.pyx']
               ), \
 
+    Extension('sage.rings.integer_mod_pyx',
+              ['sage/rings/integer_mod_pyx.pyx']
+              ), \
+
     ]
 
 mpc = Extension('sage.ext.mpc',
