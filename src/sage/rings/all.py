@@ -55,7 +55,7 @@ Rationals = RationalField
 
 # Integers modulo n.
 from integer_mod_ring import IntegerModRing, Zmod, is_IntegerModRing
-from integer_mod import IntegerMod, Mod, mod
+from integer_mod_pyx import IntegerMod, Mod, mod
 Integers = IntegerModRing
 
 # Finite fields
