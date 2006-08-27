@@ -73,6 +73,8 @@ from sage.geometry.all import *
 
 from sage.quadratic_forms.all import *
 
+from sage.gsl.all import *
+
 try:
     from sage_user.all import *
 except ImportError, msg:
