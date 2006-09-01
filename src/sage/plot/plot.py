@@ -1424,6 +1424,14 @@ class PlotFactory(GraphicPrimitiveFactory):
         except AttributeError:
             pass
 
+        try:
+            G = funcs.plot(xmin=xmin, xmax=xmax, **kwds)
+            if show:
+                G.show(**kwds)
+            return G
+        except AttributeError:
+            pass
+
         if xmin is None:
             xmin = -1
         if xmax is None:
