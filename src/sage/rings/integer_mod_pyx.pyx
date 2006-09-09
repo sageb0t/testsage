@@ -356,7 +356,14 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
         """
         if right._parent != self._parent:
             return -1
-        return mpz_cmp(self.value, right.value)
+        cdef int i
+        i = mpz_cmp(self.value, right.value)
+        if i < 0:
+            return -1
+        elif i == 0:
+            return 0
+        else:
+            return 1
 
     def __richcmp__(self, right, int op):
         cdef int n
@@ -795,6 +802,9 @@ cdef class IntegerMod_int(IntegerMod_abstract):
             return x;
         except ZeroDivisionError:
             return IntegerMod_int(self.parent(), self.lift() / right.lift() )
+
+    def __floordiv__(self, right):
+        return self._div_(right)
 
     def __int__(IntegerMod_int self):
         return int(self.ivalue)
