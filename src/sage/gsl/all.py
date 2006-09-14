@@ -2,3 +2,5 @@
 # http://wwwteor.mi.infn.it/%7Epernici/pyrexgsl/pyrexgsl.html
 
 from fft import FastFourierTransform, FFT
+
+from interpolation import spline, Spline
