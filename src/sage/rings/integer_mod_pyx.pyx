@@ -49,13 +49,28 @@ mod = Mod
 def IntegerMod(parent, value):
     cdef sage.ext.integer.Integer modulus
     modulus = parent.order()
-    if mpz_cmp_si(modulus.value, INTEGER_MOD_INT_LIMIT) < 0:
+    if mpz_cmp_si(modulus.value, INTEGER_MOD_INT32_LIMIT) < 0:
         return IntegerMod_int(parent, value)
     else:
         return IntegerMod_gmp(parent, value)
 
 def is_IntegerMod(x):
     return isinstance(x, IntegerMod_abstract)
+
+def makeNativeIntStruct(sage.ext.integer.Integer z):
+    return NativeIntStruct(z)
+
+cdef class NativeIntStruct:
+
+    def __init__(NativeIntStruct self, sage.ext.integer.Integer z):
+        self.sageInteger = z
+        if mpz_cmp_si(z.value, INTEGER_MOD_INT64_LIMIT) < 0:
+            self.int64 = mpz_get_si(z.value)
+            if self.int64 < INTEGER_MOD_INT32_LIMIT:
+                self.int32 = self.int64
+
+    def __reduce__(NativeIntStruct self):
+        return sage.rings.integer_mod_pyx.makeNativeIntStruct, (self.sageInteger, )
 
 cdef class IntegerMod_abstract(sage.ext.element.CommutativeRingElement):
 
@@ -70,15 +85,9 @@ cdef class IntegerMod_abstract(sage.ext.element.CommutativeRingElement):
         if self.__class__ is IntegerMod:
             raise NotImplementedError, "Can't instantiate abstract IntegerMod"
         commutative_ring_element.CommutativeRingElement.__init__(self, parent)
-        if empty:
-            return
-        if isinstance(value, rational.Rational):
-            value = value % parent.order()
-        elif not isinstance(value, sage.ext.integer.Integer):
-            value = sage.rings.integer_ring.Z(value)
-        self._set_from_Integer(value)
+        self.__modulus = parent._pyx_order
 
-    def __reduce__(self):
+    def __reduce__(IntegerMod_abstract self):
         """
         EXAMPLES:
             sage: a = Mod(4,5); a
@@ -95,7 +104,7 @@ cdef class IntegerMod_abstract(sage.ext.element.CommutativeRingElement):
     # Interfaces
     #################################################################
     def _pari_init_(self):
-        return 'Mod(%s,%s)'%(str(self), self.parent().order())
+        return 'Mod(%s,%s)'%(str(self), self.__modulus.sageInteger)
 
     def pari(self):
         return pari(self._pari_init_()) # TODO: is this called implicitly anywhere?
@@ -125,12 +134,13 @@ cdef class IntegerMod_abstract(sage.ext.element.CommutativeRingElement):
             0*Z(5)
         """
         R = self.parent()
+        m = self.__modulus.sageInteger
 
-        if R.order() > 65536:
+        if m > 65536:
             raise ValueError, "order must be at most 65536."
 
         if self == 0:
-            return '0*Z(%s)'%R.order()
+            return '0*Z(%s)'%m
 
         # I couldn't find a guarentee in the GAP docs that the
         # root of unity they use must be the smallest.   This
@@ -139,7 +149,6 @@ cdef class IntegerMod_abstract(sage.ext.element.CommutativeRingElement):
         # no such dangerous assumptions (for now).
 
         # Find the root of unity used by Gap.
-        m = R.order()
         from sage.interfaces.all import gap        # here to reduce dependencies
         g = int(gap.eval('Int(Z(%s))'%m))
         n = R(g).log(self)
@@ -178,11 +187,11 @@ cdef class IntegerMod_abstract(sage.ext.element.CommutativeRingElement):
 
         AUTHOR: David Joyner and William Stein (2005-11)
         """
-        n = (self.parent()).unit_group_order()
+        n = self._parent.unit_group_order()
         return arith.discrete_log_generic(self, a, n) # TODO update this function
 
-    def modulus(self):
-        return self.parent().order()
+    def modulus(IntegerMod_abstract self):
+        return self.__modulus.sageInteger
 
     def is_square(self):
         return bool(self.pari().issquare()) # TODO implement directly
@@ -203,7 +212,7 @@ cdef class IntegerMod_abstract(sage.ext.element.CommutativeRingElement):
          -- Craig Citro
         """
         import polynomial_ring
-        R = polynomial_ring.PolynomialRing(self.parent())
+        R = polynomial_ring.PolynomialRing(self._parent)
         return R([-self,1])
 
     def norm(self):
@@ -269,33 +278,45 @@ cdef class IntegerMod_abstract(sage.ext.element.CommutativeRingElement):
         """
         return self.lift().rational_reconstruction(self.modulus())
 
-    def crt(self, other):
-        if not isinstance(other, IntegerMod_abstract):
+    def crt(self, other_p):
+        if not isinstance(other_p, IntegerMod_abstract):
             raise TypeError, "other must be an integer mod"
 
-        cdef IntegerMod_int self_i, other_i
+        cdef IntegerMod_abstract other
+        other = other_p
+
         if isinstance(self, IntegerMod_int) and isinstance(other, IntegerMod_int):
-            self_i = self
-            other_i = other
-            if (self_i.imodulus * other_i.imodulus) < INTEGER_MOD_INT_LIMIT:
-                if other_i.imodulus == 1:
+            if (self.__modulus.int32 * other.__modulus.int32) < INTEGER_MOD_INT32_LIMIT:
+                if other.__modulus.int32 == 1:
                     return self
                 return self._crt(other)
 
         if (isinstance(self, IntegerMod_int)):
-            self = IntegerMod_gmp(self.parent(), self.lift())
+            self = IntegerMod_gmp(self._parent, self.lift())
 
         if (isinstance(other, IntegerMod_int)):
-            other = IntegerMod_gmp(other.parent(), other.lift())
+            other = IntegerMod_gmp(other._parent, other.lift())
 
         return self._crt(other)
+
+    def __floordiv__(self, right):
+        """
+        EXAMPLES:
+            sage: R = Integers(25)
+            sage: R(15)//5
+            3
+        """
+
+        try:
+            return self / right
+        except ZeroDivisionError:
+            return IntegerMod(self._parent, self.lift() / sage.rings.integer_ring.Z(right) )
 
     def order(self):
         """
         Returns the additive order of self.
         """
-        n = self.modulus()
-        return integer.Integer(n.__FLOORDIV__(self.lift().gcd(n)))
+        return integer.Integer(self.__modulus.sageInteger.__FLOORDIV__(self.lift().gcd(n)))
 
     def multiplicative_order(self):
         """
@@ -320,21 +341,41 @@ cdef class IntegerMod_abstract(sage.ext.element.CommutativeRingElement):
 ######################################################################
 #      class IntegerMod_gmp
 ######################################################################
-"""
-Elements of $\Z/n\Z$ for n small enough to be operated on in word size
-TODO: modify constructors/ring to call this class for n<INTEGER_MOD_INT_LIMIT
-AUTHORS:
-    -- Robert Bradshaw (2006-08-24)
-"""
 
 cdef class IntegerMod_gmp(IntegerMod_abstract):
+    """
+    Elements of $\Z/n\Z$ for n not small enough to be operated on in word size
+    AUTHORS:
+        -- Robert Bradshaw (2006-08-24)
+    """
 
-    def __init__(self, parent, value, empty=False):
+    def __init__(IntegerMod_gmp self, parent, value, empty=False):
         mpz_init(self.value)
         IntegerMod_abstract.__init__(self, parent, value)
+        if empty:
+            return
+        cdef sage.ext.integer.Integer z
+        if isinstance(value, sage.ext.integer.Integer):
+            z = value
+        elif isinstance(value, rational.Rational):
+            z = value % self.__modulus.sageInteger
+        else:
+            z = sage.rings.integer_ring.Z(value)
+        self.set_from_mpz(z.value)
 
     def __dealloc__(self):
         mpz_clear(self.value)
+
+    cdef void set_from_mpz(IntegerMod_gmp self, mpz_t value):
+        cdef sage.ext.integer.Integer modulus
+        modulus = self.__modulus.sageInteger
+        if mpz_sgn(value) == -1 or mpz_cmp(value, modulus.value) >= 0:
+            mpz_mod(self.value, value, modulus.value)
+        else:
+            mpz_set(self.value, value)
+
+    cdef mpz_t* get_value(IntegerMod_gmp self):
+        return &self.value
 
     def __cmp__(IntegerMod_gmp self, right):
         if not isinstance(right, IntegerMod_gmp):
@@ -354,7 +395,7 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
             sage: mod(5,13^20) == mod(-5,13)
             False
         """
-        if right._parent != self._parent:
+        if right._parent is not self._parent:
             return -1
         cdef int i
         i = mpz_cmp(self.value, right.value)
@@ -375,25 +416,6 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
         else:
             n = self.cmp(right)
         return self._rich_to_bool(op, n)
-
-    def _set_from_Integer(IntegerMod_gmp self, sage.ext.integer.Integer z):
-        self.set_from_mpz(z.value)
-
-    cdef void set_from_mpz(IntegerMod_gmp self, mpz_t value):
-        cdef sage.ext.integer.Integer modulus
-        modulus = self.modulus()
-        if mpz_sgn(value) == -1 or mpz_cmp(value, modulus.value) >= 0:
-            mpz_mod(self.value, value, modulus.value)
-        else:
-            mpz_set(self.value, value)
-
-    cdef mpz_t* get_value(IntegerMod_gmp self):
-        return &self.value
-
-    cdef mpz_t* mpz_modulus(IntegerMod_gmp self):
-        cdef sage.ext.integer.Integer modulus
-        modulus = self.modulus()
-        return &modulus.value
 
     def is_one(IntegerMod_gmp self):
         """
@@ -440,16 +462,16 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
         cdef IntegerMod_gmp lift, x
         cdef sage.ext.integer.Integer modulus, other_modulus
 
-        modulus = self.modulus()
-        other_modulus = other.modulus()
+        modulus = self.__modulus.sageInteger
+        other_modulus = self.__modulus.sageInteger
         lift = IntegerMod_gmp(integer_mod_ring.IntegerModRing(modulus*other_modulus, check_prime=False), None, empty=True)
         try:
           if mpz_cmp(self.value, other.value) > 0:
-              x = (other - IntegerMod_gmp(other.parent(), self.lift())) / IntegerMod_gmp(other.parent(), modulus)
+              x = (other - IntegerMod_gmp(other._parent, self.lift())) / IntegerMod_gmp(other._parent, modulus)
               mpz_mul(lift.value, x.value, modulus.value)
               mpz_add(lift.value, lift.value, self.value)
           else:
-              x = (self - IntegerMod_gmp(self.parent(), other.lift())) / IntegerMod_gmp(self.parent(), other_modulus)
+              x = (self - IntegerMod_gmp(self._parent, other.lift())) / IntegerMod_gmp(self._parent, other_modulus)
               mpz_mul(lift.value, x.value, other_modulus.value)
               mpz_add(lift.value, lift.value, other.value)
           return lift
@@ -458,7 +480,7 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
 
     def copy(IntegerMod_gmp self):
         cdef IntegerMod_gmp copy
-        copy = IntegerMod_gmp(self.parent(), None, empty=True)
+        copy = IntegerMod_gmp(self._parent, None, empty=True)
         mpz_set(copy.value, self.value)
         return copy
 
@@ -470,9 +492,9 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
             5
         """
         cdef sage.ext.integer.Integer modulus
-        modulus = self.modulus()
+        modulus = self.__modulus.sageInteger
         cdef IntegerMod_gmp x
-        x = IntegerMod_gmp(self.parent(), None, empty=True)
+        x = IntegerMod_gmp(self._parent, None, empty=True)
         mpz_add(x.value, self.value, right.value)
         if mpz_cmp(x.value, modulus.value)  >= 0:
             mpz_sub(x.value, x.value, modulus.value)
@@ -485,13 +507,11 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
             sage: R(7) - R(8)
             9
         """
-        cdef sage.ext.integer.Integer modulus
-        modulus = self.modulus()
         cdef IntegerMod_gmp x
-        x = IntegerMod_gmp(self.parent(), None, empty=True)
+        x = IntegerMod_gmp(self._parent, None, empty=True)
         mpz_sub(x.value, self.value, right.value)
         if mpz_sgn(x.value) == -1:
-            mpz_add(x.value, x.value, modulus.value)
+            mpz_add(x.value, x.value, self.__modulus.sageInteger.value)
         return x;
 
     def _mul_(IntegerMod_gmp self, IntegerMod_gmp right):
@@ -502,27 +522,15 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
             6
         """
         cdef sage.ext.integer.Integer modulus
-        modulus = self.modulus()
+        modulus = self.__modulus.sageInteger
         cdef IntegerMod_gmp x
-        x = IntegerMod_gmp(self.parent(), None, empty=True)
+        x = IntegerMod_gmp(self._parent, None, empty=True)
         mpz_mul(x.value, self.value, right.value)
         mpz_fdiv_r(x.value, x.value, modulus.value)
         return x;
 
     def _div_(IntegerMod_gmp self, IntegerMod_gmp right):
-        """
-        EXAMPLES:
-            sage: R = Integers(25)
-            sage: R(15)/5
-            3
-        """
-        try:
-            return self._mul_(~right)
-        except ZeroDivisionError:
-            return IntegerMod_gmp(self.parent(), self.lift() / right.lift() )
-
-    def __floordiv__(self, right):
-        return self._div_(right)
+        return self._mul_(~right)
 
     def __int__(self):
         return int(self.lift())
@@ -534,7 +542,7 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
         right = int(right)
         if self.modulus() % right != 0:
             raise ZeroDivisionError, "Error - reduction modulo right not defined."
-        return integer_mod_ring.IntegerModRing(right)(self)
+        return IntegerMod(integer_mod_ring.IntegerModRing(right, self))
 
     def __pow__(IntegerMod_gmp self, right, m): # NOTE: m ignored, always use modulus of parent ring
         """
@@ -546,13 +554,12 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
             sage: R(7)^388
             1
         """
-        cdef sage.ext.integer.Integer modulus, exp
-        modulus = self.modulus()
+        cdef sage.ext.integer.Integer exp
         exp = sage.rings.integer_ring.Z(right)
         cdef IntegerMod_gmp x
-        x = IntegerMod_gmp(self.parent(), None, empty=True)
+        x = IntegerMod_gmp(self._parent, None, empty=True)
         _sig_on
-        mpz_powm(x.value, self.value, exp.value, modulus.value)
+        mpz_powm(x.value, self.value, exp.value, self.__modulus.sageInteger.value)
         _sig_off
         return x
 
@@ -562,11 +569,9 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
             sage: -mod(7,10)
             3
         """
-        cdef sage.ext.integer.Integer modulus
-        modulus = self.modulus()
         cdef IntegerMod_gmp x
-        x = IntegerMod_gmp(self.parent(), None, empty=True)
-        mpz_sub(x.value, modulus.value, self.value)
+        x = IntegerMod_gmp(self._parent, None, empty=True)
+        mpz_sub(x.value, self.__modulus.sageInteger.value, self.value)
         return x
 
     def __invert__(IntegerMod_gmp self):
@@ -575,12 +580,10 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
             sage: ~mod(7,100)
             43
         """
-        cdef sage.ext.integer.Integer modulus
-        modulus = self.modulus()
         cdef IntegerMod_gmp x
-        x = IntegerMod_gmp(self.parent(), None, empty=True)
+        x = IntegerMod_gmp(self._parent, None, empty=True)
         _sig_on
-        if (mpz_invert(x.value, self.value, modulus.value)):
+        if (mpz_invert(x.value, self.value, self.__modulus.sageInteger.value)):
             _sig_off
             return x
         else:
@@ -603,14 +606,13 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
 ######################################################################
 #      class IntegerMod_int
 ######################################################################
-"""
-Elements of $\Z/n\Z$ for n small enough to be operated on in word size
-TODO: modify constructors/ring to call this class for n<INTEGER_MOD_INT_LIMIT
-AUTHORS:
-    -- Robert Bradshaw (2006-08-24)
-"""
 
 cdef class IntegerMod_int(IntegerMod_abstract):
+    """
+    Elements of $\Z/n\Z$ for n small enough to be operated on in 32 bits
+    AUTHORS:
+        -- Robert Bradshaw (2006-08-24)
+    """
 
     def __init__(self, parent, value, empty=False):
         """
@@ -620,8 +622,34 @@ cdef class IntegerMod_int(IntegerMod_abstract):
             sage: loads(a.dumps()) == a
             True
         """
-        self.imodulus = int(parent.order())
         IntegerMod_abstract.__init__(self, parent, value)
+        if empty:
+            return
+        cdef sage.ext.integer.Integer z
+        if isinstance(value, sage.ext.integer.Integer):
+            z = value
+        elif isinstance(value, rational.Rational):
+            z = value % self.__modulus.sageInteger
+        else:
+            z = sage.rings.integer_ring.Z(value)
+        self.set_from_mpz(z.value)
+
+    cdef void set_from_mpz(IntegerMod_int self, mpz_t value):
+        if mpz_sgn(value) == -1 or mpz_cmp_si(value, self.__modulus.int32) >= 0:
+            self.ivalue = mpz_fdiv_ui(value, self.__modulus.int32)
+        else:
+            self.ivalue = mpz_get_si(value)
+
+    cdef void set_from_int(IntegerMod_int self, int_fast32_t ivalue):
+        if ivalue < 0:
+            self.ivalue = self.__modulus.int32 + (ivalue % self.__modulus.int32)
+        elif ivalue >= self.__modulus.int32:
+            self.ivalue = ivalue % self.__modulus.int32
+        else:
+            self.ivalue = ivalue
+
+    cdef int_fast32_t get_int_value(IntegerMod_int self):
+        return self.ivalue
 
     def __cmp__(IntegerMod_int self, right):
         if not isinstance(right, IntegerMod_int):
@@ -662,26 +690,6 @@ cdef class IntegerMod_int(IntegerMod_abstract):
             n = self.cmp(right)
         return self._rich_to_bool(op, n)
 
-    def _set_from_Integer(IntegerMod_int self, sage.ext.integer.Integer z):
-        self.set_from_mpz(z.value)
-
-    cdef void set_from_mpz(IntegerMod_int self, mpz_t value):
-        if mpz_sgn(value) == -1 or mpz_cmp_si(value, self.imodulus) >= 0:
-            self.ivalue = (int)(mpz_fdiv_ui(value, self.imodulus))
-        else:
-            self.ivalue = (int)(mpz_get_si(value))
-
-    cdef void set_from_int(IntegerMod_int self, int ivalue):
-        if ivalue < 0:
-            self.ivalue = self.imodulus + (ivalue % self.imodulus)
-        elif ivalue >= self.imodulus:
-            self.ivalue = ivalue % self.imodulus
-        else:
-            self.ivalue = ivalue
-
-    cdef int get_int_value(IntegerMod_int self):
-        return self.ivalue
-
     def is_one(IntegerMod_int self):
         """
         Returns \\code{True} if this is $1$, otherwise \\code{False}.
@@ -707,7 +715,7 @@ cdef class IntegerMod_int(IntegerMod_abstract):
         return bool(self.ivalue == 0)
 
     def is_unit(IntegerMod_int self):
-        return bool(gcd_int(self.ivalue, self.imodulus) == 1)
+        return bool(gcd_int(self.ivalue, self.__modulus.int32) == 1)
 
     def _crt(IntegerMod_int self, IntegerMod_int other):
         """
@@ -725,22 +733,20 @@ cdef class IntegerMod_int(IntegerMod_abstract):
             -- Robert Bradshaw
         """
         cdef IntegerMod_int lift
-        cdef int x
+        cdef int_fast32_t x
 
-        lift = IntegerMod_int(integer_mod_ring.IntegerModRing(self.imodulus * other.imodulus, check_prime=False), None, empty=True)
-        lift.imodulus = self.imodulus * other.imodulus
+        lift = IntegerMod_int(integer_mod_ring.IntegerModRing(self.__modulus.int32 * other.__modulus.int32, check_prime=False), None, empty=True)
 
         try:
-            x = (other.ivalue - self.ivalue % other.imodulus) * mod_inverse_int(self.imodulus, other.imodulus)
-            lift.set_from_int( x * self.imodulus + self.ivalue )
+            x = (other.ivalue - self.ivalue % other.__modulus.int32) * mod_inverse_int(self.__modulus.int32, other.__modulus.int32)
+            lift.set_from_int( x * self.__modulus.int32 + self.ivalue )
             return lift
         except ZeroDivisionError:
             raise ZeroDivisionError, "moduli must be coprime"
 
     def copy(IntegerMod_int self):
         cdef IntegerMod_int copy
-        copy = IntegerMod_int(self.parent(), None, empty=True)
-        copy.imodulus = self.imodulus
+        copy = IntegerMod_int(self._parent, None, empty=True)
         copy.ivalue = self.ivalue
         return copy
 
@@ -752,11 +758,10 @@ cdef class IntegerMod_int(IntegerMod_abstract):
             5
         """
         cdef IntegerMod_int x
-        x = IntegerMod_int(self.parent(), None, empty=True)
-        x.imodulus = self.imodulus
+        x = IntegerMod_int(self._parent, None, empty=True)
         x.ivalue = self.ivalue + right.ivalue
-        if x.ivalue >= self.imodulus:
-            x.ivalue = x.ivalue - self.imodulus
+        if x.ivalue >= self.__modulus.int32:
+            x.ivalue = x.ivalue - self.__modulus.int32
         return x;
 
     def _sub_(IntegerMod_int self, IntegerMod_int right):
@@ -767,11 +772,10 @@ cdef class IntegerMod_int(IntegerMod_abstract):
             9
         """
         cdef IntegerMod_int x
-        x = IntegerMod_int(self.parent(), None, empty=True)
-        x.imodulus = self.imodulus
+        x = IntegerMod_int(self._parent, None, empty=True)
         x.ivalue = self.ivalue - right.ivalue
         if x.ivalue < 0:
-            x.ivalue = x.ivalue + self.imodulus
+            x.ivalue = x.ivalue + self.__modulus.int32
         return x;
 
     def _mul_(IntegerMod_int self, IntegerMod_int right):
@@ -782,17 +786,16 @@ cdef class IntegerMod_int(IntegerMod_abstract):
             6
         """
         cdef IntegerMod_int x
-        x = IntegerMod_int(self.parent(), None, empty=True)
-        x.imodulus = self.imodulus
-        x.ivalue = (self.ivalue * right.ivalue) % self.imodulus
+        x = IntegerMod_int(self._parent, None, empty=True)
+        x.ivalue = (self.ivalue * right.ivalue) % self.__modulus.int32
         return x;
 
     def _div_(IntegerMod_int self, IntegerMod_int right):
         """
         EXAMPLES:
-            sage: R = Integers(25)
-            sage: R(15)/5
-            3
+            sage: R = Integers(10)
+            sage: R(2)/3
+            4
         """
         cdef IntegerMod_int x
         try:
@@ -803,18 +806,15 @@ cdef class IntegerMod_int(IntegerMod_abstract):
         except ZeroDivisionError:
             return IntegerMod_int(self.parent(), self.lift() / right.lift() )
 
-    def __floordiv__(self, right):
-        return self._div_(right)
-
     def __int__(IntegerMod_int self):
-        return int(self.ivalue)
+        return self.ivalue
 
     def __long__(IntegerMod_int self):
-        return long(self.ivalue)
+        return self.ivalue
 
     def __mod__(IntegerMod_int self, right):
         right = int(right)
-        if self.imodulus % right != 0:
+        if self.__modulus.int32 % right != 0:
             raise ZeroDivisionError, "Error - reduction modulo right not defined."
         return integer_mod_ring.IntegerModRing(right)(self)
 
@@ -828,20 +828,21 @@ cdef class IntegerMod_int(IntegerMod_abstract):
             sage: R(7)^388
             1
         """
-        cdef sage.ext.integer.Integer modulus, exp, base
-        modulus = self.modulus()
-        base = self.lift()
+        cdef sage.ext.integer.Integer exp, base
         exp = sage.rings.integer_ring.Z(right)
         cdef IntegerMod_int x
-        x = IntegerMod_int(self.parent(), None, empty=True)
-        x.imodulus = self.imodulus
         cdef mpz_t x_mpz
-        mpz_init(x_mpz)
-        _sig_on
-        mpz_powm(x_mpz, base.value, exp.value, modulus.value)
-        _sig_off
-        x.ivalue = (int)(mpz_get_si(x_mpz))
-        mpz_clear(x_mpz)
+        x = IntegerMod_int(self._parent, None, empty=True)
+        if mpz_sgn(exp.value) >= 0 and mpz_cmp_si(exp.value, 100000) < 0:  # TODO: test to find a good threshold
+            x.ivalue = mod_pow_int(self.ivalue, mpz_get_si(exp.value), self.__modulus.int32)
+        else:
+            mpz_init(x_mpz)
+            _sig_on
+            base = self.lift()
+            mpz_powm(x_mpz, base.value, exp.value, self.__modulus.sageInteger.value)
+            _sig_off
+            x.ivalue = mpz_get_si(x_mpz)
+            mpz_clear(x_mpz)
         return x
 
     def __neg__(IntegerMod_int self):
@@ -851,9 +852,8 @@ cdef class IntegerMod_int(IntegerMod_abstract):
             3
         """
         cdef IntegerMod_int x
-        x = IntegerMod_int(self.parent(), None, empty=True)
-        x.imodulus = self.imodulus
-        x.ivalue = self.imodulus - self.ivalue
+        x = IntegerMod_int(self._parent, None, empty=True)
+        x.ivalue = self.__modulus.int32 - self.ivalue
         return x
 
     def __invert__(IntegerMod_int self):
@@ -862,12 +862,9 @@ cdef class IntegerMod_int(IntegerMod_abstract):
             sage: ~mod(7,100)
             43
         """
-        cdef sage.ext.integer.Integer modulus
-        modulus = self.modulus()
         cdef IntegerMod_int x
-        x = IntegerMod_int(self.parent(), None, empty=True)
-        x.imodulus = self.imodulus
-        x.ivalue = mod_inverse_int(self.ivalue, self.imodulus)
+        x = IntegerMod_int(self._parent, None, empty=True)
+        x.ivalue = mod_inverse_int(self.ivalue, self.__modulus.int32)
         return x
 
     def lift(IntegerMod_int self):
@@ -882,14 +879,14 @@ cdef class IntegerMod_int(IntegerMod_abstract):
     def __hash__(self):
         return hash(self.ivalue)
 
-cdef int gcd_int(int a, int b):
+cdef int_fast32_t gcd_int(int_fast32_t a, int_fast32_t b):
     """
     Returns the gcd of a and b
     For use with IntegerMod_int
     AUTHOR:
       -- Robert Bradshaw
     """
-    cdef int tmp
+    cdef int_fast32_t tmp
     if a < b:
         tmp = b
         b = a
@@ -900,14 +897,14 @@ cdef int gcd_int(int a, int b):
         a = tmp
     return a
 
-cdef int mod_inverse_int(int x, int n) except 0:
+cdef int_fast32_t mod_inverse_int(int_fast32_t x, int_fast32_t n) except 0:
     """
     Returns y such that xy=1 mod n
     For use in IntegerMod_int
     AUTHOR:
       -- Robert Bradshaw
     """
-    cdef int tmp, a, b, last_t, t, next_t, q
+    cdef int_fast32_t tmp, a, b, last_t, t, next_t, q
     a = n
     b = x
     t = 0
@@ -927,6 +924,38 @@ cdef int mod_inverse_int(int x, int n) except 0:
         t = next_t
         next_t = last_t - q * t
     raise ZeroDivisionError, "Inverse does not exist."
+
+cdef int_fast32_t mod_pow_int(int_fast32_t base, int_fast32_t exp, int_fast32_t n):
+    """
+    Returns base^exp mod n
+    For use in IntegerMod_int
+    AUTHOR:
+      -- Robert Bradshaw
+    """
+    cdef int_fast32_t prod, pow2
+    if exp <= 5:
+        if exp == 0: return 1
+        if exp == 1: return base
+        prod = base * base % n
+        if exp == 2: return prod
+        if exp == 3: return (prod * base) % n
+        if exp == 4: return (prod * prod) % n
+
+    pow2 = base
+    if exp % 2: prod = base
+    else: prod = 1
+    exp = exp >> 1
+    while(exp != 0):
+        pow2 = pow2 * pow2
+        if pow2 >= INTEGER_MOD_INT32_LIMIT: pow2 = pow2 % n
+        if exp % 2:
+            prod = prod * pow2
+            if prod >= INTEGER_MOD_INT32_LIMIT: prod = prod % n
+        exp = exp >> 1
+
+    if prod > n:
+        prod = prod % n
+    return prod
 
 def test_gcd(a, b):
     return gcd_int(int(a), int(b))

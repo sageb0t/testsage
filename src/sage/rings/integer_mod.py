@@ -287,7 +287,7 @@ class IntegerMod(commutative_ring_element.CommutativeRingElement):
         """
         EXAMPLES:
             sage: R = Integers(25)
-            sage: R(15)/5
+            sage: R(15)//5
             3
         """
         try:
