@@ -556,10 +556,11 @@ class Notebook(SageObject):
     def worksheet_ids(self):
         return set([W.id() for W in self.__worksheets.itervalues()])
 
-    def create_new_worksheet(self, name='untitled'):
+    def create_new_worksheet(self, name='untitled', passcode=''):
         if name in self.__worksheets.keys():
             raise KeyError, 'name (=%s) already taken.'%name
         name = str(name)
+        passcode = str(passcode)
         wids = self.worksheet_ids()
         id = 0
         while id in wids:
@@ -568,7 +569,7 @@ class Notebook(SageObject):
         if id >= MAX_WORKSHEETS:
             raise ValueError, 'there can be at most %s worksheets'%MAX_WORKSHEETS
         self.__next_worksheet_id += 1
-        W = worksheet.Worksheet(name, self, id, system=self.system())
+        W = worksheet.Worksheet(name, self, id, system=self.system(), passcode=passcode)
         self.__worksheets[name] = W
         return W
 
@@ -713,7 +714,7 @@ class Notebook(SageObject):
 
         return head
 
-    def _html_body(self, worksheet_id, show_debug=False):
+    def _html_body(self, worksheet_id, show_debug=False, worksheet_authorized=False):
         worksheet = self.get_worksheet_with_id(worksheet_id)
         if worksheet.computing():
             interrupt_class = "interrupt"
@@ -722,10 +723,13 @@ class Notebook(SageObject):
 
         add_new_worksheet_menu = """
              <div class="add_new_worksheet_menu" id="add_worksheet_menu">
-             <input id="new_worksheet_box" class="add_new_worksheet_menu"
+             Name: <input id="new_worksheet_box" class="add_new_worksheet_menu"
                     onKeyPress="if(is_submit(event)) process_new_worksheet_menu_submit();"></input>
+             Pass: <input id="new_worksheet_pass" class="add_new_worksheet_menu"
+                    onKeyPress="if(is_submit(event)) process_new_worksheet_menu_submit();"></input>
+
              <button class="add_new_worksheet_menu"  onClick="process_new_worksheet_menu_submit();">add</button>
-             &nbsp;&nbsp;&nbsp;<span class="X" onClick="hide_add_new_worksheet_menu()">X</span>
+             <span class="X" onClick="hide_add_new_worksheet_menu()">X</span>
              </div>
         """
 
@@ -785,7 +789,7 @@ class Notebook(SageObject):
             body += " onKeyPress='return debug_keypress(event);' "
             body += " onFocus='debug_focus();' onBlur='debug_blur();'></textarea>"
             body += "</div>"
-        body += worksheet.html()
+        body += worksheet.html(authorized = worksheet_authorized) + '\n</div>\n'
 
         # The blank space given by '<br>'*15  is needed so the input doesn't get
         # stuck at the bottom of the screen. This could be replaced by a region
@@ -813,6 +817,11 @@ class Notebook(SageObject):
         body += '</td></tr></table></span>\n'
         body += '<script language=javascript>focus(%s)</script>\n'%(worksheet[0].id())
         body += '<script language=javascript>jsmath_init();</script>\n'
+
+        if worksheet_authorized:
+            body += '<script language=javascript>worksheet_locked=false;</script>'
+        else:
+            body += '<script language=javascript>worksheet_locked=true;</script>'
 
         if worksheet.computing():
             # Set the update checking back in motion.
@@ -947,7 +956,7 @@ class Notebook(SageObject):
           </html>
          """%(css.css(self.color()),js.javascript())
 
-    def html(self, worksheet_id=None, authorized=False, show_debug=False):
+    def html(self, worksheet_id=None, authorized=False, show_debug=False, worksheet_authorized=False):
         if worksheet_id is None:
             W = self.default_worksheet()
             worksheet_id = W.id()
@@ -959,11 +968,11 @@ class Notebook(SageObject):
                 worksheet_id = W.id()
 
         if authorized:
-            body = self._html_body(worksheet_id,show_debug=show_debug)
+            body = self._html_body(worksheet_id,show_debug=show_debug, worksheet_authorized=worksheet_authorized)
         else:
             body = self._html_authorize()
 
-        body += '<script language=javascript>worksheet_id=%s; worksheet_filename="%s"</script>'%(worksheet_id, W.filename())
+        body += '<script language=javascript>worksheet_id=%s; worksheet_filename="%s"; worksheet_name="%s";</script>'%(worksheet_id, W.filename(), W.name())
 
         head = self._html_head(worksheet_id)
         return """
