@@ -201,11 +201,13 @@ class ModularSymbolsSpace(hecke.HeckeModule_free_module):
     def ngens(self):
         """
         The number of generators of self.
+
         INPUT:
            ModularSymbols self -- arbitrary space of modular symbols.
         OUTPUT:
            int -- the number of generators, which is the same as the
                   dimension of self.
+
         ALGORITHM:
            Call the dimension function.
 
@@ -233,6 +235,7 @@ class ModularSymbolsSpace(hecke.HeckeModule_free_module):
         symbols (and all subspaces).  Use \code{set_default_prec} to
         change the default precision.
 
+        EXAMPLES:
             sage: M = ModularSymbols(15)
             sage: M.cuspidal_submodule().q_expansion_basis()
             [
@@ -240,8 +243,8 @@ class ModularSymbolsSpace(hecke.HeckeModule_free_module):
             ]
             sage: M.set_default_prec(20)
 
-    Notice that setting the default precision of the ambient space
-    affects the subspaces.
+        Notice that setting the default precision of the ambient space
+        affects the subspaces.
 
             sage: M.cuspidal_submodule().q_expansion_basis()
             [
@@ -1032,6 +1035,7 @@ class ModularSymbolsSpace(hecke.HeckeModule_free_module):
         This function currently raises a NotImplementedError on
         modular symbols spaces with character of order bigger than $2$:
 
+        EXAMPLES:
             sage: M = ModularSymbols(DirichletGroup(13).0^2, 2); M
             Modular Symbols space of dimension 4 and level 13, weight 2, character [zeta6], sign 0, over Cyclotomic Field of order 6 and degree 2
             sage: M.basis()
@@ -1050,12 +1054,9 @@ class ModularSymbolsSpace(hecke.HeckeModule_free_module):
         return self.__integral_basis
 
     def integral_hecke_matrix(self, n):
-        """
+        r"""
         Return the matrix of the $n$th Hecke operator acting on the integral
         structure on self (as returned by \code{self.integral_structure()}.
-
-        EXAMPLES:
-
         """
         n = int(n)
         try:
@@ -1152,7 +1153,6 @@ class ModularSymbolsSpace(hecke.HeckeModule_free_module):
                             This are useful for many algorithms.
         OUTPUT:
             subspace of modular symbols
-
         """
         return self.sign_submodule(-1, compute_dual)
 
