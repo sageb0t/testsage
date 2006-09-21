@@ -1697,7 +1697,7 @@ class EllipticCurve_rational_field(EllipticCurve_field):
                $$
                  2 * e^{-2 \pi (k+1) / \sqrt{N}} / (1 - e^{-2 \ pi/\sqrt{N}}).
                $$
-               For a proof see [Grigov-Jorza-Patrascu-Patrikis-Stein].  This
+               For a proof see [Grigorov-Jorza-Patrascu-Patrikis-Stein].  This
                is exactly the same as the bound for the approximation to
                $L(E,1)$ produced by \code{Lseries_at1}.
         \end{enumerate}
@@ -1735,7 +1735,7 @@ class EllipticCurve_rational_field(EllipticCurve_field):
             sage: E = EllipticCurve([1,2,3,4,5])
             sage: E.Lseries(1)
             0.00000000000000000
-            sage: E.Lseries('1.1')       # long (!)
+            sage: E.Lseries('1.1')       # long time (!)
             0.28549100767814833
 
         TODO: Planned massive improvement -- use Micheal Rubinstein's
