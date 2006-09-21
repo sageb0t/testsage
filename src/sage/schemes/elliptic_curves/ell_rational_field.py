@@ -3420,7 +3420,7 @@ class EllipticCurve_rational_field(EllipticCurve_field):
 
         TODO:
             -- The introductory docstring appears to be wrong: sometimes the
-               values actually have denominator divisible by p^2, not just p.
+               values actually have denominator divisible by $p^2$, not just $p$.
                Ask William about this.
 
         EXAMPLES:
