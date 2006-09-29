@@ -279,7 +279,7 @@ class EllipticCurvePoint_field(SchemeMorphism_abelian_variety_coordinates_field)
 ##         return hP/Qp(n**2)
 
 class EllipticCurvePoint_finite_field(EllipticCurvePoint_field):
-    def order(self):
+    def order(self, disable_warning=False):
         """
         Return the order of this point on the elliptic curve.
         If the point has infinite order, returns 0.
@@ -308,7 +308,8 @@ class EllipticCurvePoint_finite_field(EllipticCurvePoint_field):
             e = E._gp()
             self.__order = rings.Integer(e.ellzppointorder(list(self.xy())))
         else:
-            print "WARNING -- using naive point order finding over finite field!"
+            if not disable_warning:
+                print "WARNING -- using naive point order finding over finite field!"
             # TODO: This is very very naive!!  -- should use baby-step giant step; maybe in mwrank
             #      note that this is *not* implemented in PARI!
             P = self
