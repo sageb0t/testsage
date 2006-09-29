@@ -160,6 +160,10 @@ gsl_callback = Extension('sage.gsl.callback',
                 ['sage/gsl/callback.pyx'],
                 libraries = ['gsl', CBLAS])
 
+real_double = Extension('sage.rings.real_double',
+                ['sage/rings/real_double.pyx'],
+                libraries = ['gsl', CBLAS])
+
 complex_double = Extension('sage.rings.complex_double',
                            ['sage/rings/complex_double.pyx'],
                            libraries = ['gsl', CBLAS])
@@ -191,6 +195,7 @@ ext_modules = [ \
     gsl_fft,
     gsl_interpolation,
     gsl_callback,
+    real_double,
     complex_double,
 
     # complex_number2, \
