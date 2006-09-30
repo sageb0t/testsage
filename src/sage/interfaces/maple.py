@@ -124,7 +124,7 @@ instead.
 If you want to load the combinatorics package for future calculations,
 in \sage this can be done as
 
-    sage: maple.with('combinat')
+    sage: maple.with_package('combinat')
 
 or
 
@@ -435,7 +435,7 @@ command-line version of Maple.
         """
         pager()(self._help(str))
 
-    def with(self, package):
+    def with_package(self, package):
         """
         Make a package of Maple procedures available in the
         interpreter.
@@ -451,7 +451,7 @@ command-line version of Maple.
             partition(10)
             sage.: maple('bell(10)')                   # optional
             bell(10)
-            sage: maple.with('combinat')               # optional
+            sage: maple.with_package('combinat')               # optional
             sage: maple('partition(10)')               # optional
              [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 2], [1, 1, 1, 1, 1,
              1, 2, 2], [1, 1, 1, 1, 2, 2, 2], [1, 1, 2, 2, 2, 2], [2, 2, 2, 2, 2], [1, 1, 1
@@ -469,7 +469,7 @@ command-line version of Maple.
         """
         self.eval('with(%s)'%package)
 
-    load = with
+    load = with_package
 
     #def clear(self, var):
     #    """
