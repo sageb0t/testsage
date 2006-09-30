@@ -179,7 +179,7 @@ ext_modules = [ \
 
     ntl, \
 
-    cf, \
+    #cf, \
 
     matrix_domain,
     matrix_dense,
