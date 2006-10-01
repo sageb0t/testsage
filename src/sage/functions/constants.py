@@ -324,8 +324,8 @@ class GoldenRatio(Constant):
     def _real_double_(self):
         """
         EXAMPLES:
-            sage: RealDoubleField()(golden_ratio)
-            1.61803398874989484820458
+            sage: RDF(golden_ratio)
+            1.61803398875
         """
         return sage.rings.all.RDF(1.61803398874989484820458)
 
@@ -381,8 +381,8 @@ class Log2(Constant):
     def _real_double_(self):
         """
         EXAMPLES:
-            sage: RealDoubleField()(log2)
-            0.69314718055994530941723212145817656808   # 64-bit
+            sage: RDF(log2)
+            0.69314718056
         """
         return sage.rings.all.RD.log2()
 
@@ -428,8 +428,8 @@ class EulerGamma(Constant):
     def _real_double_(self):
         """
         EXAMPLES:
-            sage: RealDoubleField()(euler_gamma)
-            0.57721566490153287
+            sage: RDF(euler_gamma)
+            0.577215664902
         """
         return sage.rings.all.RD.euler()
 
@@ -462,8 +462,9 @@ class Catalan(Constant):
     def _real_double_(self):
         """
         EXAMPLES:
-            sage: RealDoubleField()(catalan)
-            0.91596559417721901
+        We coerce to the real double field:
+            sage: RDF(catalan)
+            0.915965594177
         """
         return sage.rings.all.RDF(0.91596559417721901505460351493252)
 
@@ -515,8 +516,8 @@ class Khinchin(Constant):
     def _real_double_(self):
         """
         EXAMPLES:
-            sage: RealDoubleField()(khinchin)
-            2.6854520010653064453
+            sage: RDF(khinchin)
+            2.68545200107
         """
 	return sage.rings.all.RDF(2.685452001065306445309714835481795693820)
 
@@ -564,8 +565,8 @@ class TwinPrime(Constant):
     def _real_double_(self):
         """
         EXAMPLES:
-            sage: RealDoubleField()(twinprime)
-            0.66016181584686962
+            sage: RDF(twinprime)
+            0.660161815847
         """
 	return sage.rings.all.RDF(0.660161815846869573927812110014555778432)
 
@@ -624,8 +625,8 @@ class Merten(Constant):
     def _real_double_(self):
         """
         EXAMPLES:
-            sage: RealDoubleField()(merten)
-            0.261497212847642783755426838608695859051
+            sage: RDF(merten)
+            0.261497212848
         """
         return sage.rings.all.RDF(0.261497212847642783755426838608695859051)
 
@@ -687,8 +688,8 @@ class Brun(Constant):
     def _real_double_(self):
         """
         EXAMPLES:
-            sage: RealDoubleField()(brun)
-            1.9021605831040
+            sage: RDF(brun)
+            1.9021605831
         """
         return sage.rings.all.RDF(1.9021605831040)
 

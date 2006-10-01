@@ -60,11 +60,11 @@ cdef extern from "../ext/stdsage.h":
 
 from sage.misc.sage_eval import sage_eval
 
-cimport sage.ext.element
-cimport sage.ext.ring
+cimport sage.structure.element
+cimport sage.rings.ring
 cimport sage.libs.pari.gen
 
-import  sage.ext.coerce
+import  sage.structure.coerce
 import  complex_number
 
 import  integer_ring
@@ -81,7 +81,7 @@ import infinity
 cdef int PREC
 PREC = 28
 
-cdef class ComplexDoubleField_class(sage.ext.ring.Field):
+cdef class ComplexDoubleField_class(sage.rings.ring.Field):
     """
     The field of complex double precision numbers.
 
@@ -182,7 +182,7 @@ cdef class ComplexDoubleField_class(sage.ext.ring.Field):
     def ngens(self):
         return 1
 
-cdef class ComplexDoubleElement(sage.ext.element.FieldElement):
+cdef class ComplexDoubleElement(sage.structure.element.FieldElement):
     cdef gsl_complex _complex
     def __init__(self, real, imag):
         self._complex = gsl_complex_rect(real, imag)

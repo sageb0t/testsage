@@ -55,7 +55,7 @@ Rationals = RationalField
 
 # Integers modulo n.
 from integer_mod_ring import IntegerModRing, Zmod, is_IntegerModRing
-from integer_mod_pyx import IntegerMod, Mod, mod, is_IntegerMod
+from integer_mod import IntegerMod, Mod, mod, is_IntegerMod
 Integers = IntegerModRing
 
 # Finite fields
@@ -119,6 +119,8 @@ from fraction_field_element import is_FractionFieldElement
 
 # Arithmetic
 from arith import *
+
+from bernoulli_mod_p import bernoulli_mod_p
 
 from morphism import is_RingHomomorphism
 

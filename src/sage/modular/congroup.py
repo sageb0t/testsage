@@ -334,9 +334,9 @@ class GammaH(CongruenceSubgroup):
     def _latex_(self):
         return "\\Gamma_H(%s)"%self.level()
 
-import sage.ext.congroup_pyx
-degeneracy_coset_representatives_gamma0 = sage.ext.congroup_pyx.degeneracy_coset_representatives_gamma0
-degeneracy_coset_representatives_gamma1 = sage.ext.congroup_pyx.degeneracy_coset_representatives_gamma1
+import congroup_pyx
+degeneracy_coset_representatives_gamma0 = congroup_pyx.degeneracy_coset_representatives_gamma0
+degeneracy_coset_representatives_gamma1 = congroup_pyx.degeneracy_coset_representatives_gamma1
 
 ## def xxx_degeneracy_coset_representatives_gamma0(N, M, t):
 ##     r"""
