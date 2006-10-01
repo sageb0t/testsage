@@ -22,7 +22,7 @@ r"""nodoctest
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
 
-from sage.ext.ring cimport FiniteField
+from sage.rings.ring cimport FiniteField
 from sage.rings.coerce import bin_op
 from sage.ext.sage_object cimport SageObject
 import operator
@@ -123,7 +123,7 @@ cdef class GFq(FiniteField):
         from sage.rings.polynomial_element import is_Polynomial
         import sage.databases.conway
         from sage.rings.finite_field import conway_polynomial
-        from sage.ext.integer import Integer
+        from sage.rings.integer import Integer
 
         cdef intvec cPoly
 
@@ -257,7 +257,7 @@ cdef class GFq(FiniteField):
         from sage.rings.finite_field_element import FiniteFieldElement
         from sage.rings.integer_mod_pyx import is_IntegerMod
         from sage.rings.rational import Rational
-        from sage.ext.integer import Integer
+        from sage.rings.integer import Integer
 
         cdef int res
         cdef int g
@@ -331,7 +331,7 @@ cdef class GFq(FiniteField):
         from sage.rings.finite_field_element import FiniteFieldElement
         from sage.rings.integer_mod_pyx import is_IntegerMod
         from sage.rings.integer_mod_ring import IntegerModRing_generic
-        from sage.ext.integer import Integer
+        from sage.rings.integer import Integer
 
         if isinstance(x, (int, long, Integer)):
             return self(x)
@@ -955,7 +955,7 @@ cdef class GFq_element(SageObject):
         """
         # code copy'n'pasted from finite_field_element.py
         import sage.rings.arith
-        from sage.ext.integer import Integer
+        from sage.rings.integer import Integer
 
         if self.__multiplicative_order!=None:
             return self.__multiplicative_order
