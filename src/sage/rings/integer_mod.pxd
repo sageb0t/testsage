@@ -18,7 +18,6 @@ cdef class NativeIntStruct:
     cdef int_fast64_t int64
 
 cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
-    cdef public object _parent
     cdef NativeIntStruct __modulus
 
 cdef class IntegerMod_gmp(IntegerMod_abstract):

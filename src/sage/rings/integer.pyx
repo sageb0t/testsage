@@ -109,6 +109,9 @@ def pmem_malloc():
 
 pmem_malloc()
 
+cdef object the_integer_ring
+the_integer_ring = sage.rings.integer_ring.Z
+
 cdef class Integer(sage.structure.element.EuclideanDomainElement):
     """
     The \\class{Integer} class represents arbitrary precision
@@ -121,7 +124,9 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
     \\end{notice}
     """
     def __new__(self, x=None, unsigned int base=0):
+        global the_integer_ring
         mpz_init(self.value)
+        self._parent = the_integer_ring
 
     def __pyxdoc__init__(self):
         """
@@ -1359,12 +1364,6 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
 
     def _interface_init_(self):
         return str(self)
-
-    def parent(self):
-        """
-        Return the ring $\\Z$ of integers.
-        """
-        return sage.rings.integer_ring.Z
 
     def isqrt(self):
         """
