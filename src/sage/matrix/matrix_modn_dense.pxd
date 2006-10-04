@@ -17,3 +17,7 @@ cdef class Matrix_modn_dense(matrix_pyx.Matrix):
                                uint col_to, uint start_row)
     cdef swap_rows(self, uint row1, uint row2)
     cdef swap_columns(self, uint col1, uint col2)
+
+cdef class MatrixWindow:
+    cdef Matrix_modn_dense _matrix
+    cdef int _row, _col, _nrows, _ncols

@@ -10,3 +10,5 @@ cdef class Matrix(ModuleElement):
     cdef object __determinant
     cdef object __sparse_columns
     cdef object __sparse_rows
+
+#cdef void strassen_subtract_product(result, A, B, int cutoff):
