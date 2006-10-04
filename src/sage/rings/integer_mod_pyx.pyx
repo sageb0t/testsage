@@ -86,7 +86,11 @@ cdef class IntegerMod_abstract(sage.ext.element.CommutativeRingElement):
         """
         if self.__class__ is IntegerMod:
             raise NotImplementedError, "Can't instantiate abstract IntegerMod"
-        commutative_ring_element.CommutativeRingElement.__init__(self, parent)
+        _init_(self, value)
+
+    cdef void _init_(IntegerMod_abstract self, object parent):
+        #commutative_ring_element.CommutativeRingElement.__init__(self, parent)
+        self._parent = parent
         self.__modulus = parent._pyx_order
 
     def __reduce__(IntegerMod_abstract self):
@@ -383,7 +387,7 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
             True
         """
         mpz_init(self.value)
-        IntegerMod_abstract.__init__(self, parent, value)
+        IntegerMod_abstract._init_(self, parent)
         if empty:
             return
         cdef sage.ext.integer.Integer z
@@ -651,7 +655,10 @@ cdef class IntegerMod_int(IntegerMod_abstract):
             sage: loads(a.dumps()) == a
             True
         """
-        IntegerMod_abstract.__init__(self, parent, value)
+#        IntegerMod_abstract.__init__(self, parent, value)
+        IntegerMod_abstract._init_(self, parent)
+#        self._parent = parent
+#        self.__modulus = parent._pyx_order
         if empty:
             return
         cdef sage.ext.integer.Integer z
@@ -1011,7 +1018,7 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
             sage: loads(a.dumps()) == a
             True
         """
-        IntegerMod_abstract.__init__(self, parent, value)
+        IntegerMod_abstract._init_(self, parent)
         if empty:
             return
         cdef sage.ext.integer.Integer z
