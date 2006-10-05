@@ -26,7 +26,7 @@ not load correctly or work correctly.
 """
 import copy_reg
 
-from sage.ext.sage_object import save, load, \
+from sage.structure.sage_object import save, load, \
      loads, dumps, SageObject
 
 from sage.structure.element import Element
