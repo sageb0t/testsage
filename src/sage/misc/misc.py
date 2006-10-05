@@ -1070,7 +1070,8 @@ def getitem(v, n):
 
 def branch_current_hg():
     """
-    Return the current hg Mercurial branch.
+    Return the current hg Mercurial branch name.  If the branch
+    is 'main' the default branch, then just '' is returned.
     """
     s = os.popen('ls -l %s/devel/sage'%os.environ['SAGE_ROOT']).read()
     if 'No such file or directory' in s:
@@ -1082,4 +1083,7 @@ def branch_current_hg():
     i = s.find('-')
     if i == -1:
         return ''
-    return s[i+1:]
+    br = s[i+1:].strip()
+    if br == 'main':
+        return ''
+    return br
