@@ -324,7 +324,7 @@ cdef class gen:
             return self.g[n+1]
         return P.new_ref(gel(self.g,n+1), self)
 
-    def __getslice__(self, long i, long j):
+    def __getslice__(self,  Py_ssize_t i,  Py_ssize_t j):
         """
         EXAMPLES:
             sage: v = pari(xrange(20))
@@ -347,6 +347,7 @@ cdef class gen:
             sage: v[5:]
             [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
         """
+        print i, j
         cdef long l, k
         l = glength(self.g)
         if j >= l: j = l

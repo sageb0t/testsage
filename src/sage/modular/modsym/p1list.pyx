@@ -350,7 +350,7 @@ cdef class P1List:
     def __getitem__(self, n):
         return self.__list[n]
 
-    def __getslice__(self, n, m):
+    def __getslice__(self,  Py_ssize_t n,  Py_ssize_t m):
         return self.__list[n:m]
 
     def __len__(self):

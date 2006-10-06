@@ -2368,7 +2368,7 @@ cdef class gen:
             raise IndexError, "index (%s) must be between 0 and %s"%(n,glength(self.g)-1)
         return new_ref(<GEN> (self.g[n+1]), self)
 
-    def __getslice__(self, long i, long j):
+    def __getslice__(self,  Py_ssize_t i,  Py_ssize_t j):
         """
         EXAMPLES:
             sage: v = pari(xrange(20))
