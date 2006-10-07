@@ -177,7 +177,6 @@ ext_modules = [ \
     free_module_element, \
 
     ec, \
-
     pari, \
 
     mwrank, \
