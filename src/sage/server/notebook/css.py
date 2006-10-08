@@ -1082,7 +1082,7 @@ div.debug_window_inactive {
   width: 100%;
 }
 
-textarea.debug_output {
+div.debug_output {
   background-color: white;
   border: 0px;
   font-family: courier, monospace;
@@ -1091,6 +1091,7 @@ textarea.debug_output {
   padding-left:3px;
   padding-top:0px;
   padding-bottom:0px;
+  height: 10em;
   width: 100%;
 }
 
