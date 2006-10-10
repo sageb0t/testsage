@@ -215,16 +215,6 @@ We illustrate Laplace transforms:
 Even better, use \code{view(axiom("laplace(diff(x(t),t,2),t,s)"))} to see
 a typeset version.
 
-\subsection{Continued Fractions}
-
-A continued fraction $a + 1/(b + 1/(c + \cdots))$ is
-represented in axiom by the list $[a, b, c, \ldots]$.
-
-    sage: axiom("cf((1 + sqrt(5))/2)")
-    [1,1,1,1,2]
-    sage: axiom("cf ((1 + sqrt(341))/2)")
-    [9,1,2,1,2,1,17,1,2,1,2,1,17,1,2,1,2,1,17,2]
-
 \subsection{Special examples}
 
 In this section we illustrate calculations that would be awkward to do
@@ -246,7 +236,7 @@ You can plot 3d graphs (via gnuplot):
 
 You can formally evaluate sums (note the \code{nusum} command):
 
-    sage: S = axiom('nusum(exp(1+2*i/n),i,1,n)')
+    sage: S = axiom('sum(exp(1+2*i/n),i=1..n)')
     sage.: S
                             2/n + 3                   2/n + 1
                           %e                        %e
@@ -368,7 +358,7 @@ class Axiom(Expect):
         Expect.__init__(self,
                         name = 'axiom',
                         prompt = '\([0-9]+\) -> ',
-                        command = "axiom -nox",
+                        command = "axiom -nox -noclef",
                         maxread = 1,  # CRUCIAL to use less buffering for Axiom!
                         script_subdirectory = script_subdirectory,
                         restart_on_ctrlc = False,
@@ -386,8 +376,8 @@ class Axiom(Expect):
         # For some reason sending a single input line at startup avoids
         # lots of weird timing issues when doing doctests.
         Expect._start(self)
-        #out = self._eval_line(')set output algebra off', reformat=False)
-        #out = self._eval_line(')set output tex on', reformat="False")
+        out = self._eval_line(')set functions compile on', reformat=False)
+        out = self._eval_line(')set output length 245', reformat=False)
         out = self._eval_line(')set message autoload off', reformat=False)
         self._expect.expect(self._prompt)
         #out = self._expect.before
@@ -475,23 +465,23 @@ class Axiom(Expect):
 
     def help(self, s):
         if sage.server.support.EMBEDDED_MODE:
-            os.system('asq "describe(%s); "< /dev/null'%s)
+            os.system('asq -op "%s"< /dev/null'%s)
         else:
-            os.system('asq "describe(%s);"'%s)
+            os.system('asq -op "%s"'%s)
 
     def example(self, s):
         if sage.server.support.EMBEDDED_MODE:
-            os.system('axiom -ht -nogr "example(%s);" < /dev/null'%s)
+            os.system('asq -doc "%s" < /dev/null'%s)
         else:
-            os.system('axiom -ht "example(%s);"'%s)
+            os.system('asq -doc "%s"'%s)
 
     describe = help
 
-    def demo(self, s):
+    def demo(self):
         if sage.server.support.EMBEDDED_MODE:
-            os.system('axiom -ht "demo(%s);" < /dev/null'%s)
+            os.system('axiom -ht < /dev/null')
         else:
-            os.system('axiom -ht "demo(%s);"'%s)
+            os.system('axiom -ht')
 
     def completions(self, s):
         """
@@ -593,14 +583,13 @@ class Axiom(Expect):
         """
         cmd = '%s := %s'%(var, value)
         out = self._eval_line(cmd, reformat=False)
-        #out = self._eval_line(cmd, reformat=False, allow_use_file=True)
 
         if out.find("error") != -1:
             raise TypeError, "Error executing code in Axiom\nCODE:\n\t%s\nAxiom ERROR:\n\t%s"%(cmd, out)
 
     def get(self, var):
         """
-        Get the string value of the variable var.
+        Get the string value of the Axiom variable var.
         """
         s = self._eval_line('%s'%var)
         return s
@@ -616,9 +605,6 @@ class Axiom(Expect):
 
     def console(self):
         axiom_console()
-
-    def version(self):
-        return axiom_version()
 
     def plot2d(self, *args):
         r"""
@@ -937,7 +923,7 @@ class AxiomElement(ExpectElement):
     def __call__(self, x):
         self._check_valid()
         P = self.parent()
-        return P('%s[%s]'%(self.name(), x))
+        return P('%s(%s)'%(self.name(), x))
 
     def _cmp_(self, other):
         """
@@ -962,17 +948,18 @@ class AxiomElement(ExpectElement):
 
         # thanks to David Joyner for telling me about using "is".
         P = self.parent()
-        if P.eval("is (%s < %s)"%(self.name(), other.name())) == P._true_symbol():
+        if P.eval("(%s < %s)::Boolean"%(self.name(), other.name())) == P._true_symbol():
             return -1
-        elif P.eval("is (%s > %s)"%(self.name(), other.name())) == P._true_symbol():
+        elif P.eval("(%s > %s)::Boolean"%(self.name(), other.name())) == P._true_symbol():
             return 1
-        elif P.eval("is (%s = %s)"%(self.name(), other.name())) == P._true_symbol():
+        elif P.eval("(%s = %s)::Boolean"%(self.name(), other.name())) == P._true_symbol():
             return 0
         else:
             return -1  # everything is supposed to be comparable in Python, so we define
                        # the comparison thus when no comparable in interfaced system.
     def numer(self):
-        return self.comma('numer')
+        P = self.parent()
+        return P('numeric(%s)'%self._name)
 
     def real(self):
         return self.realpart()
@@ -981,9 +968,18 @@ class AxiomElement(ExpectElement):
         return self.imagpart()
 
     def str(self):
+        """
+        Get the string value of a Python variable
+        """
         self._check_valid()
         P = self.parent()
-        return P.get('%s::InputForm'%self._name)
+        s = P.get('unparse(%s::InputForm)'%self._name)
+        s = multiple_replace({'\r\n':'', # fix stupid Fortran-ish
+                              'DSIN(':'sin(',
+                              'DCOS(':'cos(',
+                              'DTAN(':'tan(',
+                              'DSINH(':'sinh('}, s)
+        return re.search(r'"(.*)"',s).groups(0)[0]
 
     def __repr__(self):
         self._check_valid()
@@ -1041,7 +1037,7 @@ class AxiomElement(ExpectElement):
         OUTPUT:
             -- approximation to the integral
             -- estimated absolute error of the approximation
-            -- the number of integrand evaluations
+            -- the number of integrand ::Booleanevaluations
             -- an error code:
                   0 -- no problems were encountered
                   1 -- too many subintervals were done
@@ -1118,12 +1114,12 @@ class AxiomElement(ExpectElement):
         Return the length of a list.
 
         EXAMPLES:
-            sage: v = axiom('create_list(x^i,i,0,5)')
+            sage: v = axiom('[x^i for i in 0..5]')
             sage: len(v)
             6
         """
         self._check_valid()
-        return int(self.parent().eval('length(%s)'%self.name()))
+        return int(self.parent().eval('#(%s)'%self.name()))
 
     def __getattr__(self, attrname):
         if attrname[:1] == "_":
@@ -1138,7 +1134,7 @@ class AxiomElement(ExpectElement):
         not 1-based as they are in the Axiom interpreter.}
 
         EXAMPLES:
-            sage: v = axiom('create_list(i*x^i,i,0,5)'); v
+            sage: v = axiom('[i*x^i for i in 0..5]'); v
             [0,x,2*x^2,3*x^3,4*x^4,5*x^5]
             sage: v[3]
             3*x^3
@@ -1172,11 +1168,12 @@ class AxiomElement(ExpectElement):
         i = s.find('$$')
         j = s.rfind('$$')
         s = s[i+2:j]
-        s = multiple_replace({'\r\n':' ',
-                              '\\%':'',
+        s = multiple_replace({'\r':'', '\n':' ',
+                              ' \\sp ':'^',
                               '\\arcsin ':'\\sin^{-1} ',
                               '\\arccos ':'\\cos^{-1} ',
-                              '\\arctan ':'\\tan^{-1} '}, s)
+                              '\\arctan ':'\\tan^{-1} '},
+            re.sub(r'\\leqno\(.*?\)','',s)) # no eq number!
         return s
 
     def trait_names(self):
@@ -1294,9 +1291,6 @@ def reduce_load_Axiom():
 import os
 def axiom_console():
     os.system('axiom')
-
-def axiom_version():
-    return os.popen('axiom --version').read().split()[1]
 
 def __doctest_cleanup():
     import sage.interfaces.quit
