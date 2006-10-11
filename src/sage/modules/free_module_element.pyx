@@ -47,8 +47,8 @@ cdef class FreeModuleElement(sage.structure.element.ModuleElement):
     """
     An element of a generic free module.
     """
-    cdef object __entries
-    cdef object __zero
+#    cdef object __entries
+#    cdef object __zero
 
     def __init__(self, parent):
         sage.structure.element.ModuleElement.__init__(self, parent)
