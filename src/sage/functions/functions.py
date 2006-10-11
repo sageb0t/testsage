@@ -294,6 +294,9 @@ class Function_composition(Function):
     def _mpfr_(self, R):
         return self.__f(self.__g._mpfr_(R))
 
+    def _axiom_(self, M):
+        return self.__f._axiom_(M)(self.__g._axiom_(M))
+
     def _maxima_(self, M):
         return self.__f._maxima_(M)(self.__g._maxima_(M))
 
@@ -522,6 +525,9 @@ class Function_gen(Function):
     def _kash_(self, kash):
         return kash(self.__x)
 
+    def _axiom_(self,axiom):
+        return axiom(self.__x)
+
     def _maxima_(self, maxima):
         return maxima(self.__x)
 
@@ -615,7 +621,7 @@ class Function_sin(Function):
     """
     def __init__(self):
         Function.__init__(self,
-            {'maxima':'sin', 'mathematica':'Sin'})
+            {'axiom':'sin', 'maxima':'sin', 'mathematica':'Sin'})
 
     def _repr_(self):
         return "sin"
@@ -648,7 +654,7 @@ class Function_cos(Function):
     """
     def __init__(self):
         Function.__init__(self,
-            {'maxima':'cos', 'mathematica':'Cos'})
+            {'axiom':'cos', 'maxima':'cos', 'mathematica':'Cos'})
 
     def _repr_(self):
         return "cos"
@@ -670,7 +676,7 @@ cos = Function_cos()
 class Function_exp(Function):
     def __init__(self):
         Function.__init__(self,
-            {'maxima':'exp', 'mathematica':'Exp'})
+            {'axiom':'exp', 'maxima':'exp', 'mathematica':'Exp'})
 
     def _repr_(self):
         return "expo"
@@ -692,7 +698,7 @@ expo = Function_exp()
 class Function_gamma(Function):
     def __init__(self):
         Function.__init__(self,
-            {'maxima':'gamma', 'mathematica':'Gamma'})
+            {'axiom':'gamma', 'maxima':'gamma', 'mathematica':'Gamma'})
     ## the Maxima notation for the Euler-Mascheroni constant is %gamma.
 
     def _repr_(self):
