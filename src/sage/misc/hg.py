@@ -244,7 +244,6 @@ class HG:
         if isinstance(files, str):
             files = [files]
         for file in files:
-            file = os.path.abspath(file)
             print "Adding file %s"%file
             self('add %s "%s"'%(options, file))
 
@@ -260,7 +259,6 @@ class HG:
         if isinstance(files, str):
             files = [files]
         for file in files:
-            file = os.path.abspath(file)
             print "Removing file %s"%file
             self('rm %s "%s"'%(options, file))
 
@@ -282,7 +280,6 @@ class HG:
         if isinstance(files, str):
             files = [files]
         for file in files:
-            file = os.path.abspath(file)
             print "Moving %s --> %s"%file
             self('mv %s "%s"'%(options, file))
 
