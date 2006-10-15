@@ -78,6 +78,9 @@ def is_IntegerMod(x):
     """
     return isinstance(x, IntegerMod_abstract)
 
+def makeNativeIntStruct(sage.rings.integer.Integer z):
+    return NativeIntStruct(z)
+
 cdef class NativeIntStruct:
 
     def __init__(NativeIntStruct self, sage.rings.integer.Integer z):
@@ -86,6 +89,9 @@ cdef class NativeIntStruct:
             self.int64 = mpz_get_si(z.value)
             if self.int64 < INTEGER_MOD_INT32_LIMIT:
                 self.int32 = self.int64
+
+    def __reduce__(NativeIntStruct self):
+        return sage.rings.integer_mod.makeNativeIntStruct, (self.sageInteger, )
 
 cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
 
