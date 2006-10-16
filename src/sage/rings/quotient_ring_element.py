@@ -153,3 +153,18 @@ class QuotientRingElement(Element_cmp_, ring_element.RingElement):
         if (self.__rep - other.__rep) in self.parent().defining_ideal():
             return 0
         return -1
+
+    def lt(self):
+        return self.__rep.lt()
+
+    def lm(self):
+        return self.__rep.lm()
+
+    def lc(self):
+        return self.__rep.lc()
+
+    def variables(self):
+        return self.__rep.variables()
+
+    def monomials(self):
+        return self.__rep.monomials()
