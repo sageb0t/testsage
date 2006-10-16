@@ -2,6 +2,7 @@ r""" Simple profiling tool.
 
 AUTHOR:
     -- David Harvey (August 2006)
+    -- Martin Albrecht
 """
 
 #*****************************************************************************
@@ -14,9 +15,11 @@ AUTHOR:
 
 from sage.misc.misc import cputime
 import inspect
+import sys
 
 class Profiler:
-    """ Keeps track of CPU time used between a series of user-defined checkpoints.
+    """
+    Keeps track of CPU time used between a series of user-defined checkpoints.
 
     It's probably not a good idea to use this class in an inner loop :-)
 
@@ -59,7 +62,7 @@ class Profiler:
         -- David Harvey (August 2006)
     """
 
-    def __init__(self, systems=[]):
+    def __init__(self, systems=[], verbose=False):
         """
         INPUT:
             systems -- a list of interfaces to other system which implements a cputime
@@ -68,6 +71,7 @@ class Profiler:
         """
         systems = [e.cputime for e in systems]
         self._cputime_functions = [cputime] + list(systems)
+        self._verbose = bool(verbose)
         self.clear()
 
     def clear(self):
@@ -100,6 +104,9 @@ class Profiler:
         self._active_details = (line_number, context, message)
 
         self._last_cputime = [fn() for fn in self._cputime_functions ]
+        if self._verbose:
+            print self.print_last()
+            sys.stdout.flush()
 
     def __repr__(self):
         """ Returns a nicely formatted table of stored checkpoints and timings. """
@@ -125,5 +132,29 @@ class Profiler:
             output.append("%9.3fs -- %s" % (time_used, message))
 
         return "\n".join(output)
+
+    def print_last(self):
+        """
+        Prints the last profiler step
+        """
+        if not self._checkpoints:
+            return ""
+
+        ((line_number, context, message), time_used) = self._checkpoints[-1]
+        if message is None:
+            # If the user hasn't given a message, we look for some
+            # source code to print instead
+            found = "(unknown)"
+            for line in context[5:]:
+                line = line.strip()
+                if line != "":
+                    found = line
+                    break
+
+            if len(found) > 60:
+                found = found[:60] + "..."   # in case the source line is really long
+            message = "line %d: %s" % (line_number, found)
+
+        return "%9.3fs -- %s" % (time_used, message)
 
 ## end of file
