@@ -124,8 +124,7 @@ class Cell:
             else:
                 out = self.output_text(ncols, html=False)
         else:
-            out = self.output_text(ncols, html=False).strip().split('\n')
-            out = [x for x in out if x.strip() != '']
+            out = self.output_text(ncols, html=False).split('\n')
             if len(out) > 0:
                 out = '# ' + '\n# '.join(out)
             else:
@@ -134,7 +133,7 @@ class Cell:
         if not max_out is None and len(out) > max_out:
             out = out[:max_out] + '...'
 
-        s = s.strip() + '\n' + out.strip()
+        s = s.strip() + '\n' + out
 
         return s
 
@@ -210,7 +209,7 @@ class Cell:
             output = output[:i]
         if len(output) > MAX_OUTPUT:
             output = 'WARNING: Output truncated!\n' + output[:MAX_OUTPUT] + '\n(truncated)'
-        self.__out = output.strip()
+        self.__out = output
         self.__out_html = html
         self.__sage = sage
 
@@ -266,7 +265,7 @@ class Cell:
                 t += format(s[:i]) + s[i+6:j]
                 s = s[j+7:]
             s = t
-            if not self.is_html() and len(s.strip()) > 0:
+            if not self.is_html():
                 s = '<pre class="shrunk">' + s + '</pre>'
         return s
 
