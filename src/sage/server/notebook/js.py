@@ -397,7 +397,7 @@ function do_replacement(id, word,do_trim) {
     } catch(e) {}
 
     if(browser_op || browser_saf)
-      jump_to_cell_delay(id,0);
+        focus_delay(id);
 
     halt_introspection();
 }
@@ -719,7 +719,7 @@ function focus(id) {
 }
 
 function focus_delay(id) {
-    setTimeout('focus('+id+',false)', 10);
+    setTimeout('focus('+id+')', 10);
 }
 
 function cell_input_resize(cell_input) {
@@ -1111,7 +1111,7 @@ function evaluate_cell_introspection(id, before, after) {
     } else {
         sub_introspecting = true;
     }
-    if(!replacing && browser_op)
+    if(!replacing && (browser_op || browser_saf))
         focus_delay(id);
 
     update_introspection_text();
