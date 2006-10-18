@@ -20,6 +20,8 @@ Matrices over a domain
 cimport matrix_generic
 import matrix_generic
 
+import sage.structure.sequence
+
 cdef class Matrix_domain(matrix_generic.Matrix):
     def __init__(self, parent):
         matrix_generic.Matrix.__init__(self, parent)
@@ -86,10 +88,8 @@ cdef class Matrix_domain(matrix_generic.Matrix):
             ])
             ]
         """
-        try:
+        if self.__eigenvectors is not None:
             return self.__eigenvectors
-        except AttributeError:
-            pass
         f = self.charpoly()
         G = f.factor()
         V = []
@@ -158,7 +158,7 @@ cdef class Matrix_domain(matrix_generic.Matrix):
             sage: A.charpoly()
             x^10 - 495000*x^9 - 8250000000*x^8
         """
-        f = self.matrix_over_field().charpoly(*args, **kwds)
+        f = self.matrix_over_field(copy=True).charpoly(*args, **kwds)
         return f.base_extend(self.base_ring())
 
     def determinant(self):
@@ -248,7 +248,7 @@ cdef class Matrix_domain(matrix_generic.Matrix):
         """
         return ~self.matrix_over_field()
 
-    def matrix_over_field(self):
+    def matrix_over_field(self, copy=False):
         """
         Return this matrix, but with entries viewed as elements
         of the fraction field of the base ring.
@@ -262,7 +262,7 @@ cdef class Matrix_domain(matrix_generic.Matrix):
             sage: B.parent()
             Full MatrixSpace of 2 by 2 dense matrices over Rational Field
         """
-        return self.change_ring(self.base_ring().fraction_field())
+        return self.change_ring(self.base_ring().fraction_field(), copy=copy)
 
     def numeric_array(self, typecode=None):
         """

@@ -4,6 +4,7 @@ ctypedef unsigned int uint
 
 cdef class Matrix_modn_dense(matrix_generic.Matrix):
     cdef uint **matrix
+    cdef uint *_entries
     cdef uint _nrows, _ncols, p
     cdef uint gather
     cdef object __pivots
