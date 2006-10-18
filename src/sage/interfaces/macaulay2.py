@@ -182,6 +182,16 @@ class Macaulay2(Expect):
     def _equality_symbol(self):
         return '=='
 
+    def cputime(self, t=None):
+        _t = float(self.eval('elapsedTime()'))
+        if t:
+            return _t - t
+        else:
+            return _t
+
+    def version(self):
+        return self("version")
+
 ### Constructors
 
     def ideal(self, *gens):
