@@ -471,6 +471,7 @@ class Maxima(Expect):
              return ''
         except KeyboardInterrupt:
             self._keyboard_interrupt()
+            return ''
 
         if 'Incorrect syntax:' in out:
             raise RuntimeError, out
