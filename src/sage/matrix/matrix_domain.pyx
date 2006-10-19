@@ -18,7 +18,7 @@ Matrices over a domain
 ########################################################################
 
 cimport matrix_generic
-import matrix_generic
+import  matrix_generic
 
 import sage.structure.sequence
 

@@ -26,8 +26,6 @@ import sage.structure.factorization as factorization
 from sage.rings.coerce import canonical_coercion, bin_op
 from sage.structure.element import RingElement
 
-import sage.interfaces.all
-
 import sage.rings.bernoulli
 
 ##################################################################
@@ -146,9 +144,11 @@ def bernoulli(n, algorithm='pari'):
         x = pari(n).bernfrac()
         return sage.rings.rational.Rational(x)
     elif algorithm == 'gap':
+        import sage.interfaces.all
         x = sage.interfaces.all.gap('Bernoulli(%s)'%n)
         return sage.rings.rational.Rational(x)
     elif algorithm == 'gp':
+        import sage.interfaces.all
         x = sage.interfaces.all.gp('bernfrac(%s)'%n)
         return sage.rings.rational.Rational(x)
     elif algorithm == 'sage':
