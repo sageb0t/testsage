@@ -1102,6 +1102,8 @@ def branch_current_hg_notice(branch):
 
     NOTE: If the branch is main, then return an empty string.
     """
+    if branch[-1] == '/':
+        branch = branch[:-1]
     if branch == 'main':
         return ''
     notice = 'Loading SAGE library. Current Mercurial branch is: '
