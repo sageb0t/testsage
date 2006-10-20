@@ -102,11 +102,11 @@ cf = Extension('sage.libs.cf.cf',
                libraries = ['cf', 'cfmem', 'gmp', 'stdc++', 'm']
                )
 
-linbox_gfq = Extension('sage.libs.linbox.finite_field_givaro',
-                   sources = ["sage/libs/linbox/finite_field_givaro.pyx"],
-                   libraries = ['gmp', 'gmpxx', 'm', 'stdc++', 'givaro', 'linbox'],
-                   language='c++'
-                   )
+givaro_gfq = Extension('sage.rings.finite_field_givaro',
+                       sources = ["sage/rings/finite_field_givaro.pyx"],
+                       libraries = ['gmp', 'gmpxx', 'm', 'stdc++', 'givaro', 'linbox'],
+                       language='c++'
+                       )
 
 matrix_dense = Extension('sage.matrix.matrix_dense',
               ['sage/matrix/matrix_dense.pyx'])
@@ -180,6 +180,8 @@ ext_modules = [ \
     ntl, \
 
     #cf, \
+
+    givaro_gfq, \
 
     matrix_domain,
     matrix_dense,
@@ -490,7 +492,6 @@ setup(name        = 'sage',
                      'sage.libs.ec',
                      'sage.libs.pari',
                      'sage.libs.cf',
-                     'sage.libs.linbox',
 
                      'sage.matrix',
 
