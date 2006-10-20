@@ -251,6 +251,12 @@ cdef class Matrix_integer_dense(matrix_integer.Matrix_integer):
         Set position i,j of this matrix to x.
 
         EXAMPLES:
+            sage: a = matrix(ZZ,2,3, range(6)); a
+            [0 1 2]
+            [3 4 5]
+
+            sage: a[0,0] = 10
+            ...
         """
         cdef sage.rings.integer.Integer z
         cdef size_t i, j
@@ -321,6 +327,9 @@ cdef class Matrix_integer_dense(matrix_integer.Matrix_integer):
             return self.row(i)
 
     def  __dealloc__(self):
+        """
+        EXAMPLE:
+        """
         if self._entries == NULL: return
         cdef size_t i
         for i from 0 <= i < (self._nrows * self._ncols):
@@ -329,6 +338,9 @@ cdef class Matrix_integer_dense(matrix_integer.Matrix_integer):
         sage_free(self._matrix)
 
     def _mul_(Matrix_integer_dense self, Matrix_integer_dense other):
+        """
+        EXAMPLE:
+        """
         if self._ncols != other._nrows:
             raise IndexError, "Number of columns of self must equal number of rows of other."
 
@@ -534,6 +546,9 @@ cdef class Matrix_integer_dense(matrix_integer.Matrix_integer):
         return M
 
     def copy(self):
+        """
+        EXAMPLE:
+        """
         cdef int i, j, nr, nc
         nr = self._nrows; nc = self._ncols
 
@@ -549,6 +564,9 @@ cdef class Matrix_integer_dense(matrix_integer.Matrix_integer):
         return M
 
     def number_nonzero(self):
+        """
+        EXAMPLE:
+        """
         cdef int i, j, n
         cdef mpz_t *v
         n = 0
@@ -560,6 +578,9 @@ cdef class Matrix_integer_dense(matrix_integer.Matrix_integer):
         return n
 
     def list(self, int base=0):
+        """
+        EXAMPLE:
+        """
         cdef int i, j
         cdef mpz_t* r
         cdef object v
@@ -619,6 +640,9 @@ cdef class Matrix_integer_dense(matrix_integer.Matrix_integer):
         return 0
 
     def height(self):
+        """
+        EXAMPLE:
+        """
         cdef mpz_t h
         mpz_init(h)
         self.mpz_height(h)
