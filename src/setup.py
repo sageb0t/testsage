@@ -104,7 +104,7 @@ cf = Extension('sage.libs.cf.cf',
 
 givaro_gfq = Extension('sage.rings.finite_field_givaro',
                        sources = ["sage/rings/finite_field_givaro.pyx"],
-                       libraries = ['gmp', 'gmpxx', 'm', 'stdc++', 'givaro', 'linbox'],
+                       libraries = ['gmp', 'gmpxx', 'm', 'stdc++', 'givaro'],
                        language='c++'
                        )
 
