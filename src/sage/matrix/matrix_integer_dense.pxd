@@ -1,4 +1,5 @@
 include "../ext/cdefs.pxi"
+include "../ext/interrupt.pxi"
 
 cimport matrix_integer
 
