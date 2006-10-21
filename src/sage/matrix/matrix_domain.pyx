@@ -18,7 +18,7 @@ Matrices over a domain
 ########################################################################
 
 cimport matrix_generic
-import matrix_generic
+import  matrix_generic
 
 cdef class Matrix_domain(matrix_generic.Matrix):
     def __init__(self, parent):
