@@ -177,33 +177,48 @@ complex_number2 = Extension('sage.rings.complex_number2',
 			    ['sage/rings/complex_number2.pyx'],
 			    libraries = ['gmp'])
 
+free_module_element = Extension('sage.modules.free_module_element',
+                                ['sage/modules/free_module_element.pyx'])
+
 ################ GSL wrapping ######################
 
 gsl_fft = Extension('sage.gsl.fft',
                 ['sage/gsl/fft.pyx'],
-                libraries = ['gsl', CBLAS])
+                libraries = ['gsl', CBLAS],define_macros=[('GSL_DISABLE_DEPRECATED','1')])
 
 gsl_interpolation = Extension('sage.gsl.interpolation',
                 ['sage/gsl/interpolation.pyx'],
-                libraries = ['gsl', CBLAS])
+                libraries = ['gsl', CBLAS],
+define_macros=[('GSL_DISABLE_DEPRECATED','1')])
 
 gsl_callback = Extension('sage.gsl.callback',
                 ['sage/gsl/callback.pyx'],
-                libraries = ['gsl', CBLAS])
+                libraries = ['gsl', CBLAS]
+,define_macros=[('GSL_DISABLE_DEPRECATED','1')])
 
 real_double = Extension('sage.rings.real_double',
                 ['sage/rings/real_double.pyx'],
-                libraries = ['gsl', CBLAS])
+                libraries = ['gsl', CBLAS],define_macros=[('GSL_DISABLE_DEPRECATED','1')])
 
 complex_double = Extension('sage.rings.complex_double',
                            ['sage/rings/complex_double.pyx'],
-                           libraries = ['gsl', CBLAS, 'pari', 'gmp'])
+                           libraries = ['gsl', CBLAS, 'pari', 'gmp'],define_macros=[('GSL_DISABLE_DEPRECATED','1')])
+
+gsl_array = Extension('sage.gsl.gsl_array',['sage/gsl/gsl_array.pyx'],
+                libraries=['gsl',CBLAS],define_macros=[('GSL_DISABLE_DEPRECATED','1')])
+gsl_ode = Extension('sage.gsl.ode',['sage/gsl/ode.pyx'],libraries=['gsl',CBLAS],
+                define_macros=[('GSL_DISABLE_DEPRECATED','1')])
+
+dwt = Extension('sage.gsl.dwt',['sage/gsl/dwt.pyx'],
+                 libraries=['gsl',CBLAS],
+                 define_macros=[('GSL_DISABLE_DEPRECATED','1')])
 
 #####################################################
 
 ext_modules = [ \
-    ec, \
+    free_module_element, \
 
+    ec, \
     pari, \
 
     mwrank, \
@@ -223,6 +238,9 @@ ext_modules = [ \
     matrix_rational_dense,
     matrix_rational_sparse,
 
+    dwt,
+    gsl_array,
+    gsl_ode,
     gsl_fft,
     gsl_interpolation,
     gsl_callback,
