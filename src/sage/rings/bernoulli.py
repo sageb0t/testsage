@@ -52,7 +52,6 @@ def bernoulli_python(m):
             break
         z /= 1 - 1/(RR(p)**RR(m))
         diff = abs(z - z_prev).log()
-        print p, Rl(diff), -16*m
         if diff < -16*m:
             break
         z_prev =z
@@ -60,7 +59,6 @@ def bernoulli_python(m):
     if m % 4 == 0:
         a = -a
     return rings.Rational(a)/rings.Rational(d)
-    #return K
 
 def bernoulli_cf(m):
     r"""
