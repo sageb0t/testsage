@@ -75,9 +75,9 @@ import random
 import weakref
 
 # SAGE imports
-import sage.modules.free_module_element
+import free_module_element
 
-import  module
+import module
 
 import sage.matrix.matrix_space
 import sage.matrix.matrix
@@ -326,22 +326,26 @@ class FreeModule_generic(module.Module):
         self.__is_sparse = sparse
         self._inner_product_matrix = inner_product_matrix
 
-        if self.is_sparse():
-            self._element_class = sage.modules.free_module_element.FreeModuleElement_generic_sparse
-            return
-        self._element_class = sage.modules.free_module_element.FreeModuleElement_generic_dense
+    def _element_class(self):
+        if self.__is_sparse:
+            return free_module_element.FreeModuleElement_generic_sparse
+        else:
+            return free_module_element.FreeModuleElement_generic_dense
 
     def __call__(self, x, coerce_entries=True, copy=True, check_element=True):
         if isinstance(x, (int, long, sage.rings.integer.Integer)) and x==0:
             return self.zero_vector()
-        elif isinstance(x, sage.modules.free_module_element.FreeModuleElement):
+        elif isinstance(x, free_module_element.FreeModuleElement):
             if x.parent() is self:
                 if copy:
                     return x.copy()
                 else:
                     return x
             x = x.list()
-        w = self._element_class(self, x, coerce_entries, copy)
+        if self.__is_sparse:
+            w = free_module_element.FreeModuleElement_generic_sparse(self, x, coerce_entries, copy)
+        else:
+            w = free_module_element.FreeModuleElement_generic_dense(self, x, coerce_entries, copy)
         if check_element:
             self.coordinates(w)
         return w
@@ -376,7 +380,7 @@ class FreeModule_generic(module.Module):
             [1/2]
 
         """
-        if not isinstance(v, sage.modules.free_module_element.FreeModuleElement):
+        if not isinstance(v, free_module_element.FreeModuleElement):
             return False
         if v.parent() is self:
             return True
@@ -1010,7 +1014,11 @@ class FreeModule_generic(module.Module):
             sage: M.zero_submodule().zero_vector()
             (0, 0)
         """
-        return self._element_class(self, 0)
+        try:
+            return self.__zero
+        except AttributeError:
+            self.__zero = self._element_class()(self, 0)
+        return self.__zero
 
 class FreeModule_generic_pid(FreeModule_generic):
     """
@@ -2479,7 +2487,8 @@ class FreeModule_submodule_with_basis_pid(FreeModule_generic_pid):
         FreeModule_generic.__init__(self, R, len(basis), ambient.degree(),
                             ambient.is_sparse(), inner_product_matrix=inner_product_matrix)
 
-        w = [self._element_class(self, x.list(),
+        C = self._element_class()
+        w = [C(self, x.list(),
                           coerce_entries=False, copy=True) for x in basis]
 
         self.__basis = basis_seq(self, w)
@@ -2650,7 +2659,7 @@ class FreeModule_submodule_with_basis_pid(FreeModule_generic_pid):
             sage: W.echelon_coordinates([0,0,2,0,-1/2])
             [0, 2]
         """
-        if not isinstance(v, sage.modules.free_module_element.FreeModuleElement):
+        if not isinstance(v, free_module_element.FreeModuleElement):
             v = self.ambient_vector_space()(v)
         if v.degree() != self.degree():
             raise ArithmeticError, "v (=%s) is not in self"%v
@@ -3150,7 +3159,7 @@ class FreeModule_submodule_field(FreeModule_submodule_with_basis_field):
             sage: W.echelon_coordinates([1,5,9])
             [1, 5]
         """
-        if not isinstance(v, sage.modules.free_module_element.FreeModuleElement):
+        if not isinstance(v, free_module_element.FreeModuleElement):
             v = self.ambient_vector_space()(v)
         if v.degree() != self.degree():
             raise ArithmeticError, "v (=%s) is not in self"%v
