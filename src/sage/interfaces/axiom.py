@@ -263,6 +263,7 @@ class Axiom(Expect):
     ###########################################
 
     def help(self, s):
+        import sage.server.support
         if sage.server.support.EMBEDDED_MODE:
             e = os.system('asq -op "%s"< /dev/null'%s)
         else:
@@ -271,6 +272,7 @@ class Axiom(Expect):
             print "Help system not available."
 
     def example(self, s):
+        import sage.server.support
         if sage.server.support.EMBEDDED_MODE:
             e = os.system('asq -doc "%s" < /dev/null'%s)
         else:
