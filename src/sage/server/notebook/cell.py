@@ -135,7 +135,7 @@ class Cell:
         s = s + '\n' + out
 
         if not prompts:
-            s += '\n}}}'
+            s += '}}}'
         return s
 
     def is_last(self):
