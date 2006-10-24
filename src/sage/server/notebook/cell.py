@@ -133,8 +133,10 @@ class Cell:
         if not max_out is None and len(out) > max_out:
             out = out[:max_out] + '...'
 
-        s = s.strip() + '\n' + out
-
+        # Get rid of spurious carriage returns
+        s = s.strip('\n')
+        out = out.strip('\n').strip('\r').strip('\r\n')
+        s = s + '\n' + out
         return s
 
     def is_last(self):
@@ -204,6 +206,7 @@ class Cell:
         self.__in = new_text
 
     def set_output_text(self, output, html, sage=None):
+        output = output.replace('\r','')
         i = output.find(worksheet.SAGE_VARS)
         if i != -1:
             output = output[:i]
@@ -267,7 +270,7 @@ class Cell:
             s = t
             if not self.is_html() and len(s.strip()) > 0:
                 s = '<pre class="shrunk">' + s + '</pre>'
-        return s
+        return s.strip('\n')
 
     def has_output(self):
         return len(self.__out.strip()) > 0
