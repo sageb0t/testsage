@@ -109,7 +109,7 @@ class Cell:
                             in_loop = False
                         s += pr + v + '\n'
         else:
-            s += self.__in.strip() + '\n'
+            s += '{{{\n' + self.__in.strip() + '\n///\n'
 
         if prompts:
             msg = 'Traceback (most recent call last):'
@@ -124,11 +124,7 @@ class Cell:
             else:
                 out = self.output_text(ncols, html=False)
         else:
-            out = self.output_text(ncols, html=False).split('\n')
-            if len(out) > 0:
-                out = '# ' + '\n# '.join(out)
-            else:
-                out = ''
+            out = self.output_text(ncols, html=False)
 
         if not max_out is None and len(out) > max_out:
             out = out[:max_out] + '...'
@@ -137,6 +133,9 @@ class Cell:
         s = s.strip('\n')
         out = out.strip('\n').strip('\r').strip('\r\n')
         s = s + '\n' + out
+
+        if not prompts:
+            s += '\n}}}'
         return s
 
     def is_last(self):
