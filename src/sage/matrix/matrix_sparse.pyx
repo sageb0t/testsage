@@ -31,7 +31,6 @@ import random, weakref
 
 import sage.rings.arith as arith
 import sage.misc.misc as misc
-import sage.matrix.dense_matrix_pyx
 import sage.rings.integer_ring as integer_ring
 import sage.rings.rational_field as rational_field
 import sage.rings.rational as rational
@@ -39,7 +38,6 @@ import sage.rings.integer as integer
 import sage.rings.rational_field as rational_field
 import sage.rings.integer_ring as integer_ring
 import sage.rings.ring as ring
-import sparse_matrix_pyx
 
 from sage.misc.proof import proof
 
