@@ -217,10 +217,10 @@ complex_double = Extension('sage.rings.complex_double',
                            ['sage/rings/complex_double.pyx'],
                            libraries = ['gsl', CBLAS, 'pari', 'gmp'])
 
-RealDoubleVectors = Extension('sage.modules.RealDoubleVectors',['sage/modules/RealDoubleVectors.pyx'],
+real_double_vector = Extension('sage.modules.real_double_vector',['sage/modules/real_double_vector.pyx'],
                               libraries = ['gsl',CBLAS,'pari','gmp'],define_macros = [('GSL_DISABLE_DEPRECAED','1')])
 
-ComplexDoubleVectors = Extension('sage.modules.ComplexDoubleVectors',['sage/modules/ComplexDoubleVectors.pyx'],
+complex_double_vector = Extension('sage.modules.complex_double_vector',['sage/modules/complex_double_vector.pyx'],
                            libraries = ['gsl', CBLAS, 'pari', 'gmp'],define_macros=[('GSL_DISABLE_DEPRECATED','1')])
 
 gsl_array = Extension('sage.gsl.gsl_array',['sage/gsl/gsl_array.pyx'],
@@ -236,8 +236,8 @@ dwt = Extension('sage.gsl.dwt',['sage/gsl/dwt.pyx'],
 
 ext_modules = [ \
     free_module_element, \
-    ComplexDoubleVectors,\
-    RealDoubleVectors,\
+    complex_double_vector,\
+    real_double_vector,\
     ec, \
     pari, \
 
