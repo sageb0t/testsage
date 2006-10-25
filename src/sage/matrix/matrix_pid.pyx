@@ -23,9 +23,6 @@ import matrix_domain
 import sage.modules.free_module
 
 cdef class Matrix_pid(matrix_domain.Matrix_domain):
-    def __init__(self, parent):
-        matrix_domain.Matrix_domain.__init__(self, parent)
-
     def column_module(self):
         """
         Return the free module over the base ring spanned by the

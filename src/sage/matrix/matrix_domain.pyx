@@ -23,9 +23,6 @@ import  matrix_generic
 import sage.structure.sequence
 
 cdef class Matrix_domain(matrix_dense.Matrix_dense):
-    def __init__(self, parent, coerce_entries=False, copy=True):
-        matrix_generic.Matrix.__init__(self, parent)
-
     def eigenspaces(self):
         """
         Return a list of pairs
