@@ -182,7 +182,7 @@ setup(ext_modules = ext_modules,
     if language == 'c++':
         target_c = target_c + "pp"
 
-    cmd = 'cd %s && pyrexc -e %s %s.pyx 1>log 2>err && cp %s.c %s'%(build_dir, pyrex_include, name,
+    cmd = 'cd %s && pyrexc -p %s %s.pyx 1>log 2>err && cp %s.c %s'%(build_dir, pyrex_include, name,
                                                                   name, target_c)
 
     if verbose:
