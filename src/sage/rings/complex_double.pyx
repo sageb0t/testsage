@@ -17,12 +17,12 @@ z to complex doubles by typing either \code{ComplexDoubleField(x)} or
 \code{CDF(x)}.
 
 EXAMPLES:
-    sage: ComplexDoubleField
+    sage: ComplexDoubleField()
     Complex Double Field
     sage: CDF
     Complex Double Field
     sage: type(CDF.0)
-    <type 'complex_double.ComplexDoubleElement'>
+    <type 'sage.rings.complex_double.ComplexDoubleElement'>
     sage: ComplexDoubleElement(sqrt(2),3)
     1.41421356237 + 3.0*I
     sage: parent(CDF(-2))
@@ -64,15 +64,15 @@ from sage.misc.sage_eval import sage_eval
 
 cimport sage.structure.element
 cimport sage.rings.ring
+
 cimport sage.libs.pari.gen
+import sage.libs.pari.gen
+
 import integer
+import  integer_ring
 
-#import  sage.structure.coerce
+import infinity
 import  complex_number
-
-#import  integer_ring
-
-#import infinity
 
 # PREC is the precision (in decimal digits) that all PARI computations with doubles
 # are done with in this module.  A double is by definition 8 bytes or 64 bits.  Since
@@ -103,10 +103,12 @@ cdef class ComplexDoubleField_class(sage.rings.ring.Field):
         EXAMPLES:
             sage: CC == CDF
             False
-            sage: CDF == ComplexDoubleField     # CDF is the shorthand
+            sage: CDF is ComplexDoubleField()     # CDF is the shorthand
+            True
+            sage: CDF == ComplexDoubleField()
             True
         """
-        if other is ComplexDoubleField:
+        if other is the_complex_double_field:
             return 0
         return -1
 
@@ -115,7 +117,7 @@ cdef class ComplexDoubleField_class(sage.rings.ring.Field):
         Print out this complex double field.
 
         EXAMPLES:
-            sage: ComplexDoubleField
+            sage: ComplexDoubleField()
             Complex Double Field
             sage: CDF
             Complex Double Field
@@ -358,11 +360,17 @@ cdef class ComplexDoubleElement(sage.structure.element.FieldElement):
     # Arithmetic
     #######################################################################
 
-    def __add__(x, y):
-        try:
-            return _add_(x, y)
-        except TypeError:
-            return sage.rings.coerce.bin_op(x, y, operator.add)
+    cdef sage.structure.element.RingElement _add_sibling_cdef(self,
+                                sage.structure.element.RingElement right):
+        """
+        Add self and right.
+
+        EXAMPLES:
+            sage: CDF(2,-3)._add_(CDF(1,-2))
+            3.0 - 5.0*I
+        """
+        return new_element(gsl_complex_add(self._complex,
+                                           (<ComplexDoubleElement>right)._complex))
 
     def _sub_(ComplexDoubleElement self, ComplexDoubleElement right):
         """
@@ -1256,7 +1264,7 @@ cdef class ComplexDoubleElement(sage.structure.element.FieldElement):
             sage: p = z.algdep(5); p
             x^5 + x^2
             sage: p.factor()
-            x^2 * (x + 1) * (x^2 - x + 1)
+            x^2 * (x^2 - x + 1) * (x + 1)
             sage: z^2 - z + 1
             2.22044604925e-16 + 1.11022302463e-16*I
 
@@ -1315,16 +1323,6 @@ cdef GEN complex_gen(x):
     except TypeError:
         z = CDF(x)
     return z._gen()
-
-cdef _add_(ComplexDoubleElement self, ComplexDoubleElement right):
-    """
-    Add self and right.
-
-    EXAMPLES:
-        sage: CDF(2,-3)._add_(CDF(1,-2))
-        3.0 - 5.0*I
-    """
-    return new_element(gsl_complex_add(self._complex, right._complex))
 
 #####################################################
 # unique objects

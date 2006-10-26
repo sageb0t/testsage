@@ -59,6 +59,10 @@ These are mostly things that can't be done in Pyrex.
 #define PY_SET_TP_NEW(zzz_type1, zzz_type2) \
     (((PyTypeObject*)zzz_type1)->tp_new = ((PyTypeObject*)zzz_type2)->tp_new)
 
+/* Tests whether the given object has a python dictionary. */
+#define HAS_DICTIONARY(zzz_obj) \
+    (((PyObject*)(zzz_obj))->ob_type->tp_dictoffset != NULL)
+
 PyObject* global_empty_tuple;
 
 /*****************************************
