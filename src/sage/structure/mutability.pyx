@@ -21,6 +21,10 @@ cdef class Mutability:
         if self._is_immutable:
             raise ValueError, "object is immutable; please change a copy instead."
 
+    cdef _require_mutable_cdef(self):
+        if self._is_immutable:
+            raise ValueError, "object is immutable; please change a copy instead."
+
     def set_immutable(self):
         """
         Make this object immutable, so it can never again be changed.
@@ -36,7 +40,7 @@ cdef class Mutability:
             ...
             ValueError: object is immutable; please change a copy instead.
         """
-        self._is_immutable = True
+        self._is_immutable = 1
 
     def is_immutable(self):
         """
@@ -68,6 +72,4 @@ cdef class Mutability:
             return True
 
     def __reduce__(self):
-        import sage.structure.mutability
-        return sage.structure.mutability.__reduce__Mutability, \
-               tuple([self._is_immutable])
+        return Mutability, (self._is_immutable, )

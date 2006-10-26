@@ -271,9 +271,6 @@ ext_modules = [ \
 
     # complex_number2, \
 
-    #Extension('sage.rings.multi_polynomial_element_pyx',
-    #          sources = ['sage/rings/multi_polynomial_element_pyx.pyx']), \
-
     Extension('sage.ext.arith',
               sources = ['sage/ext/arith.pyx']), \
 
@@ -361,8 +358,8 @@ ext_modules = [ \
                'sage/ext/arith.pyx'],
               libraries = ['gmp']), \
 
-    Extension('sage.structure.mutability_pyx',
-              ['sage/structure/mutability_pyx.pyx']
+    Extension('sage.structure.mutability',
+              ['sage/structure/mutability.pyx']
               ), \
 
     Extension('sage.matrix.matrix_generic',
