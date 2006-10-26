@@ -22,7 +22,7 @@ import  matrix_generic
 
 import sage.structure.sequence
 
-cdef class Matrix_domain(matrix_dense.Matrix_dense):
+cdef class Matrix_domain_dense(matrix_dense.Matrix_dense):
     def eigenspaces(self):
         """
         Return a list of pairs

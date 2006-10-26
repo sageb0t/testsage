@@ -1,9 +1,9 @@
 include "../ext/cdefs.pxi"
 include "../ext/interrupt.pxi"
 
-cimport matrix_integer
+cimport matrix_pid_dense
 
-cdef class Matrix_integer_dense(matrix_integer.Matrix_integer):
+cdef class Matrix_integer_dense(matrix_pid_dense.Matrix_pid_dense):
     cdef char _initialized
     cdef mpz_t *_entries
     cdef mpz_t **_matrix
