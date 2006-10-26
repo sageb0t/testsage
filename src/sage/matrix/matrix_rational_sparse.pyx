@@ -1016,8 +1016,7 @@ cdef class Matrix_rational_sparse(matrix_sparse.Matrix_field_sparse):
     def __reduce__(self):
         """
         EXAMPLES:
-            sage: from sage.matrix.sparse_matrix_pyx import *
-            sage: A = MatrixSpace(QQ, 2, sparse=True)([1,2,-1/5,19/397])._sparse_matrix_mpq_()
+            sage: A = MatrixSpace(QQ, 2, sparse=True)([1,2,-1/5,19/397])
             sage: loads(dumps(A)) == A
             True
         """
@@ -1027,8 +1026,6 @@ cdef class Matrix_rational_sparse(matrix_sparse.Matrix_field_sparse):
         #     3  1 4 7 3/4 7/83  39/45
         #     2  1 193 -17 38
         #
-
-        import sage.matrix.sparse_matrix_pyx
 
         cdef char *s, *t, *tmp
         cdef int m, n, ln, i, j, z, len_so_far
@@ -1084,8 +1081,7 @@ cdef class Matrix_rational_sparse(matrix_sparse.Matrix_field_sparse):
 
         entries = str(s)[:-1]
         PyMem_Free(s)
-        return sage.matrix.sparse_matrix_pyx.make_sparse_rational_matrix, \
-               (self.nr, self.nc, entries)
+        return make_sparse_rational_matrix, (self.nr, self.nc, entries)
 
     def copy(self):
         """
@@ -1195,7 +1191,6 @@ cdef class Matrix_rational_sparse(matrix_sparse.Matrix_field_sparse):
         Set row row_to equal to multiple times row row_from.
 
         EXAMPLES:
-            sage: from sage.matrix.sparse_matrix_pyx import *
             sage: m = Matrix_rational_sparse(3,3,entries=[(1,1,10/3)])
             sage: m
             [
@@ -1740,7 +1735,7 @@ cdef class Matrix_rational_sparse(matrix_sparse.Matrix_field_sparse):
                 t = sage.misc.all.verbose("time to reduce matrix mod p:",t, level=2)
                 A.echelon()
                 t = sage.misc.all.verbose("time to put reduced matrix in echelon form:",t, level=2)
-                c = dense_matrix_pyx.cmp_pivots(best_pivots, A.pivots())
+                c = matrix_rational_dense.cmp_pivots(best_pivots, A.pivots())
                 if c <= 0:
                     best_pivots = A.pivots()
                     X.append(A)
@@ -1756,8 +1751,7 @@ cdef class Matrix_rational_sparse(matrix_sparse.Matrix_field_sparse):
             # recompute product, since may drop bad matrices
             prod = 1
             for i in range(len(X)):
-                if dense_matrix_pyx.cmp_pivots(
-                                   best_pivots, X[i].pivots()) <= 0:
+                if matrix_rational_dense.cmp_pivots(best_pivots, X[i].pivots()) <= 0:
                     Y.append(X[i])
                     prod = prod * X[i].prime()
             try:
@@ -1816,7 +1810,7 @@ cdef class Matrix_rational_sparse(matrix_sparse.Matrix_field_sparse):
             _sig_check
             if c % 10 == 0:
                 sage.misc.all.verbose('clearing column %s of %s'%(c,self.nc),
-                                      caller_name = 'sparse_matrix_pyx echelon')
+                                      caller_name = 'matrix_rational_sparse echelon')
             min = self.nc + 1
             min_row = -1
             if PyErr_CheckSignals(): raise KeyboardInterrupt
