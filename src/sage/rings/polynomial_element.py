@@ -79,7 +79,17 @@ def is_Polynomial(f):
 
 class Polynomial(Element_cmp_, commutative_algebra_element.CommutativeAlgebraElement):
     """
-    Polynomial base class.
+    A polynomial.
+
+    EXAMPLE:
+        sage: R = QQ['y']
+        sage: R.0
+        y
+        sage: S = R['x']
+        sage: f = S.0 * R.0; f
+        x
+        sage: type(f)
+        <class 'sage.rings.polynomial_element.Polynomial_generic_dense'>
     """
     def __new__(cls, *args, **kwds):
         return commutative_algebra_element.CommutativeAlgebraElement.__new__(*args, **kwds)
@@ -352,9 +362,9 @@ class Polynomial(Element_cmp_, commutative_algebra_element.CommutativeAlgebraEle
         if right < 0:
             return (~self)**(-right)
         if self._is_gen:   # special case x**n should be faster!
-            z = self.parent()(0)
-            z[right] = 1
-            return z
+            v = [0]*right + [1]
+            print v
+            return self.parent()(v, check=True)
         return arith.generic_power(self, right, self.parent()(1))
 
     def _repr(self, name=None):
@@ -423,8 +433,8 @@ class Polynomial(Element_cmp_, commutative_algebra_element.CommutativeAlgebraEle
             return "0"
         return s[1:]
 
-    def __setitem__(self, n, x):
-        raise NotImplentedError
+    def __setitem__(self, n, value):
+        raise IndexError, "polynomials are immutable"
 
     def __floordiv__(self,right):
         """
@@ -1492,7 +1502,7 @@ class Polynomial_generic_dense(Polynomial):
     """
     def __init__(self, parent, x=None, check=True, is_gen=False, construct=False):
         Polynomial.__init__(self, parent, is_gen=is_gen)
-        if x == None:
+        if x is None:
             self.__coeffs = []
             return
         R = parent.base_ring()
@@ -1542,23 +1552,24 @@ class Polynomial_generic_dense(Polynomial):
         if i < 0:
             i = 0
         return self.__coeffs[i:j]
-
-    def __setitem__(self, n, value):
-        if self._is_gen:
-            raise ValueError, "the generator cannot be changed"
-        n = int(n)
-        value = self.base_ring()(value)
-        if n >= 0 and n < len(self.__coeffs):
-            self.__coeffs[n] = value
-            if n == len(self.__coeffs) and value == 0:
-                self.__normalize()
-        elif n < 0:
-            raise IndexError, "polynomial coefficient index must be nonnegative"
-        elif value != 0:
-            zero = self.base_ring()(0)
-            for _ in xrange(len(self.__coeffs), n):
-                self.__coeffs.append(zero)
-            self.__coeffs.append(value)
+## Just because we could, doesn't mean we should.  Get rid of
+## mutability of polynomials,
+##    def __setitem__(self, n, value):
+##         if self._is_gen:
+##             raise ValueError, "the generator cannot be changed"
+##         n = int(n)
+##         value = self.base_ring()(value)
+##         if n >= 0 and n < len(self.__coeffs):
+##             self.__coeffs[n] = value
+##             if n == len(self.__coeffs) and value == 0:
+##                 self.__normalize()
+##         elif n < 0:
+##             raise IndexError, "polynomial coefficient index must be nonnegative"
+##         elif value != 0:
+##             zero = self.base_ring()(0)
+##             for _ in xrange(len(self.__coeffs), n):
+##                 self.__coeffs.append(zero)
+##             self.__coeffs.append(value)
 
     def __floordiv__(self, right):
         if right.parent() == self.parent():
@@ -1712,19 +1723,19 @@ class Polynomial_generic_sparse(Polynomial):
             v[k] = x[k]
         return v
 
-    def __setitem__(self, n, value):
-        if self._is_gen:
-            raise ValueError, "the generator cannot be changed"
-        n = int(n)
-        value = self.base_ring()(value)
-        x = self.__coeffs
-        if n < 0:
-            raise IndexError, "polynomial coefficient index must be nonnegative"
-        if value == 0:
-            if x.has_key(n):
-                del x[n]
-        else:
-            x[n] = value
+##    def __setitem__(self, n, value):
+##         if self._is_gen:
+##             raise ValueError, "the generator cannot be changed"
+##         n = int(n)
+##         value = self.base_ring()(value)
+##         x = self.__coeffs
+##         if n < 0:
+##             raise IndexError, "polynomial coefficient index must be nonnegative"
+##         if value == 0:
+##             if x.has_key(n):
+##                 del x[n]
+##         else:
+##             x[n] = value
 
     def list(self):
         """
@@ -2100,22 +2111,22 @@ class Polynomial_rational_dense(Polynomial_generic_field):
     def _sub_(self, right):
         return self.parent()(self.__poly - right.__poly, construct=True)
 
-    def __setitem__(self, n, value):
-        try:
-            del self.__list
-        except AttributeError:
-            pass
-        if self._is_gen:
-            raise ValueError, "the generator cannot be changed"
-        n = int(n)
-        if n < 0:
-            raise IndexError, "n must be >= 0"
-        if n <= self.__poly.poldegree():
-            self.__poly[n] = QQ(value)
-        else:
-            self.__poly = self.__poly + pari('(%s)*x^%s'%(QQ(value),n))
-        if hasattr(self, "__list"):
-            del self.__list
+##     def __setitem__(self, n, value):
+##         try:
+##             del self.__list
+##         except AttributeError:
+##             pass
+##         if self._is_gen:
+##             raise ValueError, "the generator cannot be changed"
+##         n = int(n)
+##         if n < 0:
+##             raise IndexError, "n must be >= 0"
+##         if n <= self.__poly.poldegree():
+##             self.__poly[n] = QQ(value)
+##         else:
+##             self.__poly = self.__poly + pari('(%s)*x^%s'%(QQ(value),n))
+##         if hasattr(self, "__list"):
+##             del self.__list
 
     def complex_roots(self, flag=0):
         """
@@ -2489,13 +2500,13 @@ class Polynomial_integer_dense(Polynomial, integral_domain_element.IntegralDomai
             return Polynomial.__floordiv__(self, right)
         return self.parent()([c // d for c in self.list()], construct=True)
 
-    def __setitem__(self, n, value):
-        if self._is_gen:
-            raise ValueError, "the generator cannot be changed"
-        n = int(n)
-        if n < 0:
-            raise IndexError, "n must be >= 0"
-        self.__poly[n] = int(value)
+##     def __setitem__(self, n, value):
+##         if self._is_gen:
+##             raise ValueError, "the generator cannot be changed"
+##         n = int(n)
+##         if n < 0:
+##             raise IndexError, "n must be >= 0"
+##         self.__poly[n] = int(value)
 
     def complex_roots(self, flag=0):
         """
@@ -2838,14 +2849,14 @@ class Polynomial_dense_mod_n(Polynomial):
             return Polynomial.__floordiv__(self, right)
         return self.parent()([c // d for c in self.list()], construct=True)
 
-    def __setitem__(self, n, value):
-        if self._is_gen:
-            raise ValueError, "the generator cannot be changed"
-        n = int(n)
-        if n < 0:
-            raise IndexError, "n must be >= 0"
-        self.parent()._ntl_set_modulus()
-        self.__poly[n] = int(value)
+##     def __setitem__(self, n, value):
+##         if self._is_gen:
+##             raise ValueError, "the generator cannot be changed"
+##         n = int(n)
+##         if n < 0:
+##             raise IndexError, "n must be >= 0"
+##         self.parent()._ntl_set_modulus()
+##         self.__poly[n] = int(value)
 
     def copy(self):
         self.parent()._ntl_set_modulus()
