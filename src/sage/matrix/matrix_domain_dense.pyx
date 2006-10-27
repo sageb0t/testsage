@@ -17,12 +17,12 @@ Matrices over a domain
 #                  http://www.gnu.org/licenses/
 ########################################################################
 
-cimport matrix_generic
-import  matrix_generic
+cimport matrix
+import  matrix
 
 import sage.structure.sequence
 
-cdef class Matrix_domain_dense(matrix_dense.Matrix_dense):
+cdef class Matrix_domain_dense(matrix.Matrix):
 
     def eigenspaces(self):
         """

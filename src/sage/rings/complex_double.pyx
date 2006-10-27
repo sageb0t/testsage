@@ -93,6 +93,7 @@ cdef class ComplexDoubleField_class(sage.rings.ring.Field):
 
     def __hash__(self):
         return 561162115
+
     def characteristic(self):
         return integer.Integer(0)
 
@@ -360,8 +361,7 @@ cdef class ComplexDoubleElement(sage.structure.element.FieldElement):
     # Arithmetic
     #######################################################################
 
-    cdef sage.structure.element.RingElement _add_sibling_cdef(self,
-                                sage.structure.element.RingElement right):
+    cdef RingElement _add_sibling_cdef(self, RingElement right):
         """
         Add self and right.
 

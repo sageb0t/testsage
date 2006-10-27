@@ -29,6 +29,7 @@ from sage.misc.sage_eval import sage_eval
 
 cimport sage.structure.element
 import  sage.structure.element
+from sage.structure.element cimport RingElement
 
 cimport sage.rings.ring
 import  sage.rings.ring
@@ -320,7 +321,7 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
     ########################
     #   Basic Arithmetic
     ########################
-    def _add_(RealDoubleElement self, RealDoubleElement other):
+    cdef RingElement _add_sibling_cdef(self, RingElement right):
         """
         Add two real numbers with the same parent.
 
@@ -329,7 +330,7 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
             sage: R(-1.5) + R(2.5)
             1.0
         """
-        return RealDoubleElement(self._value + other._value)
+        return RealDoubleElement(self._value + (<RealDoubleElement>right)._value)
 
     def __invert__(self):
         """
