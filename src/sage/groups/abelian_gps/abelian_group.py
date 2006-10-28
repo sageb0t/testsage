@@ -350,7 +350,7 @@ class AbelianGroup_class(group.AbelianGroup):
         self.__invariants = invs
         # *now* define ngens
         self.__ngens = len(self.__invariants)
-        self.assign_names(names)
+        self._assign_names(names)
 
     def invariants(self):
         return self.__invariants
