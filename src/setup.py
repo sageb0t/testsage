@@ -133,11 +133,11 @@ cf = Extension('sage.libs.cf.cf',
                libraries = ['cf', 'cfmem', 'gmp', 'stdc++', 'm']
                )
 
-linbox_gfq = Extension('sage.libs.linbox.finite_field_givaro',
-                   sources = ["sage/libs/linbox/finite_field_givaro.pyx"],
-                   libraries = ['gmp', 'gmpxx', 'm', 'stdc++', 'givaro', 'linbox'],
-                   language='c++'
-                   )
+givaro_gfq = Extension('sage.rings.finite_field_givaro',
+                       sources = ["sage/rings/finite_field_givaro.pyx"],
+                       libraries = ['gmp', 'gmpxx', 'm', 'stdc++', 'givaro'],
+                       language='c++'
+                       )
 
 matrix = Extension('sage.matrix.matrix', ['sage/matrix/matrix.pyx'])
 
@@ -277,6 +277,7 @@ ext_modules = [ \
 
 ##     matrix_modn_dense,
 ##     matrix_modn_sparse,
+    givaro_gfq, \
 
 ##     matrix_rational_dense,
 ##     matrix_rational_sparse,
@@ -331,6 +332,9 @@ ext_modules = [ \
 
     Extension('sage.rings.polynomial_ring_c',
               sources = ['sage/rings/polynomial_ring_c.pyx']), \
+
+    Extension('sage.ext.interactive_constructors_c',
+              sources = ['sage/ext/interactive_constructors_c.pyx']), \
 
     Extension('sage.rings.multi_polynomial_ring_c',
               sources = ['sage/rings/multi_polynomial_ring_c.pyx']), \
@@ -413,7 +417,6 @@ if DEVEL:
     extra_compile_args.append('-ggdb')
     ext_modules.append(hanke)
     #ext_modules.append(mpc)
-    ext_modules.append(linbox_gfq)
 
 for m in ext_modules:
     m.sources += ['sage/ext/interrupt.c', 'sage/ext/stdsage.c']
@@ -668,7 +671,6 @@ setup(name        = 'sage',
                      'sage.libs.ec',
                      'sage.libs.pari',
                      'sage.libs.cf',
-                     'sage.libs.linbox',
 
                      'sage.matrix',
 
