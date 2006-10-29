@@ -468,7 +468,7 @@ class HG:
 
     what = diff
 
-    def revert(self, files='', options=''):
+    def revert(self, files='', options='', rev=None):
         """
         Revert files or dirs to their states as of some revision
 
@@ -502,7 +502,6 @@ class HG:
             reverted.
 
         OPTIONS:
-         -r --rev        revision to revert to
             --no-backup  do not save backup copies of files
          -I --include    include names matching given patterns
          -X --exclude    exclude names matching given patterns
