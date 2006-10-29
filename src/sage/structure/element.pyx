@@ -835,6 +835,9 @@ cdef class FieldElement(CommutativeRingElement):
             right = self.parent()(right)
         return self/right, 0
 
+cdef class FiniteFieldElement(FieldElement):
+    pass
+
 cdef class AlgebraElement(RingElement):
     pass
 
