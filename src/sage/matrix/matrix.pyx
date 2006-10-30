@@ -177,6 +177,7 @@ from   sage.structure.sequence import _combinations
 import sage.rings.integer
 
 cimport sage.structure.element
+from sage.structure.element cimport ModuleElement
 
 from sage.structure.mutability cimport Mutability
 
@@ -189,7 +190,7 @@ def is_Matrix(x):
 
 cdef class MatrixWindow  # forward declare
 
-cdef class Matrix(sage.structure.element.ModuleElement):
+cdef class Matrix(ModuleElement):
     r"""
     A generic matrix.
 
@@ -2405,7 +2406,7 @@ cdef class Matrix(sage.structure.element.ModuleElement):
         MS = self.matrix_space(n, self.ncols())
         return MS(X)
 
-    cdef sage.structure.element.ModuleElement _add_sibling_cdef(self, sage.structure.element.ModuleElement right):
+    cdef ModuleElement _add_c_impl(self, ModuleElement right):
         """
         Add two matrices with the same parent.
 
