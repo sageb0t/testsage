@@ -96,7 +96,7 @@ cdef class NativeIntStruct:
 
 cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
 
-    def __init__(self, parent, value, empty=False):
+    def __init__(self, parent):
         """
         EXAMPLES:
             sage: a = Mod(10,30^10); a
@@ -104,9 +104,7 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
             sage: loads(a.dumps()) == a
             True
         """
-        if self.__class__ is IntegerMod:
-            raise NotImplementedError, "Can't instantiate abstract IntegerMod"
-        commutative_ring_element.CommutativeRingElement.__init__(self, parent)
+        self._parent = parent
         self.__modulus = parent._pyx_order
 
     def __abs__(self):
@@ -231,23 +229,23 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
     def is_square(self):
         return bool(self.pari().issquare()) # TODO implement directly
 
-    def charpoly(self):
+    def charpoly(self, var):
         """
         Returns the characteristic polynomial of this element.
 
         EXAMPLES:
             sage: k = GF(3)
             sage: a = k.gen()
-            sage: a.charpoly()
+            sage: a.charpoly('x')
             x + 2
-            sage: a.charpoly()(a)
+            sage: a + 2
             0
 
         AUTHOR:
          -- Craig Citro
         """
         import polynomial_ring
-        R = polynomial_ring.PolynomialRing(self._parent)
+        R = polynomial_ring.PolynomialRing(self._parent, var)
         return R([-self,1])
 
     def norm(self):
@@ -403,7 +401,7 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
             True
         """
         mpz_init(self.value)
-        IntegerMod_abstract.__init__(self, parent, value)
+        IntegerMod_abstract.__init__(self, parent)
         if empty:
             return
         cdef sage.rings.integer.Integer z
@@ -417,6 +415,21 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
 
     def __dealloc__(self):
         mpz_clear(self.value)
+
+##     def __reduce__(self):
+##         """
+##         EXAMPLES:
+##             sage: k = Integers(2^200)
+##             sage: loads(dumps(k))  == k
+##             True
+##             sage: loads(dumps(k(17)))  == k(17)
+##             True
+##         """
+##         cdef sage.rings.integer.Integer z
+##         z = sage.rings.integer.Integer()
+##         sage.rings.integer.set_mpz(z, self.value)
+##         # todo -- should do this via some direct bytes thing that is the same function used in ZZ class, etc.
+##         return (IntegerMod_gmp, (self._parent, z))
 
     cdef void set_from_mpz(IntegerMod_gmp self, mpz_t value):
         cdef sage.rings.integer.Integer modulus
@@ -462,7 +475,7 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
             sage: mod(5,13^20) == mod(-5,13)
             False
         """
-        if right._parent is not self._parent:
+        if right._parent != self._parent:
             return -1
         cdef int i
         i = mpz_cmp(self.value, right.value)
@@ -713,6 +726,13 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
 #      class IntegerMod_int
 ######################################################################
 
+def create_IntegerMod_int(parent, int ivalue):
+    cdef IntegerMod_int n
+    n = IntegerMod_int.__new__(IntegerMod_int, 0)
+    n._parent = parent
+    n.ivalue = ivalue
+    return n
+
 cdef class IntegerMod_int(IntegerMod_abstract):
     """
     Elements of $\Z/n\Z$ for n small enough to be operated on in 32 bits
@@ -728,7 +748,7 @@ cdef class IntegerMod_int(IntegerMod_abstract):
             sage: loads(a.dumps()) == a
             True
         """
-        IntegerMod_abstract.__init__(self, parent, value)
+        IntegerMod_abstract.__init__(self, parent)
         if empty:
             return
         cdef sage.rings.integer.Integer z
@@ -1146,7 +1166,7 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
             sage: Mod(5, 2^31)
             5
         """
-        IntegerMod_abstract.__init__(self, parent, value)
+        IntegerMod_abstract.__init__(self, parent)
         if empty:
             return
         cdef sage.rings.integer.Integer z
