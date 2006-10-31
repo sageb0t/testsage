@@ -53,7 +53,7 @@ class FiniteField_ext_pariElement(FiniteFieldElement):
 
         EXAMPLES:
             sage: from sage.rings.finite_field import FiniteField_ext_pari
-            sage: k = FiniteField_ext_pari(9)
+            sage: k = FiniteField_ext_pari(9,'a')
             sage: a = k(11); a
             2
             sage: a.parent()
@@ -90,14 +90,14 @@ class FiniteField_ext_pariElement(FiniteFieldElement):
     def polynomial(self):
         """
         Elements of a finite field are represented as a polynomial
-        modulo a modulus.  This functions returns the representating
-        polynomial as an element of the polynomial ring over the
-        prime finite field, with the same variable as the finite field.
+        modulo a modulus.  This functions returns the representing
+        polynomial as an element of the polynomial ring over the prime
+        finite field, with the same variable as the finite field.
 
         EXAMPLES:
         The default variable is a:
             sage: from sage.rings.finite_field import FiniteField_ext_pari
-            sage: k = FiniteField_ext_pari(3**2)
+            sage: k = FiniteField_ext_pari(3**2,'a')
             sage: k.gen().polynomial()
             a
 
@@ -119,17 +119,17 @@ class FiniteField_ext_pariElement(FiniteFieldElement):
 
         EXAMPLES:
             sage: from sage.rings.finite_field import FiniteField_ext_pari
-            sage: k = FiniteField_ext_pari(3**2)
+            sage: k = FiniteField_ext_pari(3**2, 'a')
             sage: a = k.gen()
             sage: a.is_square()
             False
             sage: (a**2).is_square()
             True
-            sage: k = FiniteField_ext_pari(2**2)
+            sage: k = FiniteField_ext_pari(2**2,'a')
             sage: a = k.gen()
             sage: (a**2).is_square()
             True
-            sage: k = FiniteField_ext_pari(17**5); a = k.gen()
+            sage: k = FiniteField_ext_pari(17**5,'a'); a = k.gen()
             sage: (a**2).is_square()
             True
             sage: a.is_square()
@@ -234,7 +234,7 @@ class FiniteField_ext_pariElement(FiniteFieldElement):
 
         EXAMPLES:
             sage: from sage.rings.finite_field import FiniteField_ext_pari
-            sage: k = FiniteField_ext_pari(3**3)
+            sage: k = FiniteField_ext_pari(3**3,'a')
             sage: a = k(5)
             sage: a
             2
@@ -256,7 +256,7 @@ class FiniteField_ext_pariElement(FiniteFieldElement):
 
         EXAMPLES:
             sage: from sage.rings.finite_field import FiniteField_ext_pari
-            sage: k = FiniteField_ext_pari(3**3)
+            sage: k = FiniteField_ext_pari(3**3, 'a')
             sage: a = k.gen()
             sage: b = a**2 + 2*a + 1
             sage: b._pari_()
@@ -286,7 +286,7 @@ class FiniteField_ext_pariElement(FiniteFieldElement):
 
         EXAMPLES:
             sage: from sage.rings.finite_field import FiniteField_ext_pari
-            sage: F = FiniteField_ext_pari(8)
+            sage: F = FiniteField_ext_pari(8,'a')
             sage: a = F.multiplicative_generator()
             sage: gap(a)
             Z(2^3)
@@ -299,7 +299,7 @@ class FiniteField_ext_pariElement(FiniteFieldElement):
 
         You can specify the instance of the Gap interpreter that is used:
 
-            sage: F = FiniteField_ext_pari(next_prime(200)^2)
+            sage: F = FiniteField_ext_pari(next_prime(200)^2, 'a')
             sage: a = F.multiplicative_generator ()
             sage: a._gap_ (gap)
             Z(211^2)
@@ -307,7 +307,7 @@ class FiniteField_ext_pariElement(FiniteFieldElement):
             Z(211^2)^20
 
         Gap only supports relatively small finite fields.
-            sage: F = FiniteField_ext_pari(next_prime(1000)^2)
+            sage: F = FiniteField_ext_pari(next_prime(1000)^2, 'a')
             sage: a = F.multiplicative_generator ()
             sage: gap(a)
             Traceback (most recent call last):
@@ -331,7 +331,7 @@ class FiniteField_ext_pariElement(FiniteFieldElement):
 
         EXAMPLES:
             sage: from sage.rings.finite_field import FiniteField_ext_pari
-            sage: k = FiniteField_ext_pari(3**3)
+            sage: k = FiniteField_ext_pari(3**3, 'a')
             sage: a = k.gen()
             sage: a.charpoly('x')
             x^3 + 2*x + 1
@@ -350,8 +350,8 @@ class FiniteField_ext_pariElement(FiniteFieldElement):
 
         EXAMPLES:
             sage: from sage.rings.finite_field import FiniteField_ext_pari
-            sage: k = FiniteField_ext_pari(3**3); a = k.gen()
-            sage: b = a**2 + 2
+            sage: a = FiniteField_ext_pari(3**3, 'a').gen()
+            sage: b = a^2 + 2
             sage: b.charpoly('x')
             x^3 + x^2 + 2
             sage: b.trace()
@@ -369,8 +369,8 @@ class FiniteField_ext_pariElement(FiniteFieldElement):
 
         EXAMPLES:
             sage: from sage.rings.finite_field import FiniteField_ext_pari
-            sage: k = FiniteField_ext_pari(3**3); a = k.gen()
-            sage: b = a**2 + 2
+            sage: a = FiniteField_ext_pari(3**3, 'a').gen()
+            sage: b = a^2 + 2
             sage: b.charpoly('x')
             x^3 + x^2 + 2
             sage: b.trace()
@@ -403,7 +403,7 @@ class FiniteField_ext_pariElement(FiniteFieldElement):
             sage: F(23).log(F(8111))
             8393
 
-            sage: F = FiniteField_ext_pari(2^10)
+            sage: F = FiniteField_ext_pari(2^10, 'a')
             sage: g = F.gen()
             sage: b = g; a = g^37
             sage: b.log(a)
@@ -512,7 +512,7 @@ class FiniteField_ext_pariElement(FiniteFieldElement):
         """
         EXAMPLES:
             sage: from sage.rings.finite_field import FiniteField_ext_pari
-            sage: k = FiniteField_ext_pari(9); a = k.gen()
+            sage: a = FiniteField_ext_pari(9, 'a').gen()
             sage: ~a
             a + 2
             sage: (a+1)*a
@@ -548,7 +548,7 @@ class FiniteField_ext_pariElement(FiniteFieldElement):
 
         EXAMPLES:
             sage: from sage.rings.finite_field import FiniteField_ext_pari
-            sage: k = FiniteField_ext_pari(3**3); a = k.gen()
+            sage: a = FiniteField_ext_pari(3**3, 'a').gen()
             sage: a == 1
             False
             sage: a**0 == 1
