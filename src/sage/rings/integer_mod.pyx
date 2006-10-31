@@ -582,6 +582,19 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
             mpz_add(x.value, x.value, self.__modulus.sageInteger.value)
         return x;
 
+    cdef RingElement _neg_c_impl(self):
+        """
+        EXAMPLES:
+            sage: -mod(5,10^10)
+            9999999995
+        """
+        # TODO: this code is WRONG!!!! -mod(0, 10^10) is WRONG.
+        # It doesn't normalise correctly.
+        cdef IntegerMod_gmp x
+        x = IntegerMod_gmp(self._parent, None, empty=True)
+        mpz_sub(x.value, self.__modulus.sageInteger.value, self.value)
+        return x
+
     def _mul_(IntegerMod_gmp self, IntegerMod_gmp right):
         """
         EXAMPLES:
@@ -661,17 +674,6 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
         cdef IntegerMod_gmp x
         x = IntegerMod_gmp(self._parent, None, empty=True)
         mpz_fdiv_q_2exp(x.value, self.value, right)
-        return x
-
-    def __neg__(IntegerMod_gmp self):
-        """
-        EXAMPLES:
-            sage: -mod(5,10^10)
-            9999999995
-        """
-        cdef IntegerMod_gmp x
-        x = IntegerMod_gmp(self._parent, None, empty=True)
-        mpz_sub(x.value, self.__modulus.sageInteger.value, self.value)
         return x
 
     def __invert__(IntegerMod_gmp self):
@@ -904,6 +906,19 @@ cdef class IntegerMod_int(IntegerMod_abstract):
             x.ivalue = x.ivalue + self.__modulus.int32
         return x;
 
+    cdef RingElement _neg_c_impl(self):
+        """
+        EXAMPLES:
+            sage: -mod(7,10)
+            3
+        """
+        # TODO: this code is WRONG!!!! -mod(0, 10^10) is WRONG.
+        # It doesn't normalise correctly.
+        cdef IntegerMod_int x
+        x = IntegerMod_int(self._parent, None, empty=True)
+        x.ivalue = self.__modulus.int32 - self.ivalue
+        return x
+
     def _mul_(IntegerMod_int self, IntegerMod_int right):
         """
         EXAMPLES:
@@ -1008,17 +1023,6 @@ cdef class IntegerMod_int(IntegerMod_abstract):
             _sig_off
             x.ivalue = mpz_get_si(x_mpz)
             mpz_clear(x_mpz)
-        return x
-
-    def __neg__(IntegerMod_int self):
-        """
-        EXAMPLES:
-            sage: -mod(7,10)
-            3
-        """
-        cdef IntegerMod_int x
-        x = IntegerMod_int(self._parent, None, empty=True)
-        x.ivalue = self.__modulus.int32 - self.ivalue
         return x
 
     def __invert__(IntegerMod_int self):
@@ -1331,6 +1335,20 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
             x.ivalue = x.ivalue + self.__modulus.int64
         return x;
 
+    cdef RingElement _neg_c_impl(self):
+        """
+        EXAMPLES:
+            sage: -mod(7,10^5)
+            99993
+        """
+        # TODO: this code is WRONG!!!! -mod(0, 10^10) is WRONG.
+        # It doesn't normalise correctly.
+        # The docstring is wrong too because it's not a 64-bit example?
+        cdef IntegerMod_int64 x
+        x = IntegerMod_int64(self._parent, None, empty=True)
+        x.ivalue = self.__modulus.int64 - self.ivalue
+        return x
+
     def _mul_(IntegerMod_int64 self, IntegerMod_int64 right):
         """
         EXAMPLES:
@@ -1423,17 +1441,6 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
         cdef IntegerMod_int64 x
         x = IntegerMod_int64(self._parent, None, empty=True)
         x.ivalue = (self.ivalue >> right) % self.__modulus.int64
-        return x
-
-    def __neg__(IntegerMod_int64 self):
-        """
-        EXAMPLES:
-            sage: -mod(7,10^5)
-            99993
-        """
-        cdef IntegerMod_int64 x
-        x = IntegerMod_int64(self._parent, None, empty=True)
-        x.ivalue = self.__modulus.int64 - self.ivalue
         return x
 
     def __invert__(IntegerMod_int64 self):
