@@ -333,6 +333,9 @@ ext_modules = [ \
     Extension('sage.ext.interactive_constructors_c',
               sources = ['sage/ext/interactive_constructors_c.pyx']), \
 
+    Extension('sage.misc.pyrex_c',
+              sources = ['sage/misc/pyrex_c.pyx']), \
+
     Extension('sage.rings.real_mpfr',
               sources = ['sage/rings/real_mpfr.pyx', 'sage/rings/ring.pyx'],
               libraries = ['mpfr', 'gmp']), \
