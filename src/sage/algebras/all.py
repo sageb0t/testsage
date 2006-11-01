@@ -23,7 +23,7 @@ from algebra import Algebra, is_Algebra
 # Ring element base classes
 from algebra_element import AlgebraElement, is_AlgebraElement
 
-from free_algebra import FreeAlgebra
+from free_algebra import FreeAlgebra, is_FreeAlgebra
 from free_algebra_quotient import FreeAlgebraQuotient
 from quaternion_algebra import (QuaternionAlgebra, QuaternionAlgebraWithInnerProduct,
      QuaternionAlgebraWithGramMatrix, QuaternionAlgebraWithDiscriminants,
