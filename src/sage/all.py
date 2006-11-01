@@ -3,6 +3,8 @@ all.py -- much of sage is imported into this module, so you don't
           have to import everything individually.
 """
 
+from __future__ import with_statement
+
 ###############################################################################
 #
 #   SAGE: System for Algebra and Geometry Experimentation
@@ -20,8 +22,6 @@ all.py -- much of sage is imported into this module, so you don't
 #
 #                  http://www.gnu.org/licenses/
 ###############################################################################
-
-from __future__ import with_statement
 
 # Error message that matches the SAGE/IPython defaults
 quit = "Use Ctrl-D (i.e. EOF), %Exit, or %Quit to exit without confirmation."
