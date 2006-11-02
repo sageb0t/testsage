@@ -243,3 +243,5 @@ def prepare(w):
     elif not rings.is_Ring(ring):
         raise TypeError, "unable to find a common ring for all elements"
     return entries, ring
+
+Matrix = matrix
