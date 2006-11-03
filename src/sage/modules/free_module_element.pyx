@@ -127,7 +127,7 @@ cdef class FreeModuleElement(sage.structure.element.ModuleElement):
             Ambient free module of rank 4 over the principal ideal domain Integer Ring
         """
         return eval('self.parent()([x % p for x in self.list()], \
-                     copy=False, coerce_entries=False, check_element=False)',
+                     copy=False, coerce=False, check=False)',
                     {'self':self, 'p':p})
 
     def Mod(self, p):
@@ -254,12 +254,12 @@ cdef class FreeModuleElement(sage.structure.element.ModuleElement):
         """
         s = self.base_ring()(s)
         return eval('self.parent()([x*s for x in self.list()], \
-                     copy=False, coerce_entries=False, check_element=False)',
+                     copy=False, coerce=False, check=False)',
                     {'self':self, 's':s})
 
     def copy(self):
         return self.parent()(self.entries(), \
-                             coerce_entries=False, copy=True, check_element=False)
+                             coerce=False, copy=True, check=False)
     def degree(self):
         return self.parent().degree()
 
@@ -423,7 +423,7 @@ cdef class FreeModuleElement_generic_dense(FreeModuleElement):
             sage: loads(dumps(v)) == v
             True
     """
-    def __init__(self, parent, entries, coerce_entries=True, copy=True):
+    def __init__(self, parent, entries, coerce=True, copy=True):
         FreeModuleElement.__init__(self, parent)
         R = self.parent().base_ring()
         if entries == 0:
@@ -437,7 +437,7 @@ cdef class FreeModuleElement_generic_dense(FreeModuleElement):
             if len(entries) != self.degree():
                 raise ArithmeticError, "entries must be a list of length %s"%\
                             self.degree()
-            if coerce_entries:
+            if coerce:
                 try:
                     entries = eval('[R(x) for x in entries]',{'R':R, 'entries':entries})
                 except TypeError:
@@ -515,7 +515,7 @@ cdef class FreeModuleElement_generic_sparse(FreeModuleElement):
     """
     def __init__(self, parent,
                  entries=0,
-                 coerce_entries=True,
+                 coerce=True,
                  copy=True):
         #WARNING: In creation, we do not check that the i pairs satisfy
         #     0 <= i < degree.
@@ -535,7 +535,7 @@ cdef class FreeModuleElement_generic_sparse(FreeModuleElement):
                 copy = False
             if not isinstance(entries, dict):
                 raise TypeError, "entries must be a dict"
-            if coerce_entries:
+            if coerce:
                 try:
                     for k, x in entries.iteritems():
                         entries[k] = R(x)
@@ -632,7 +632,7 @@ cdef _add_(FreeModuleElement left, FreeModuleElement right):
         return sage.rings.coerce.bin_op(left, right, operator.add)
     X = eval('[left[i] + right[i] for i in xrange(left.degree())]',
              {'left':left, 'right':right})
-    return left.parent()(X, coerce_entries=False, copy=False, check_element=False)
+    return left.parent()(X, coerce=False, copy=False, check=False)
 
 cdef _sub_(FreeModuleElement left, FreeModuleElement right):
     """
@@ -642,4 +642,4 @@ cdef _sub_(FreeModuleElement left, FreeModuleElement right):
         return sage.rings.coerce.bin_op(left, right, operator.add)
     X = eval('[left[i] - right[i] for i in xrange(left.degree())]',
              {'left':left, 'right':right})
-    return left.parent()(X, coerce_entries=False, copy=False, check_element=False)
+    return left.parent()(X, coerce=False, copy=False, check=False)
