@@ -33,7 +33,7 @@ import matrix_generic_sparse
 ## import matrix_cyclo_sparse
 
 # SAGE imports
-import sage.structure.gens as gens
+import sage.structure.parent_gens as parent_gens
 import sage.rings.ring as ring
 import sage.rings.rational_field as rational_field
 import sage.rings.integer_ring as integer_ring
@@ -184,7 +184,7 @@ def MatrixSpace(base_ring, nrows, ncols=None, sparse=False):
     __cache[key] = weakref.ref(M)
     return M
 
-class MatrixSpace_generic(gens.Generators):
+class MatrixSpace_generic(parent_gens.ParentWithGens):
     """
     The space of all nrows x ncols matrices over base_ring.
 
