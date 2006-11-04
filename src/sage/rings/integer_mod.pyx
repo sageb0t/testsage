@@ -495,7 +495,7 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
                 n = -1
         else:
             n = self.cmp(right)
-        return self._rich_to_bool(op, n)
+        return (<IntegerMod_gmp> self)._rich_to_bool(op, n)
 
     def is_one(IntegerMod_gmp self):
         """
@@ -814,7 +814,7 @@ cdef class IntegerMod_int(IntegerMod_abstract):
                 n = -1
         else:
             n = self.cmp(right)
-        return self._rich_to_bool(op, n)
+        return (<IntegerMod_int> self)._rich_to_bool(op, n)
 
     def is_one(IntegerMod_int self):
         """
@@ -1232,7 +1232,7 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
                 n = -1
         else:
             n = self.cmp(right)
-        return self._rich_to_bool(op, n)
+        return (<IntegerMod_int64> self)._rich_to_bool(op, n)
 
     def is_one(IntegerMod_int64 self):
         """

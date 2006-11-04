@@ -281,7 +281,7 @@ ext_modules = [ \
      matrix_integer_dense,
 ##     matrix_integer_sparse,
 
-##     matrix_modn_dense,
+     matrix_modn_dense,
 ##     matrix_modn_sparse,
     givaro_gfq, \
 
