@@ -311,7 +311,7 @@ cdef class ModuleElement(Element):
         # and all that.
         if not PY_TYPE_CHECK(self, ModuleElement) or \
                   not PY_TYPE_CHECK(right, ModuleElement) \
-                  or right.parent() != self.parent():
+                  or not (right.parent() is self.parent()):
             return coerce.bin_op(self, right, operator.add)
         return self._add_(right)
 
@@ -385,7 +385,7 @@ cdef class ModuleElement(Element):
         # and all that.
         if not PY_TYPE_CHECK(self, ModuleElement) or \
                   not PY_TYPE_CHECK(right, ModuleElement) \
-                  or right.parent() != self.parent():
+                  or not (right.parent() is self.parent()):
             return coerce.bin_op(self, right, operator.sub)
         return self._sub_(right)
 
@@ -489,7 +489,7 @@ cdef class MonoidElement(Element):
 
     def __mul__(self, right):
         if not isinstance(self, Element) or not isinstance(right, Element) \
-               or right.parent() != self.parent():
+               or not (right.parent() is self.parent()):
             return coerce.bin_op(self, right, operator.mul)
         return self._mul_(right)
 
@@ -582,7 +582,7 @@ cdef class MultiplicativeGroupElement(MonoidElement):
 
     def __div__(self, right):
         if not isinstance(self, Element) or not isinstance(right, Element) \
-               or right.parent() != self.parent():
+               or not (right.parent() != self.parent()):
             return coerce.bin_op(self, right, operator.div)
         return self._div_(right)
 
@@ -633,7 +633,7 @@ cdef class RingElement(Element):
         # and all that.
         if not PY_TYPE_CHECK(self, RingElement) or \
                   not PY_TYPE_CHECK(right, RingElement) \
-                  or right.parent() != self.parent():
+                  or not (right.parent() is self.parent()):
             return coerce.bin_op(self, right, operator.add)
         return self._add_(right)
 
@@ -707,7 +707,7 @@ cdef class RingElement(Element):
         # and all that.
         if not PY_TYPE_CHECK(self, RingElement) or \
                   not PY_TYPE_CHECK(right, RingElement) \
-                  or right.parent() != self.parent():
+                  or not (right.parent() is self.parent()):
             return coerce.bin_op(self, right, operator.sub)
         return self._sub_(right)
 
@@ -761,7 +761,7 @@ cdef class RingElement(Element):
 
     def __mul__(self, right):
         if not isinstance(self, Element) or not isinstance(right, Element) \
-               or right.parent() != self.parent():
+               or not (right.parent() is self.parent()):
             return coerce.bin_op(self, right, operator.mul)
         return self._mul_(right)
 
@@ -775,7 +775,7 @@ cdef class RingElement(Element):
 
     def __div__(self, right):
         if not isinstance(self, Element) or not isinstance(right, Element) \
-               or right.parent() != self.parent():
+               or not (right.parent() is self.parent()):
             return coerce.bin_op(self, right, operator.div)
         return self._div_(right)
 
@@ -880,7 +880,7 @@ cdef class CommutativeRingElement(RingElement):
             2
 
         EXAMPLE: Univiate polynomials
-            sage: x = PolynomialRing(QQ).0
+            sage: R.<x> = PolynomialRing(QQ)
             sage: f = x^3 + x + 1
             sage: f.mod(x + 1)
             -1
@@ -889,7 +889,7 @@ cdef class CommutativeRingElement(RingElement):
         return simply return $f$.  For example, reduction is not
         implemented for $\Z[x]$ yet. (TODO!)
 
-            sage: x = PolynomialRing(ZZ).0
+            sage: R.<x> = PolynomialRing(ZZ)
             sage: f = x^3 + x + 1
             sage: f.mod(x + 1)
             x^3 + x + 1
@@ -897,7 +897,7 @@ cdef class CommutativeRingElement(RingElement):
         EXAMPLE: Multivariate polynomials
         We reduce a polynomial in two variables modulo a polynomial
         and an ideal:
-            sage: x,y,z = PolynomialRing(QQ, 3, 'xyz').gens()
+            sage: R.<x,y,z> = PolynomialRing(QQ, 3)
             sage: (x^2 + y^2 + z^2).mod(x+y+z)
             2*z^2 + 2*y*z + 2*y^2
 
@@ -934,7 +934,7 @@ cdef class PrincipalIdealDomainElement(DedekindDomainElement):
         Returns the least common multiple of self and right.
         """
         if not isinstance(self, Element) or not isinstance(right, Element) \
-               or right.parent() != self.parent():
+               or not (right.parent() is self.parent()):
             return coerce.bin_op(self, right, coerce.lcm)
         return self._lcm(right)
 
@@ -943,7 +943,7 @@ cdef class PrincipalIdealDomainElement(DedekindDomainElement):
         Returns the gcd of self and right, or 0 if both are 0.
         """
         if not isinstance(self, Element) or not isinstance(right, Element) \
-               or right.parent() != self.parent():
+               or not (right.parent() is self.parent()):
             return coerce.bin_op(self, right, coerce.gcd)
         return self._gcd(right)
 
@@ -955,7 +955,7 @@ cdef class PrincipalIdealDomainElement(DedekindDomainElement):
         $$
         """
         if not isinstance(self, Element) or not isinstance(right, Element) \
-               or right.parent() != self.parent():
+               or not (right.parent() is self.parent()):
             return coerce.bin_op(self, right, coerce.xgcd)
         return self._xgcd(right)
 
@@ -1059,7 +1059,7 @@ cdef class FieldElement(CommutativeRingElement):
             return self, self, self
 
     def quo_rem(self, right):
-        if not isinstance(right, FieldElement) or right.parent() != self:
+        if not isinstance(right, FieldElement) or not (right.parent() is self.parent()):
             right = self.parent()(right)
         return self/right, 0
 
@@ -1082,7 +1082,7 @@ class Element_cmp_:
     """
     def __cmp__(self, right):
         try:
-            if right.parent() != self.parent():
+            if not (right.parent() is self.parent()):
                 return coerce.cmp(self, right)
         except AttributeError:
             return coerce.cmp(self, right)

@@ -194,6 +194,9 @@ class Constant(Function):
     def __call__(self, x):
         return self
 
+    def floor(self):
+        return Integer(int(float(self)))
+
     # The following adds formal arithmetic support for generic constant
     def _add_(self, right):
         return Constant_arith(self, right, operator.add)
@@ -301,7 +304,7 @@ class Pi(Constant):
         return -self
 
     def floor(self):
-        raise NotImplementedError
+        return Integer(3)
 
     # This just gives a string in singular anyways, and it's
     # *REALLY* slow!

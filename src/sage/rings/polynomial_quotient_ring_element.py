@@ -80,8 +80,8 @@ class PolynomialQuotientRingElement(commutative_ring_element.CommutativeRingElem
         Return the sum of two polynomial ring quotient elements.
 
         EXAMPLES:
-            sage: R, x = PolynomialRing(QQ).objgen()
-            sage: S = R.quotient(x^3-2, 'a'); a = S.gen()
+            sage: R.<x> = PolynomialRing(QQ)
+            sage: S.<a> = R.quotient(x^3-2)
             sage: (a^2 - 4) + (a+2)
             a^2 + a - 2
             sage: int(1) + a
@@ -100,8 +100,8 @@ class PolynomialQuotientRingElement(commutative_ring_element.CommutativeRingElem
         necessary).
 
         EXAMPLES:
-            sage: R = PolynomialRing(QQ, 'x')
-            sage: S = R.quotient(x^3-2, 'a')
+            sage: R.<x> = PolynomialRing(QQ)
+            sage: S.<a> = R.quotient(x^3-2)
             sage: a
             a
             sage: a^3
@@ -130,8 +130,8 @@ class PolynomialQuotientRingElement(commutative_ring_element.CommutativeRingElem
         Return the quotient of two polynomial ring quotient elements.
 
         EXAMPLES:
-            sage: R = PolynomialRing(QQ,'x')
-            sage: S = R.quotient(x^3-2, 'a')
+            sage: R.<x> = PolynomialRing(QQ)
+            sage: S.<a> = R.quotient(x^3-2)
             sage: (a^2 - 4) / (a+2)
             a - 2
         """
@@ -148,8 +148,8 @@ class PolynomialQuotientRingElement(commutative_ring_element.CommutativeRingElem
         Coerce this element to an int if possible.
 
         EXAMPLES:
-            sage: R, x = PolynomialRing(QQ).objgen()
-            sage: S = R.quotient(x^3-2, 'a'); a = S.gen()
+            sage: R.<x> = PolynomialRing(QQ)
+            sage: S.<a> = R.quotient(x^3-2)
             sage: int(S(10))
             10
             sage: int(a)
@@ -175,8 +175,8 @@ class PolynomialQuotientRingElement(commutative_ring_element.CommutativeRingElem
         Coerce this element to a long if possible.
 
         EXAMPLES:
-            sage: R, x = PolynomialRing(QQ).objgen()
-            sage: S = R.quotient(x^3-2, 'a'); a = S.gen()
+            sage: R.<x> = PolynomialRing(QQ)
+            sage: S.<a> = R.quotient(x^3-2)
             sage: long(S(10))
             10L
             sage: long(a)
@@ -191,8 +191,8 @@ class PolynomialQuotientRingElement(commutative_ring_element.CommutativeRingElem
         Return the product of two polynomial ring quotient elements.
 
         EXAMPLES:
-            sage: R, x = PolynomialRing(QQ).objgen()
-            sage: S = R.quotient(x^3-2, 'a'); a = S.gen()
+            sage: R.<x> = PolynomialRing(QQ)
+            sage: S.<a> = R.quotient(x^3-2)
             sage: (a^2 - 4) * (a+2)
             2*a^2 - 4*a - 6
         """
@@ -211,8 +211,8 @@ class PolynomialQuotientRingElement(commutative_ring_element.CommutativeRingElem
         Return a power of a polynomial ring quotient element.
 
         EXAMPLES:
-            sage: R = PolynomialRing(Integers(9), 'x'); x = R.gen()
-            sage: S = R.quotient(x^4 + 2*x^3 + x + 2, 'a'); a = S.gen()
+            sage: R.<x> = PolynomialRing(Integers(9))
+            sage: S.<a> = R.quotient(x^4 + 2*x^3 + x + 2)
             sage: a^100
             7*a^3 + 8*a + 7
         """
