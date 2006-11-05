@@ -203,6 +203,64 @@ cdef class Matrix_sparse(matrix.Matrix):
             A.set_unsafe(self._ncols-j-1, self._nrows-i-1,self.get_unsafe(i,j))
         return A
 
+##     def _echelon_in_place_classical(self):
+##         """
+##         Replace this matrix by its echelon form.
+
+##         INPUT:
+##            params -- ignored.
+##         """
+##         # ALGORITHM:
+##         # Since we know nothing about the base field, we use a generic
+##         # algorithm.  We first convert to a list of sparse rows, then
+##         # directly perform a generic echelon algorithm on that list of
+##         # rows.
+##         if self.fetch('in_echelon_form'):
+##             return
+##         K = self.base_ring()
+##         ONE = K(1)
+##         if not K.is_field():
+##             raise ArithmeticError, "The base ring must be a field."
+##         X = self.rows()
+##         nrows = self.nrows()
+##         ncols = self.ncols()
+##         pivot_positions = []
+##         start_row = 0
+##         nrows = self.nrows()
+##         ncols = self.ncols()
+##         for c in range(ncols):
+##             N = []
+##             for r in xrange(start_row, nrows):
+##                 if X[r].first_nonzero_position() == c:
+##                     N.append((X[r].num_nonzero(),r))
+##             if len(N) == 0:
+##                 continue
+##             N.sort()
+##             r = N[0][1]
+##             leading = X[r].first_nonzero_entry()
+##             if leading != 0:
+##                 pivot_positions.append(c)
+##                 # 1. Rescale
+##                 X[r].rescale(ONE/leading)
+##                 # 2. Swap
+##                 X[r], X[start_row] = X[start_row], X[r]
+##                 # 3. Clear column
+##                 for i in range(nrows):
+##                     if i != start_row:
+##                         s = X[i][c]
+##                         if s != 0:
+##                             X[i] = X[i].add(X[start_row], -s)
+##             # endif
+##             start_row = start_row + 1
+##         #endfor
+##         if self.is_immutable():
+##             self.__pivots = pivot_positions
+##             E = Matrix_generic_sparse_from_rows(X)
+##             E.__pivots = pivot_positions
+##             self.__echelon_form = E
+##         misc.verbose("Finished generic echelon.",t)
+##         return E
+
 ##################################
 # Helper code
 
