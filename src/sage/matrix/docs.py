@@ -90,7 +90,7 @@ EXAMPLES:
 \subsection{Implementation and Design}
 Class Diagram (an x means that class is currently supported):
 \begin{verbatim}
-x Matrix (*) -- abstract base
+x Matrix
 x   Matrix_sparse
 x     Matrix_generic_sparse
 *     Matrix_integer_sparse
