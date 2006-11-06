@@ -36,7 +36,7 @@ cdef class Matrix_domain_dense(matrix.Matrix):
         EXAMPLES:
         First a matrix over $\Z$:
             sage: A = MatrixSpace(IntegerRing(),2)( [[1,2], [3,4]] )
-            sage: f = A.charpoly()
+            sage: f = A.charpoly('x')
             sage: f
             x^2 - 5*x - 2
             sage: f.parent()
@@ -49,7 +49,7 @@ cdef class Matrix_domain_dense(matrix.Matrix):
             sage: M
             [    a     1]
             [    a a + 1]
-            sage: f = M.charpoly()
+            sage: f = M.charpoly('x')
             sage: f
             x^2 + (-2*a - 1)*x + a^2
             sage: f.parent()
@@ -63,7 +63,7 @@ cdef class Matrix_domain_dense(matrix.Matrix):
         multi-variate polynomial ring $\Z[x,y]$:
             sage: R = MPolynomialRing(IntegerRing(),2); x,y = R.gens()
             sage: A = MatrixSpace(R,2)([x, y, x^2, y^2])
-            sage: f = A.charpoly()
+            sage: f = A.charpoly('x')
             sage: f
             x^2 + (-1*x1^2 - x0)*x + x0*x1^2 - x0^2*x1
 
@@ -79,7 +79,7 @@ cdef class Matrix_domain_dense(matrix.Matrix):
             sage: A.charpoly(bound=2)
             x^10 + 14707*x^9 - 21509*x^8
             sage: A = 1000*MatrixSpace(ZZ,10)(range(100))
-            sage: A.charpoly()
+            sage: A.charpoly('x')
             x^10 - 495000*x^9 - 8250000000*x^8
         """
         f = self.matrix_over_field(copy=True).charpoly(*args, **kwds)
@@ -106,7 +106,7 @@ cdef class Matrix_domain_dense(matrix.Matrix):
             raise ArithmeticError, "Matrix must be square, but is %sx%s"%(
                 self.nrows(), self.ncols())
         # Use stupid slow but completely general method.
-        d = (-1)**self.nrows() * self.charpoly()[0]
+        d = (-1)**self.nrows() * self.charpoly('x')[0]
         return self.base_ring()(d)
 
     def is_invertible(self):

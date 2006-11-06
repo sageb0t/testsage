@@ -568,7 +568,7 @@ class LinearCode(module.Module):
             sage: C = LinearCode(G)
             sage: C.minimum_distance()
             3
-            sage: C=RandomLinearCode(10,5,GF(4))
+            sage: C=RandomLinearCode(10,5,GF(4,'a'))
             sage: C.gen_mat()                ## random
 	    [    1     0     0     0     0 x + 1     1     0     0     0]
 	    [x + 1     1     0     1     0 x + 1     1     1     0     0]
@@ -673,7 +673,7 @@ class LinearCode(module.Module):
             sage: C = HammingCode(3,GF(2))
             sage: C.dual_code()
             Linear code of length 7, dimension 3 over Finite Field of size 2
-            sage: C = HammingCode(3,GF(4))
+            sage: C = HammingCode(3,GF(4,'a'))
             sage: C.dual_code()
             Linear code of length 21, dimension 3 over Finite Field in a of size 2^2
         """
@@ -713,7 +713,7 @@ class LinearCode(module.Module):
         $d$ is odd).
 
         EXAMPLES:
-            sage: C = HammingCode(3,GF(4))
+            sage: C = HammingCode(3,GF(4,'a'))
             sage: C
             Linear code of length 21, dimension 18 over Finite Field in a of size 2^2
             sage: Cx = C.extended_code()
@@ -1038,7 +1038,7 @@ class LinearCode(module.Module):
         $C^-$ containing C.
 
         EXAMPLES:
-            sage: C = HammingCode(3,GF(4))
+            sage: C = HammingCode(3,GF(4,'a'))
             sage: C
             Linear code of length 21, dimension 18 over Finite Field in a of size 2^2
             sage: Cc = C.galois_closure(GF(2))
@@ -1047,7 +1047,7 @@ class LinearCode(module.Module):
             sage: c = C.random()
             sage: c  ## random output
             (1, 0, 1, 1, 1, a, 0, a, a + 1, a + 1, a + 1, a + 1, a, 1, a + 1, a + 1, 0, a + 1, 0, 1, 1)
-            sage: V = VectorSpace(GF(4),21)
+            sage: V = VectorSpace(GF(4,'a'),21)
             sage: c2 = V([x^2 for x in c.list()])
             sage: c2 in C
             False
@@ -1302,7 +1302,7 @@ def HammingCode(r,F):
         [0 1 0 0 2 0 0 0 0 0 1 0 0]
         [2 1 0 0 2 0 0 0 0 0 0 1 0]
         [1 1 0 0 2 0 0 0 0 0 0 0 1]
-        sage: C = HammingCode(3,GF(4))
+        sage: C = HammingCode(3,GF(4,'a'))
         sage: C
         Linear code of length 21, dimension 18 over Finite Field in a of size 2^2
 
@@ -1585,7 +1585,7 @@ def RandomLinearCode(n,k,F):
         sage: C = RandomLinearCode(30,15,GF(2))
         sage: C                                        # random output
         Linear code of length 30, dimension 15 over Finite Field of size 2
-        sage: C = RandomLinearCode(10,5,GF(4))
+        sage: C = RandomLinearCode(10,5,GF(4,'a'))
         sage: C                                       # random output
         Linear code of length 10, dimension 5 over Finite Field in x of size 2^2
 
@@ -1636,7 +1636,7 @@ def ToricCode(P,F):
         6
         sage: C.minimum_distance_upper_bound()   # optional -- uses internet
         6
-        sage: C = ToricCode([ [0,0],[1,1],[1,2],[1,3],[1,4],[2,1],[2,2],[2,3],[3,1],[3,2],[4,1]],GF(8))
+        sage: C = ToricCode([ [0,0],[1,1],[1,2],[1,3],[1,4],[2,1],[2,2],[2,3],[3,1],[3,2],[4,1]],GF(8,'a'))
         sage: C
         Linear code of length 49, dimension 11 over Finite Field in a of size 2^3
         sage: C.minimum_distance()  ## long time -- very time consuming
