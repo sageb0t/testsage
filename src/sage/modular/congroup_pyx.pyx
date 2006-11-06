@@ -12,6 +12,7 @@ cdef sage.ext.arith.arith_int arith_int
 arith_int  = sage.ext.arith.arith_int()
 
 include "../ext/cdefs.pxi"
+include '../ext/stdsage.pxi'
 
 # This is the C version of a function also implemented in python in
 # sage.modular.congroup.  It is orders of magnitude faster (e.g., 30
@@ -89,7 +90,7 @@ def degeneracy_coset_representatives_gamma0(int N, int M, int t):
     n = sage.modular.dims.idxG0(N) / sage.modular.dims.idxG0(M)
     k = 0   # number found so far
     Ndivt = N / t
-    R = <int*> PyMem_Malloc(sizeof(int) * (4*n))
+    R = <int*> sage_malloc(sizeof(int) * (4*n))
     if R == <int*>0:
         raise MemoryError
     halfmax = 2*(n+10)
@@ -123,7 +124,7 @@ def degeneracy_coset_representatives_gamma0(int N, int M, int t):
     for i from 0 <= i < k:
         j = 4*i
         S.append([R[j], R[j+1], R[j+2]*t, R[j+3]*t])
-    PyMem_Free(R)
+    sage_free(R)
     return S
 
 def degeneracy_coset_representatives_gamma1(int N, int M, int t):
@@ -181,7 +182,7 @@ def degeneracy_coset_representatives_gamma1(int N, int M, int t):
     n = n / d
     k = 0   # number found so far
     Ndivt = N / t
-    R = <int*> PyMem_Malloc(sizeof(int) * (4*n))
+    R = <int*> sage_malloc(sizeof(int) * (4*n))
     if R == <int*>0:
         raise MemoryError
     halfmax = 2*(n+10)
@@ -219,5 +220,5 @@ def degeneracy_coset_representatives_gamma1(int N, int M, int t):
     for i from 0 <= i < k:
         j = 4*i
         S.append([R[j], R[j+1], R[j+2]*t, R[j+3]*t])
-    PyMem_Free(R)
+    sage_free(R)
     return S

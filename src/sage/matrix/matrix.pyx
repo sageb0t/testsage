@@ -135,13 +135,27 @@ cdef class Matrix(ModuleElement):
 
     def list(self):
         """
+        List of elements of self.  It is safe to change the returned list.
+
         EXAMPLES:
-            sage: ???
+            sage: R.<x,y> = QQ[]
+            sage: a = matrix(R,2,[x,y,x*y, y,x,2*x+y]); a
+            sage: v = a.list(); v
+
+        Notice that changing the returned list does not change a (the
+        list is a copy):
+            sage: v[0] = 25
+            sage: a
         """
         return list(self._list())
 
     def _list(self):
         """
+        Unsafe version of list, mainly for internal use.  This may
+        return the list of elements, but as an *unsafe* reference to
+        the underlying list of the object.  It is very dangerous if
+        you change entries of the returned list.
+
         EXAMPLES:
             sage: ???
         """
@@ -159,10 +173,20 @@ cdef class Matrix(ModuleElement):
 
     def dict(self):
         """
+        Dictionary of the elements of self with keys pairs (i,j) and
+        values the nonzero entries of self.
+
         It is safe to change the returned dictionary.
 
         EXAMPLES:
-            sage: ???
+            sage: R.<x,y> = QQ[]
+            sage: a = matrix(R,2,[x,y,0, 0,0,2*x+y]); a
+            sage: d = a.dict(); d
+
+        Notice that changing the returned list does not change a (the
+        list is a copy):
+            sage: d[0,0] = 25
+            sage: a
         """
         return dict(self._dict())
 
@@ -1159,8 +1183,8 @@ cdef class Matrix(ModuleElement):
            [ other ]
 
         EXAMPLES:
-            sage: M = Matrix(RationalField(), 2, 3, range(6))
-            sage: N = Matrix(RationalField(), 1, 3, [10,11,12])
+            sage: M = Matrix(QQ, 2, 3, range(6))
+            sage: N = Matrix(QQ, 1, 3, [10,11,12])
             sage: M.stack(N)
             [ 0  1  2]
             [ 3  4  5]
@@ -1310,7 +1334,7 @@ cdef class Matrix(ModuleElement):
         of the matrix.
 
         EXAMPLES:
-            sage: A = MatrixSpace(RationalField(),2, sparse=True)([1,2,0,1])
+            sage: A = MatrixSpace(QQ,2, sparse=True)([1,2,0,1])
             sage: A.is_sparse()
             True
             sage: B = A.dense_matrix()
@@ -1345,7 +1369,7 @@ cdef class Matrix(ModuleElement):
         of the matrix.
 
         EXAMPLES:
-            sage: A = MatrixSpace(RationalField(),2, sparse=False)([1,2,0,1])
+            sage: A = MatrixSpace(QQ,2, sparse=False)([1,2,0,1])
             sage: A.is_sparse()
             False
             sage: B = A.sparse_matrix()
@@ -1401,12 +1425,12 @@ cdef class Matrix(ModuleElement):
         Return the augmented matrix of the form [self | other].
 
         EXAMPLES:
-            sage: M = MatrixSpace(RationalField(),2,2)
+            sage: M = MatrixSpace(QQ,2,2)
             sage: A = M([1,2, 3,4])
             sage: A
             [1 2]
             [3 4]
-            sage: N = MatrixSpace(RationalField(),2,1)
+            sage: N = MatrixSpace(QQ,2,1)
             sage: B = N([9,8])
             sage: B
             [9]
@@ -1417,13 +1441,13 @@ cdef class Matrix(ModuleElement):
             sage: B.augment(A)
             [9 1 2]
             [8 3 4]
-            sage: M = MatrixSpace(RationalField(),3,4)
+            sage: M = MatrixSpace(QQ,3,4)
             sage: A = M([1,2,3,4, 0,9,8,7, 2/3,3/4,4/5,9/8])
             sage: A
             [  1   2   3   4]
             [  0   9   8   7]
             [2/3 3/4 4/5 9/8]
-            sage: N = MatrixSpace(RationalField(),3,2)
+            sage: N = MatrixSpace(QQ,3,2)
             sage: B = N([1,2, 3,4, 4,5])
             sage: B
             [1 2]
@@ -1613,7 +1637,7 @@ cdef class Matrix(ModuleElement):
         Return the number of rows of this matrix.
 
         EXAMPLES:
-            sage: M = MatrixSpace(RationalField(),6,7)
+            sage: M = MatrixSpace(QQ,6,7)
             sage: A = M([1,2,3,4,5,6,7, 22,3/4,34,11,7,5,3, 99,65,1/2,2/3,3/5,4/5,5/6, 9,8/9, 9/8,7/6,6/7,76,4, 0,9,8,7,6,5,4, 123,99,91,28,6,1024,1])
             sage: A
             [   1    2    3    4    5    6    7]
@@ -1646,10 +1670,10 @@ cdef class Matrix(ModuleElement):
             The polynomial f(self*x).
 
         EXAMPLES:
-            sage: R = MPolynomialRing(RationalField(), 2, ['x','y'])
+            sage: R.<x,y> = QQ[]
             sage: x, y = R.gens()
             sage: f = x**2 - y**2
-            sage: M = MatrixSpace(RationalField(),2)
+            sage: M = MatrixSpace(QQ, 2)
             sage: A = M([1,2,3,4])
             sage: A.act_on_polynomial(f)
             -12*y^2 - 20*x*y - 8*x^2
@@ -1939,8 +1963,7 @@ cdef class Matrix(ModuleElement):
             [ 0 -1]
 
         The following nontrivial matrix is invertible over $\Z[x]$.
-            sage: R = PolynomialRing(IntegerRing())
-            sage: x = R.gen()
+            sage: R.<x> = PolynomialRing(IntegerRing())
             sage: A = MatrixSpace(R,2)([1,x,0,-1])
             sage: A.is_invertible()
             True
@@ -2176,12 +2199,12 @@ cdef class Matrix(ModuleElement):
             sage: A.permanent()
             103/175
 
-            sage: R = PolynomialRing(IntegerRing(),'a'); a = R.gen()
+            sage: R.<a> = PolynomialRing(IntegerRing())
             sage: A = MatrixSpace(R,2)([[a,1], [a,a+1]])
             sage: A.permanent()
             a^2 + 2*a
 
-            sage: R = MPolynomialRing(IntegerRing(),2); x,y = R.gens()
+            sage: R.<x,y> = MPolynomialRing(IntegerRing(),2)
             sage: A = MatrixSpace(R,2)([x, y, x^2, y^2])
             sage: A.permanent()
             x0*x1^2 + x0^2*x1
@@ -2321,7 +2344,7 @@ cdef class Matrix(ModuleElement):
             sage: A.rook_vector()
             [1, 12, 40, 36]
 
-            sage: x = PolynomialRing(IntegerRing(),'x').gen()
+            sage: R.<x> = PolynomialRing(ZZ)
             sage: rv = A.rook_vector()
             sage: rook_polynomial = sum([rv[k] * x^k for k in range(len(rv))])
             sage: rook_polynomial
@@ -2379,7 +2402,7 @@ cdef class Matrix(ModuleElement):
             -1*x2*x4*x6 + x2*x3*x7 + x1*x5*x6 - x1*x3*x8 - x0*x5*x7 + x0*x4*x8
 
         We create a matrix over $\Z[x,y]$ and compute its determinant.
-            sage: R = MPolynomialRing(IntegerRing(),2); x,y = R.gens()
+            sage: R.<x,y> = MPolynomialRing(IntegerRing(),2)
             sage: A = MatrixSpace(R,2)([x, y, x**2, y**2])
             sage: A.determinant()
             x0*x1^2 - x0^2*x1
@@ -2506,7 +2529,7 @@ cdef class Matrix(ModuleElement):
 
         We compute the characteristic polynomial of a matrix over
         the polynomial ring $\Z[a]$:
-            sage: R = PolynomialRing(ZZ,'a'); a = R.gen()
+            sage: R.<a> = PolynomialRing(ZZ)
             sage: M = MatrixSpace(R,2)([a,1,  a,a+1]); M
             [    a     1]
             [    a a + 1]
@@ -2591,7 +2614,7 @@ cdef class Matrix(ModuleElement):
         LCM function for the denominators, raise a TypeError.
 
         EXAMPLES:
-            sage: A = MatrixSpace(RationalField(),2)(['1/2', '1/3', '1/5', '1/7'])
+            sage: A = MatrixSpace(QQ,2)(['1/2', '1/3', '1/5', '1/7'])
             sage: A.denominator()
             210
 
@@ -2670,9 +2693,9 @@ cdef class Matrix(ModuleElement):
             The the vector times matrix product v*A.
 
         EXAMPLES:
-            sage: MS = MatrixSpace(RationalField(), 2,2)
+            sage: MS = MatrixSpace(QQ, 2,2)
             sage: B = MS.matrix([1,2,1,2])
-            sage: V = VectorSpace(RationalField(), 2)
+            sage: V = VectorSpace(QQ, 2)
             sage: v = V([1,2])
             sage: B.vector_matrix_multiply(v)     # computes v*B
             (3, 6)
@@ -3022,7 +3045,7 @@ cdef class Matrix(ModuleElement):
     def __pow__(self, n, ignored):
         """
         EXAMPLES:
-            sage: MS = MatrixSpace(RationalField(), 3, 3)
+            sage: MS = MatrixSpace(QQ, 3, 3)
             sage: A = MS([0, 0, 1, 1, 0, '-2/11', 0, 1, '-3/11'])
             sage: A * A**(-1) == 1
             True
@@ -3177,13 +3200,13 @@ cdef class Matrix(ModuleElement):
         ALGORITHM: See Henri Cohen's first book.
 
         EXAMPLES:
-            sage: A = MatrixSpace(RationalField(),3)([2, 1, 1, -2, 2, 2, -1, -1, -1])
+            sage: A = MatrixSpace(QQ,3)([2, 1, 1, -2, 2, 2, -1, -1, -1])
             sage: A.hessenberg_form()
             [  2 3/2   1]
             [ -2   3   2]
             [  0  -3  -2]
 
-            sage: A = MatrixSpace(RationalField(),4)([2, 1, 1, -2, 2, 2, -1, -1, -1,1,2,3,4,5,6,7])
+            sage: A = MatrixSpace(QQ,4)([2, 1, 1, -2, 2, 2, -1, -1, -1,1,2,3,4,5,6,7])
             sage: A.hessenberg_form()
             [    2  -7/2 -19/5    -2]
             [    2   1/2 -17/5    -1]
@@ -3777,7 +3800,7 @@ cdef class Matrix(ModuleElement):
             Use A.echelonize() to change A in place.
 
         EXAMPLES:
-           sage: MS = MatrixSpace(RationalField(),2,3)
+           sage: MS = MatrixSpace(QQ,2,3)
            sage: C = MS.matrix([1,2,3,4,5,6])
            sage: C.rank()
            2
