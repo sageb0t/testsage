@@ -79,7 +79,6 @@ from sage.libs.pari.gen cimport gen as pari_gen
 cdef class Integer(sage.structure.element.EuclideanDomainElement)
 
 import sage.rings.integer_ring
-import sage.rings.coerce
 import sage.rings.infinity
 import sage.rings.complex_field
 import rational as rational
@@ -138,8 +137,7 @@ the_integer_ring = sage.rings.integer_ring.Z
 
 from sage.structure.sage_object cimport SageObject
 from sage.structure.element cimport EuclideanDomainElement, ModuleElement
-
-#cimport rational
+from sage.structure.element import  bin_op
 
 cdef class Integer(sage.structure.element.EuclideanDomainElement):
     r"""
@@ -322,7 +320,7 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
         """
         if isinstance(x, Integer) and isinstance(y, Integer):
             return x._xor(y)
-        return sage.rings.coerce.bin_op(x, y, operator.xor)
+        return bin_op(x, y, operator.xor)
 
     def __richcmp__(left, right, int op):
         return (<sage.structure.element.Element>left)._richcmp(right, op)
@@ -622,7 +620,7 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
         """
         if isinstance(x, Integer) and isinstance(y, Integer):
             return x.__floordiv(y)
-        return sage.rings.coerce.bin_op(x, y, operator.floordiv)
+        return bin_op(x, y, operator.floordiv)
 
     def __pow__(self, n, dummy):
         r"""
@@ -1471,7 +1469,7 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
         """
         if isinstance(x, Integer) and isinstance(y, (Integer, int, long)):
             return x._lshift(long(y))
-        return sage.rings.coerce.bin_op(x, y, operator.lshift)
+        return bin_op(x, y, operator.lshift)
 
     def _rshift(Integer self, unsigned long int n):
         cdef Integer x
@@ -1493,7 +1491,7 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
         """
         if isinstance(x, Integer) and isinstance(y, (Integer, int, long)):
             return x._rshift(long(y))
-        return sage.rings.coerce.bin_op(x, y, operator.rshift)
+        return bin_op(x, y, operator.rshift)
 
     def _and(Integer self, Integer other):
         cdef Integer x
@@ -1504,7 +1502,7 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
     def __and__(x, y):
         if isinstance(x, Integer) and isinstance(y, Integer):
             return x._and(y)
-        return sage.rings.coerce.bin_op(x, y, operator.and_)
+        return bin_op(x, y, operator.and_)
 
     def _or(Integer self, Integer other):
         cdef Integer x
@@ -1515,7 +1513,7 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
     def __or__(x, y):
         if isinstance(x, Integer) and isinstance(y, Integer):
             return x._or(y)
-        return sage.rings.coerce.bin_op(x, y, operator.or_)
+        return bin_op(x, y, operator.or_)
 
     def __invert__(self):
         """

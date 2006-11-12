@@ -31,7 +31,6 @@ import sage.misc.misc as misc
 import ring_element
 import arith
 import sage.misc.latex as latex
-from coerce import bin_op
 import sage.structure.coerce
 import rational_field, integer_ring
 import sage.libs.pari.all as pari
@@ -255,18 +254,7 @@ class PowerSeries(Element_cmp_, ring_element.RingElement):
             return self.prec()
         return min(self.prec(), f.prec())
 
-    def __add__(self):
-        raise NotImplementedError
-
-    def __radd__(self, left):
-        return self.parent()(left) + self
-
-    def __sub__(self, right):
-        raise NotImplementedError
-
-    def __mul__(self, right):
-        if not isinstance(right,PowerSeries) or self.parent() != right.parent():
-            return bin_op(self, right, operator.mul)
+    def _mul_(self, right):
         if self.is_zero():
             return self
         if right.is_zero():
@@ -285,9 +273,6 @@ class PowerSeries(Element_cmp_, ring_element.RingElement):
                 prec = min(rp + self.valuation(), sp + right.valuation())
         # endif
         return self._mul_(right, prec)
-
-    def _mul_(self, right, prec):
-        raise NotImplementedError
 
     def is_unit(self):
         """
@@ -430,11 +415,7 @@ class PowerSeries(Element_cmp_, ring_element.RingElement):
         v = self[int(n):]
         return self.parent()(v, self.prec()-n)
 
-    def __div__(self, denom):
-        if not isinstance(denom, PowerSeries) or \
-               not (self.parent() is denom.parent()):
-            return bin_op(self, denom, operator.div)
-
+    def _div_(self, denom):
         u = denom.unit_part()
         inv = ~u  # inverse
 
@@ -455,9 +436,6 @@ class PowerSeries(Element_cmp_, ring_element.RingElement):
         else:
             num = self
         return num*inv
-
-    def __rdiv__(self, left):
-        return self.parent()(left) / self
 
     def __pow__(self, right):
         right=int(right)
@@ -765,7 +743,7 @@ class PowerSeries_generic_dense(PowerSeries):
         return PowerSeries_generic_dense(self.parent(), -self.__f,
                                          self._prec, check=False)
 
-    def __add__(self, right):
+    def _add_(self, right):
         """
         EXAMPLES:
             sage: R.<x> = PowerSeriesRing(ZZ)
@@ -776,14 +754,10 @@ class PowerSeries_generic_dense(PowerSeries):
             sage: f+g
             x^2 + O(x^3)
         """
-        if not isinstance(right,PowerSeries_generic_dense) or self.parent() != right.parent():
-            return bin_op(self, right, operator.add)
         return PowerSeries_generic_dense(self.parent(), self.__f + right.__f, \
                                          self.common_prec(right), check=True)
 
-    def __sub__(self, right):
-        if not isinstance(right,PowerSeries_generic_dense) or self.parent() != right.parent():
-            return bin_op(self, right, operator.sub)
+    def _sub_(self, right):
         return PowerSeries_generic_dense(self.parent(), self.__f - right.__f, \
                                          self.common_prec(right), check=True)
 

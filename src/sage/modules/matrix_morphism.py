@@ -47,7 +47,6 @@ import sage.categories.homset
 import sage.matrix.all as matrix
 import sage.misc.misc as misc
 import sage.modules.free_module as free_module
-import sage.rings.coerce
 from   sage.structure.all import Sequence
 
 def is_MatrixMorphism(x):
@@ -90,9 +89,7 @@ class MatrixMorphism(sage.categories.all.Morphism):
             mat = str(self.__matrix)
         return "Morphism defined by the matrix\n%s"%mat
 
-    def __cmp__(self, other):
-        if not isinstance(other, MatrixMorphism) or self.parent() != other.parent():
-            return sage.rings.coerce.cmp(self, other)
+    def _cmp_(self, other):
         return cmp(self.__matrix, other.__matrix)
 
     def __call__(self, x):
