@@ -1,8 +1,6 @@
 r"""
 Double Precision Complex Numbers
 
-PYREX: sage.rings.complex_double
-
 SAGE supports arithmetic using double-precision complex numbers.  A
 double-precision complex number is a complex number x + I*y with x, y
 64-bit (8 byte) floating point numbers (double precision).
@@ -225,7 +223,6 @@ cdef class ComplexDoubleField_class(sage.rings.ring.Field):
         return real_double.RDF
 
 cdef class ComplexDoubleElement(sage.structure.element.FieldElement):
-#    cdef gsl_complex _complex
     def __init__(self, real, imag):
         self._complex = gsl_complex_rect(real, imag)
         global the_complex_double_field
@@ -234,7 +231,7 @@ cdef class ComplexDoubleElement(sage.structure.element.FieldElement):
     def __hash__(self):
         return hash(str(self))
 
-    def __richcmp__(ComplexDoubleElement self, right, int op):
+    cdef int _cmp_c_impl(left, Element right) except -2:
         """
         We order the complex numbers in dictionary order by real
         parts then imaginary parts.
@@ -260,17 +257,6 @@ cdef class ComplexDoubleElement(sage.structure.element.FieldElement):
             sage: 4.3 > CDF(5,1)
             False
         """
-        cdef int n
-        if not isinstance(right, ComplexDoubleElement):
-            try:
-                n = sage.rings.coerce.cmp(self, right)
-            except TypeError:
-                n = -1
-        else:
-            n = self.cmp(right)
-        return self._rich_to_bool(op, n)
-
-    cdef int cmp(ComplexDoubleElement left, ComplexDoubleElement right):
         if left._complex.dat[0] < right._complex.dat[0]:
             return -1
         if left._complex.dat[0] > right._complex.dat[0]:
@@ -280,9 +266,6 @@ cdef class ComplexDoubleElement(sage.structure.element.FieldElement):
         if left._complex.dat[1] > right._complex.dat[1]:
             return 1
         return 0
-
-    def __cmp__(self, x):
-        return self.cmp(x)
 
     def __getitem__(self, n):
         """
@@ -392,7 +375,7 @@ cdef class ComplexDoubleElement(sage.structure.element.FieldElement):
     # Arithmetic
     #######################################################################
 
-    cdef RingElement _add_c_impl(self, RingElement right):
+    cdef ModuleElement _add_c_impl(self, ModuleElement right):
         """
         Add self and right.
 
@@ -403,7 +386,7 @@ cdef class ComplexDoubleElement(sage.structure.element.FieldElement):
         return new_element(gsl_complex_add(self._complex,
                                            (<ComplexDoubleElement>right)._complex))
 
-    def _sub_(ComplexDoubleElement self, ComplexDoubleElement right):
+    cdef ModuleElement _sub_c_impl(self, ModuleElement right):
         """
         Subtract self and right.
 
@@ -411,15 +394,10 @@ cdef class ComplexDoubleElement(sage.structure.element.FieldElement):
             sage: CDF(2,-3)._sub_(CDF(1,-2))
             1.0 - 1.0*I
         """
-        return new_element(gsl_complex_sub(self._complex, right._complex))
+        return new_element(gsl_complex_sub(self._complex,
+                                (<ComplexDoubleElement>right)._complex))
 
-    def __sub__(x, y):
-        try:
-            return x._sub_(y)
-        except (TypeError, AttributeError):
-            return sage.rings.coerce.bin_op(x, y, operator.sub)
-
-    def _mul_(ComplexDoubleElement self, ComplexDoubleElement right):
+    cdef RingElement _mul_c_impl(self, RingElement right):
         """
         Multiply self and right.
 
@@ -427,15 +405,10 @@ cdef class ComplexDoubleElement(sage.structure.element.FieldElement):
             sage: CDF(2,-3)._mul_(CDF(1,-2))
             -4.0 - 7.0*I
         """
-        return new_element(gsl_complex_mul(self._complex, right._complex))
+        return new_element(gsl_complex_mul(self._complex,
+                       (<ComplexDoubleElement>right)._complex))
 
-    def __mul__(x, y):
-        try:
-            return x._mul_(y)
-        except (TypeError, AttributeError):
-            return sage.rings.coerce.bin_op(x, y, operator.mul)
-
-    def _div_(ComplexDoubleElement self, ComplexDoubleElement right):
+    cdef RingElement _div_c_impl(self, RingElement right)     # OK to override, but do *NOT* call directly
         """
         Divide self by right.
 
@@ -443,13 +416,7 @@ cdef class ComplexDoubleElement(sage.structure.element.FieldElement):
             sage: CDF(2,-3)._div_(CDF(1,-2))
             1.6 + 0.20000000298*I
         """
-        return new_element(gsl_complex_div(self._complex, right._complex))
-
-    def __div__(x, y):
-        try:
-            return x._div_(y)
-        except (TypeError, AttributeError):
-            return sage.rings.coerce.bin_op(x, y, operator.div)
+        return new_element(gsl_complex_div(self._complex, (<ComplexDoubleElement>right)._complex))
 
     def __invert__(self):
         r"""
@@ -468,7 +435,7 @@ cdef class ComplexDoubleElement(sage.structure.element.FieldElement):
         """
         return new_element(gsl_complex_inverse(self._complex))
 
-    def __neg__(self):
+    cdef ModuleElement _neg_c_impl(self):
         """
         This function returns the negative of the complex number $z$,
         $$-z = (-x) + i(-y).$$
