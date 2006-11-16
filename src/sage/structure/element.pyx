@@ -265,7 +265,7 @@ cdef class Element(sage_object.SageObject):
         if self._parent.is_atomic_repr():
             return True
         s = str(self)
-        return bool(s.find("+") == -1 and s.find("-") == -1 and s.find(" ") == -1)
+        return PyBool_FromLong(s.find("+") == -1 and s.find("-") == -1 and s.find(" ") == -1)
 
     def __cmp__(left, right):
         if not have_same_parent(left, right):
@@ -278,7 +278,7 @@ cdef class Element(sage_object.SageObject):
             return left._cmp_c_impl(right)
 
     def is_zero(self):
-        return bool(self == self._parent(0))
+        return PyBool_FromLong(self == self._parent(0))
 
     cdef _richcmp(left, right, int op):
         """
@@ -301,17 +301,17 @@ cdef class Element(sage_object.SageObject):
                 r = left._cmp_c_impl(right)
 
         if op == 0:  #<
-            return bool(r  < 0)
+            return PyBool_FromLong(r  < 0)
         elif op == 2: #==
-            return bool(r == 0)
+            return PyBool_FromLong(r == 0)
         elif op == 4: #>
-            return bool(r  > 0)
+            return PyBool_FromLong(r  > 0)
         elif op == 1: #<=
-            return bool(r <= 0)
+            return PyBool_FromLong(r <= 0)
         elif op == 3: #!=
-            return bool(r != 0)
+            return PyBool_FromLong(r != 0)
         elif op == 5: #>=
-            return bool(r >= 0)
+            return PyBool_FromLong(r >= 0)
 
     ####################################################################
     # For a derived Python class, you **must** put the following in
@@ -346,7 +346,7 @@ cdef class ModuleElement(Element):
     """
     ##################################################
     def is_zero(self):
-        return bool(self == self._parent(0))
+        return PyBool_FromLong(self == self._parent(0))
 
     ##################################################
     # Addition
@@ -750,10 +750,10 @@ def is_RingElement(x):
 cdef class RingElement(ModuleElement):
     ##################################################
     def is_zero(self):
-        return bool(self == self.parent()(0))
+        return PyBool_FromLong(self == self.parent()(0))
 
     def is_one(self):
-        return bool(self == self.parent()(1))
+        return PyBool_FromLong(self == self.parent()(1))
 
     ##################################
     # Multiplication
@@ -1121,7 +1121,7 @@ cdef class FieldElement(CommutativeRingElement):
             sage: a = QQ(2); a.is_unit()
             True
         """
-        return bool(not self.is_zero())
+        return PyBool_FromLong(not self.is_zero())
 
     def _gcd(self, FieldElement other):
         """
@@ -1241,6 +1241,14 @@ def coerce(p, x):
 #################################################################################
 # canonical coercion of two ring elements into one of their parents.
 #################################################################################
+cdef _verify_canonical_coercion_c(x, y):
+    if not have_same_parent(x,y):
+        raise RuntimeError, """There is a bug in the ring coercion code in SAGE.
+Both x (=%s) and y (=%s) are supposed to have identical parents but they don't.
+In fact, x has parent '%s'
+whereas y has parent '%s'"""%(x,y,parent_c(x),parent_c(y))
+    return x, y
+
 def canonical_coercion(x, y):
     return canonical_coercion_c(x,y)
 
@@ -1251,17 +1259,27 @@ cdef canonical_coercion_c(x, y):
     if xp is yp:
         return x, y
     if PY_IS_NUMERIC(x):
-        return yp(x), y
+        x = yp(x)
+        # Calling this every time incurs overhead -- however, if a mistake
+        # gets through then one can get infinite loops in C code hence core
+        # dumps.  And users define _coerce_ and __call__ for rings, which
+        # can easily have bugs in it, i.e., not really make the element
+        # have the correct parent.  Thus this check is *crucial*.
+        return _verify_canonical_coercion_c(x,y)
+
     elif PY_IS_NUMERIC(y):
-        return x, xp(y)
+        y = xp(y)
+        return _verify_canonical_coercion_c(x,y)
     try:
         if xp.has_coerce_map_from(yp):
-            return x, xp(y)
+            y = xp._coerce_(y)
+            return _verify_canonical_coercion_c(x,y)
     except AttributeError:
         pass
     try:
         if yp.has_coerce_map_from(xp):
-            return yp(x), y
+            x = yp._coerce_(x)
+            return _verify_canonical_coercion_c(x,y)
     except AttributeError:
         pass
     raise TypeError, "unable to find a common canonical parent for x and y"
