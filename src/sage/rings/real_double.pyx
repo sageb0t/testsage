@@ -20,6 +20,7 @@ Also, you can instantly create a space of large dimension.
 """
 
 include '../ext/cdefs.pxi'
+include '../ext/stdsage.pxi'
 include '../ext/interrupt.pxi'
 include '../gsl/gsl.pxi'
 
@@ -27,9 +28,7 @@ import operator
 
 from sage.misc.sage_eval import sage_eval
 
-cimport sage.structure.element
-import  sage.structure.element
-from sage.structure.element cimport RingElement
+from sage.structure.element cimport RingElement, ModuleElement, Element, FieldElement
 
 cimport sage.rings.ring
 import  sage.rings.ring
@@ -48,29 +47,19 @@ cdef class RealDoubleField_class(sage.rings.ring.Field):
     """
     The field of real double precision numbers.
 
-    ALGORITHM: Arithmetic is done through pyrex.
+    EXAMPLES:
+        sage: RR == RDF
+        False
+        sage: RDF == RealDoubleField()    # RDF is the shorthand
+        True
     """
-
-    def __cmp__(self, other):
-        """
-        Returns True if and only if other is the unique real double field.
-
-        EXAMPLES:
-            sage: RR == RDF
-            False
-            sage: RDF == RealDoubleField     # RDF is the shorthand
-            True
-        """
-        if other is RealDoubleField:
-            return 0
-        return -1
 
     def __repr__(self):
         """
         Print out this real double field.
 
         EXAMPLES:
-            sage: RealDoubleField
+            sage: RealDoubleField()
             Real Double Field
             sage: RDF
             Real Double Field
@@ -260,10 +249,20 @@ cdef class RealDoubleField_class(sage.rings.ring.Field):
             return self(-1)
         raise ValueError, "No %sth root of unity in self"%n
 
-cdef class RealDoubleElement(sage.structure.element.FieldElement):
+cdef class RealDoubleElement(FieldElement):
     cdef double _value
     def __init__(self, x):
         self._value = float(x)
+        global _RDF
+        (<Element>self)._parent = _RDF
+
+    cdef _new_c(self, double value):
+        global _RDF
+        cdef RealDoubleElement x
+        x = PY_NEW(RealDoubleElement)
+        x._value = value
+        (<Element>x)._parent = _RDF
+        return x
 
     def real(self):
         """
@@ -360,17 +359,6 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
     ########################
     #   Basic Arithmetic
     ########################
-    cdef RingElement _add_c_impl(self, RingElement right):
-        """
-        Add two real numbers with the same parent.
-
-        EXAMPLES:
-            sage: R = RealDoubleField
-            sage: R(-1.5) + R(2.5)
-            1.0
-        """
-        return RealDoubleElement(self._value + (<RealDoubleElement>right)._value)
-
     def __invert__(self):
         """
         Compute the multiplicative inverse of self.
@@ -382,18 +370,29 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
         """
         return RealDoubleElement(1/self._value)
 
-    def _sub_(RealDoubleElement self, RealDoubleElement other):
+    cdef ModuleElement _add_c_impl(self, ModuleElement right):
+        """
+        Add two real numbers with the same parent.
+
+        EXAMPLES:
+            sage: R = RDF
+            sage: R(-1.5) + R(2.5)
+            1.0
+        """
+        return self._new_c(self._value + (<RealDoubleElement>right)._value)
+
+    cdef ModuleElement _sub_c_impl(self, ModuleElement right):
         """
         Subtract two real numbers with the same parent.
 
         EXAMPLES:
-            sage: R = RealDoubleField
+            sage: R = RDF
             sage: R(-1.5) - R(2.5)
             -4.0
         """
-        return RealDoubleElement(self._value - other._value)
+        return self._new_c(self._value - (<RealDoubleElement>right)._value)
 
-    def _mul_(RealDoubleElement self, RealDoubleElement other):
+    cdef RingElement _mul_c_impl(self, RingElement right):
         """
         Multiply two real numbers with the same parent.
 
@@ -402,29 +401,21 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
             sage: R(-1.5) * R(2.5)
             -3.75
         """
-        return RealDoubleElement(self._value * other._value)
+        return self._new_c(self._value * (<RealDoubleElement>right)._value)
 
-    def __div_(RealDoubleElement self, RealDoubleElement other):
-        if not other:
-            raise ZeroDivisionError, "RealDoubleElement division by zero"
-        return RealDoubleElement(self._value / other._value)
-
-    def __div__(x, y):
+    cdef RingElement _div_c_impl(self, RingElement right):
         """
         EXAMPLES:
             sage: R = RealDoubleField
             sage: R(-1.5) / R(2.5)
             -0.6
         """
-        if isinstance(x, RealDoubleElement) and isinstance(y, RealDoubleElement):
-            return x.__div_(y)
-        return sage.rings.coerce.bin_op(x, y, operator.div)
+        if (<RealDoubleElement>right)._value == 0:
+            raise ZeroDivisionError, "RealDoubleElement division by zero"
+        return self._new_c(self._value / (<RealDoubleElement>right)._value)
 
-    def __neg__(self):
-        return RealDoubleElement(-self._value)
-
-    def __pos__(self):
-        return self
+    def _neg_c_impl(self):
+        return self._new_c(-self._value)
 
     def __abs__(self):
         return self.abs()
@@ -547,7 +538,7 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
             sage: RDF(-2.79).frac()
             -0.79
         """
-        return RealDoubleElement(self._value - int(self._value))
+        return self._new_c(self._value - int(self._value))
 
     ###########################################
     # Conversions
@@ -584,39 +575,15 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
     def is_NaN(self):
         return bool(gsl_isnan(self._value))
 
-    cdef int cmp(RealDoubleElement self, RealDoubleElement x):
-        if self._value < x._value:
+    def __richcmp__(left, right, int op):
+        return (<Element>left)._richcmp(right, op)
+
+    cdef int _cmp_c_impl(left, Element right) except -2:
+        if left._value < (<RealDoubleElement>right)._value:
             return -1
-        elif self._value > x._value:
+        elif left._value > (<RealDoubleElement>right)._value:
             return 1
         return 0
-
-    def __cmp__(RealDoubleElement self, RealDoubleElement x):
-        return self.cmp(x)
-
-    def __richcmp__(RealDoubleElement self, x, int op):
-        cdef int n
-        if not isinstance(x, RealDoubleElement):
-            try:
-                x = RealDoubleElement(x)
-            except TypeError:
-                n = sage.rings.coerce.cmp(self, x)
-            else:
-                n = self.cmp(x)
-        else:
-            n = self.cmp(x)
-        if op == 0:
-            return bool(n < 0)
-        elif op == 1:
-            return bool(n <= 0)
-        elif op == 2:
-            return bool(n == 0)
-        elif op == 3:
-            return bool(n != 0)
-        elif op == 4:
-            return bool(n > 0)
-        elif op == 5:
-            return bool(n >= 0)
 
     ############################
     # Special Functions
@@ -666,7 +633,7 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
             sage: r.sqrt()
             1.41421356237309*I
         """
-        return RealDoubleElement(sqrt(self._value))
+        return self._new_c(sqrt(self._value))
 
     def cube_root(self):
         """
@@ -716,10 +683,10 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
         return x
 
     def __pow(self, RealDoubleElement exponent):
-        return RealDoubleElement(self._value**exponent._value)
+        return self._new_c(self._value**exponent._value)
 
     def __pow_int(self, int exponent):
-        return RealDoubleElement(gsl_pow_int(self._value, exponent))
+        return self._new_c(gsl_pow_int(self._value, exponent))
 
     def __pow__(self, exponent, modulus):
         """
@@ -755,8 +722,8 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
                 return -1./0
             if self._value < 0:
                 return 0./0
-            return RealDoubleElement(gsl_sf_log_1plusx(self._value - 1) / log_of_base)
-        return RealDoubleElement(gsl_sf_log(self._value) / log_of_base)
+            return self._new_c(gsl_sf_log_1plusx(self._value - 1) / log_of_base)
+        return self._new_c(gsl_sf_log(self._value) / log_of_base)
 
     def log(self, base='e'):
         """
@@ -803,7 +770,7 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
             4.99548451888
 
         """
-        return RealDoubleElement(gsl_sf_log(self._value) / M_LN2)
+        return self._new_c(gsl_sf_log(self._value) / M_LN2)
 
     def log10(self):
         """
@@ -817,7 +784,7 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
             sage: r = RDF('39.9'); r.log10()
             1.60097289569
         """
-        return RealDoubleElement(gsl_sf_log(self._value) / M_LN10)
+        return self._new_c(gsl_sf_log(self._value) / M_LN10)
 
     def logpi(self):
         """
@@ -831,7 +798,7 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
             sage: r = RDF('39.9'); r.logpi()
             3.22030233461
         """
-        return RealDoubleElement(gsl_sf_log(self._value) / M_LNPI)
+        return self._new_c(gsl_sf_log(self._value) / M_LNPI)
 
     def exp(self):
         r"""
@@ -852,7 +819,7 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
             sage: r.exp()
             9.3818445885e-15
         """
-        return RealDoubleElement(gsl_sf_exp(self._value))
+        return self._new_c(gsl_sf_exp(self._value))
 
     def exp2(self):
         """
@@ -872,7 +839,7 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
             1.89117248253e-10
 
         """
-        return RealDoubleElement(gsl_sf_exp(self._value * M_LN2))
+        return self._new_c(gsl_sf_exp(self._value * M_LN2))
 
     def exp10(self):
         r"""
@@ -891,7 +858,7 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
             sage: r.exp10()
             5.01187233627e-33
         """
-        return RealDoubleElement(gsl_sf_exp(self._value * M_LN10))
+        return self._new_c(gsl_sf_exp(self._value * M_LN10))
 
     def cos(self):
         """
@@ -902,7 +869,7 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
             sage: t.cos()
             6.12323399574e-17
         """
-        return RealDoubleElement(gsl_sf_cos(self._value))
+        return self._new_c(gsl_sf_cos(self._value))
 
     def sin(self):
         """
@@ -912,7 +879,7 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
             sage: RDF(2).sin()
             0.909297426826
         """
-        return RealDoubleElement(gsl_sf_sin(self._value))
+        return self._new_c(gsl_sf_sin(self._value))
 
     def tan(self):
         """
@@ -926,7 +893,7 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
             sage: q.tan()
             0.57735026919
         """
-        return RealDoubleElement(tan(self._value))
+        return self._new_c(tan(self._value))
 
     def sincos(self):
         """
@@ -940,7 +907,7 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
         return self.sin(), self.cos()
 
     def hypot(self, other):
-        return RealDoubleElement(gsl_sf_hypot(self._value, float(other)))
+        return self._new_c(gsl_sf_hypot(self._value, float(other)))
 
     def acos(self):
         """
@@ -952,7 +919,7 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
             sage: i.acos() == q
             True
         """
-        return RealDoubleElement(acos(self._value))
+        return self._new_c(acos(self._value))
 
     def asin(self):
         """
@@ -964,7 +931,7 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
             sage: i.asin() == q
             True
         """
-        return RealDoubleElement(asin(self._value))
+        return self._new_c(asin(self._value))
 
     def atan(self):
         """
@@ -976,7 +943,7 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
             sage: i.atan() == q
             True
         """
-        return RealDoubleElement(atan(self._value))
+        return self._new_c(atan(self._value))
 
     def cosh(self):
         """
@@ -987,7 +954,7 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
             sage: q.cosh()
             1.0344656401
         """
-        return RealDoubleElement(cosh(self._value))
+        return self._new_c(cosh(self._value))
 
     def sinh(self):
         """
@@ -999,7 +966,7 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
             0.264800227602
 
         """
-        return RealDoubleElement(sinh(self._value))
+        return self._new_c(sinh(self._value))
 
     def tanh(self):
         """
@@ -1010,7 +977,7 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
             sage: q.tanh()
             0.255977789246
         """
-        return RealDoubleElement(tanh(self._value))
+        return self._new_c(tanh(self._value))
 
     def acosh(self):
         """
@@ -1023,7 +990,7 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
             sage: i.acosh() == q
             True
         """
-        return RealDoubleElement(gsl_acosh(self._value))
+        return self._new_c(gsl_acosh(self._value))
 
     def asinh(self):
         """
@@ -1036,7 +1003,7 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
             sage: i.asinh() == q
             True
         """
-        return RealDoubleElement(gsl_asinh(self._value))
+        return self._new_c(gsl_asinh(self._value))
 
     def atanh(self):
         """
@@ -1049,7 +1016,7 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
             sage: i.atanh() - q      # output is random, depending on arch.
             -4.4408920985e-16
         """
-        return RealDoubleElement(gsl_atanh(self._value))
+        return self._new_c(gsl_atanh(self._value))
 
     def agm(self, other):
         """
@@ -1070,7 +1037,7 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
            sage: RDF(6).erf()
            1.0
         """
-        return RealDoubleElement(gsl_sf_erf(self._value))
+        return self._new_c(gsl_sf_erf(self._value))
 
     def gamma(self):
         """
@@ -1082,7 +1049,7 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
            sage: RDF(1.5).gamma()
            0.886226925453
         """
-        return RealDoubleElement(gsl_sf_gamma(self._value))
+        return self._new_c(gsl_sf_gamma(self._value))
 
     def zeta(self):
         r"""
@@ -1102,8 +1069,8 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
             inf
         """
         if self._value == 1:
-            return RealDoubleElement(1)/RealDoubleElement(0)
-        return RealDoubleElement(gsl_sf_zeta(self._value))
+            return self._new_c(1)/self._new_c(0)
+        return self._new_c(gsl_sf_zeta(self._value))
 
     def algdep(self, n):
         """
@@ -1142,5 +1109,11 @@ cdef class RealDoubleElement(sage.structure.element.FieldElement):
 #####################################################
 # unique objects
 #####################################################
-RealDoubleField = RealDoubleField_class()
-RDF = RealDoubleField
+cdef RealDoubleField_class _RDF
+_RDF = RealDoubleField_class()
+
+RDF = _RDF   # external interface
+
+def RealDoubleField():
+    global _RDF
+    return _RDF

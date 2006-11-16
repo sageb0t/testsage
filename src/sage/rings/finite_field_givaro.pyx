@@ -33,7 +33,7 @@ r"""
 #*****************************************************************************
 
 from sage.rings.ring cimport FiniteField
-from sage.structure.element cimport FiniteFieldElement, Element, RingElement
+from sage.structure.element cimport FiniteFieldElement, Element, RingElement, ModuleElement
 from sage.rings.finite_field_element import FiniteField_ext_pariElement
 from sage.structure.sage_object cimport SageObject
 import operator
@@ -1087,7 +1087,7 @@ cdef class FiniteField_givaroElement(FiniteFieldElement):
         a = self**(n / 2)
         return bool(a == 1)
 
-    cdef RingElement _add_c_impl(self, RingElement right):
+    cdef ModuleElement _add_c_impl(self, ModuleElement right):
         """
         Add two elements.
 
@@ -1132,7 +1132,7 @@ cdef class FiniteField_givaroElement(FiniteFieldElement):
                                               (<FiniteField_givaroElement>other).object)
         return make_FiniteField_givaroElement(parent_object(self),r)
 
-    cdef RingElement _sub_c_impl(self, RingElement right):
+    cdef ModuleElement _sub_c_impl(self, ModuleElement right):
         """
         Subtract two elements
 
