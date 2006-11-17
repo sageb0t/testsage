@@ -188,7 +188,7 @@ class SpecialCubicQuotientRing(CommutativeAlgebra):
   def __call__(self, value):
     return self._coerce_(value)
 
-  def _coerce_(self, value):
+  def _coerce_impl(self, value):
     # todo: I don't understand why the direct _poly_ring.__call__()
     # doesn't work....
 
