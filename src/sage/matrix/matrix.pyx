@@ -3427,6 +3427,12 @@ cdef class Matrix(ModuleElement):
         else:
             return self._multiply_classical(right)
 
+    cdef sage.structure.element.ModuleElement _rmul_nonscalar_c_impl(right, left):
+        """
+        Action of this matrix from the right on a vector.
+        """
+        return right.vector_matrix_multiply(left)
+
     cdef int _will_use_strassen(self, Matrix right) except -2:
         """
         Whether or not matrix multiplication of self by right should
