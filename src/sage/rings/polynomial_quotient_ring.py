@@ -14,20 +14,12 @@ EXAMPLES:
     True
 """
 
-#*****************************************************************************
-#       Copyright (C) 2005 William Stein <wstein@gmail.com>
-#
+################################################################################
+#       Copyright (C) 2005, 2006 William Stein <wstein@gmail.com>
 #  Distributed under the terms of the GNU General Public License (GPL)
-#
-#    This code is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-#    General Public License for more details.
-#
 #  The full text of the GPL is available at:
-#
 #                  http://www.gnu.org/licenses/
-#*****************************************************************************
+################################################################################
 
 import number_field.all
 import polynomial_element
@@ -230,8 +222,11 @@ class PolynomialQuotientRing_generic(commutative_ring.CommutativeRing):
             90*alpha^2 - 109*alpha + 28
         """
         if isinstance(x, polynomial_quotient_ring_element.PolynomialQuotientRingElement):
-            if x.parent() == self:
+            P = x.parent()
+            if P is self:
                 return x
+            elif P == self:
+                return polynomial_quotient_ring_element.PolynomialQuotientRingElement(self, self.__ring(x.lift()), check=False)
         return polynomial_quotient_ring_element.PolynomialQuotientRingElement(
                         self, self.__ring(x) , check=True)
 
@@ -255,9 +250,13 @@ class PolynomialQuotientRing_generic(commutative_ring.CommutativeRing):
         The rings that coerce into the quotient ring canonically, are:
 
            * this ring,
+           * any canonically isomorphic ring
            * anything that coerces into the ring of which this is the quotient
 
         """
+        if isinstance(x, polynomial_quotient_ring_element.PolynomialQuotientRingElement):
+            if x.parent() == self:
+                return polynomial_quotient_ring_element.PolynomialQuotientRingElement(self, self.__ring(x.lift()), check=False)
         # any ring that coerces to the base ring of this polynomial ring.
         return self._coerce_try(x, [self.polynomial_ring()])
 
@@ -286,7 +285,7 @@ class PolynomialQuotientRing_generic(commutative_ring.CommutativeRing):
         if c: return c
         return cmp(self.modulus(), other.modulus())
 
-    def __repr__(self):
+    def _repr_(self):
         return "Univariate Quotient Polynomial Ring in %s over %s with modulus %s"%(
             self.variable_name(), self.base_ring(), self.modulus())
 

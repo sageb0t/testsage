@@ -141,7 +141,7 @@ cdef class RealDoubleField_class(Field):
         coefficients of polynomials.
 
         EXAMPLES:
-            sage: RealDoubleField.is_atomic_repr()
+            sage: RDF.is_atomic_repr()
             True
         """
         return True
@@ -152,7 +152,7 @@ cdef class RealDoubleField_class(Field):
         Technical note:  There exists an upper bound on the double representation.
 
         EXAMPLES:
-            sage: RealDoubleField.is_finite()
+            sage: RDF.is_finite()
             False
         """
         return False
@@ -162,7 +162,7 @@ cdef class RealDoubleField_class(Field):
         Returns 0, since the field of real numbers has characteristic 0.
 
         EXAMPLES:
-            sage: RealDoubleField.characteristic()
+            sage: RDF.characteristic()
             0
         """
         return 0
@@ -365,8 +365,7 @@ cdef class RealDoubleElement(FieldElement):
         Add two real numbers with the same parent.
 
         EXAMPLES:
-            sage: R = RDF
-            sage: R(-1.5) + R(2.5)
+            sage: RDF('-1.5') + RDF('2.5')
             1.0
         """
         return self._new_c(self._value + (<RealDoubleElement>right)._value)
@@ -376,8 +375,7 @@ cdef class RealDoubleElement(FieldElement):
         Subtract two real numbers with the same parent.
 
         EXAMPLES:
-            sage: R = RDF
-            sage: R(-1.5) - R(2.5)
+            sage: RDF('-1.5') - RDF('2.5')
             -4.0
         """
         return self._new_c(self._value - (<RealDoubleElement>right)._value)
@@ -387,8 +385,7 @@ cdef class RealDoubleElement(FieldElement):
         Multiply two real numbers with the same parent.
 
         EXAMPLES:
-            sage: R = RealDoubleField
-            sage: R(-1.5) * R(2.5)
+            sage: RDF('-1.5') * RDF('2.5')
             -3.75
         """
         return self._new_c(self._value * (<RealDoubleElement>right)._value)
@@ -396,12 +393,11 @@ cdef class RealDoubleElement(FieldElement):
     cdef RingElement _div_c_impl(self, RingElement right):
         """
         EXAMPLES:
-            sage: R = RealDoubleField
-            sage: R(-1.5) / R(2.5)
+            sage: RDF('-1.5') / RDF('2.5')
             -0.6
+            sage: RDF(1)/RDF(0)
+            inf
         """
-        if (<RealDoubleElement>right)._value == 0:
-            raise ZeroDivisionError, "RealDoubleElement division by zero"
         return self._new_c(self._value / (<RealDoubleElement>right)._value)
 
     def _neg_c_impl(self):
