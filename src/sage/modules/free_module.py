@@ -228,9 +228,11 @@ def FreeModule(base_ring, rank, sparse=False, inner_product_matrix=None):
 
     if not base_ring.is_commutative():
         raise TypeError, "base_ring must be a commutative ring"
-    if isinstance(base_ring,sage.rings.real_double.RealDoubleField_class):
+
+    if not sparse and isinstance(base_ring,sage.rings.real_double.RealDoubleField_class):
         M = RealDoubleVectorSpace_class(rank)
-    elif isinstance(base_ring,sage.rings.complex_double.ComplexDoubleField_class):
+
+    elif not sparse and isinstance(base_ring,sage.rings.complex_double.ComplexDoubleField_class):
         M=ComplexDoubleVectorSpace_class(rank)
 
     elif isinstance(base_ring, field.Field):
@@ -338,13 +340,20 @@ class FreeModule_generic(module.Module):
         self.__degree = degree
         self.__is_sparse = sparse
         self._inner_product_matrix = inner_product_matrix
+        self.element_class()
         ParentWithGens.__init__(self, base_ring)
 
-    def _element_class(self):
+    def element_class(self):
+        try:
+            return self._element_class
+        except AttributeError:
+            pass
         if self.__is_sparse:
-            return free_module_element.FreeModuleElement_generic_sparse
+            C = free_module_element.FreeModuleElement_generic_sparse
         else:
-            return free_module_element.FreeModuleElement_generic_dense
+            C = free_module_element.FreeModuleElement_generic_dense
+        self._element_class = C
+        return C
 
     def __call__(self, x, coerce=True, copy=True, check=True):
         if isinstance(x, (int, long, sage.rings.integer.Integer)) and x==0:
@@ -356,10 +365,7 @@ class FreeModule_generic(module.Module):
                 else:
                     return x
             x = x.list()
-        if self.__is_sparse:
-            w = free_module_element.FreeModuleElement_generic_sparse(self, x, coerce, copy)
-        else:
-            w = free_module_element.FreeModuleElement_generic_dense(self, x, coerce, copy)
+        w = self._element_class(self, x, coerce, copy)
         if check:
             if isinstance(self, FreeModule_ambient):
                 return w
@@ -1069,7 +1075,7 @@ class FreeModule_generic(module.Module):
         # Do *not* cache this -- it must be computed fresh each time, since
         # it is is used by __call__ to make a new copy of the 0 element.
 
-        return self._element_class()(self, 0)
+        return self._element_class(self, 0)
 
 class FreeModule_generic_pid(FreeModule_generic):
     """
@@ -2539,7 +2545,7 @@ class FreeModule_submodule_with_basis_pid(FreeModule_generic_pid):
         FreeModule_generic.__init__(self, R, len(basis), ambient.degree(),
                             ambient.is_sparse(), inner_product_matrix=inner_product_matrix)
 
-        C = self._element_class()
+        C = self.element_class()
         w = [C(self, x.list(),
                           coerce=False, copy=True) for x in basis]
 
@@ -3281,7 +3287,7 @@ def basis_seq(V, w):
 class RealDoubleVectorSpace_class(FreeModule_ambient_field):
     def __init__(self,n):
         FreeModule_ambient_field.__init__(self,sage.rings.real_double.RDF,n)
-        self._element_class = sage.modules.real_double_vector.RealDoubleVectorSpace_element
+        self._element_class = sage.modules.real_double_vector.RealDoubleVectorSpaceElement
 
     def coordinates(self,v):
         return v
@@ -3289,7 +3295,7 @@ class RealDoubleVectorSpace_class(FreeModule_ambient_field):
 class ComplexDoubleVectorSpace_class(FreeModule_ambient_field):
     def __init__(self,n):
         FreeModule_ambient_field.__init__(self,sage.rings.complex_double.CDF,n)
-        self._element_class = sage.modules.complex_double_vector.ComplexDoubleVectorSpace_element
+        self._element_class = sage.modules.complex_double_vector.ComplexDoubleVectorSpaceElement
 
     def coordinates(self,v):
         return v

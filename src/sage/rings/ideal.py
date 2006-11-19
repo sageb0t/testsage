@@ -156,6 +156,7 @@ class Ideal_generic(MonoidElement):
         return "Ideal %s of %s"%(self._repr_short(), self.ring())
 
     def __cmp__(self, other):
+        # todo -- should use monoid coerce machinery.
         if not isinstance(other, Ideal_generic):
             return -1
         if self.ring() != other.ring():
