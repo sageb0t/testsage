@@ -12,7 +12,7 @@ AUTHOR:
 #                  http://www.gnu.org/licenses/
 ###############################################################################
 
-from sage.structure.element cimport ModuleElement, RingElement
+from sage.structure.element cimport ModuleElement, RingElement, Vector
 
 from sage.rings.real_double cimport RealDoubleElement
 
@@ -31,6 +31,7 @@ cdef class RealDoubleVectorSpaceElement(free_module_element.FreeModuleElement):
         cdef RealDoubleVectorSpaceElement y
         y = PY_NEW(RealDoubleVectorSpaceElement)
         y._parent = self._parent
+        y._degree = self._degree
         y.v = v
         return y
 
@@ -49,9 +50,12 @@ cdef class RealDoubleVectorSpaceElement(free_module_element.FreeModuleElement):
     def __copy__(self, copy=True):
         return self._new_c(self.gsl_vector_copy())
 
+    def __new__(self, parent=None,x=None,coerce=True,copy=True):
+        self.v = NULL
+
     def __init__(self,parent,x,coerce=True,copy=True):
-        free_module_element.FreeModuleElement.__init__(self,sage.rings.real_double.RDF)
-        self._parent=parent
+        self._parent = parent
+        self._degree = parent.degree()
         cdef int n
         cdef int i
         n = parent.rank()
@@ -82,7 +86,8 @@ cdef class RealDoubleVectorSpaceElement(free_module_element.FreeModuleElement):
             raise TypeError,"user supplied bector must be same length as rank of vector space"
 
     def __dealloc__(self):
-        gsl_vector_free(self.v)
+        if self.v:
+            gsl_vector_free(self.v)
 
     def __len__(self):
         return self.v.size
@@ -113,6 +118,14 @@ cdef class RealDoubleVectorSpaceElement(free_module_element.FreeModuleElement):
         v = self.gsl_vector_copy()
         if gsl_vector_sub(v, (<RealDoubleVectorSpaceElement> right).v):
             raise RuntimeError, "error subtracting real double vectors"
+        return self._new_c(v)
+
+    cdef Vector _vector_times_vector_c_impl(self, Vector right):
+        cdef gsl_vector* v
+        gsl_set_error_handler_off()
+        v = self.gsl_vector_copy()
+        if gsl_vector_mul(v, (<RealDoubleVectorSpaceElement> right).v):
+            raise RuntimeError, "error multiplying real double vectors"
         return self._new_c(v)
 
     cdef ModuleElement _rmul_c_impl(self, RingElement left):
