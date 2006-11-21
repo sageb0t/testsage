@@ -480,7 +480,7 @@ class LaurentSeries(ring_element.RingElement):
             # todo: this could also make something in the formal fraction field.
             raise ArithmeticError, "division not defined"
 
-    def _cmp_(self, right):
+    def __cmp__(self, right):
         """
         EXAMPLES:
             sage: x = Frac(QQ[['x']]).0
