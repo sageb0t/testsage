@@ -57,7 +57,10 @@ from sage.rings.rational_field import QQ
 from sage.rings.integer_ring import ZZ
 
 def to_intvec(w):
-    w = eval(w.replace(' ', ','))
+    try:
+        w = eval(w.replace(' ', ','))
+    except SyntaxError, msg:
+        raise SyntaxError, "%s\n%s"%(w,msg)
     # now w is a tuple of Python ints
     M = ZZ**len(w)    # make a free module
     return M(w)
@@ -80,7 +83,7 @@ class GroebnerFan(SageObject):
                         during computations
 
         EXAMPLES:
-            sage: R.<x,y,z> = PolynomialRing(QQ,3,order='lex')
+            sage: R.<x,y,z> = PolynomialRing(QQ, 3, order='lex')
             sage: I = R.ideal([x^2*y - z, y^2*z - x, z^2*x - y])
             sage: G = I.groebner_fan(); G
             Groebner fan of the ideal:
@@ -122,7 +125,8 @@ class GroebnerFan(SageObject):
             -- map from gfan ring to SAGE ring
 
         EXAMPLES:
-            sage: R.<x,y,z> = PolynomialRing(QQ,3); G = R.ideal([x^2*y - z, y^2*z - x, z^2*x - y]).groebner_fan()
+            sage: R.<x,y,z> = PolynomialRing(QQ,3)
+            sage: G = R.ideal([x^2*y - z, y^2*z - x, z^2*x - y]).groebner_fan()
             sage: G._gfan_maps()
             (Ring morphism:
               From: Polynomial Ring in x, y, z over Rational Field
@@ -178,7 +182,8 @@ class GroebnerFan(SageObject):
         mapped to a,b,c, etc.)
 
         EXAMPLES:
-            sage: R.<x,y,z> = PolynomialRing(QQ,3); G = R.ideal([x^2*y - z, y^2*z - x, z^2*x - y]).groebner_fan()
+            sage: R.<x,y,z> = PolynomialRing(QQ,3)
+            sage: G = R.ideal([x^2*y - z, y^2*z - x, z^2*x - y]).groebner_fan()
             sage: G._gfan_ideal()
             '{-1*b + a*c^2, b^2*c - a, -1*c + a^2*b}'
         """
@@ -225,7 +230,8 @@ class GroebnerFan(SageObject):
     def reduced_groebner_bases(self):
         """
         EXAMPLES:
-            sage: R.<x,y,z> = PolynomialRing(QQ,3,order='lex'); G = R.ideal([x^2*y - z, y^2*z - x, z^2*x - y]).groebner_fan()
+            sage: R.<x,y,z> = PolynomialRing(QQ, 3, order='lex')
+            sage: G = R.ideal([x^2*y - z, y^2*z - x, z^2*x - y]).groebner_fan()
             sage: X = G.reduced_groebner_bases()
             sage: len(X)
             33
@@ -298,7 +304,8 @@ class GroebnerFan(SageObject):
         Computes and returns a lexicographic reduced Groebner basis for the ideal.
 
         EXAMPLES:
-            sage: R.<x,y,z> = PolynomialRing(QQ,3); G = R.ideal([x - z^3, y^2 - x + x^2 - z^3*x]).groebner_fan()
+            sage: R.<x,y,z> = PolynomialRing(QQ,3)
+            sage: G = R.ideal([x - z^3, y^2 - x + x^2 - z^3*x]).groebner_fan()
             sage: G.buchberger ()
             [-1*z^3 + y^2, -1*z^3 + x]
         """
@@ -317,7 +324,8 @@ class GroebnerFan(SageObject):
         Return the f-vector for the Grobner fan.
 
         EXAMPLES:
-            sage: R.<x,y> = PolynomialRing(QQ,2); G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
+            sage: R.<x,y> = PolynomialRing(QQ,2)
+            sage: G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
             sage: G.fvector ()
             (1, 4, 3)
         """
@@ -335,7 +343,8 @@ class GroebnerFan(SageObject):
         define this Groebner fan.
 
         EXAMPLES:
-            sage: R.<x,y> = PolynomialRing(QQ,2); G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
+            sage: R.<x,y> = PolynomialRing(QQ,2)
+            sage: G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
             sage: H = G.homogeneity_space()
         """
         try:
@@ -371,10 +380,12 @@ class GroebnerFan(SageObject):
                      requires xfig).
 
         EXAMPLES:
-            sage: R.<x,y> = PolynomialRing(QQ,2); G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
+            sage: R.<x,y> = PolynomialRing(QQ,2)
+            sage: G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
             sage: G.render('a.fig')
 
-            sage: R.<x,y,z> = PolynomialRing(QQ,3); G = R.ideal([x^2*y - z, y^2*z - x, z^2*x - y]).groebner_fan()
+            sage: R.<x,y,z> = PolynomialRing(QQ,3)
+            sage: G = R.ideal([x^2*y - z, y^2*z - x, z^2*x - y]).groebner_fan()
             sage.: G.render('a.fig', show=True, larger=True)
         """
         cmd = 'render'
@@ -392,7 +403,8 @@ class GroebnerFan(SageObject):
         Return various statistics about this Groebner fan.
 
         EXAMPLES:
-            sage: R.<x,y> = PolynomialRing(QQ,2); G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
+            sage: R.<x,y> = PolynomialRing(QQ)
+            sage: G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
             sage: G._gfan_stats()
             {'Number of reduced Groebner bases': 3, 'Maximal total degree of a Groebner basis': 4, 'Dimension of homogeneity space': 0, 'Number of variables': 2, 'Minimal total degree of a Groebner basis': 2}
         """
@@ -413,7 +425,8 @@ class GroebnerFan(SageObject):
         Return the dimension of the homogeneity space.
 
         EXAMPLES:
-            sage: R.<x,y> = PolynomialRing(QQ,2); G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
+            sage: R.<x,y> = PolynomialRing(QQ,2)
+            sage: G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
             sage: G.dimension_of_homogeneity_space()
             0
         """
@@ -424,7 +437,8 @@ class GroebnerFan(SageObject):
         Return the maximal total degree of any Groebner basis.
 
         EXAMPLES:
-            sage: R.<x,y> = PolynomialRing(QQ,2); G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
+            sage: R.<x,y> = PolynomialRing(QQ,2)
+            sage: G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
             sage: G.maximal_total_degree_of_a_groebner_basis()
             4
         """
@@ -435,7 +449,8 @@ class GroebnerFan(SageObject):
         Return the minimal total degree of any Groebner basis.
 
         EXAMPLES:
-            sage: R.<x,y> = PolynomialRing(QQ,2); G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
+            sage: R.<x,y> = PolynomialRing(QQ,2)
+            sage: G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
             sage: G.minimal_total_degree_of_a_groebner_basis()
             2
         """
@@ -446,7 +461,8 @@ class GroebnerFan(SageObject):
         Return the number of reduced Groebner bases.
 
         EXAMPLES:
-            sage: R.<x,y> = PolynomialRing(QQ,2); G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
+            sage: R.<x,y> = PolynomialRing(QQ,2)
+            sage: G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
             sage: G.number_of_reduced_groebner_bases()
             3
         """
@@ -457,11 +473,15 @@ class GroebnerFan(SageObject):
         Return the number of variables.
 
         EXAMPLES:
-            sage: R.<x,y> = PolynomialRing(QQ,2); G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
+            sage: R.<x,y> = PolynomialRing(QQ,2)
+            sage: G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
             sage: G.number_of_variables()
             2
 
-            sage: x = PolynomialRing(QQ,10).gens(); G = ideal([x[0]-x[9], sum(x)]).groebner_fan()
+            sage: R = PolynomialRing(QQ,'x',10)
+            sage: R.inject_variables(globals())
+            Defining x0, x1, x2, x3, x4, x5, x6, x7, x8, x9
+            sage: G = ideal([x0 - x9, sum(R.gens())]).groebner_fan()
             sage: G.number_of_variables()
             10
         """
@@ -479,7 +499,8 @@ class GroebnerFan(SageObject):
                      to 1 + the dimension of the homogeneity space is
                      not satisfied).
         EXAMPLES:
-            sage: R.<x,y,z> = PolynomialRing(QQ, 3, order='lex'); G = R.ideal([y^3-3*x^2, z^3-x-y-2*y^3+2*x^2]).groebner_fan()
+            sage: R.<x,y,z> = PolynomialRing(QQ,3, order='lex')
+            sage: G = R.ideal([y^3-3*x^2, z^3-x-y-2*y^3+2*x^2]).groebner_fan()
             sage: G
             Groebner fan of the ideal:
             Ideal (y^3 - 3*x^2, z^3 - y - 2*y^3 - x + 2*x^2) of Polynomial Ring in x, y, z over Rational Field
@@ -535,7 +556,8 @@ class ReducedGroebnerBasis(SageObject, list):
         reduced Groebner basis.
 
         EXAMPLES:
-            sage: R.<x,y> = PolynomialRing(QQ,2); G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
+            sage: R.<x,y> = PolynomialRing(QQ,2)
+            sage: G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
             sage.: G[0].interactive()
             Initializing gfan interactive mode
             *********************************************
@@ -582,7 +604,8 @@ class ReducedGroebnerBasis(SageObject, list):
             tuple of integer vectors
 
         EXAMPLES:
-            sage: R.<x,y> = PolynomialRing(QQ,2); G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
+            sage: R.<x,y> = PolynomialRing(QQ,2)
+            sage: G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
             sage: G[1].groebner_cone()
             ((-1, 2), (1, -1))
             sage: [g.groebner_cone() for g in G]
@@ -612,7 +635,8 @@ class ReducedGroebnerBasis(SageObject, list):
         Return the ideal generated by this basis.
 
         EXAMPLES:
-            sage: R.<x,y,z> = PolynomialRing(QQ,3); G = R.ideal([x - z^3, y^2 - 13*x]).groebner_fan()
+            sage: R.<x,y,z> = PolynomialRing(QQ,3)
+            sage: G = R.ideal([x - z^3, y^2 - 13*x]).groebner_fan()
             sage: G[0].ideal()
             Ideal (-13*z^3 + y^2, -1*z^3 + x) of Polynomial Ring in x, y, z over Rational Field
         """
@@ -623,13 +647,15 @@ class ReducedGroebnerBasis(SageObject, list):
         Return the weight vector of this reduced Groebner basis.
 
         EXAMPLES:
-            sage: R.<x,y,z> = PolynomialRing(QQ,3); G = R.ideal([x - z^3, y^2 - 3*x]).groebner_fan()
+            sage: R.<x,y,z> = PolynomialRing(QQ,3)
+            sage: G = R.ideal([x - z^3, y^2 - 3*x]).groebner_fan()
             sage: [g.weight_vector() for g in G]
-            [(2, 1, 0), (0, -1, 0), (-1, 0, 0)]
+            [(4, 2, 1), (3, 1, 1), (4, 3, 2)]
 
-            sage: R.<x,y,z> = PolynomialRing(GF(3),3); G = R.ideal([x - z^3, y^2 - 3*x]).groebner_fan()
+            sage: R.<x,y,z> = PolynomialRing(GF(3),3)
+            sage: G = R.ideal([x - z^3, y^2 - 3*x]).groebner_fan()
             sage: [g.weight_vector() for g in G]
-            [(1, 0, 0), (-1, 0, 0)]
+            [(4, 1, 1), (2, 1, 1)]
         """
         try:
             return self.__weight_vector

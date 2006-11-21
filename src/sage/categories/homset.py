@@ -27,6 +27,7 @@ import weakref
 import category
 import morphism
 from sage.sets.set import Set_generic
+from sage.structure.parent_base import ParentWithBase
 
 _cache = {}
 def Hom(X, Y, cat=None):
@@ -113,8 +114,10 @@ def Hom(X, Y, cat=None):
         H = SchemeHomset(X, Y)
 
     else:  # default
-
-        H = Homset(X, Y, cat)
+        if isinstance(X, ParentWithBase):
+            H = HomsetWithBase(X, Y, cat)
+        else:
+            H = Homset(X, Y, cat)
 
     ##_cache[key] = weakref.ref(H)
     _cache[(X, Y, cat)] = weakref.ref(H)
@@ -126,7 +129,7 @@ def hom(X, Y, f):
     Return Hom(X,Y)(f), where f is data that defines an element of Hom(X,Y).
 
     EXAMPLES:
-        sage: R, x = PolynomialRing(QQ).objgen()
+        sage: R, x = PolynomialRing(QQ,'x').objgen()
         sage: phi = hom(R, QQ, [2])
         sage: phi(x^2 + 3)
         7
@@ -173,7 +176,7 @@ def end(X, f):
     Return End(X)(f), where f is data that defines an element of End(X).
 
     EXAMPLES:
-        sage: R, x = PolynomialRing(QQ).objgen()
+        sage: R, x = PolynomialRing(QQ,'x').objgen()
         sage: phi = end(R, [x + 1])
         sage: phi
         Ring endomorphism of Univariate Polynomial Ring in x over Rational Field
@@ -191,7 +194,7 @@ class Homset(Set_generic):
         sage: H = Hom(QQ^2, QQ^3)
         sage: loads(H.dumps()) == H
         True
-        sage: E = End(AffineSpace(2))
+        sage: E = End(AffineSpace(2, names='x,y'))
         sage: loads(E.dumps()) == E
         True
     """
@@ -256,6 +259,11 @@ class Homset(Set_generic):
         reversed.
         """
         return Homset(self.__codomain, self.__domain, self.__category)
+
+class HomsetWithBase(ParentWithBase, Homset):
+    def __init__(self, X, Y, cat=None, check=True):
+        Homset.__init__(self, X, Y, cat, check)
+        ParentWithBase.__init__(self, X.base_ring())
 
 def is_Homset(x):
     """

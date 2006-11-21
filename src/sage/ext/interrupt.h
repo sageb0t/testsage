@@ -103,11 +103,12 @@ void sig_handle(int n);
 
 static int __sig__n, __sig_str__n;
 
+   /*             signal(SIGSEGV, sig_handle); \*/
+
 #define _sig_on last = signal(SIGINT, sig_handle); \
                 if (last != sig_handle) \
                    last_handler = last; \
                 signal(SIGALRM, sig_handle); \
-                signal(SIGSEGV, sig_handle); \
                 signal(SIGABRT, sig_handle); \
                 signal(SIGFPE, sig_handle); \
                 if (__sig__n = sigsetjmp(env,1)) {  \
@@ -121,10 +122,11 @@ static int __sig__n, __sig_str__n;
                   return(0); \
 	       }
 
+                /* signal(SIGSEGV, sig_handle);  */
+
 #define _sig_str(s) last = signal(SIGINT, sig_handle); \
                 if (last != sig_handle) \
                    last_handler = last; \
-                signal(SIGSEGV, sig_handle); \
                 signal(SIGABRT, sig_handle); \
                 signal(SIGFPE, sig_handle); \
                 signal(SIGALRM, sig_handle); \

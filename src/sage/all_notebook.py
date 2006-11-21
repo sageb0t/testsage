@@ -1,3 +1,5 @@
+from __future__ import with_statement
+
 from sage.misc.latex import Latex, lprint, typeset
 latex = Latex(density=130)
 latex_debug = Latex(debug=True, density=130)

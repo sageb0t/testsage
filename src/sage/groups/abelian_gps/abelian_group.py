@@ -6,6 +6,7 @@ AUTHOR:
     -- David Joyner (2006-05) several significant bug fixes
     --      "       (2006-08) trivial changes to docs, added random,
                               fixed bug in how invariants are recorded
+    --      +       (2006-10) added dual_group method
 
 TODO:
    * additive abelian groups should also be supported
@@ -349,7 +350,7 @@ class AbelianGroup_class(group.AbelianGroup):
         self.__invariants = invs
         # *now* define ngens
         self.__ngens = len(self.__invariants)
-        self.assign_names(names)
+        self._assign_names(names)
 
     def invariants(self):
         return self.__invariants
@@ -725,6 +726,16 @@ class AbelianGroup_class(group.AbelianGroup):
         """
         for g in self.list():
             yield g
+
+    def dual_group(self):
+        """
+        Returns the dual group.
+
+        EXAMPLES:
+
+        """
+        from sage.groups.abelian_gps.dual_abelian_group import DualAbelianGroup
+        return DualAbelianGroup(self)
 
 class AbelianGroup_subgroup(AbelianGroup_class):
     """
