@@ -12,6 +12,12 @@ cdef extern from "Python.h":
     Py_ssize_t PyNumber_AsSsize_t(PyObject* o, PyObject* exc)
 
 cdef class Matrix_sparse(matrix.Matrix):
+    cdef int is_sparse_c(self):
+        return 1
+
+    cdef int is_dense_c(self):
+        return 0
+
     def __copy__(self):
         """
         Return a copy of this matrix.  Changing the entries of the
