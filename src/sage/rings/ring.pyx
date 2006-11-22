@@ -187,6 +187,17 @@ cdef class Ring(ParentWithGens):
         """
         raise NotImplementedError
 
+    def is_subring(self, other):
+        """
+        Return True if the canonical map from self to other is injective.
+
+        Raises a NotImplementedError if not known.
+        """
+        try:
+            return self.Hom(other).natural_map().is_injective()
+        except TypeError:
+            return False
+
     def is_prime_field(self):
         r"""
         Return True if this ring is one of the prime fields $\Q$
