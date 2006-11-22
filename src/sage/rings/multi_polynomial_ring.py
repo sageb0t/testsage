@@ -118,6 +118,9 @@ class MPolynomialRing_generic(commutative_ring.CommutativeRing):
         self._has_singular = False #cannot convert to Singular by default
         ParentWithGens.__init__(self, base_ring, names)
 
+    def is_integral_domain(self):
+        return self.base_ring().is_integral_domain()
+
     def _coerce_impl(self, x):
         """
         Return the canonical coercion of x to this multivariate
