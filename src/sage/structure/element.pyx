@@ -320,6 +320,9 @@ cdef class Element(sage_object.SageObject):
             else:
                 r = left._cmp_c_impl(right)
 
+        return left._rich_to_bool(op, r)
+
+    cdef _rich_to_bool(self, int op, int r):
         if op == 0:  #<
             return PyBool_FromLong(r  < 0)
         elif op == 2: #==
@@ -1195,7 +1198,7 @@ cdef class Vector(ModuleElement):
             if PY_TYPE_CHECK(left, Vector):
                 return (<Vector>left)._vector_times_vector_c(<Vector>right)
             #     scalar * right
-            return (<ModuleElement>right)._rmultiply_by_scalar_c(left)
+            return (<ModuleElement>right)._rmultiply_by_scalar(left)
 
     cdef Vector _vector_times_vector_c(Vector left, Vector right):
         if left._degree != right._degree:
@@ -1206,9 +1209,16 @@ cdef class Vector(ModuleElement):
         else:
             return left._vector_times_vector_c_impl(right)
     cdef Vector _vector_times_vector_c_impl(Vector left, Vector right):
-        raise TypeError
+        raise TypeError,arith_error_message(left, right, operator.mul)
+
     def  _vector_times_vector(left, right):
         return self.vector_time_vector_c_impl(right)
+
+    def __div__(self, right):
+        if PY_TYPE_CHECK(self, Vector):
+            right = (<Vector>self)._parent._base._coerce_c(right)
+            return (<Vector>self)._lmul_c(~right)
+        raise TypeError, arith_error_message(self, right, operator.div)
 
 cdef have_same_base(Element x, Element y):
     return x._parent._base is y._parent._base
