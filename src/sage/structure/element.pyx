@@ -426,7 +426,7 @@ cdef class ModuleElement(Element):
         DO NOT CALL THIS FUNCTION DIRECTLY.
         See extensive documentation at the top of element.pyx.
         """
-        raise TypeError
+        raise TypeError, arith_error_message(left, right, operator.add)
 
     def _add_(ModuleElement left, ModuleElement right):
         """
@@ -973,7 +973,7 @@ cdef class RingElement(ModuleElement):
         DO NOT CALL THIS FUNCTION DIRECTLY.
         See extensive documentation at the top of element.pyx.
         """
-        raise TypeError
+        raise TypeError, arith_error_message(self, right, operator.mul)
 
     def _mul_(RingElement self, RingElement right):
         """
@@ -1021,7 +1021,7 @@ cdef class RingElement(ModuleElement):
         try:
             return self._parent.fraction_field()(self, right)
         except AttributeError:
-            raise TypeError
+            raise TypeError, arith_error_message(self, right, operator.div)
 
     def _div_(RingElement self, RingElement right):
         """
