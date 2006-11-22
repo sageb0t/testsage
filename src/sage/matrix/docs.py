@@ -85,7 +85,7 @@ EXAMPLES:
     sage: A[0,0] = 5
     Traceback (most recent call last):
     ...
-    ValueError: object is immutable; please change a copy instead.
+    ValueError: matrix is immutable; please change a copy instead (use self.copy()).
 
 \subsection{Implementation and Design}
 Class Diagram (an x means that class is currently supported):
