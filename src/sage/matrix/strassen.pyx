@@ -261,7 +261,7 @@ cdef subtract_strassen_product(result, A, B, Py_ssize_t cutoff):
         strassen_window_multiply(to_sub, A, B, cutoff)
         result.subtract(to_sub)
 
-def strassen_echelon(A, cutoff):
+def strassen_echelon(MatrixWindow A, Py_ssize_t cutoff):
     """
     Compute echelon form, in place.
     Internal function, call with M.echelonize(algorithm="strassen")
