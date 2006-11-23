@@ -308,6 +308,12 @@ def generic_cmp(x,y):
         return 0
     return 1
 
+def cmp_props(left, right, props):
+    for a in props:
+        c = cmp(left.__getattribute__(a)(), right.__getattribute__(a)())
+        if c: return c
+    return 0
+
 def prod(x, z=None):
     """
     Return the product of the elements in the list x.  If optimal
