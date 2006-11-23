@@ -147,7 +147,6 @@ class WebServer(BaseHTTPServer.BaseHTTPRequestHandler):
             return
 
         cell = W.new_cell_before(id)
-        #notebook.save()
         self.wfile.write(str(cell.id()) + SEP + cell.html(div_wrap=False) + SEP + \
                          str(id))
 
@@ -160,7 +159,6 @@ class WebServer(BaseHTTPServer.BaseHTTPRequestHandler):
             return
 
         cell = W.new_cell_after(id)
-        #notebook.save()
         self.wfile.write(str(cell.id()) + SEP + cell.html(div_wrap=False) + SEP + \
                          str(id) + SEP)
 
@@ -177,7 +175,6 @@ class WebServer(BaseHTTPServer.BaseHTTPRequestHandler):
             self.wfile.write('ignore')
         else:
             prev_id = W.delete_cell_with_id(id)
-            #notebook.save()
             self.wfile.write('delete' + SEP + str(id) + SEP + str(prev_id) + SEP + str(W.cell_id_list()))
 
     def delete_cell_all(self):
@@ -199,6 +196,9 @@ class WebServer(BaseHTTPServer.BaseHTTPRequestHandler):
         if time.time() - last_save_time > SAVE_INTERVAL:
             notebook.save()
             last_save_time = time.time()
+
+    def kill_idle_every_so_often(self):
+        notebook.kill_idle_compute_processes()
 
     def cell_update(self):
         C = self.get_postvars()
