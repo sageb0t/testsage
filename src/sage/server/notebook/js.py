@@ -1088,6 +1088,7 @@ function evaluate_cell(id, action) {
         jump_to_cell(id,1);
     }
     cell_set_running(id);
+
     var cell_input = get_cell(id);
     var I = cell_input.value;
     var input = escape0(I);

@@ -850,9 +850,9 @@ div.cell_not_evaluated {
 }
 
 td.cell_number {
-   font-size:8pt;
+   font-size:7pt;
    font-family:arial, monospace;
-   color:#999999;
+   color:#bbbbbb;
    text-align:left;
 }
 
@@ -862,12 +862,18 @@ td.cell_number:hover {
 }
 
 td.cell_number_running {
-   font-size:10pt;
+   font-size:7pt;
+   font-family:arial, monospace;
+   color:#bbbbbb;
+   background-color:#990000;
+   text-align:left;
+/*   font-size:10pt;
    font-family:arial, monospace;
    color:#006400;
    text-align:left;
    cursor:pointer;
    text-decoration:blink;
+   */
 }
 
 td.output_cell {
@@ -899,12 +905,12 @@ textarea.cell_input {
   border-left: 1px dotted black;
   font-family: courier, monospace;
   font-size:12pt;
-  overflow:hidden;
-  padding-left:3px;
+/*  overflow:hidden; */
+  overflow:auto;
+  padding-left:5px;
   padding-top:0px;
   padding-bottom:0px;
-  /* width: 100%;  */
-  width:400%;
+  width: 95%;
 }
 
 textarea.cell_input_hide {
@@ -919,20 +925,20 @@ textarea.cell_input_hide {
   padding-left:3px;
   padding-top:0px;
   padding-bottom:0px;
-  width: 100%;
+  width: 95%;
   height:1.2em;
 }
 
 textarea.cell_input_active {
   background-color: white;
-  border: 1px solid #8888fe;
+  border: 3px solid #8888fe;
   font-family: courier, monospace;
   font-size:12pt;
   overflow:auto;
-  padding-left:3px;
-  padding-top:0px;
-  padding-bottom:0px;
-  width: 100%;
+  padding-left:5px;
+  padding-top:3px;
+  padding-bottom:3px;
+  width: 95%;
 }
 
 /************ CELL OUTPUT **************************/
@@ -945,30 +951,32 @@ div.cell_output {
   font-size:12pt;
   width: 95%;
   margin: 0px;
-  padding: 0px;
+  padding:0px;
  /* border-left: 1px solid #aaaaff;  */
 }
 
 table.cell_output_box {
   margin:0px;
   padding:0px;
-/*  border: 1px solid <color1>; */
-  border-top:1px solid <color1>;
-  border-bottom:2px solid <color2>;
 }
 
-table.cell_output_box:hover {
+/*table.cell_output_box:hover {
   background-color: #fafafa;
+}
+*/
+
+div.cell_output_wrap {
+  font-size:12pt;
+  margin:0px;
+  padding-left:0px;
+  color:#0000cc;
 }
 
 span.cell_output_wrap {
-/*  font-family: courier, monospace; */
   font-size:12pt;
   margin:0px;
   padding:0px;
-  color:#000099;
-/*  padding-left:3px; */
-  /*  background-color: #fbeefb; */
+  color:#0000cc;
 }
 span.cell_output_nowrap {
   display:none;
@@ -981,13 +989,10 @@ span.cell_output_nowrap_wrap {
   display:none;
 }
 span.cell_output_nowrap_nowrap {
-/*  font-family: courier, monospace; */
   font-size:12pt;
   margin:0px;
   padding:0px;
-  color:#000099;
-/*  padding-left:3px;   */
-/*  background-color: #fbeefb;   */
+  color:#0000cc;
 }
 span.cell_output_nowrap_hidden {
   display:none;
@@ -1012,15 +1017,12 @@ div.cell_output_running {
   font-size:12pt;
   width: 100%;
   margin: 0px;
-  /* border-left: 2px solid #880000;  */
-  /* background-color: #eeeeee; */
-/*  padding-left:3px;*/
-  /* background-color:#98fb98; */
-  background-color:#d8fbe8;
+  background-color:#ffffff;
+  padding:0px;
 }
 
 div.cell_output_running:hover {
-  /*  cursor:wait;*/
+  cursor:wait;
 }
 
 div.cell_output_hidden {
@@ -1057,7 +1059,7 @@ div.insert_new_cell {
 
 div.insert_new_cell:hover {
   /* border-top: 4px solid #000000; */
-  background-color: #000000;
+  background-color: #8888fe;  /* #000000; */
   /* background-color:#eeeeee; */
 }
 
