@@ -769,7 +769,7 @@ div.worksheet {
   z-index:1;
   background-color: white;
   border-top: 0px;
-  border-left: 10px solid <color1>;
+  border-left: 2px solid <color1>;
   top: 70px;
   bottom: 0ex;
   right: 0ex;
@@ -846,7 +846,7 @@ div.cell_evaluated {
 
 div.cell_not_evaluated {
 /*    border-left: 2px dotted green; */
-    border-left: 3px solid green;
+    border-left: 2px solid black;
     padding-left:3px;
 }
 
@@ -938,6 +938,20 @@ textarea.cell_input_hide {
 
 textarea.cell_input_active {
   background-color: white;
+  border: 0px solid white;
+  border-left: 1px solid green;
+  font-family: courier, monospace;
+  font-size:12pt;
+  overflow:auto;
+  padding-left:5px;
+  padding-top:0px;
+  padding-bottom:0px;
+  margin:0px;
+  width: 100%;
+}
+
+/*textarea.cell_input_active {
+  background-color: white;
   border: 3px solid #8888fe;
   font-family: courier, monospace;
   font-size:12pt;
@@ -947,6 +961,7 @@ textarea.cell_input_active {
   padding-bottom:3px;
   width: 100%;
 }
+*/
 
 /************ CELL OUTPUT **************************/
 
@@ -990,7 +1005,7 @@ span.cell_output_hidden {
 }
 
 span.cell_output_nowrap_wrap {
-  display:none;
+ display:none;
 }
 span.cell_output_nowrap_nowrap {
   font-size:12pt;
@@ -1006,12 +1021,10 @@ span.cell_output_html_wrap {
   font-family: courier, monospace;
   font-size:12pt;
 }
-
 span.cell_output_html_nowrap {
   font-family: courier, monospace;
   font-size:12pt;
 }
-
 span.cell_output_html_hidden {
    display:none;
 }
@@ -1129,9 +1142,11 @@ span.red{
         color1 = '#aaaaaa'
         color2 = '#888888'
     elif color == 'default' or color == None:
-        color1 = '#aaaaff'
+        color1 = '#dcdcdc'
+        color2 = '#cccccc'
+        #color1 = '#aaaaff'
         #color2 = '#b5edbc'
-        color2 = '#6cc755'
+        #color2 = '#6cc755'
     elif isinstance(color, (tuple,list)):
         color1, color2 = color
     else:
