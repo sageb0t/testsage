@@ -866,7 +866,8 @@ td.cell_number_running {
    font-size:12pt;
    font-family:arial, monospace;
    color:#bbbbbb;
-   background-color:green;
+   background-color: ccffcc;
+/*   background-color: lightgreen;  */
    text-align:left;
 
    /* background-color:#990000;  */
@@ -877,6 +878,10 @@ td.cell_number_running {
    cursor:pointer;
    text-decoration:blink;
    */
+}
+
+td.cell_number_running:hover {
+  cursor:wait;
 }
 
 td.output_cell {
@@ -908,7 +913,7 @@ pre.cell_input_pre {
 textarea.cell_input {
   background-color: white;
   border: 0px solid white;
-  border-left: 1px solid #8888fe;
+  border-left: 2px solid #8888fe;
   font-family: courier, monospace;
   font-size:12pt;
 /*  overflow:hidden; */
@@ -939,7 +944,7 @@ textarea.cell_input_hide {
 textarea.cell_input_active {
   background-color: white;
   border: 0px solid white;
-  border-left: 1px solid green;
+  border-left: 2px solid green;
   font-family: courier, monospace;
   font-size:12pt;
   overflow:auto;
