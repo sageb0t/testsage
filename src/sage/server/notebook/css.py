@@ -893,7 +893,7 @@ div.cellbox {
   z-index:2;
   background-color: white;
   padding-left: .5em;
-  padding-top: 1.5em;
+  padding-top: 4em;
 }
 
 pre.cell_input_pre {
@@ -919,12 +919,12 @@ textarea.cell_input {
 /*  overflow:hidden; */
   overflow:auto;
   padding-left:5px;
-  padding-top:0px;
+  padding-top:3px;
   padding-bottom:0px;
 /*  margin:0px; */
   width: 100%;
-  margin:-5px;
-  margin-top:-10px;
+  margin-bottom:0px;
+  margin-top:0px;
 }
 
 textarea.cell_input_hide {
@@ -947,15 +947,19 @@ textarea.cell_input_hide {
 
 textarea.cell_input_active {
   background-color: white;
-  border: 0px solid white;
-  border-left: 2px solid green;
+/*  border: 0px solid white; */
+  border-top: 2px solid #8888fe;
+  border-left: 2px solid #8888fe;
+  border-bottom: 0px solid white;
+  border-right: 0px solid white;
   font-family: courier, monospace;
   font-size:12pt;
   overflow:auto;
   padding-left:5px;
-  padding-top:0px;
+  padding-top:3px;
   padding-bottom:0px;
-  margin:-5px;
+  margin-top:0px;
+  margin-bottom:0px;
   width: 100%;
 }
 
@@ -978,8 +982,10 @@ div.cell_output {
   font-family: courier, monospace;
   font-size:12pt;
   width: 95%;
-  margin:-5px;
-  padding:0px;
+  margin-top:-5px;
+  margin-bottom:5px;
+  padding-bottom:5px;
+
  /* border-left: 1px solid #aaaaff;  */
 }
 
@@ -995,7 +1001,7 @@ table.cell_output_box {
 
 div.cell_output_wrap {
   font-size:12pt;
-  margin:-5px;
+  margin:0px;
   padding-left:0px;
   color:#0000cc;
 }
@@ -1042,7 +1048,7 @@ div.cell_output_running {
   font-family: courier, monospace;
   font-size:12pt;
   width: 100%;
-  margin:-5px;
+  margin:0px;
   background-color:#ffffff;
   padding:0px;
 }
@@ -1054,7 +1060,7 @@ div.cell_output_running:hover {
 div.cell_output_hidden {
   width: 100%;
   height: 3px;
-  margin:-5px;
+  margin:0px;
   border-left: 4em solid #aaaaaa;
 /*   border-top: 1px solid <color1>;
   border-bottom: 1px solid <color1>;
