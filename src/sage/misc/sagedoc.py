@@ -163,7 +163,7 @@ def search_sage(s, extra=''):
 #######################################
 import sagedoc
 import inspect
-import pyrex_inspect
+import sagex_inspect
 
 def my_getdoc(obj):
     try:
@@ -179,7 +179,7 @@ def my_getdoc(obj):
 
 def my_getsource(obj, is_binary):
     try:
-        s = pyrex_inspect.getsource(obj, is_binary)
+        s = sagex_inspect.getsource(obj, is_binary)
         return sagedoc.format_src(s)
     except Exception, msg:
         print 'Error getting source', msg
