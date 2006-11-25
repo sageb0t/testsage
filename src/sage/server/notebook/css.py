@@ -913,7 +913,7 @@ pre.cell_input_pre {
 textarea.cell_input {
   background-color: white;
   border: 0px solid white;
-  border-left: 2px solid #8888fe;
+  border-left: 2px solid green;
   font-family: courier, monospace;
   font-size:12pt;
 /*  overflow:hidden; */
@@ -921,16 +921,19 @@ textarea.cell_input {
   padding-left:5px;
   padding-top:0px;
   padding-bottom:0px;
-  margin:0px;
+/*  margin:0px; */
   width: 100%;
+  margin:-5px;
+  margin-top:-10px;
 }
 
 textarea.cell_input_hide {
   background-color: white;
   color:#cccccc;
   border: 0px solid white;
-  border-top: 1px solid #aaaaff;
+/*  border-top: 1px solid #aaaaff;
   border-bottom: 1px solid #aaaaff;
+  */
   font-family: courier, monospace;
   font-size:12pt;
   overflow:hidden;
@@ -938,7 +941,8 @@ textarea.cell_input_hide {
   padding-top:0px;
   padding-bottom:0px;
   width: 100%;
-  height:1.2em;
+  height:1.5em;
+  margin:0px;
 }
 
 textarea.cell_input_active {
@@ -951,7 +955,7 @@ textarea.cell_input_active {
   padding-left:5px;
   padding-top:0px;
   padding-bottom:0px;
-  margin:0px;
+  margin:-5px;
   width: 100%;
 }
 
@@ -974,7 +978,7 @@ div.cell_output {
   font-family: courier, monospace;
   font-size:12pt;
   width: 95%;
-  margin: 0px;
+  margin:-5px;
   padding:0px;
  /* border-left: 1px solid #aaaaff;  */
 }
@@ -991,7 +995,7 @@ table.cell_output_box {
 
 div.cell_output_wrap {
   font-size:12pt;
-  margin:0px;
+  margin:-5px;
   padding-left:0px;
   color:#0000cc;
 }
@@ -1038,7 +1042,7 @@ div.cell_output_running {
   font-family: courier, monospace;
   font-size:12pt;
   width: 100%;
-  margin: 0px;
+  margin:-5px;
   background-color:#ffffff;
   padding:0px;
 }
@@ -1050,7 +1054,7 @@ div.cell_output_running:hover {
 div.cell_output_hidden {
   width: 100%;
   height: 3px;
-  margin: 0px;
+  margin:-5px;
   border-left: 4em solid #aaaaaa;
 /*   border-top: 1px solid <color1>;
   border-bottom: 1px solid <color1>;
@@ -1077,11 +1081,13 @@ div.insert_new_cell {
   width:100%;
   /* border-top: 4px solid white; */
   display:block;
+  margin:3px;
 }
 
 div.insert_new_cell:hover {
   /* border-top: 4px solid #000000; */
   background-color: #8888fe;  /* #000000; */
+  margin:3px;
   /* background-color:#eeeeee; */
 }
 
