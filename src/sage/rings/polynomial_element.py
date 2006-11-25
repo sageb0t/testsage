@@ -900,7 +900,7 @@ class Polynomial(commutative_algebra_element.CommutativeAlgebraElement):
             sage: x = ZZ['x'].0
             sage: f = 10*x^5 - 1
             sage: f.factor()
-            (10*x^5 - 1)
+            10*x^5 - 1
 
         We factor a non-monic polynomial over the finite field $F_{25}$.
             sage: k.<a> = GF(25)
