@@ -334,7 +334,6 @@ class Worksheet:
             del self.__variables
         except AttributeError:
             pass
-        S = self.__sage
         self.__next_block_id = 0
         print "Starting SAGE server for worksheet %s..."%self.name()
         self.delete_cell_input_files()
@@ -1153,7 +1152,6 @@ class Worksheet:
     def html(self, include_title=True, do_print=False, authorized=False):
         n = len(self.__cells)
         s = ''
-
         if include_title:
             S = self.system()
             if not (S is None):
