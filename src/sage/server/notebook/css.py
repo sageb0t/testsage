@@ -29,6 +29,10 @@ span.hidden{
   display:none;
 }
 
+div.fivepix {
+  height:5px;
+}
+
 /**** TOP CONTROL BAR ************************/
 
 div.top_control_bar {
@@ -423,21 +427,31 @@ span.pane {
    bottom: 0ex;
 }
 
+span.plusminus {
+  color:black;
+  font-size:8pt;
+  font-family:courier, monospace;
+}
+span.plusminus:hover {
+    cursor:pointer;
+}
+
 /************ VARIABLES **************************/
 
 span.pane div.variables_topbar {
    color:black;
+   background: url('corner.png') no-repeat top left;
    background-color: <color1>;
    font-family:arial;
    text-decoration: none;
    font-size:13px;
    height: 2ex;
    padding-left: 10px;
-   margin:0;
+   padding-bottom:1px;
    width: 174px;
 }
 
-span.pane div.variables_list {
+span.pane div.variable_list {
    font-size:11px;
    top:0ex;
    height:20ex;
@@ -470,11 +484,13 @@ span.pane div.attached_topbar {
    color: black;
    height: 2ex;
    top: 0ex;
+   background: url('corner.png') no-repeat top left;
    background-color: <color1>;
    text-decoration: none;
    font-size:13px;
    font-family:arial;
    padding-left: 10px;
+   padding-bottom:1px;
    width: 174px;
 }
 
@@ -504,6 +520,7 @@ span.pane div.worksheets_topbar {
    color:black;
    height: 2ex;
    top: 0ex;
+   background: url('corner.png') no-repeat top left;
    background-color: <color2>;
    text-decoration: none;
    font-size:12px;
@@ -618,6 +635,7 @@ div.worksheet_title {
    height:31px;
    padding-top: 3px;
    padding-left: 1em;
+   background: url('corner.png') no-repeat top left;
    background-color: <color1>;
    width: 100%;
    font-family:arial;
@@ -706,11 +724,13 @@ span.pane div.objects_topbar {
    color:black;
    height: 2ex;
    top: 0ex;
+   background: url('corner.png') no-repeat top left;
    background-color: <color2>;
    text-decoration: none;
    font-size:13px;
    font-family:arial;
    padding-left: 10px;
+   padding-bottom:1px;
    width: 174px;
 }
 
