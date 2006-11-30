@@ -1,15 +1,12 @@
-r"""
-Javascript (AJAX) Component of SAGE Notebook
+r""" Javascript (AJAX) Component of SAGE Notebook
 
 AUTHORS:
     -- William Stein
     -- Tom Boothby
     -- Alex Clemesha
 
-This file is one big raw triple-quoted string that contains a bunch of
-javascript.  This javascript is inserted into the head of the notebook
-web page.
-"""
+This file is one big raw triple-quoted string that contains a bunch of javascript.  This javascript is inserted into
+the head of the notebook web page. """
 
 from sage.misc.misc import SAGE_URL
 import keyboards
@@ -96,7 +93,7 @@ def javascript():
 // PLEASE define all global variables up here, and if you want to
 // set them with anything but simple assignment, 'var' them first,
 // and set them later.  Your code might work in your browser, but
-// it might break initial setup for other critical pieces in  other
+// it might break initial setup for other critical pieces in other
 // browsers.  Thanks. (and for the record, I'm guilty of this more
 // than anybody else here -- I figure a big block comment might
 // help keep me in check)
@@ -117,11 +114,12 @@ var update_error_threshold = 30;
 
 // in milliseconds
 var update_error_delta = 1000;
-var update_normal_delta = 256
+var update_normal_delta = 256;
 var cell_output_delta = update_normal_delta;
 
 var SEP = '___S_A_G_E___';   // this had better be the same as in the server
 var current_cell = -1;       // gets set on focus / blur
+var asyncObj;
 var no_async = false; //this isn't really used -- should we think about dealing with this?
 
 // introspection variables
@@ -157,11 +155,9 @@ var after_cursor, before_cursor, before_replacing_word;
 
 var update_timeout = -1;
 
-var updating = false;
-var update_time = -1;
+var updating = false; var update_time = -1;
 
-var jsmath_font_msg = '<a href="SAGE_URL/jsmath">jsMath temporarily disabled while we resolve a windows firefox hang bug</a><br>';
-/*var jsmath_font_msg = '<a href="SAGE_URL/jsmath">Click to download and install tex fonts.</a><br>'; */
+var jsmath_font_msg = '<a href="SAGE_URL/jsmath">jsMath temporarily disabled while we resolve a windows firefox hang bug</a><br>'; /*var jsmath_font_msg = '<a href="SAGE_URL/jsmath">Click to download and install tex fonts.</a><br>'; */
 
 var cell_id_list; // this gets set in worksheet.py
 
@@ -177,6 +173,7 @@ var worksheet_locked;
 // Cross-Browser Stuff
 //
 ///////////////////////////////////////////////////////////////////
+
 function true_function() {return true;}
 input_keypress = true_function;
 
@@ -269,6 +266,21 @@ function set_class(id, cname) {
   }
 }
 
+function get_class(id) {
+  e = get_element(id);
+  if(e!=null) {
+      return e.className;
+  }
+  return null
+}
+
+function set_html(id, html) {
+  e = get_element(id);
+  if(e!=null) {
+      e.innerHTML = html;
+  }
+}
+
 function get_event(e) {
    return (e==null)?window.event:e;
 }
@@ -294,6 +306,74 @@ function time_now() {
 }
 
 ///////////////////////////////////////////////////////////////////
+// An AJAX framework for connections back to the
+// SAGE server (written by Tom Boothby).
+///////////////////////////////////////////////////////////////////
+//globals
+var asyncObj;
+var async_count = 0;
+
+function getAsyncObject(handler) {
+  asyncObj=null
+  try {
+    if (browser_ie) {
+      var s =browser_ie5?"Microsoft.XMLHTTP":"Msxml2.XMLHTTP";
+      asyncObj = new ActiveXObject(s);
+      asyncObj.onreadystatechange = handler;
+      return asyncObj;
+    } else {
+      asyncObj = new XMLHttpRequest();
+      asyncObj.onload  = handler;
+      asyncObj.onerror = handler;
+      return asyncObj;
+    }
+  } catch(e) {
+    no_async = true;
+    return null;
+  }
+}
+
+function generic_callback(status, response_text) {
+   /* do nothing */
+}
+
+function asyncCallbackHandler(name, callback) {
+    function f() {
+                 eval('asyncObj = ' + name);
+                 try {
+                   if( (asyncObj.readyState==4 || asyncObj.readyState=="complete")
+                       && asyncObj.status == 200 )
+                     try {
+                       callback('success', asyncObj.responseText);
+                     } catch(e) {
+                       callback('success', "empty");
+                     }
+                 } catch(e) {
+                   callback("failure", e);
+                 } finally { }
+              };
+    return f;
+}
+
+function async_request(url, callback, postvars) {
+  async_count++;
+  var name = "async_object_no_" + async_count;
+  var f = asyncCallbackHandler(name, callback);
+  asyncObj = getAsyncObject(f);
+  eval(name + '=asyncObj;');
+
+  if(postvars != null) {
+    asyncObj.open('POST',url,true);
+    asyncObj.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+    asyncObj.send(postvars);
+  } else {
+    asyncObj.open('GET',url,true);
+    asyncObj.setRequestHeader('Content-Type',  "text/html");
+    asyncObj.send(null);
+  }
+}
+
+///////////////////////////////////////////////////////////////////
 //
 // Misc page functions -- for making the page work nicely
 // (this is a crappy descriptor)
@@ -307,13 +387,35 @@ function trim(s) {
 }
 
 function body_load() {
-//  init_menus();
+// init_menus();
 }
 
 function init_menus() {
   for( i = 1; i <= 3; i++) {
     menu = get_element("menu"+i);
     menu.style.display="none";
+  }
+}
+
+function toggle_menu(name) {
+  if(get_class(name) == "hidden") {
+    set_class(name, name);
+    set_html(name+'_hider', '[-]');
+  } else {
+    set_class(name, 'hidden');
+    set_html(name+'_hider', '[+]');
+  }
+}
+
+function toggle_left_pane() {
+  if(get_class('left_pane') == "hidden") {
+    set_class('left_pane', 'pane');
+    set_class('worksheet', 'worksheet');
+    set_html('left_pane_hider', '&laquo;');
+  } else {
+    set_class('left_pane', 'hidden');
+    set_class('worksheet', 'slideshow');
+    set_html('left_pane_hider', '&raquo;');
   }
 }
 
@@ -382,7 +484,7 @@ function do_replacement(id, word,do_trim) {
         word = trim(word);
 
     cell_input.value = before_replacing_word + word + after_cursor;
-    jump_to_cell(id,0);  //reset the cursor (for explorer)
+    jump_to_cell(id,0); //reset the cursor (for explorer)
 
     try{ //firefox, et al.
         var pos = before_replacing_word.length + word.length;
@@ -477,9 +579,7 @@ function halt_introspection() {
 ///////////////////////////////////////////////////////////////////
 
 function click_on_object(name) {
-/*
-    o = document.open("/" + name + ".sobj");
-    */
+   // o = document.open("/" + name + ".sobj");
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -625,7 +725,7 @@ function switch_to_worksheet(id) {
        2. If not, load it into the dom.
        3. Move it to the front and everything else to the back by changing the css.
     */
-  /*  alert('switch to worksheet ' + id);  */
+  /* alert('switch to worksheet ' + id); */
 }
 
 function unlock_worksheet() {
@@ -738,7 +838,7 @@ function cell_input_resize(cell_input) {
 /*      rows = rows + 1; */
     }
     try {
-        cell_input.style.height = rows + 'em';   // this sort of works in konqueror...
+        cell_input.style.height = rows + 'em'; // this sort of works in konqueror...
     } catch(e) {}
     try{
         cell_input.rows = rows;
@@ -793,17 +893,17 @@ function cell_input_minimize_all() {
 
 function cell_delete_callback(status, response_text) {
     if (status == "failure") {
-//        cell = get_element('cell_outer_' + id_to_delete);
-//        var worksheet = get_element('worksheet_cell_list');
-//        worksheet.removeChild(cell);
-//        jump_to_cell(id_to_delete,-1);
-//        cell_id_list = delete_from_array(cell_id_list, id_to_delete);
-//        id_to_delete = -1;
+     // cell = get_element('cell_outer_' + id_to_delete);
+     // var worksheet = get_element('worksheet_cell_list');
+     // worksheet.removeChild(cell);
+     // jump_to_cell(id_to_delete,-1);
+     // cell_id_list = delete_from_array(cell_id_list, id_to_delete);
+     // id_to_delete = -1;
         return;
     }
     var X = response_text.split(SEP);
     if (X[0] == 'ignore') {
-        return;   /* do not delete, for some reason */
+        return; /* do not delete, for some reason */
     }
     var cell = get_element('cell_outer_' + X[1]);
     var worksheet = get_element('worksheet_cell_list');
@@ -899,7 +999,7 @@ function cell_input_key_event(id, e) {
     if((introspect_id == id) && introspection_loaded && replacing) {
         if(!handle_replacement_controls(cell_input, e)) {
             if(browser_op) focus(id,true);
-            return false;  //otherwise, keep going
+            return false; //otherwise, keep going
         }
         halt_introspection();
     }
@@ -974,7 +1074,7 @@ function id_of_cell_delta(id, delta) {
     var i = cell_id_list.indexOf(eval(id));
     var new_id;
     if (i == -1) {
-        return(id);  /* Better not to move. */
+        return(id); /* Better not to move. */
     } else {
         i = i + delta;
         if (i < 0) {
@@ -998,8 +1098,7 @@ function debug_append(txt) {
     output.innerHTML = txt + "\n" + output.innerHTML;
 }
 
-/*
-old_id = -1;
+/* old_id = -1;
 function make_cell_input_active(id) {
    if (old_id != -1) {
         make_cell_input_inactive(old_id);
@@ -1044,16 +1143,15 @@ function jump_to_cell(id, delta, bottom) {
 }
 
 function escape0(input) {
-    var a = input.split('+');
-    for(i = 0; i < a.length; i++)
-        a[i] = escape(a[i]);
-    return a.join("%2B");
+    input = escape(input);
+    input = input.replace(/\+/g,"__plus__");
+    return input;
 }
 
 function text_cursor_split(input) {
     if(browser_ie) {
         //for explorer, we call the
-        //   document.selection.createRange().duplicate()
+        // document.selection.createRange().duplicate()
         //to generate a selection range object which does not effect the
         //original input box.
         //Then, we rewind the start point of the range until we encounter
@@ -1110,7 +1208,7 @@ function evaluate_cell_introspection(id, before, after) {
     if(before == null) {
         var in_text = text_cursor_split(cell_input);
         before_cursor = before = in_text[0];
-        after_cursor  = after  = in_text[1];
+        after_cursor = after = in_text[1];
         before_replacing_word = before;
 
         m = command_pat.exec(before);
@@ -1123,12 +1221,12 @@ function evaluate_cell_introspection(id, before, after) {
         if(last_char_before == "?") {
         } else if(m) {
             replacing = true;
-            replacing_word  = m[1];
+            replacing_word = m[1];
             before_replacing_word = before.substring(0, before.length-replacing_word.length);
         } else if(f != null) { //we're in an open function paren -- give info on the function
             before = f[1] + "?";
         } else { //just a tab
-            do_replacement(id, '    ',false);
+            do_replacement(id, ' ',false);
             return;
         }
     } else {
@@ -1177,7 +1275,7 @@ function cell_output_set_type(id, typ) {
     cell_div.className = 'cell_output_' + typ;
     cell_output.className = 'cell_output_' + typ;
     cell_output_nowrap.className ='cell_output_nowrap_' + typ;
-    cell_output_html.className   ='cell_output_html_' + typ;
+    cell_output_html.className ='cell_output_html_' + typ;
 
     /* Do async request back to the server */
     async_request('/cell_output_set',
@@ -1363,15 +1461,15 @@ function check_for_cell_update_callback(status, response_text) {
 
     /* compute output for a cell */
     var D = response_text.slice(i+1).split(SEP);
-    var output_text         = D[0] + ' ';
+    var output_text = D[0] + ' ';
     var output_text_wrapped = D[1] + ' ';
-    var output_html         = D[2];
-    var new_cell_input      = D[3];
-    var interrupted         = D[4];
-    var variable_list       = D[5];
-    var object_list         = D[6];
+    var output_html = D[2];
+    var new_cell_input = D[3];
+    var interrupted = D[4];
+    var variable_list = D[5];
+    var object_list = D[6];
     var attached_files_list = D[7];
-    var introspect_html     = D[8];
+    var introspect_html = D[8];
     var j = id_of_cell_delta(id,1);
 
     set_output_text(id, output_text, output_text_wrapped,
@@ -1411,7 +1509,7 @@ function continue_update_check() {
 }
 
 ///////////////////////////////////////////////////////////////////
-//  Slideshow Functions
+// Slideshow Functions
 ///////////////////////////////////////////////////////////////////
 
 /* Switch into slide mode. */
@@ -1421,6 +1519,7 @@ function slide_mode() {
     set_class('cell_controls', 'hidden');
     set_class('slide_controls', 'slide_control_commands');
     set_class('worksheet', 'slideshow');
+    set_class('left_pane_hider', 'hidden');
 
     for(i = 0; i < cell_id_list.length ; i++) {
         set_class('cell_outer_'+cell_id_list[i], 'hidden');
@@ -1434,6 +1533,7 @@ function cell_mode() {
     set_class('cell_controls', 'control_commands');
     set_class('slide_controls', 'hidden');
     set_class('worksheet', 'worksheet');
+    set_class('left_pane_hider', 'plusminus');
 
     for(i = 0; i < cell_id_list.length ; i++) {
         set_class('cell_outer_'+cell_id_list[i], 'cell_visible');
@@ -1501,7 +1601,7 @@ function update_slideshow_progress() {
 }
 
 ///////////////////////////////////////////////////////////////////
-//  Insert and move cells
+// Insert and move cells
 ///////////////////////////////////////////////////////////////////
 
 function insertAfter(parent, node, referenceNode) {
@@ -1526,17 +1626,6 @@ function delete_from_array(v, x) {
     return v;
 }
 
-// Array.indexOf( value, begin, strict ) - Return index of the first element that matches value
-function array_indexOf(v, x) {
-    var len = v.length;
-    for(var i=0; i < len; i++) {
-         if(v[i] == x) {
-             return i;
-         }
-    }
-    return -1;
-}
-
 function make_new_cell(id, html) {
     var new_cell = document.createElement("div");
     var in_cell = document.createElement("div");
@@ -1554,7 +1643,7 @@ function do_insert_new_cell_before(id, new_id, new_html) {
     var cell = get_element('cell_outer_' + id);
     var worksheet = get_element('worksheet_cell_list');
     worksheet.insertBefore(new_cell, cell);
-    var i = array_indexOf(cell_id_list, eval(id));
+    var i = cell_id_list.indexOf(eval(id));
     cell_id_list = insert_into_array(cell_id_list, i, eval(new_id));
 }
 
@@ -1726,7 +1815,6 @@ function login(username,password) {
 function show_help_window() {
     var help = get_element("help_window");
     help.style.display = "block";
-
 }
 
 function hide_help_window() {
@@ -1824,6 +1912,7 @@ function insert_cells_from_wiki_callback(status, response_text) {
 // LOG windows
 //
 ///////////////////////////////////////////////////////////////////
+
 function history_window() {
     history = window.open ("__history__.html",
       "", "menubar=1,scrollbars=1,width=700,height=600, toolbar=1,resizable=1");
@@ -1847,6 +1936,7 @@ function print_window(worksheet) {
 //////////////////////////////////
 // HELP
 /////////////////////////////////
+
 function show_help_window(worksheet) {
     help = window.open ("__help__.html","",
     "menubar=1,scrollbars=1,width=800,height=600,resizable=1, toolbar=1");
@@ -1857,15 +1947,14 @@ function show_help_window(worksheet) {
 function jsmath_init() {
     try {
         jsMath.Process();
-      /*  jsMath.ProcessBeforeShowing();  */
+      /* jsMath.ProcessBeforeShowing(); */
     } catch(e) {
         font_warning();
     }
 
 }
 
-function font_warning() {
-/*    alert(jsmath_font_msg); */
+function font_warning() { /* alert(jsmath_font_msg); */
 }
 
 """
@@ -1879,8 +1968,7 @@ function font_warning() {
 //
 ///////////////////////////////////////////////////////////////////
 
-//this one isn't auto-generated.  its only purpose is to make
-//onKeyPress stuff simpler for text inputs and the whatlike.
+//this one isn't auto-generated.  its only purpose is to make //onKeyPress stuff simpler for text inputs and the whatlike.
 function is_submit(e) {
   e = new key_event(e);
   return key_generic_submit(e);
@@ -1888,53 +1976,47 @@ function is_submit(e) {
 
 %s
 """%keyhandler.all_tests()
-    s += async_lib()
     s += keyboards.get_keyboard('')
-
     return s
 
 class JSKeyHandler:
-    """This class is used to make javascript functions to check for
-specific keyevents."""
+    """This class is used to make javascript functions to check for specific keyevents."""
 
     def __init__(self):
         self.key_codes = {};
 
     def set(self, name, key='', alt=False, ctrl=False, shift=False):
-        """Add a named keycode to the handler.  When built by \code{all_tests()},
-it can be called in javascript by \code{key_<key_name>(event_object)}.
-The function returns true if the keycode numbered by the \code{key} parameter
+        """Add a named keycode to the handler.  When built by \code{all_tests()}, it can be called in javascript by
+\code{key_<key_name>(event_object)}.  The function returns true if the keycode numbered by the \code{key} parameter
 was pressed with the appropriate modifier keys, false otherwise."""
         self.key_codes.setdefault(name,[])
         self.key_codes[name] = [JSKeyCode(key, alt, ctrl, shift)]
 
     def add(self, name, key='', alt=False, ctrl=False, shift=False):
-        """Similar to \code{set_key(...)}, but this instead checks if there
-is an existing keycode by the specified name, and associates the specified key
-combination to that name in addition.  This way, if different browsers don't catch
-one keycode, multiple keycodes can be assigned to the same test."""
+        """Similar to \code{set_key(...)}, but this instead checks if there is an existing keycode by the specified
+name, and associates the specified key combination to that name in addition.  This way, if different browsers don't
+catch one keycode, multiple keycodes can be assigned to the same test."""
         try: self.key_codes[name]
         except KeyError: self.key_codes.setdefault(name,[])
         self.key_codes[name].append(JSKeyCode(key,alt,ctrl,shift))
 
     def all_tests(self):
-        """Builds all tests currently in the handler.  Returns a string of
-javascript code which defines all functions."""
+        """Builds all tests currently in the handler.  Returns a string of javascript code which defines all
+functions."""
         tests = ''
         for name, keys in self.key_codes.items():
-            tests += """
-function key_%s(e) {
+            tests += """ function key_%s(e) {
   return %s;
-}"""%(name, "\n  || ".join([k.js_test() for k in keys]))
+}"""%(name, "\n || ".join([k.js_test() for k in keys]))
 
         return tests;
 
 class JSKeyCode:
     def __init__(self, key, alt, ctrl, shift):
         global key_codes
-        self.key   = key
-        self.alt   = alt
-        self.ctrl  = ctrl
+        self.key = key
+        self.alt = alt
+        self.ctrl = ctrl
         self.shift = shift
 
     def js_test(self):

@@ -325,7 +325,7 @@ class Worksheet:
             if S._expect != None:
                 return S
         except AttributeError:
-            S = Sage(maxread = 1)
+            S = Sage(maxread = 1, logfile='/home/was/a')
         S._start(block_during_init=False)
         verbose("Initializing SAGE.")
         os.environ['PAGER'] = 'cat'
@@ -389,7 +389,7 @@ class Worksheet:
         return self._new_cell(id)
 
     def queue(self):
-        return self.__queue
+        return list(self.__queue)
 
     def queue_id_list(self):
         return [c.id() for c in self.__queue]
@@ -1165,8 +1165,9 @@ class Worksheet:
             else:
                 lock_text = ''
 
-            s += '<div class="worksheet_title">Worksheet: %s%s%s</div>\n'%(self.name(),system,lock_text)
-
+            s += '<div class="worksheet_title" onClick="toggle_left_pane();">'
+            s += ' <span class="plusminus" id="left_pane_hider">&laquo;</span>'
+            s += ' Worksheet: %s%s%s</div>\n'%(self.name(),system,lock_text)
         D = self.__notebook.defaults()
         ncols = D['word_wrap_cols']
         s += '<div class="worksheet_cell_list" id="worksheet_cell_list">\n'
