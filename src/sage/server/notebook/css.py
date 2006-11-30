@@ -1034,14 +1034,14 @@ div.cell_output_wrap {
   font-size:12pt;
   margin:0px;
   padding-left:0px;
-  color:#0000cc;
+  color:#0000aa;
 }
 
 span.cell_output_wrap {
   font-size:12pt;
   margin:0px;
   padding:0px;
-  color:#0000cc;
+  color:#0000aa;
 }
 span.cell_output_nowrap {
   display:none;
@@ -1057,7 +1057,7 @@ span.cell_output_nowrap_nowrap {
   font-size:12pt;
   margin:0px;
   padding:0px;
-  color:#0000cc;
+  color:#0000aa;
 }
 span.cell_output_nowrap_hidden {
   display:none;
