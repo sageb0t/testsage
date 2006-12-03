@@ -442,12 +442,13 @@ function toggle_left_pane() {
   if(get_class('left_pane') == "hidden") {
     set_class('left_pane', 'pane');
     set_class('worksheet', 'worksheet');
-    set_html('left_pane_hider', '&laquo;&laquo;');
+//    set_class('left_pane_bar', 'hidden');
+//    set_html('left_pane_hider', '&laquo;&laquo;');
   } else {
     set_class('left_pane', 'hidden');
     set_class('worksheet', 'slideshow');
-    /* set_html('left_pane_hider', '&raquo;&raquo;'); */
-    set_html('left_pane_hider', '&raquo; Control Bar &raquo;');
+//    set_class('left_pane_bar', 'left_pane_bar');
+//    set_html('left_pane_hider', '&raquo; Control Bar &raquo;');
   }
 }
 
@@ -1293,7 +1294,7 @@ function evaluate_cell_callback(status, response_text) {
     start_update_check();
 }
 
-function cell_output_set_type(id, typ) {
+function cell_output_set_type(id, typ, do_async) {
     var cell_div = get_element('cell_div_output_' + id);
     var cell_output = get_element('cell_output_' + id);
     var cell_output_nowrap = get_element('cell_output_nowrap_' + id);
@@ -1305,8 +1306,8 @@ function cell_output_set_type(id, typ) {
     cell_output_html.className ='cell_output_html_' + typ;
 
     /* Do async request back to the server */
-    async_request('/cell_output_set',
-                    generic_callback, 'id='+id+'&type=' + typ)
+    if(do_async != false)
+        async_request('/cell_output_set', generic_callback, 'id='+id+'&type=' + typ)
 }
 
 function cycle_cell_output_type(id) {
@@ -1548,7 +1549,7 @@ function slide_mode() {
     set_class('cell_controls', 'hidden');
     set_class('slide_controls', 'slide_control_commands');
     set_class('worksheet', 'slideshow');
-    set_class('left_pane_hider', 'hidden');
+    set_class('left_pane_bar', 'hidden');
 
     for(i = 0; i < cell_id_list.length ; i++) {
         set_class('cell_outer_'+cell_id_list[i], 'hidden');
@@ -1562,7 +1563,7 @@ function cell_mode() {
     set_class('cell_controls', 'control_commands');
     set_class('slide_controls', 'hidden');
     set_class('worksheet', 'worksheet');
-    set_class('left_pane_hider', 'plusminus');
+    set_class('left_pane_bar', 'left_pane_bar');
 
     for(i = 0; i < cell_id_list.length ; i++) {
         set_class('cell_outer_'+cell_id_list[i], 'cell_visible');
@@ -1788,7 +1789,7 @@ function hide_all() {
     var n = v.length;
     var i;
     for(i=0; i<n; i++) {
-        cell_output_set_type(v[i],'hidden');
+        cell_output_set_type(v[i],'hidden', false);
     }
     async_request('/hide_all', hide_all_callback, 'worksheet_id='+worksheet_id);
 }
@@ -1801,7 +1802,7 @@ function show_all() {
     var n = v.length;
     var i;
     for(i=0; i<n; i++) {
-        cell_output_set_type(v[i],'wrap');
+        cell_output_set_type(v[i],'wrap', false);
     }
     async_request('/show_all', show_all_callback, 'worksheet_id='+worksheet_id);
 }
