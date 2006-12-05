@@ -875,6 +875,9 @@ cdef class FiniteField(Field):
             self.__vector_space = V
             return V
 
+def is_FiniteField(x):
+    return IS_INSTANCE(x, FiniteField)
+
 cdef class Algebra(Ring):
     """
     Generic algebra
