@@ -19,12 +19,15 @@ case the documentation is based on the NetworkX docs.
 #                         http://www.gnu.org/licenses/
 #*****************************************************************************
 
-import networkx         # the LANL library for graph theory
+## IMPORTANT: Do not import networkx at module scope.  It takes a
+## surprisingliy long time to initialize itself.  It's better if it is
+## imported in functions, so it only gets started if it is actually
+## going to be used.
+
+from random import random
+
 from sage.structure.sage_object import SageObject
 from sage.plot.plot import Graphics, GraphicPrimitive_NetworkXGraph
-from sage.matrix.constructor import matrix
-from sage.rings.integer_mod_ring import IntegerModRing
-from random import random
 
 class GenericGraph(SageObject):
     pass
@@ -119,6 +122,7 @@ class Graph(SimpleGraph):
         that are currently not standard in SAGE):
 
         1. A networkx graph:
+            sage: import networkx
             sage: g = networkx.Graph({0:[1,2,3], 2:[5]}); g
             <networkx.base.Graph object at 0x9297870>
             sage: Graph(g)
@@ -135,7 +139,9 @@ class Graph(SimpleGraph):
             Simple graph on 5 vertices
 
         4. A numpy matrix or ndarray:
+            TODO
 
+        Other examples:
             sage: G = Graph(name="Null graph")
             sage: G
             Null graph: a simple graph on 0 vertices
@@ -145,6 +151,7 @@ class Graph(SimpleGraph):
             Petersen graph: a simple graph on 10 vertices
 
         """
+        import networkx
         if isinstance(data, Graph):
             self.__nxg = data.networkx_graph()
         elif isinstance(data, networkx.Graph):
@@ -216,6 +223,7 @@ class Graph(SimpleGraph):
         """
         Returns the density.
         """
+        import networkx
         return networkx.density(self.__nxg)
 
     def is_directed(self):
@@ -414,6 +422,7 @@ class Graph(SimpleGraph):
         """
         Returns a list, whose ith entry is the frequency of degree i.
         """
+        import networkx
         return networkx.degree_histogram(self.__nxg)
 
     def degree_iterator(self, vertices=None, with_labels=False):
@@ -441,6 +450,8 @@ class Graph(SimpleGraph):
             j = verts.index(j)
             D[(i,j)] = 1
             D[(j,i)] = 1
+        from sage.rings.integer_mod_ring import IntegerModRing
+        from sage.matrix.constructor import matrix
         M = matrix(IntegerModRing(2), n, n, D, sparse=sparse)
         return M
 
@@ -544,6 +555,7 @@ class DiGraph(SimpleGraph):
         EXAMPLES:
         needed
         """
+        import networkx
         if isinstance(data, DiGraph):
             self.__nxg = data.networkx_graph()
         elif isinstance(data, networkx.DiGraph):
@@ -802,6 +814,8 @@ class DiGraph(SimpleGraph):
             i = verts.index(i)
             j = verts.index(j)
             D[(i,j)] = 1
+        from sage.rings.integer_mod_ring import IntegerModRing
+        from sage.matrix.constructor import matrix
         M = matrix(IntegerModRing(2), n, n, D, sparse=sparse)
         return M
 

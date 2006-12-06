@@ -17,10 +17,7 @@ import sage.misc.viewer
 import sage.misc.misc
 from sage.structure.sage_object import SageObject
 
-from plot import to_float_list, to_mpl_color
 import plot
-
-import matplotlib.numerix as nx
 
 class Graphics3d(SageObject):
     def __init__(self):
@@ -387,7 +384,7 @@ class Graphic3dPrimitive_Point(Graphic3dPrimitive):
 
     def _render_on_ax(self, subplot):
         options = self.options
-	c = to_mpl_color(options['rgbcolor'])
+	c = plot.to_mpl_color(options['rgbcolor'])
 	a = float(options['alpha'])
 	s = int(options['pointsize'])
 	faceted = options['faceted'] #faceted=True colors the edge of point
@@ -429,6 +426,8 @@ class Graphic3dPrimitive_Line(Graphic3dPrimitive):
         self.zdata.append(float(point[2]))
 
     def _render_on_ax(self, subplot):
+        import matplotlib.numerix as nx
+
         try:
             xs, ys, zs = self._mpl_data
         except AttributeError:
@@ -443,7 +442,7 @@ class Graphic3dPrimitive_Line(Graphic3dPrimitive):
         for p in P:
             p.set_alpha(a)
             p.set_linewidth(float(options['thickness']))
-            p.set_color(to_mpl_color(options['rgbcolor']))
+            p.set_color(plot.to_mpl_color(options['rgbcolor']))
 
 class Graphic3dPrimitive_Surface(Graphic3dPrimitive):
     """
@@ -469,6 +468,7 @@ class Graphic3dPrimitive_Surface(Graphic3dPrimitive):
         self.data[int(i)][int(j)] = point
 
     def _render_on_ax(self, subplot):
+        import matplotlib.numerix as nx
         try:
             X, Y, Z = self._mpl_data
         except AttributeError:
@@ -504,7 +504,7 @@ class Graphic3dPrimitiveFactory:
         self._reset()
 
     def _coerce(self, xdata, ydata, zdata):
-        return to_float_list(xdata), to_float_list(ydata), to_float_list(zdata)
+        return plot.to_float_list(xdata), plot.to_float_list(ydata), plot.to_float_list(zdata)
 
 class Graphic3dPrimitiveFactory_from_point_list(Graphic3dPrimitiveFactory):
     def __call__(self, points, coerce=True, **kwds):

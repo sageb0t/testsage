@@ -1954,7 +1954,7 @@ cdef class Matrix(sage.structure.element.Matrix):
         """
         return left._right_scalar_multiply(right)
 
-    cdef int _will_use_strassen(self, right) except -2:
+    cdef int _will_use_strassen(self, Matrix right) except -2:
         """
         Whether or not matrix multiplication of self by right should
         be done using Strassen.
@@ -1966,7 +1966,8 @@ cdef class Matrix(sage.structure.element.Matrix):
         n = self._strassen_default_cutoff(right)
         if n == -1:
             return 0  # do not use Strassen
-        if self._nrows > n and self._ncols > n and right._nrows > n and right._ncols > n:
+        if self._nrows > n and self._ncols > n and \
+               right._nrows > n and right._ncols > n:
             return 1
         return 0
 
@@ -2142,7 +2143,7 @@ cdef class Matrix(sage.structure.element.Matrix):
                     return True
         return False
 
-    cdef int _strassen_default_cutoff(self, right) except -2:
+    cdef int _strassen_default_cutoff(self, Matrix right) except -2:
         return -1
 
     cdef int _strassen_default_echelon_cutoff(self) except -2:
