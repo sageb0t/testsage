@@ -90,6 +90,9 @@ from sage.gsl.all import *
 
 from copy import copy
 
+import networkx
+import numpy
+
 ###################################################################
 
 # maximize memory resources
