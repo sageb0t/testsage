@@ -586,7 +586,8 @@ class LinearCode(module.Module):
         F = self.base_ring()
         q = F.order()
         G = self.gen_mat()
-        Gstr = str(gap(G))+"*Z("+str(q)+")^0"
+        gapG = gap(G)
+        Gstr = "%s*Z(%s)^0"%(gapG, q)
         return min_wt_vec(Gstr,F)[2]
 
     def genus(self):
