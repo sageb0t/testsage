@@ -333,8 +333,7 @@ class FiniteField_ext_pariElement(FiniteFieldElement):
 
         EXAMPLES:
             sage: from sage.rings.finite_field import FiniteField_ext_pari
-            sage: k = FiniteField_ext_pari(3**3, 'a')
-            sage: a = k.gen()
+            sage: k = FiniteField_ext_pari(3^3,'a'); a = k.gen()
             sage: a.charpoly('x')
             x^3 + 2*x + 1
             sage: k.modulus()
@@ -359,7 +358,7 @@ class FiniteField_ext_pariElement(FiniteFieldElement):
             sage: b.trace()
             2
             sage: b.norm()
-            2
+            1
         """
         return self.parent().prime_subfield()(self.__value.trace().lift())
 
@@ -378,9 +377,14 @@ class FiniteField_ext_pariElement(FiniteFieldElement):
             sage: b.trace()
             2
             sage: b.norm()
-            2
+            1
         """
-        return self.charpoly('x')[0]
+        f = self.charpoly('x')
+        n = f[0]
+        if f.degree() % 2 != 0:
+            return -n
+        else:
+            return n
 
     def log(self, a):
         """
