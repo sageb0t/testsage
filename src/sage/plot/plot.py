@@ -1251,6 +1251,7 @@ class GraphicPrimitive_NetworkXGraph(GraphicPrimitive):
 
     EXAMPLE:
         sage: from sage.plot.plot import GraphicPrimitive_NetworkXGraph
+        sage: import networkx
         sage: D = networkx.dodecahedral_graph()
         sage: NGP = GraphicPrimitive_NetworkXGraph(D)
         sage: g = Graphics()
