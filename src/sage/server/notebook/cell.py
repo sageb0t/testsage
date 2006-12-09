@@ -43,10 +43,10 @@ class TextCell(Cell):
     def html(self, ncols, do_print=False):
         if '<html>' in self.__text:
             return self.__text
-        return '<pre>%s</pre>'%self.__text
+        return '<font size=+1><pre>%s</pre></font>'%self.__text
         #return self.__text
 
-    def plain_text(self):
+    def plain_text(self, prompts=False):
         return self.__text
 
     def edit_text(self, prompts=False):
@@ -57,6 +57,9 @@ class TextCell(Cell):
 
     def is_auto_cell(self):
         return False
+
+    def __cmp__(self, right):
+        return cmp(self.id(), right.id())
 
 class ComputeCell(Cell):
     def __init__(self, id, input, out, worksheet):
@@ -88,7 +91,7 @@ class ComputeCell(Cell):
         self.__out_html = self.files_html()
 
     def __cmp__(self, right):
-        return cmp(self.__id, right.__id)
+        return cmp(self.id(), right.id())
 
     def __del__(self):
         if os.path.exists(self.__dir):
