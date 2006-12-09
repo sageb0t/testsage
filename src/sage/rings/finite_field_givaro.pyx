@@ -1709,7 +1709,7 @@ cdef class FiniteField_givaroElement(FiniteFieldElement):
             i = i+1
         return k(ret)
 
-    def _pari_init_(FiniteField_givaroElement self):
+    def _pari_init_(FiniteField_givaroElement self, var=None):
         """
         Return string that when evealuated in PARI defines this element.
 
@@ -1723,7 +1723,13 @@ cdef class FiniteField_givaroElement(FiniteFieldElement):
         """
         g = (parent_object(self))._finite_field_ext_pari_modulus_as_str()
         f = self.poly_repr()
-        return 'Mod(%s, %s)'%(f, g)
+        s = 'Mod(%s, %s)'%(f, g)
+        if var is None:
+            return s
+        return s.replace(self.parent().variable_name(), var)
+
+    def _pari_(FiniteField_givaroElement self, var=None):
+        return pari(self._pari_init_(var))
 
 ##         variable = k.gen()._pari_()
 ##         quo = int(self)
