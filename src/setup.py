@@ -238,6 +238,8 @@ ext_modules = [ \
 
     matrix,
 
+    #cf,
+
     matrix_dense,
     matrix_generic_dense,
 
