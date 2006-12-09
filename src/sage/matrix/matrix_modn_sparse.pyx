@@ -112,6 +112,8 @@ cdef class Matrix_modn_sparse(matrix_sparse.Matrix_sparse):
         p = parent.base_ring().order()
 
         self.rows = <c_vector_modint*> sage_malloc(nr*sizeof(c_vector_modint))
+        if not self.rows:
+            raise MemoryError, "error allocating memory for sparse matrix"
 
         for i from 0 <= i < nr:
             init_c_vector_modint(&self.rows[i], p, nc, 0)
@@ -177,7 +179,7 @@ cdef class Matrix_modn_sparse(matrix_sparse.Matrix_sparse):
                 return
             if self._nrows != self._ncols:
                 raise TypeError, "matrix must be square to initialize with a scalar."
-            for i from 0 <= i <= self._nrows:
+            for i from 0 <= i < self._nrows:
                 set_entry(&self.rows[i], i, s)
 
     cdef set_unsafe(self, Py_ssize_t i, Py_ssize_t j, value):
@@ -346,7 +348,7 @@ cdef int init_c_vector_modint(c_vector_modint* v, int p, Py_ssize_t degree,
     Initialize a c_vector_modint.
     """
     if (allocate_c_vector_modint(v, num_nonzero) == -1):
-        return -1
+        raise MemoryError, "Error allocating memory for sparse vector."
     if p > 46340:
         raise OverflowError, "The prime must be <= 46340."
     v.num_nonzero = num_nonzero
