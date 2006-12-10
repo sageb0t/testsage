@@ -33,7 +33,7 @@ from sage.structure.element cimport RingElement, ModuleElement, Element
 
 from sage.structure.parent cimport Parent
 
-def Mod(n, m):
+def Mod(n, m, parent=None):
     """
     Return the equivalence class of n modulo m as an element of
     $\Z/m\Z$.
@@ -49,7 +49,12 @@ def Mod(n, m):
         sage: mod(12,5)
         2
     """
-    return IntegerMod(integer_mod_ring.IntegerModRing(m), n)
+    cdef IntegerMod_abstract x
+    x = IntegerMod(integer_mod_ring.IntegerModRing(m), n)
+    if parent is None:
+        return x
+    x._parent = parent
+    return x
 
 mod = Mod
 
@@ -157,7 +162,7 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
             sage: loads(a.dumps()) == a
             True
         """
-        return sage.rings.integer_mod.mod, (self.lift(), self.modulus())
+        return sage.rings.integer_mod.mod, (self.lift(), self.modulus(), self.parent())
 
     def is_nilpotent(self):
         r"""
@@ -570,7 +575,7 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
 
         modulus = self.__modulus.sageInteger
         other_modulus = other.__modulus.sageInteger
-        lift = IntegerMod_gmp(integer_mod_ring.IntegerModRing(modulus*other_modulus, check_prime=False), None, empty=True)
+        lift = IntegerMod_gmp(integer_mod_ring.IntegerModRing(modulus*other_modulus), None, empty=True)
         try:
             if mpz_cmp(self.value, other.value) > 0:
                 x = (other - IntegerMod_gmp(other._parent, self.lift())) / IntegerMod_gmp(other._parent, modulus)
@@ -757,8 +762,14 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
         return float(self.lift())
 
     def __hash__(self):
+        """
+        EXAMPLES:
+            sage: a = Mod(8943, 2^100)
+            sage: hash(a)
+            -1590013994
+        """
 #        return mpz_pythonhash(self.value)
-        return hash(self.lift())
+        return hash((self.__modulus.sageInteger, self.lift()))
 
 ######################################################################
 #      class IntegerMod_int
@@ -894,7 +905,7 @@ cdef class IntegerMod_int(IntegerMod_abstract):
         cdef IntegerMod_int lift
         cdef int_fast32_t x
 
-        lift = IntegerMod_int(integer_mod_ring.IntegerModRing(self.__modulus.int32 * other.__modulus.int32, check_prime=False), None, empty=True)
+        lift = IntegerMod_int(integer_mod_ring.IntegerModRing(self.__modulus.int32 * other.__modulus.int32), None, empty=True)
 
         try:
             x = (other.ivalue - self.ivalue % other.__modulus.int32) * mod_inverse_int(self.__modulus.int32, other.__modulus.int32)
@@ -1077,7 +1088,13 @@ cdef class IntegerMod_int(IntegerMod_abstract):
         return float(self.ivalue)
 
     def __hash__(self):
-        return hash(self.ivalue)
+        """
+        EXAMPLES:
+            sage: a = Mod(89, 2^10)
+            sage: hash(a)
+            1704751112
+        """
+        return hash((self.__modulus.sageInteger, self.ivalue))
 
 ### End of class
 
@@ -1240,7 +1257,7 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
             sage: mod(5,13^5) == mod(8,13^5)
             False
             sage: mod(5,13^5) == mod(5,13)
-            False
+            True
             sage: mod(0, 13^5) == 0
             True
             sage: mod(0, 13^5) == int(0)
@@ -1307,7 +1324,7 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
         cdef IntegerMod_int64 lift
         cdef int_fast64_t x
 
-        lift = IntegerMod_int64(integer_mod_ring.IntegerModRing(self.__modulus.int64 * other.__modulus.int64, check_prime=False), None, empty=True)
+        lift = IntegerMod_int64(integer_mod_ring.IntegerModRing(self.__modulus.int64 * other.__modulus.int64), None, empty=True)
 
         try:
             x = (other.ivalue - self.ivalue % other.__modulus.int64) * mod_inverse_int64(self.__modulus.int64, other.__modulus.int64)
@@ -1483,16 +1500,18 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
 
     def __hash__(self):
         """
-        Compute hash of self.   This is the hash of the underlying integer, which
-        is just that integer.
+        Compute hash of self.
+
+        This is a combination of the hash of the underlying integer
+        and the modulus.
 
         EXAMPLES:
             sage: a = Mod(8943, 2^35)
             sage: hash(a)
-            8943
+            -1178568930
         """
 
-        return hash(self.ivalue)
+        return hash((self.__modulus.sageInteger, self.ivalue))
 
 ### End of class
 
