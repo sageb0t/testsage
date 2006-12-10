@@ -458,8 +458,11 @@ class Expect(ParentWithBase):
             return cls(self, x)
         try:
             return self._coerce_impl(x)
-        except TypeError:
-            return cls(self, str(x))
+        except TypeError, msg:
+            try:
+                return cls(self, str(x))
+            except TypeError, msg2:
+                raise TypeError, msg
 
     def _coerce_impl(self, x):
         s = '_%s_'%self.name()
