@@ -344,7 +344,11 @@ class JSMath:
     A simple object for rendering LaTeX input using JSMath.
 
     '''
-    def eval(self, x, mode):
+
+    def __call__(self, x):
+        return jsmath(x)
+
+    def eval(self, x, mode='display'):
         try:
             # try to get a latex representation of the object
             x = x._latex_()
@@ -362,9 +366,6 @@ class JSMath:
         else:
             # what happened here?
             raise ValueError, "mode must be either 'display' or 'inline'"
-
-# create a global JSMath object for efficiency reasons
-_jsmath = JSMath()
 
 def jsmath(x, mode='display'):
     r'''
@@ -394,7 +395,7 @@ def jsmath(x, mode='display'):
         -- William Stein -- general layout (2006-10)
         -- Bobby Moretti -- improvements, comments, documentation (2006-10)
     '''
-    return _jsmath.eval(x, mode)
+    return jsmath.eval(x, mode)
 
 def view(objects, title='SAGE', zoom=4, expert=True, debug=False, \
          sep='$$ $$', tiny=False,  center=False, **kwds):
