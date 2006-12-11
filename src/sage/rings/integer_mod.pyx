@@ -766,10 +766,10 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
         EXAMPLES:
             sage: a = Mod(8943, 2^100)
             sage: hash(a)
-            -1590013994
+            8943
         """
 #        return mpz_pythonhash(self.value)
-        return hash((self.__modulus.sageInteger, self.lift()))
+        return hash(self.lift())
 
 ######################################################################
 #      class IntegerMod_int
@@ -1092,9 +1092,9 @@ cdef class IntegerMod_int(IntegerMod_abstract):
         EXAMPLES:
             sage: a = Mod(89, 2^10)
             sage: hash(a)
-            1704751112
+            89
         """
-        return hash((self.__modulus.sageInteger, self.ivalue))
+        return hash(self.ivalue)
 
 ### End of class
 
@@ -1508,10 +1508,10 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
         EXAMPLES:
             sage: a = Mod(8943, 2^35)
             sage: hash(a)
-            -1178568930
+            8943
         """
 
-        return hash((self.__modulus.sageInteger, self.ivalue))
+        return hash(self.ivalue)
 
 ### End of class
 
