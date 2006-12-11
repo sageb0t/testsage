@@ -810,6 +810,7 @@ function cell_focus(id) {
     if(e == null) return;
     e.className="cell_input_active";
     cell_input_resize(e);
+    set_class('evaluate_button_'+id, 'evaluate_button')
     return true;
 }
 function cell_blur(id) {
@@ -819,6 +820,7 @@ function cell_blur(id) {
     if(e == null) return;
     e.className="cell_input";
     cell_input_minimize_size(e);
+    setTimeout("set_class('evaluate_button_"+id+"', 'hidden')", 100);
     return true;
 }
 
@@ -1209,7 +1211,6 @@ function evaluate_cell(id, action) {
         alert("This worksheet is locked.  Click on the word [locked] next to the worksheet name to unlock it.")
         return;
     }
-
     active_cell_list = active_cell_list.concat([id]);
 
     if(action == 2) { // Introspection
@@ -1220,6 +1221,7 @@ function evaluate_cell(id, action) {
     if(!in_slide_mode) {
         jump_to_cell(id,1);
     }
+
     cell_set_running(id);
 
     var cell_input = get_cell(id);
@@ -1335,17 +1337,13 @@ function cell_set_not_evaluated(id) {
 function cell_set_running(id) {
     set_output_text(id, '', '', '', '', '');
     cell_output_set_type(id, 'wrap');
-    var cell_div = get_element('cell_div_output_' + id);
-    cell_div.className = 'cell_output_running';
-    var cell_number = get_element('cell_number_' + id);
-    cell_number.className = 'cell_number_running';
+    set_class('cell_div_output_'+id, 'cell_output_running');
+    set_class('cell_number_'+id,'cell_number_running');
 }
 
 function cell_set_done(id) {
-    var cell_div = get_element('cell_div_output_' + id)
-    cell_div.className = 'cell_output_wrap';
-    var cell_number = get_element('cell_number_' + id);
-    cell_number.className = 'cell_number';
+    set_class('cell_div_output_'+id, 'cell_output_wrap');
+    set_class('cell_number_'+id,'cell_number');
 }
 
 function check_for_cell_update() {
