@@ -158,7 +158,7 @@ class Worksheet:
 
     def edit_text(self, prompts=False):
         """
-        Returns a plain-text version of the worksheet with {{{}}} wiki-formatting,
+        Returns a plain-text version of the worksheet with \{\{\{\}\}\} wiki-formatting,
         suitable for hand editing.
         """
         s = ''
@@ -1091,7 +1091,6 @@ class Worksheet:
 
             if not switched:
                 input = ignore_prompts_and_output(input).rstrip()
-                print "input ='%s'"%input
                 input = self.preparse(input)
                 input = self.load_any_changed_attached_files(input)
                 input = self.do_sage_extensions_preparsing(input)
@@ -1263,7 +1262,7 @@ def ignore_prompts_and_output(s):
 def extract_text_before_first_compute_cell(text):
     """
     OUTPUT:
-        Everything in text up to the first {{{.
+        Everything in text up to the first \{\{\{.
     """
     i = text.find('{{{')
     if i == -1:
