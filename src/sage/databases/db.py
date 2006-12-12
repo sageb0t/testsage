@@ -283,7 +283,7 @@ class Database(_uniq):
     def dump_as_dict(self, filename, keys):
         X = self.as_dict(keys)
         print "Dumping %s..."%filename
-        s = cPickle.dumps(X)
+        s = cPickle.dumps(X,2)
         dir = "%s/pickles/"%DB_HOME
         if not os.path.exists(dir):
             os.makedirs(dir)
@@ -308,7 +308,7 @@ class Database(_uniq):
         dir = "%s/pickles/"%DB_HOME
         s = open("%s/%s"%(dir,filename)).read()
         print "Restoring %s..."%filename
-        X = cPickle.loads(s)
+        X = cPickle.loads(s,2)
         for k, x in X.iteritems():
             self.root[k] = x
         self.commit()
