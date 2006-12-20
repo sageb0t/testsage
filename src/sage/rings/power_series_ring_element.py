@@ -561,9 +561,12 @@ class PowerSeries(ring_element.RingElement):
         f = _solve_linear_de(R, 0, prec, a_list, b_list, f0)
         return self.parent()(f, prec)
 
-    def exp(self, prec = infinity):
+    def exp(self, prec=None):
         r"""
         Returns exp of this power series to the indicated precision.
+
+        INPUT:
+            prec -- integer; default is self.parent().default_prec
 
         ALGORITHM:
             See PowerSeries.solve_linear_de().
@@ -611,6 +614,8 @@ class PowerSeries(ring_element.RingElement):
            O(t^0)
 
         """
+        if prec is None:
+            prec = self.parent().default_prec()
         if not self[0].is_zero():
             raise ValueError, "constant term must to zero"
         return self.derivative().solve_linear_de(prec)
