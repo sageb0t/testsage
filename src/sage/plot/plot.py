@@ -1231,8 +1231,8 @@ class GraphicPrimitive_Text(GraphicPrimitive):
         return {'fontsize': 'How big the text is.',
                 'rgbcolor':'The color as an rgb tuple.',
                 'hue':'The color given as a hue.',
-                'vertical_alignment':'if True align vertically.',
-                'horizontal_alignment':'if True align vertically.'}
+                'vertical_alignment': 'how to align vertically: top, center, bottom',
+                'horizontal_alignment':'how to align horizontally: left, center, right'}
 
     def _render_on_subplot(self, subplot):
         options = self.options()
@@ -2094,7 +2094,8 @@ class PlotFactory(GraphicPrimitiveFactory):
         return "plot; type plot? for help and examples."
 
     def __call__(self, funcs, xmin=None, xmax=None, parametric=False,
-                 polar=False, show=None, **kwds):
+                 polar=False, label='',
+                 show=None, **kwds):
         if show is None:
             show = SHOW_DEFAULT
         try:
@@ -2177,6 +2178,13 @@ class PlotFactory(GraphicPrimitiveFactory):
         if polar:
             data = [(y*cos(x), y*sin(x)) for x, y in data]
         G = line(data, coerce=False, **options)
+
+        # Label?
+        if label:
+            label = '  '+str(label)
+            G += text(label, data[-1], horizontal_alignment='left',
+                      vertical_alignment='center')
+
         if show:
             G.show(**kwds)
         return G
@@ -2188,6 +2196,15 @@ class TextFactory(GraphicPrimitiveFactory_text):
     """
     Text at the point (x,y)
     Type text.options for a dictionary of options.
+
+    text(string, position, options...)
+
+    OPTIONS:
+        fontsize -- How big the text is
+        rgbcolor -- The color as an rgb tuple
+        hue -- The color given as a hue
+        vertical_alignment -- how to align vertically: top, center, bottom
+        horizontal_alignment -- how to align horizontally: left, center, right
 
     EXAMPLES:
         Type this to see some text in top right plane:
