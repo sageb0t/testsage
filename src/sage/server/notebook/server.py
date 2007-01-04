@@ -909,12 +909,14 @@ class NotebookServer:
     def serve(self):
         global notebook
         notebook = self.notebook()
-        try:
-            print "Press Control-C to stop the server."
-            self.__httpd.serve_forever()
-        except KeyboardInterrupt:
-            notebook.save()
-            print "Shutting down notebook server."
-            notebook = None
-        else:
-            notebook.save()
+        while True:
+            try:
+                print "Press Control-C *TWICE* to stop the server."
+                self.__httpd.serve_forever()
+            except KeyboardInterrupt:
+                notebook.save()
+                print "Shutting down notebook server."
+                notebook = None
+                break
+            else:
+                notebook.save()
