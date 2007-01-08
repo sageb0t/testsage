@@ -2084,7 +2084,10 @@ def number_of_divisors(n):
     """
     Return the number of divisors of the integer n.
     """
-    return sage.rings.integer.Integer(pari(sage.rings.integer.Integer(n)).numdiv())
+    m = sage.rings.integer.Integer(n)
+    if m.is_zero():
+        raise ValueError, "input must be nonzero"
+    return sage.rings.integer.Integer(pari(m).numdiv())
 
 def hilbert_symbol(a, b, p, algorithm="pari"):
     """
