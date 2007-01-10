@@ -660,7 +660,9 @@ setup(name        = 'sage',
 
                      'sage.ext',
 
-                     'sage.functions',
+                     'sage.calculus',
+
+                     #'sage.functions',
 
                      'sage.geometry',
 
