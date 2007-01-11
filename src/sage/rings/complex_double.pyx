@@ -258,6 +258,12 @@ cdef class ComplexDoubleField_class(sage.rings.ring.Field):
         import real_double
         return real_double.RDF
 
+def new_ComplexDoubleElement():
+    cdef ComplexDoubleElement z
+    z = PY_NEW(ComplexDoubleElement)
+    z._parent = _CDF
+    return z
+
 cdef class ComplexDoubleElement(FieldElement):
     """
     An element of a complex double field.
