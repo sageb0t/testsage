@@ -657,6 +657,8 @@ setup(name        = 'sage',
 
                      'sage.ext',
 
+                     'sage.calculus',
+
                      'sage.functions',
 
                      'sage.geometry',
