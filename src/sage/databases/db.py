@@ -149,9 +149,13 @@ class Database(_uniq):
             self._root["btree"] = BTrees.OOBTree.OOBTree()
         self.root = self._root["btree"]
 
+    def begin(self):
+        r"""Start a new database transaction"""
+        transaction.get().begin()
+
     def abort(self):
+        r"""Abort the current database transaction, without committing"""
         transaction.get().abort()
-        #get_transaction().abort()
 
     def commit(self):
         """
@@ -247,13 +251,12 @@ class Database(_uniq):
 
     def __getitem__(self, x):
         try:
-            return self.root[x]
+            if not isinstance(x, slice):
+                return self.root[x]
+            return [self[k] for k in range(x.start, x.stop, x.step)]
         except AttributeError:
             self._init()
             return self.root[x]
-
-    def __getslice__(self, i, j):
-        return [self[k] for k in range(i,j)]
 
     def __delitem__(self, x):
         del self.root[x]
