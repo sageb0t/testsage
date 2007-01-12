@@ -237,7 +237,7 @@ def pythonify(F):
     return F
 
 def post_process(s, file):
-    s = s.replace('.doctest/','')
+    s = s.replace('.doctest_','')
     if file[-3:] == 'pyx':
         s = s.replace('"%s", line'%file[:-1], '"%s", line'%file)
     i = s.find("Failed example:")
@@ -255,6 +255,8 @@ def post_process(s, file):
     c = '###line [0-9]*\n'
     r = re.compile(c)
     s = r.sub('\n',s)
+    if cnt > 0:
+        s += "For whitespace errors, see the file .doctest_%s"%file
     return s
 
 __alarm_time=0
@@ -305,7 +307,7 @@ def test_file(file):
             sys.exit(1)
 
         if time.time() - tm >= TIMEOUT:
-            err = "*** *** Error: TIMED OUT! *** ***"
+            err += "*** *** Error: TIMED OUT! *** ***"
             print err
 
         s = post_process(out, file)  + err
