@@ -174,14 +174,16 @@ matrix_rational_sparse = Extension('sage.matrix.matrix_rational_sparse',
 matrix_cyclo_sparse = Extension('sage.matrix.matrix_cyclo_sparse',
                                    ['sage/matrix/matrix_cyclo_sparse.pyx'])
 
-complex_number2 = Extension('sage.rings.complex_number2',
-			    ['sage/rings/complex_number2.pyx'],
-			    libraries = ['gmp'])
+complex_number = Extension('sage.rings.complex_number',
+			    ['sage/rings/complex_number.pyx'],
+			    libraries = ['mpfr', 'gmp'])
 
 free_module_element = Extension('sage.modules.free_module_element',
                                 ['sage/modules/free_module_element.pyx'])
 
 ################ GSL wrapping ######################
+
+gsl_ode = Extension('sage.gsl.ode',['sage/gsl/ode.pyx'],libraries=['gsl',CBLAS],define_macros=[('GSL_DISABLE_DEPRECATED','1')])
 
 gsl_fft = Extension('sage.gsl.fft',
                 ['sage/gsl/fft.pyx'],
@@ -271,7 +273,7 @@ ext_modules = [ \
     dwt,
 
     gsl_array,
-    gsl_ode,
+    #gsl_ode,
     gsl_fft,
     gsl_interpolation,
     gsl_callback,
@@ -279,7 +281,7 @@ ext_modules = [ \
     real_double,
     complex_double,
 
-    # complex_number2, \
+    complex_number,
 
     Extension('sage.ext.sig',
               sources = ['sage/ext/sig.pyx']), \
@@ -620,13 +622,6 @@ def pyrex(ext_modules):
                 new_sources.append(f)
         m.sources = new_sources
 
-#############################################
-# Update interrupt.h and stdsage.h files
-#os.system("cp sage/ext/interrupt.h %s/include/"%SAGE_LOCAL)
-#os.system("cp sage/ext/stdsage.h %s/include/"%SAGE_LOCAL)
-
-##########################################
-
 if not sdist:
     pyrex(ext_modules)
 
@@ -663,6 +658,8 @@ setup(name        = 'sage',
                      'sage.functions',
 
                      'sage.geometry',
+
+                     'sage.games',
 
                      'sage.gsl',
 

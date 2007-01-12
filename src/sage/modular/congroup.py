@@ -53,6 +53,9 @@ def get_inverse_mod(order):
         return fast_arith.arith_llong().inverse_mod_longlong
     raise NotImplementedError
 
+def is_CongruenceSubgroup(x):
+    return isinstance(x, CongruenceSubgroup)
+
 class CongruenceSubgroup(Group):
     def __init__(self, level):
         level=int(level)
@@ -143,6 +146,9 @@ def lift_to_sl2z(c, d, N):
     assert g==1
 
     return Mat2Z([z2, -z1, c, d])
+
+def is_Gamma0(x):
+    return isinstance(x, Gamma0)
 
 class Gamma0(CongruenceSubgroup):
     r"""
@@ -246,6 +252,9 @@ class Gamma0(CongruenceSubgroup):
         for r in self.coset_reps():
             c,d = (r[1,0], r[1,1])
 
+def is_SL2Z(x):
+    return isinstance(x, SL2Z)
+
 class SL2Z(Gamma0):
     r"""
     The modular group $\SL_2(\Z)$.
@@ -303,6 +312,9 @@ class SL2Z(Gamma0):
         if isinstance(x, CongruenceSubgroupElement) and x.parent() == self:
             return x
         return CongruenceSubgroupElement(self, x, check=check)
+
+def is_Gamma1(x):
+    return isinstance(x, Gamma1)
 
 class Gamma1(CongruenceSubgroup):
     r"""
