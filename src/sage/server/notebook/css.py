@@ -1097,6 +1097,10 @@ pre.cell_output_hide {
   display:none;
 }
 
+a.file_link {
+  text_decoration:underline;
+}
+
 /************ INSERTING NEW CELLS **************************/
 
 div.insert_new_cell {
