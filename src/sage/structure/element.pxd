@@ -94,6 +94,9 @@ cdef class FiniteFieldElement(FieldElement):
 cdef class AlgebraElement(RingElement):
     pass
 
+cdef class CommutativeAlgebraElement(CommutativeRingElement):
+    pass
+
 cdef class CommutativeAlgebra(AlgebraElement):
     pass
 
