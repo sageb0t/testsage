@@ -66,6 +66,11 @@ tmp='%s/tmp'%SAGE_TMP_INTERFACE
 ##         raise RuntimeError
 ##     return ' '.join([t] + c[1:])
 
+# . in user's path causes *HUGE* trouble, e.g., pexpect will try to
+# run a directory name!
+p = os.environ['PATH'].split(':')
+os.environ['PATH'] = ':'.join([v for v in p if v.strip() != '.'])
+
 class Expect(ParentWithBase):
     """
     Expect interface object.
@@ -271,6 +276,7 @@ class Expect(ParentWithBase):
 ##                  self._install_hints(), self.__name)
 
         if self.__verbose_start:
+            print cmd
             print "Starting %s"%cmd.split()[0]
 
         try:
@@ -854,6 +860,9 @@ class ExpectElement(RingElement):
         t = P._true_symbol()
         cmd = '%s %s %s'%(self._name, P._equality_symbol(), t)
         return P.eval(cmd) == t
+
+    def __bool__(self):
+        return self.bool()
 
     def __long__(self):
         return long(str(self))
