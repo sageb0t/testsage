@@ -250,7 +250,7 @@ div.introspection {
 }
 
 pre.introspection {
-  font-family:"Courier New",courier, monospace;
+  font-family:courier, monospace;
   font-size:15px;
   background-color: #efefef;
   border: solid 1px black;
@@ -266,7 +266,7 @@ ul.completion_menu_one {
   border: solid 1px black;
   display:inline;
   margin: 5px;
-  font-family:"Courier New",courier, monospace;
+  font-family:courier, monospace;
   font-size:15px;
   padding:5px;
 }
@@ -302,7 +302,7 @@ li.completion_menu_two:hover{
 span.search_doc_topbar {
    z-index: 12;
    height: 24px;
-   font-family:"Courier New",courier;
+   font-family:courier;
    font-size: 12px;
    width:158px;
    top: 40px;
@@ -337,7 +337,7 @@ input.search_input {
    width: 160px;
    padding: 4px;
    z-index: 12;
-   font-family:"Courier New",courier;
+   font-family:courier;
    font-size:14px;
    color: #222222;
    color: #808080;
@@ -365,7 +365,7 @@ span.search_doc {
 
 span.pane {
    z-index:30;
-   font-family:"Courier New",courier, monospace;
+   font-family:courier, monospace;
    font-size:12px;
    position: fixed;
    left: 5px;
@@ -382,7 +382,7 @@ span.pane {
 span.plusminus {
   color:black;
   font-size:8pt;
-  font-family:"Courier New",courier, monospace;
+  font-family:courier, monospace;
 }
 span.plusminus:hover {
     cursor:pointer;
@@ -739,7 +739,7 @@ div.control_area{
 
 span.control {
     border:1px solid white;
-    font-family: "Courier New",courier, monospace;
+    font-family: courier, monospace;
     font-size:14pt;
     font-weight:bold;
 }
@@ -809,7 +809,7 @@ span.banner a.banner:hover {
 }
 
 input.btn {
-  font-family: "Courier New",courier;
+  font-family: courier;
   font-size:13pt;
   font-weight:bold;
   color:#808080;
@@ -894,7 +894,7 @@ div.cellbox {
 pre.cell_input_pre {
   background-color: white;
   border: 0px solid #ffffff;
-  font-family: "Courier New",courier, monospace;
+  font-family: courier, monospace;
   font-size:12pt;
   overflow:hidden;
   padding-left:0px;
@@ -909,7 +909,7 @@ textarea.cell_input {
   background-color: white;
   border: 0px solid white;
   border-left: 2px solid green;
-  font-family: "Courier New",courier, monospace;
+  font-family: courier, monospace;
   font-size:12pt;
 /*  overflow:hidden; */
   overflow:auto;
@@ -930,7 +930,7 @@ textarea.cell_input_hide {
 /*  border-top: 1px solid #aaaaff;
   border-bottom: 1px solid #aaaaff;
   */
-  font-family: "Courier New",courier, monospace;
+  font-family: courier, monospace;
   font-size:12pt;
   overflow:hidden;
   padding-left:3px;
@@ -966,7 +966,7 @@ textarea.cell_input_active {
   border-bottom: 0px solid white;
   border-right: 0px solid white;
   */
-  font-family: "Courier New",courier, monospace;
+  font-family: courier, monospace;
   font-size:12pt;
   overflow:auto;
   padding-left:5px;
@@ -980,7 +980,7 @@ textarea.cell_input_active {
 /*textarea.cell_input_active {
   background-color: white;
   border: 3px solid #8888fe;
-  font-family: "Courier New",courier, monospace;
+  font-family: courier, monospace;
   font-size:12pt;
   overflow:auto;
   padding-left:5px;
@@ -999,7 +999,7 @@ span.cell_evaluate {
 /************ CELL OUTPUT **************************/
 
 div.cell_output {
-  font-family: "Courier New",courier, monospace;
+  font-family: courier, monospace;
   font-size:12pt;
   width: 95%;
   margin-top:-5px;
@@ -1053,11 +1053,11 @@ span.cell_output_nowrap_hidden {
 }
 
 span.cell_output_html_wrap {
-  font-family: "Courier New",courier, monospace;
+  font-family: courier, monospace;
   font-size:12pt;
 }
 span.cell_output_html_nowrap {
-  font-family: "Courier New",courier, monospace;
+  font-family: courier, monospace;
   font-size:12pt;
 }
 span.cell_output_html_hidden {
@@ -1065,7 +1065,7 @@ span.cell_output_html_hidden {
 }
 
 div.cell_output_running {
-  font-family: "Courier New",courier, monospace;
+  font-family: courier, monospace;
   font-size:12pt;
   width: 100%;
   margin:0px;
@@ -1145,7 +1145,7 @@ div.debug_window_inactive {
 div.debug_output {
   background-color: white;
   border: 0px;
-  font-family: "Courier New",courier, monospace;
+  font-family: courier, monospace;
   font-size:10pt;
   overflow:scroll;
   padding-left:3px;
@@ -1158,7 +1158,7 @@ div.debug_output {
 textarea.debug_input {
   background-color: white;
   border: 1px solid #8888fe;
-  font-family: "Courier New",courier, monospace;
+  font-family: courier, monospace;
   font-size:12pt;
   overflow:scroll;
   padding-left:3px;
