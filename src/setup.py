@@ -718,6 +718,8 @@ setup(name        = 'sage',
                      'sage.plot',
                      'sage.plot.mpl3d',
 
+                     'sage.probability',
+
                      'sage.quadratic_forms',
 
                      'sage.rings',
