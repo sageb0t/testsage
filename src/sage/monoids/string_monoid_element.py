@@ -295,7 +295,10 @@ class StringMonoidElement(FreeMonoidElement):
             RR = RealField(prec)
 	S = self.parent()
         n = S.ngens()
-        Alph = S.alphabet()
+	if length == 1:
+	    Alph = S.gens()
+	else:
+	    Alph = tuple([ x*y for x in S.gens() for y in S.gens() ])
         X = {}
         N = len(self)-length+1
         eps = RR(Integer(1)/N)
@@ -306,9 +309,3 @@ class StringMonoidElement(FreeMonoidElement):
 	    else:
                 X[c] = eps
         return DiscreteProbabilitySpace(Alph,X,RR)
-
-#*****************************************************************************
-# We could create separate element types for binary, octal, hexadecimal, and
-# radix 64 string elements, but instead rely on parents for type checking.
-# The functions IsBinaryStringElement, etc. provide this check.
-#*****************************************************************************
