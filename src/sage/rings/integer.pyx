@@ -54,6 +54,16 @@ Multiplication:
 
     sage: 'sage'*Integer(3)
     'sagesagesage'
+
+Coercions:
+    Returns version of this integer in the multi-precision floating
+    real field R.
+
+        sage: n = 9390823
+        sage: RR = RealField(200)
+        sage: RR(n)
+        9390823.0000000000000000000000000000000000000000000000000000
+
 """
 
 #*****************************************************************************
@@ -186,9 +196,6 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
             495949209809328523
             sage: Integer(Mod(3,7))
             3
-
-        Integers also support the standard arithmetic operations, such
-        as +,-,*,/,^, \code{abs}, \code{mod}, \code{float}:
             sage: 2^3
             8
         """
@@ -786,10 +793,10 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
            0
 
            sage: x = 3^100000
-           sage: log(x, 3)
-           100000.000000000
-           sage: log(x + 100000, 3)
-           100000.000000000
+           sage: log(RR(x), 3)
+           99999.9999999999
+           sage: log(RR(x + 100000), 3)
+           99999.9999999999
 
            sage: x.exact_log(3)
            100000
@@ -803,7 +810,7 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
         if m < 2:
             raise ValueError, "m must be at least 2"
         R = real_mpfr.RealField(53)
-        guess = self._mpfr_(R).log(base = m).floor()
+        guess = R(self).log(base = m).floor()
         power = m ** guess
 
         while power > self:
@@ -1306,6 +1313,20 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
         """
         return bool(self._pari_().isprime())
 
+    def is_pseudoprime(self):
+        r"""
+        Retuns \code{True} if self is a pseudoprime
+
+        EXAMPLES:
+            sage: z = 2^31 - 1
+            sage: z.is_pseudoprime()
+            True
+            sage: z = 2^31
+            sage: z.is_pseudoprime()
+            False
+        """
+        return bool(self._pari_().ispseudoprime())
+
     def square_free_part(self):
         """
         Return the square free part of $x$, i.e., a divisor z such that $x = z y^2$,
@@ -1469,25 +1490,6 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
 
         return x
 
-    def _mpfr_(self, R):
-        """
-        Returns version of this integer in the multi-precision floating
-        real field R.
-
-        EXAMPLES:
-            sage: n = 9390823
-            sage: RR = RealField(200)
-            sage: n._mpfr_(RR)
-            9390823.0000000000000000000000000000000000000000000000000000
-            sage: RR(n)
-            9390823.0000000000000000000000000000000000000000000000000000
-
-        ALGORITHM: Use a string in *base 32*.
-        TODO: This could be easily optimized by directly using the
-        underlying GMP library.
-        """
-        return R(self.str(32), 32)
-
     def sqrt(self, bits=None):
         r"""
         Returns the positive square root of self, possibly as a
@@ -1541,7 +1543,7 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
             return x.sqrt()
         else:
             R = real_mpfr.RealField(bits)
-            return self._mpfr_(R).sqrt()
+            return R(self).sqrt()
 
     def square_root(self):
         """
