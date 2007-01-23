@@ -663,7 +663,7 @@ setup(name        = 'sage',
 
                      'sage.calculus',
 
-                     'sage.functions',
+#                     'sage.functions',
 
                      'sage.geometry',
 
