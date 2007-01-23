@@ -1703,6 +1703,8 @@ def binomial(x,m):
         10
         sage: binomial(2,0)
         1
+        sage: binomial(1/2, 0)
+        1
         sage: binomial(3,-1)
         0
         sage: binomial(20,10)
@@ -1718,7 +1720,7 @@ def binomial(x,m):
         P = x.parent()
     except AttributeError:
         P = type(x)
-    if m <= 0:
+    if m < 0:
         return P(0)
     return misc.prod([x-i for i in xrange(m)]) / P(factorial(m))
 
