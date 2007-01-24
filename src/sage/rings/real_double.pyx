@@ -1169,3 +1169,6 @@ RDF = _RDF   # external interface
 def RealDoubleField():
     global _RDF
     return _RDF
+
+def is_RealDoubleElement(x):
+    return PY_TYPE_CHECK(x, RealDoubleElement)
