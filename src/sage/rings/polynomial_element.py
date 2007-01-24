@@ -768,8 +768,7 @@ class Polynomial(commutative_algebra_element.CommutativeAlgebraElement):
         """
         Return a copy of this polynomial but with coefficients in R.
         """
-        S = sage.rings.polynomial_ring.PolynomialRing(R,
-                                      names = self.parent().variable_name())
+        S = self.parent().base_extend(R)
         return S(self)
 
     def __copy__(self):
