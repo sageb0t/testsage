@@ -22,5 +22,5 @@ cdef class RealNumber(sage.structure.element.RingElement):
     cdef mpfr_t value
     cdef char init
     cdef RealNumber _new(self)
-
+    cdef _set(self, x, int base)
     cdef RealNumber abs(RealNumber self)
