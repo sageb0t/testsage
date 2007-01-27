@@ -654,7 +654,7 @@ cdef class Matrix(sage.structure.element.Matrix):
             sage: A.change_ring(ZZ)
             Traceback (most recent call last):
             ...
-            TypeError: Unable to coerce rational (=1/2) to an Integer.
+            TypeError: no coercion of this rational to integer
         """
         if ring is self._base_ring:
             if self._mutability._is_immutable:
@@ -1097,7 +1097,7 @@ cdef class Matrix(sage.structure.element.Matrix):
             sage: a.rescale_col(2,1/2); a
             Traceback (most recent call last):
             ...
-            TypeError: Unable to coerce rational (=1/2) to an Integer.
+            TypeError: no coercion of this rational to integer
 
         We rescale the integer matrix's column 2 column by $-1$, which is an integer.
             sage: a.rescale_col(2,-1); a
@@ -2079,7 +2079,7 @@ cdef class Matrix(sage.structure.element.Matrix):
         if not self.is_square():
             raise ArithmeticError, "self must be square"
 
-        return ModuleElement.__pow__(self, n, ignored)
+        return RingElement.__pow__(self, n, ignored)
 
     ###################################################
     # Comparison
