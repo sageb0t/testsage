@@ -244,7 +244,7 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
         # Find the root of unity used by Gap.
         from sage.interfaces.all import gap        # here to reduce dependencies
         g = int(gap.eval('Int(Z(%s))'%m))
-        n = R(g).log(self)
+        n = self.log(R(g))
         return 'Z(%s)^%s'%(m, n)
 
     def _magma_init_(self):
@@ -329,10 +329,10 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
         try:
             n = Integer(pari(cmd))
             if n == -1:
-                raise ValueError, "base for discrete log must generate multiplicative group"
+                raise ValueError, "base (=%s) for discrete log must generate multiplicative group"%b
             return n
         except PariError:
-            raise ValueError, "base must be a unit that generates the multiplicative group"
+            raise ValueError, "base (=%s) must be a unit that generates the multiplicative group"%b
 
     def modulus(IntegerMod_abstract self):
         """
