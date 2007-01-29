@@ -71,7 +71,7 @@ class ShrinkingGeneratorCryptosystem(SymmetricKeyCryptosystem):
     """
     Shrinking generator cryptosystem class
     """
-    def __init__(self):
+    def __init__(self, field = None):
         """
         Create a shrinking generator cryptosystem.
 
@@ -81,8 +81,36 @@ class ShrinkingGeneratorCryptosystem(SymmetricKeyCryptosystem):
         OUTPUT:
 
         EXAMPLES:
-            sage: E = LFSRCryptosystem()
+            sage: E = ShrinkingGeneratorCryptosystem()
+	    sage: E
+            Shrinking cryptosystem over Finite Field of size 2
         """
+	if field is None:
+	   field = FiniteField(2)
+	if field.cardinality() != 2:
+	    raise NotImplementedError, "Not yet implemented."
 	S = BinaryStrings()
-	P = PolynomialRing(FiniteField(2),'x')
+	P = PolynomialRing(field, 'x')
         SymmetricKeyCryptosystem.__init__(self, S, S, None)
+	self._field = field
+
+    def __call__(self, key):
+        """
+        Create a Shrinking generator cipher.
+
+        INPUT:
+            A list or tuple consisting of two LFSR ciphers (e1,e2).
+
+        OUTPUT:
+            The shrinking generator cipher with key stream generator e1 and decimating
+            cipher e2.
+        """
+	if not isinstance(key, (list,tuple)) and len(key) == 2:
+	    raise TypeError, "Argument key (= %s) must be a list of tuple of length 2" % key
+	e1 = key[0]; e2 = key[1]
+        if not isinstance(e1, LFSRCipher) or not isinstance(e2, LFSRCipher):
+            raise TypeError, "The key (= (%s,%s)) must be a tuple of two LFSR ciphers." % key
+        return ShrinkingGeneratorCipher(self, e1, e2)
+
+    def __repr__(self):
+        return "Shrinking cryptosystem over %s" % self._field
