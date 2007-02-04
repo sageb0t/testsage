@@ -12,6 +12,9 @@ cdef extern from "Python.h":
 cdef extern from "givaro-config.h":
     pass
 
+cdef extern from "givaro-config.h":
+    pass
+
 cdef extern from "givaro/givrandom.h":
     ctypedef struct GivRandom "GivRandom":
         pass
