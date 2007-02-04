@@ -1357,6 +1357,10 @@ cdef class FiniteField_givaroElement(FiniteFieldElement):
         AUTHOR:
             Robert Bradshaw
         """
+        _exp = int(exp)
+        if _exp != exp:
+            raise ValueError, "exponent must be an integer"
+        exp = _exp
 
         cdef int r
         cdef int order
