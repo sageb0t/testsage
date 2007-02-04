@@ -901,7 +901,7 @@ cdef class Vector_mpq:
 #    Sparse Matrix over mpq_t (the GMP rationals)
 #
 #############################################################
-cdef class Matrix_rational_sparse(matrix_field_sparse.Matrix_field_sparse):
+cdef class Matrix_rational_sparse(matrix_sparse.Matrix_sparse):
 
     def __new__(self, int nrows, int ncols, object entries=[], init=True, coerce=False):
         # allocate memory
