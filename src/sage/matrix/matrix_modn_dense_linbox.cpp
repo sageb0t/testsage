@@ -26,6 +26,17 @@ typedef GivPolynomialRing<ModInt::Element,Dense> ModIntPolRing;
 static DenseMatrix<ModInt> linbox_new_modn_matrix(mod_int** matrix, size_t nrows, size_t ncols);
 static void linbox_set_modn_matrix(mod_int** matrix, DenseMatrix<ModInt>& A, size_t nrows, size_t ncols);
 
+template <class Field, class Polynomial>
+std::ostream& printPolynomial (std::ostream& out, const Field &F, const Polynomial &v)
+{
+	for (int i = v.size () - 1; i >= 0; i--) {
+		F.write (out, v[i]);
+		if (i > 0)
+			out << " X^" << i << " + ";
+	}
+	return out;
+}
+
 /* NOTE: There are many echelon form functions, possible base rings, etc.  Strangely,
    most don't build.  This combination below does though.
 */
@@ -91,6 +102,8 @@ void linbox_modn_dense_minpoly(unsigned long modulus, mod_int **mp, size_t* degr
     else
         charpoly(m_A, A);
 
+    printPolynomial (cout, F, m_A) << endl;
+
     if (n%4 == 0 || !do_minpoly) {
         /* Program around the bug.
 	   It is OK that this code is crappy and redundant, since it will get replaced
@@ -109,7 +122,8 @@ void linbox_modn_dense_minpoly(unsigned long modulus, mod_int **mp, size_t* degr
 	    (*mp) = new mod_int[m_A.size()-1];
 	    *degree = m_A.size() - 2;
 	    for (size_t i=0; i <= *degree; i++) {
-		(*mp)[i] = m_A[i+1];
+
+		(*mp)[i] = (mod_int)m_A[i+1];
 	    }
 	    return;
 	}
@@ -118,7 +132,7 @@ void linbox_modn_dense_minpoly(unsigned long modulus, mod_int **mp, size_t* degr
     (*mp) = new mod_int[m_A.size()];
     *degree = m_A.size() - 1;
     for (size_t i=0; i <= *degree; i++) {
-	(*mp)[i] = m_A[i];
+	(*mp)[i] = (mod_int)m_A[i];
     }
 
 }
