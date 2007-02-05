@@ -70,6 +70,8 @@ include "../ext/interrupt.pxi"
 include "../ext/cdefs.pxi"
 include '../ext/stdsage.pxi'
 
+MAX_MODULUS = 46340
+
 import matrix_window_modn_dense
 
 cimport matrix_dense
@@ -806,3 +808,7 @@ cdef class Matrix_modn_dense(matrix_dense.Matrix_dense):
             for j from 0 <= j < self._ncols:
                 if prandom() <= prob:
                     self.matrix[i][j] = random() % self.p
+
+    def lift(self):
+        import misc
+        return misc.matrix_modn_dense_lift(self)

@@ -37,6 +37,9 @@ std::ostream& printPolynomial (std::ostream& out, const Field &F, const Polynomi
 	return out;
 }
 
+#include "linbox/field/givaro-rational.h"
+#include "linbox/field/modular.h"
+
 /* NOTE: There are many echelon form functions, possible base rings, etc.  Strangely,
    most don't build.  This combination below does though.
 */
