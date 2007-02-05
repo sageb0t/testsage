@@ -100,7 +100,9 @@ cdef class Matrix_real_double_dense(matrix_dense.Matrix_dense):   # dense
     ########################################################################
     def __new__(self, parent, entries, copy, coerce):
         matrix_dense.Matrix_dense.__init__(self,parent)
+        _sig_on
         self._matrix= <gsl_matrix *> gsl_matrix_calloc(self._nrows, self._ncols)
+        _sig_off
         if self._matrix == NULL:
             raise MemoryError, "unable to allocate memory for matrix "
         self._LU = <gsl_matrix *> NULL
@@ -142,6 +144,7 @@ cdef class Matrix_real_double_dense(matrix_dense.Matrix_dense):   # dense
         else:
             try:
                 z=float(entries)
+                gsl_matrix_set_zero(self._matrix)
             except TypeError:
                 raise TypeError, "entries must to coercible to list or real double "
             if z != 0:
