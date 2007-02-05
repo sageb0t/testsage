@@ -54,6 +54,16 @@ Multiplication:
 
     sage: 'sage'*Integer(3)
     'sagesagesage'
+
+Coercions:
+    Returns version of this integer in the multi-precision floating
+    real field R.
+
+        sage: n = 9390823
+        sage: RR = RealField(200)
+        sage: RR(n)
+        9390823.0000000000000000000000000000000000000000000000000000
+
 """
 
 #*****************************************************************************
@@ -92,10 +102,7 @@ from sage.libs.pari.gen cimport gen as pari_gen
 
 cdef class Integer(sage.structure.element.EuclideanDomainElement)
 
-import sage.rings.integer_ring
 import sage.rings.infinity
-import sage.rings.complex_field
-import rational
 import sage.libs.pari.all
 import real_mpfr
 
@@ -119,39 +126,12 @@ cdef public mpz_t* get_value(Integer self):
 # The problem is related to realloc moving all the memory
 # and returning a pointer to the new block of memory, I think.
 
-cdef extern from "stdlib.h":
-    void abort()
-
-cdef void* pymem_realloc(void *ptr, size_t old_size, size_t new_size):
-    return sage_realloc(ptr, new_size)
-
-cdef void pymem_free(void *ptr, size_t size):
-    sage_free(ptr)
-
-cdef void* pymem_malloc(size_t size):
-    return sage_malloc(size)
-
-cdef extern from "gmp.h":
-    void mp_set_memory_functions (void *(*alloc_func_ptr) (size_t),  \
-                                  void *(*realloc_func_ptr) (void *, size_t, size_t),    \
-                                  void (*free_func_ptr) (void *, size_t))
-
-def pmem_malloc():
-    """
-    Use our own memory manager for for GMP memory management.
-    """
-    mp_set_memory_functions(sage_malloc, pymem_realloc, pymem_free)
-    #mp_set_memory_functions(PyMem_Malloc, pymem_realloc, pymem_free)
-    #mp_set_memory_functions(pymem_malloc, pymem_realloc, pymem_free)
-
-pmem_malloc()
-
-cdef object the_integer_ring
-the_integer_ring = sage.rings.integer_ring.Z
-
 from sage.structure.sage_object cimport SageObject
 from sage.structure.element cimport EuclideanDomainElement, ModuleElement
 from sage.structure.element import  bin_op
+
+import integer_ring
+the_integer_ring = integer_ring.ZZ
 
 cdef class Integer(sage.structure.element.EuclideanDomainElement):
     r"""
@@ -168,7 +148,7 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
     # todo: It would be really nice if we could avoid the __new__ call.
     # It has python calling conventions, and our timing tests indicate the
     # overhead can be significant. The difficulty is that then we can't
-    # guarantee that the initialised will be performed exactly once.
+    # guarantee that the initialization will be performed exactly once.
 
     def __new__(self, x=None, unsigned int base=0):
         mpz_init(self.value)
@@ -186,12 +166,10 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
             495949209809328523
             sage: Integer(Mod(3,7))
             3
-
-        Integers also support the standard arithmetic operations, such
-        as +,-,*,/,^, \code{abs}, \code{mod}, \code{float}:
             sage: 2^3
             8
         """
+
     def __init__(self, x=None, unsigned int base=0):
         """
         EXAMPLES:
@@ -248,18 +226,6 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
                 if mpz_set_str(self.value, x, base) != 0:
                     raise TypeError, "unable to convert x (=%s) to an integer"%x
 
-            # todo: I want to skip the name lookup here (rational.Rational).
-            # I tried importing/cimporting Rational in various ways, but every
-            # way was broken for some mysterious reason. Perhaps a circular
-            # include somewhere?  -- David Harvey
-            # Sagex does not allow circular imports of cdef'd types in any situation.
-            # Since Rational cimports integer, it is not possible for integer to cimport rational.
-            # This might not be fixable.  -- William Stein
-            elif PY_TYPE_CHECK(x, rational.Rational):
-                if x.denominator() != 1:
-                    raise TypeError, "Unable to coerce rational (=%s) to an Integer."%x
-                set_from_Integer(self, x.numer())
-
             # Similarly for "sage.libs.pari.all.pari_gen"
             elif PY_TYPE_CHECK(x, pari_gen):
                 if x.type() == 't_INTMOD':
@@ -285,7 +251,7 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
                 set_from_Integer(self, (<object> PyObject_GetAttrString(x, "_integer_"))())
 
             else:
-                raise TypeError, "Unable to coerce %s (of type %s) to an Integer."%(x,type(x))
+                raise TypeError, "unable to coerce element to an integer"
 
     def __reduce__(self):
         # This single line below took me HOURS to figure out.
@@ -558,7 +524,7 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
     cdef ModuleElement _add_c_impl(self, ModuleElement right):
         # self and right are guaranteed to be Integers
         cdef Integer x
-        x = <Integer> PY_NEW(Integer)
+        x = PY_NEW(Integer)
         mpz_add(x.value, self.value, (<Integer>right).value)
         return x
 
@@ -582,7 +548,7 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
     cdef ModuleElement _sub_c_impl(self, ModuleElement right):
         # self and right are guaranteed to be Integers
         cdef Integer x
-        x = <Integer> PY_NEW(Integer)
+        x = PY_NEW(Integer)
         mpz_sub(x.value, self.value, (<Integer>right).value)
         return x
 
@@ -600,7 +566,7 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
     cdef RingElement _mul_c_impl(self, RingElement right):
         # self and right are guaranteed to be Integers
         cdef Integer x
-        x = <Integer> PY_NEW(Integer)
+        x = PY_NEW(Integer)
         if  mpz_sizeinbase(self.value, 2) > 1000000:  # some lack of symmetry
             # We only use the signal handler (to enable ctrl-c out) in case
             # self is huge, so the product might actually take a while to compute.
@@ -622,8 +588,9 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
             sage: Integer(32) / Integer(32)
             1
         """
-        # todo -- optimize -- this is really slow.
-        return rational.Rational(self)/rational.Rational(right)
+        # this is vastly faster than doing it here, since here
+        # we can't cimport rationals.
+        return the_integer_ring._div(self, right)
 
     def __floordiv(Integer self, Integer other):
         cdef Integer x
@@ -666,11 +633,23 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
             ...
             TypeError: exponent (=1/3) must be an integer.
             Coerce your numbers to real or complex numbers first.
+
+        The base need not be an integer (it can be a builtin
+        Python type).
+            sage: int(2)^10
+            1024
+            sage: float(2.5)^10
+            9536.7431640625
+            sage: 'sage'^3
+            'sagesagesage'
         """
         cdef Integer _self, _n
         cdef unsigned int _nval
         if not PY_TYPE_CHECK(self, Integer):
-            return self.__pow__(int(n))
+            if isinstance(self, str):
+                return self * n
+            else:
+                return self.__pow__(int(n))
         try:
             _n = Integer(n)
         except TypeError:
@@ -786,10 +765,10 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
            0
 
            sage: x = 3^100000
-           sage: log(x, 3)
-           100000.000000000
-           sage: log(x + 100000, 3)
-           100000.000000000
+           sage: log(RR(x), 3)
+           99999.9999999999
+           sage: log(RR(x + 100000), 3)
+           99999.9999999999
 
            sage: x.exact_log(3)
            100000
@@ -797,13 +776,22 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
            100000
            sage: (x-1).exact_log(3)
            99999
+
+           sage: x.exact_log(2.5)
+           Traceback (most recent call last):
+           ...
+           ValueError: base of log must be an integer
         """
+        _m = int(m)
+        if _m != m:
+            raise ValueError, "base of log must be an integer"
+        m = _m
         if self <= 0:
             raise ValueError, "self must be positive"
         if m < 2:
             raise ValueError, "m must be at least 2"
         R = real_mpfr.RealField(53)
-        guess = self._mpfr_(R).log(base = m).floor()
+        guess = R(self).log(base = m).floor()
         power = m ** guess
 
         while power > self:
@@ -914,6 +902,43 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
 
         return q, r
 
+    def div(self, other):
+        """
+        Returns the quotient of self divided by other.
+
+        INPUT:
+            other -- the integer the divisor
+
+        OUTPUT:
+            q   -- the quotient of self/other
+
+        EXAMPLES:
+            sage: z = Integer(231)
+            sage: z.div(2)
+            115
+            sage: z.div(-2)
+            -115
+            sage: z.div(0)
+            Traceback (most recent call last):
+            ...
+            ZeroDivisionError: other (=0) must be nonzero
+        """
+        cdef Integer _other, _self
+        _other = integer(other)
+        if not _other:
+            raise ZeroDivisionError, "other (=%s) must be nonzero"%other
+        _self = integer(self)
+
+        cdef Integer q, r
+        q = Integer()
+        r = Integer()
+
+        _sig_on
+        mpz_tdiv_qr(q.value, r.value, _self.value, _other.value)
+        _sig_off
+
+        return q
+
     def powermod(self, exp, mod):
         """
         Compute self**exp modulo mod.
@@ -947,6 +972,7 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
         return x
 
     def rational_reconstruction(self, Integer m):
+        import rational
         return rational.pyrex_rational_reconstruction(self, m)
 
     def powermodm_ui(self, exp, mod):
@@ -1013,6 +1039,7 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
                  * 'kash' -- use KASH computer algebra system (requires
                              the optional kash package be installed)
         """
+        import sage.rings.integer_ring
         return sage.rings.integer_ring.factor(self, algorithm=algorithm)
 
     def coprime_integers(self, m):
@@ -1073,6 +1100,9 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
         """
         Return the p-adic valuation of self.
 
+        INPUT:
+            p -- an integer at least 2.
+
         EXAMPLE:
             sage: n = 60
             sage: n.valuation(2)
@@ -1081,14 +1111,26 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
             1
             sage: n.valuation(7)
             0
+            sage: n.valuation(1)
+            Traceback (most recent call last):
+            ...
+            ValueError: You can only compute the valuation with respect to a integer larger than 1.
+
+        We do not require that p is a prime:
+            sage: (2^11).valuation(4)
+            5
         """
         if self == 0:
             return sage.rings.infinity.infinity
+        cdef Integer _p
+        _p = Integer(p)
+        if mpz_cmp_ui(_p.value,2) < 0:
+            raise ValueError, "You can only compute the valuation with respect to a integer larger than 1."
         cdef int k
         k = 0
-        while self % p == 0:
+        while self % _p == 0:
             k = k + 1
-            self = self.__floordiv__(p)
+            self = self.__floordiv__(_p)
         return Integer(k)
 
     def _lcm(self, Integer n):
@@ -1269,6 +1311,20 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
         """
         return bool(self._pari_().isprime())
 
+    def is_pseudoprime(self):
+        r"""
+        Retuns \code{True} if self is a pseudoprime
+
+        EXAMPLES:
+            sage: z = 2^31 - 1
+            sage: z.is_pseudoprime()
+            True
+            sage: z = 2^31
+            sage: z.is_pseudoprime()
+            False
+        """
+        return bool(self._pari_().ispseudoprime())
+
     def square_free_part(self):
         """
         Return the square free part of $x$, i.e., a divisor z such that $x = z y^2$,
@@ -1432,25 +1488,6 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
 
         return x
 
-    def _mpfr_(self, R):
-        """
-        Returns version of this integer in the multi-precision floating
-        real field R.
-
-        EXAMPLES:
-            sage: n = 9390823
-            sage: RR = RealField(200)
-            sage: n._mpfr_(RR)
-            9390823.0000000000000000000000000000000000000000000000000000
-            sage: RR(n)
-            9390823.0000000000000000000000000000000000000000000000000000
-
-        ALGORITHM: Use a string in *base 32*.
-        TODO: This could be easily optimized by directly using the
-        underlying GMP library.
-        """
-        return R(self.str(32), 32)
-
     def sqrt(self, bits=None):
         r"""
         Returns the positive square root of self, possibly as a
@@ -1500,11 +1537,12 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
             bits = max(53, 2*(mpz_sizeinbase(self.value, 2)+2))
 
         if self < 0:
+            import sage.rings.complex_field
             x = sage.rings.complex_field.ComplexField(bits)(self)
             return x.sqrt()
         else:
             R = real_mpfr.RealField(bits)
-            return self._mpfr_(R).sqrt()
+            return R(self).sqrt()
 
     def square_root(self):
         """
@@ -1861,6 +1899,21 @@ def GCD_list(v):
     return w
 
 def make_integer(s):
-    r = Integer()
+    cdef Integer r
+    r = PY_NEW(Integer)
     r._reduce_set(s)
     return r
+
+from random import randint
+def random_integer(min=-2, max=2):
+    cdef Integer x
+    cdef int _min, _max, r
+    try:
+        _min = min
+        _max = max
+        x = PY_NEW(Integer)
+        r = random() % (_max - _min + 1) + _min
+        mpz_set_si(x.value, r)
+        return x
+    except OverflowError:
+        return Integer(randint(min,max))

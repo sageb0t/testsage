@@ -400,7 +400,7 @@ class Macaulay2Element(ExpectElement):
             sage: X = R.Proj()                                  # optional
             sage: X.structure_sheaf()                           # optional
             OO
-              sage7
+              sage2
         """
         return self.parent()('OO_%s'%self.name())
 

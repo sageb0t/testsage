@@ -52,7 +52,7 @@ from time                import sleep
 from sage.interfaces.get_sigs import get_sigs
 get_sigs()
 
-from sage.rings.integer import pmem_malloc
+from sage.rings.memory import pmem_malloc
 pmem_malloc()
 
 from sage.misc.all       import *         # takes a while
@@ -71,10 +71,12 @@ from sage.databases.all  import *
 from sage.structure.all  import *
 from sage.categories.all import *
 from sage.sets.all       import *
+from sage.probability.all import *
 from sage.interfaces.all import *
 from sage.functions.all  import *
 #from sage.calculus.all   import *
 from sage.server.all     import *
+from sage.dsage.all      import *
 import sage.tests.all as tests
 
 from sage.crypto.all     import *
