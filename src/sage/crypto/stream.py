@@ -67,6 +67,13 @@ class LFSRCryptosystem(SymmetricKeyCryptosystem):
     def __repr__(self):
         return "LFSR cryptosystem over %s" % self._field
 
+    def encoding(self,M):
+	S = self.cipher_domain()
+	try:
+	    return S.encoding(M)
+	except:
+	    raise TypeError, "Argument M = %s does not encode in the cipher domain" % M
+
 class ShrinkingGeneratorCryptosystem(SymmetricKeyCryptosystem):
     """
     Shrinking generator cryptosystem class
@@ -83,7 +90,7 @@ class ShrinkingGeneratorCryptosystem(SymmetricKeyCryptosystem):
         EXAMPLES:
             sage: E = ShrinkingGeneratorCryptosystem()
 	    sage: E
-            Shrinking cryptosystem over Finite Field of size 2
+            Shrinking generator cryptosystem over Finite Field of size 2
         """
 	if field is None:
 	   field = FiniteField(2)
@@ -113,4 +120,11 @@ class ShrinkingGeneratorCryptosystem(SymmetricKeyCryptosystem):
         return ShrinkingGeneratorCipher(self, e1, e2)
 
     def __repr__(self):
-        return "Shrinking cryptosystem over %s" % self._field
+        return "Shrinking generator cryptosystem over %s" % self._field
+
+    def encoding(self,M):
+	S = self.cipher_domain()
+	try:
+	    return S.encoding(M)
+	except:
+	    raise TypeError, "Argument M = %s does not encode in the cipher domain" % M
