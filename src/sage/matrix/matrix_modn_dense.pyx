@@ -440,7 +440,6 @@ cdef class Matrix_modn_dense(matrix_dense.Matrix_dense):
             [ 0  0  0  0]
             sage: a.pivots()
             [0, 1]
-
         """
 
         if self.p == 2 and algorithm=='linbox':
@@ -453,6 +452,8 @@ cdef class Matrix_modn_dense(matrix_dense.Matrix_dense):
             raise NotImplementedError, "Echelon form not implemented over '%s'."%self.base_ring()
 
         self.check_mutability()
+        self.clear_cache()
+
         if algorithm == 'linbox':
             self._echelonize_linbox()
         elif algorithm == 'gauss':
@@ -466,6 +467,7 @@ cdef class Matrix_modn_dense(matrix_dense.Matrix_dense):
 
         """
         self.check_mutability()
+        self.clear_cache()
 
         t = verbose('calling linbox echelonize mod %s'%self.p)
         _sig_on
@@ -500,6 +502,7 @@ cdef class Matrix_modn_dense(matrix_dense.Matrix_dense):
 
     def _echelon_in_place_classical(self):
         self.check_mutability()
+        self.clear_cache()
 
         cdef Py_ssize_t start_row, c, r, nr, nc, i
         cdef mod_int p, a, a_inverse, b
