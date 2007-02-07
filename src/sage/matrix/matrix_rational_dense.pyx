@@ -15,6 +15,7 @@ cdef extern from "matrix_rational_dense_linbox.h":
 include "../ext/interrupt.pxi"
 include "../ext/stdsage.pxi"
 include "../ext/cdefs.pxi"
+include "../ext/random.pxi"
 
 cimport sage.structure.element
 from sage.rings.rational cimport Rational
@@ -452,6 +453,10 @@ cdef class Matrix_rational_dense(matrix_dense.Matrix_dense):
             [0 0 0]
             [0 0 0]
         """
+        key = 'charpoly_%s_%s'%(algorithm, var)
+        x = self.fetch(key)
+        if x: return x
+
         if algorithm == 'linbox':
             A, denom = self._clear_denom()
             f = A.charpoly(var, algorithm='linbox')
@@ -461,7 +466,8 @@ cdef class Matrix_rational_dense(matrix_dense.Matrix_dense):
             g = matrix_dense.Matrix_dense.charpoly(self, var)
         else:
             raise ValueError, "no algorithm '%s'"%algorithm
-        self.cache('charpoly_%s_%s'%(algorithm, var), g)
+
+        self.cache(key, g)
         return g
 
     def minpoly(self, var='x', algorithm='linbox'):
@@ -486,6 +492,10 @@ cdef class Matrix_rational_dense(matrix_dense.Matrix_dense):
             sage: f(a) == 0
             True
         """
+        key = 'minpoly_%s_%s'%(algorithm, var)
+        x = self.fetch(key)
+        if x: return x
+
         if algorithm == 'linbox':
             A, denom = self._clear_denom()
             f = A.minpoly(var, algorithm='linbox')
@@ -495,7 +505,8 @@ cdef class Matrix_rational_dense(matrix_dense.Matrix_dense):
             g = matrix_dense.Matrix_dense.minpoly(self, var)
         else:
             raise ValueError, "no algorithm '%s'"%algorithm
-        self.cache('minpoly_%s_%s'%(algorithm, var), g)
+
+        self.cache(key, g)
         return g
 
     cdef sage.structure.element.Matrix _matrix_times_matrix_c_impl(self, sage.structure.element.Matrix right):
@@ -642,6 +653,7 @@ cdef class Matrix_rational_dense(matrix_dense.Matrix_dense):
         x = self.fetch('in_echelon_form')
         if not x is None: return  # already known to be in echelon form
         self.check_mutability()
+        self.clear_cache()
         cdef Matrix_rational_dense E
         E = self._echelon_form_multimodular(height_guess, proof=proof)
         cdef Py_ssize_t i, j
@@ -682,3 +694,48 @@ cdef class Matrix_rational_dense(matrix_dense.Matrix_dense):
         import misc
         return misc.matrix_rational_echelon_form_multimodular(self,
                                  height_guess=height_guess, proof=proof)
+
+    def randomize(self, density=1, num_bound=2, den_bound=1):
+        """
+        Randomize density proportion of the entries of this matrix to
+        be rationals with numerators and denominators at most the
+        given bounds.
+        """
+        density = float(density)
+        if density == 0:
+            return
+        self.check_mutability()
+        self.clear_cache()
+
+        cdef Integer B, C
+        B = Integer(num_bound+1)
+        C = Integer(den_bound+1)
+
+        cdef Py_ssize_t i, j, k, nc, num_per_row
+        global state
+
+        cdef double total
+        total = self._nrows * self._ncols
+        cdef int r, s
+        r = self._nrows * self._ncols
+
+        if density == 1:
+            if mpz_cmp_si(C.value, 2):   # denom is > 1
+                for i from 0 <= i < self._nrows*self._ncols:
+                    mpq_randomize_entry(self._entries[i], B.value, C.value)
+            else:
+                for i from 0 <= i < self._nrows*self._ncols:
+                    mpq_randomize_entry_as_int(self._entries[i], B.value)
+        else:
+            nc = self._ncols
+            num_per_row = int(density * nc)
+            if mpz_cmp_si(C.value, 2):   # denom is > 1
+                for i from 0 <= i < self._nrows:
+                    for j from 0 <= j < num_per_row:
+                        k = random()%nc
+                        mpq_randomize_entry(self._matrix[i][k], B.value, C.value)
+            else:
+                for i from 0 <= i < self._nrows:
+                    for j from 0 <= j < num_per_row:
+                        k = random()%nc
+                        mpq_randomize_entry_as_int(self._matrix[i][k], B.value)
