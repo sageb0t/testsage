@@ -99,6 +99,9 @@ cdef extern from "matrix_modn_dense_linbox.h":
     int  linbox_modn_dense_matrix_matrix_multiply(unsigned long modulus, mod_int **ans, mod_int **A, mod_int **B,
                                                   size_t A_nr, size_t A_nc, size_t B_nr, size_t B_nc)
 
+    int linbox_modn_dense_rank(unsigned long modulus,
+                               mod_int** matrix, size_t nrows, size_t ncols)
+
 from sage.structure.element import ModuleElement
 
 from sage.misc.misc import verbose, get_verbose
@@ -768,6 +771,14 @@ cdef class Matrix_modn_dense(matrix_dense.Matrix_dense):
             v.append(int(c._matrix[n][i]))
         R = self._base_ring[var]    # polynomial ring over the base ring
         return R(v)
+
+    def rank(self):
+        x = self.fetch('rank')
+        if not x is None:
+            return x
+        r = linbox_modn_dense_rank(self.p, self._matrix, self._nrows, self._ncols)
+        self.cache('rank', r)
+        return r
 
     def randomize(self, density=1):
         """
