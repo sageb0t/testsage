@@ -604,10 +604,12 @@ cdef class Matrix_integer_dense(matrix_dense.Matrix_dense):   # dense or sparse
 
     def charpoly(self, var='x', algorithm='linbox'):
         """
-       INPUT:
+        INPUT:
             var -- a variable name
             algorithm -- 'linbox' (default)
                          'generic'
+
+        NOTE: Linbox only used on Darwin OS X right now.
 
         EXAMPLES:
             sage: A = matrix(ZZ,6, range(36))
@@ -624,6 +626,9 @@ cdef class Matrix_integer_dense(matrix_dense.Matrix_dense):   # dense or sparse
         key = 'charpoly_%s_%s'%(algorithm, var)
         x = self.fetch(key)
         if x: return x
+
+        if UNAME != "Darwin" and algorithm == "linbox":
+            algorithm = 'generic'
 
         if algorithm == 'linbox':
             g = self._charpoly_linbox(var)
@@ -642,6 +647,8 @@ cdef class Matrix_integer_dense(matrix_dense.Matrix_dense):   # dense or sparse
             algorithm -- 'linbox' (default)
                          'generic'
 
+        NOTE: Linbox only used on Darwin OS X right now.
+
         EXAMPLES:
             sage: A = matrix(ZZ,6, range(36))
             sage: A.minpoly()
@@ -653,6 +660,9 @@ cdef class Matrix_integer_dense(matrix_dense.Matrix_dense):   # dense or sparse
         key = 'minpoly_%s_%s'%(algorithm, var)
         x = self.fetch(key)
         if x: return x
+
+        if UNAME != "Darwin" and algorithm == "linbox":
+            algorithm = 'generic'
 
         if algorithm == 'linbox':
             g = self._minpoly_linbox(var)
