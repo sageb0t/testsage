@@ -592,11 +592,11 @@ cdef class FiniteField_givaro(FiniteField):
         """
         Coercion accepts elements of self.parent(), ints, and prime subfield elements.
         """
-        cdef int r,cx
+        cdef int r, cx
 
         if PY_TYPE_CHECK(x, int) \
                or PY_TYPE_CHECK(x, long) or PY_TYPE_CHECK(x, Integer):
-            cx = int(x)
+            cx = x % self.characteristic()
             r = (<FiniteField_givaro>self).objectptr.read(r, cx%self.objectptr.characteristic())
             return make_FiniteField_givaroElement(<FiniteField_givaro>self,r)
 
@@ -1357,6 +1357,10 @@ cdef class FiniteField_givaroElement(FiniteFieldElement):
         AUTHOR:
             Robert Bradshaw
         """
+        _exp = int(exp)
+        if _exp != exp:
+            raise ValueError, "exponent must be an integer"
+        exp = _exp
 
         cdef int r
         cdef int order
@@ -1474,10 +1478,10 @@ cdef class FiniteField_givaroElement(FiniteFieldElement):
         """
         return Integer((<FiniteField_givaro>self._parent).log_to_int(self.element))
 
-    def log(FiniteField_givaroElement self, a):
+    def log(FiniteField_givaroElement self, base):
         """
-        Return the log to the base a of self, i.e., an integer n
-        such that a^n = self.
+        Return the log to the base b of self, i.e., an integer n
+        such that b^n = self.
 
         WARNING:  TODO -- This is currently implemented by solving the discrete
         log problem -- which shouldn't be needed because of how finit field
@@ -1491,7 +1495,8 @@ cdef class FiniteField_givaroElement(FiniteFieldElement):
             7
         """
         q = (<FiniteField_givaro> self.parent()).order_c() - 1
-        return sage.rings.arith.discrete_log_generic(self, a, q)
+        b = self.parent()(base)
+        return sage.rings.arith.discrete_log_generic(self, b, q)
 
     def int_repr(FiniteField_givaroElement self):
         r"""
@@ -1745,7 +1750,7 @@ cdef class FiniteField_givaroElement(FiniteFieldElement):
             return '0*Z(%s)'%F.order_c()
         assert F.degree() > 1
         g = F.multiplicative_generator()
-        n = g.log(self)
+        n = self.log(g)
         return 'Z(%s)^%s'%(F.order_c(), n)
 
     def charpoly(FiniteField_givaroElement self, var):
