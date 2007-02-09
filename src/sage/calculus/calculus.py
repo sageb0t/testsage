@@ -42,7 +42,7 @@ class SymbolicExpressionRing_class(CommutativeRing):
             return SymbolicPolynomial(x)
         elif isinstance(x, Integer):
             return Constant_object(x)
-
+        else:
             return Symbolic_object(x)
 
     def _repr_(self):
