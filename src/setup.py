@@ -319,7 +319,7 @@ ext_modules = [ \
     gsl_fft,
     gsl_interpolation,
     gsl_callback,
-    gsl_probability,
+    #gsl_probability,
     gsl_integration,
     real_double,
     complex_double,
