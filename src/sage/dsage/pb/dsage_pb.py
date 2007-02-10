@@ -77,7 +77,7 @@ class DSage(pb.Root):
             return None
         else:
             if self.log_level > 0:
-                log.msg('[DSage]' + ' Returning Job (%s, %s) to client'
+                log.msg('[DSage, getJob]' + ' Returning Job (%s, %s) to client'
                 % (job.id, job.name))
                 job.status = 'processing'
             self.jobdb.storeJob(job)
@@ -119,7 +119,6 @@ class DSage(pb.Root):
         return job.output
 
     def syncJob(self, jobID):
-        import copy
         job = self.jobdb.getJobByID(jobID)
         # new_job = copy.deepcopy(job)
         # print new_job
@@ -158,6 +157,8 @@ class DSage(pb.Root):
         try:
             # job = cPickle.loads(zlib.decompress(pickled_job))
             # print job
+            if self.log_level > 3:
+                log.msg('[DSage, submitJob] Trying to unpickle job.')
             job = self.unpickle(pickled_job)
             # print job
         except:
@@ -414,7 +415,6 @@ class _SSHKeyPortalRoot(pb._PortalRoot):
 
 class _SSHKeyPortalWrapper(pb._PortalWrapper):
     def remote_login(self, username, alg_name, blob, data, signature, mind):
-        print username
         pubkey_cred = credentials.SSHPrivateKey(username,
                                                 alg_name,
                                                 blob,
