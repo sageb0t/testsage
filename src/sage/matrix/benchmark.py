@@ -1,13 +1,27 @@
 from sage.all import *
 
+verbose = False
+
 #######################################################################
 # Dense Benchmarks over ZZ
 #######################################################################
+
+def report_ZZ():
+    F = [nullspace_ZZ, charpoly_ZZ, smithform_ZZ, matrix_multiply_ZZ]
+    systems = ['sage', 'magma']
+    for f in F:
+        print "-"*70
+        print f.__doc__
+        print ('%15s'*len(systems))%tuple(systems)
+        w = tuple([f(system = s) for s in systems])
+        print ('%15.3f'*len(w))%w
 
 # Integer Nullspace
 
 def nullspace_ZZ(n=300, min=0, max=10, system='sage'):
     """
+    Nullspace over ZZ:
+
     Given a n+1 x n (with n=300) matrix over ZZ with random entries
     between min=0 and max=10, compute the nullspace.
     """
@@ -24,16 +38,16 @@ t := Cputime();
 K := Kernel(A);
 s := Cputime(t);
 """%(n,min,max)
-        print code
+        if verbose: print code
         magma.eval(code)
-        return magma.eval('s')
+        return float(magma.eval('s'))
     else:
         raise ValueError, 'unknown system "%s"'%system
 
-# Characteristic Polynomial over ZZ
-
 def charpoly_ZZ(n=100, min=0, max=9, system='sage'):
     """
+    Characteristic polynomial over ZZ:
+
     Given a n x n (with n=100) matrix over ZZ with random entries
     between min=0 and max=9, compute the charpoly.
     """
@@ -50,9 +64,9 @@ t := Cputime();
 K := CharacteristicPolynomial(A);
 s := Cputime(t);
 """%(n,min,max)
-        print code
+        if verbose: print code
         magma.eval(code)
-        return magma.eval('s')
+        return float(magma.eval('s'))
     else:
         raise ValueError, 'unknown system "%s"'%system
 
@@ -60,8 +74,9 @@ s := Cputime(t);
 
 def smithform_ZZ(n=100, min=0, max=9, system='sage'):
     """
+    Smith Form over ZZ:
     Given a n x n (with n=100) matrix over ZZ with random entries
-    between min=0 and max=9, compute the charpoly.
+    between min=0 and max=9, compute the Smith normal form.
     """
     if system == 'sage':
         A = random_matrix(ZZ, n, n, x=min, y=max+1)
@@ -76,16 +91,17 @@ t := Cputime();
 K := SmithForm(A);
 s := Cputime(t);
 """%(n,min,max)
-        print code
+        if verbose: print code
         magma.eval(code)
         return float(magma.eval('s'))
     else:
         raise ValueError, 'unknown system "%s"'%system
 
-# Matrix multiplication over ZZ
-def matrix_multiply_ZZ(n=100, min=-9, max=9, system='sage', times=1):
+def matrix_multiply_ZZ(n=200, min=-9, max=9, system='sage', times=1):
     """
-    Given an n x n (with n=100) matrix A over ZZ with random entries
+    Matrix multiplication over ZZ
+
+    Given an n x n (with n=200) matrix A over ZZ with random entries
     between min=-9 and max=9, inclusive, compute A * (A+1).
     """
     if system == 'sage':
@@ -106,7 +122,7 @@ for z in [1..%s] do
 end for;
 s := Cputime(t);
 """%(n,min,max,times)
-        print code
+        if verbose: print code
         magma.eval(code)
         return float(magma.eval('s'))/times
     else:
@@ -136,7 +152,7 @@ t := Cputime();
 K := Kernel(A);
 s := Cputime(t);
 """%(n,p)
-        print code
+        if verbose: print code
         magma.eval(code)
         return magma.eval('s')
     else:
@@ -162,7 +178,7 @@ t := Cputime();
 K := CharacteristicPolynomial(A);
 s := Cputime(t);
 """%(n,min,max)
-        print code
+        if verbose: print code
         magma.eval(code)
         return magma.eval('s')
     else:
@@ -193,7 +209,7 @@ for z in [1..%s] do
 end for;
 s := Cputime(t);
 """%(n,p,times)
-        print code
+        if verbose: print code
         magma.eval(code)
         return float(magma.eval('s'))/times
     else:
@@ -230,7 +246,7 @@ t := Cputime();
 K := EchelonForm(A);
 s := Cputime(t);
 """%(n,min,max)
-        print code
+        if verbose: print code
         magma.eval(code)
         return float(magma.eval('s'))
     else:
@@ -256,7 +272,7 @@ t := Cputime();
 K := A^(-1);
 s := Cputime(t);
 """%(n,min,max)
-        print code
+        if verbose: print code
         magma.eval(code)
         return float(magma.eval('s'))
     else:
@@ -288,7 +304,7 @@ for z in [1..%s] do
 end for;
 s := Cputime(t);
 """%(n, A.name(), times)
-        print code
+        if verbose: print code
         magma.eval(code)
         return float(magma.eval('s'))/times
     else:
@@ -309,7 +325,7 @@ d := Determinant(h);
 s := Cputime(tinit);
 delete h;
 """%n
-        print code
+        if verbose: print code
         magma.eval(code)
         return float(magma.eval('s'))
 
@@ -328,6 +344,6 @@ d := h^(-1);
 s := Cputime(tinit);
 delete h;
 """%n
-        print code
+        if verbose: print code
         magma.eval(code)
         return float(magma.eval('s'))
