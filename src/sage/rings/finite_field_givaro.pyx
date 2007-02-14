@@ -592,11 +592,11 @@ cdef class FiniteField_givaro(FiniteField):
         """
         Coercion accepts elements of self.parent(), ints, and prime subfield elements.
         """
-        cdef int r,cx
+        cdef int r, cx
 
         if PY_TYPE_CHECK(x, int) \
                or PY_TYPE_CHECK(x, long) or PY_TYPE_CHECK(x, Integer):
-            cx = int(x)
+            cx = x % self.characteristic()
             r = (<FiniteField_givaro>self).objectptr.read(r, cx%self.objectptr.characteristic())
             return make_FiniteField_givaroElement(<FiniteField_givaro>self,r)
 
@@ -1357,6 +1357,10 @@ cdef class FiniteField_givaroElement(FiniteFieldElement):
         AUTHOR:
             Robert Bradshaw
         """
+        _exp = int(exp)
+        if _exp != exp:
+            raise ValueError, "exponent must be an integer"
+        exp = _exp
 
         cdef int r
         cdef int order
