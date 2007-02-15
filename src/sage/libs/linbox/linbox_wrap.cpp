@@ -20,7 +20,7 @@
 using namespace LinBox;
 using namespace std;
 
-/** local header **/
+#include "linbox/util/commentator.h"
 
 //we are using Modular<double> here as it seems to be best supported
 typedef Modular<double> ModInt;
@@ -282,7 +282,8 @@ void printPolynomial (const Field &F, const Polynomial &v)
      return A;
  }
 
- void set_matrix(mpz_t** matrix, DenseMatrix<GMP_Integers>& A, size_t nrows, size_t ncols) {
+template<class Field>
+void set_matrix(mpz_t** matrix, DenseMatrix<Field>& A, size_t nrows, size_t ncols) {
      size_t i, j, k;
      for (i=0; i < nrows; i++) {
 	 for (j=0; j < ncols; j++) {
@@ -396,13 +397,16 @@ void printPolynomial (const Field &F, const Polynomial &v)
  int linbox_integer_dense_matrix_matrix_multiply(mpz_t** ans, mpz_t **A, mpz_t **B,
 				   size_t A_nr, size_t A_nc, size_t B_nr, size_t B_nc)
  {
-     DenseMatrix<GMP_Integers> AA(new_matrix(A, A_nr, A_nc));
-     DenseMatrix<GMP_Integers> BB(new_matrix(B, B_nr, B_nc));
+   typedef PID_integer Integers;
+   Integers ZZ;
+
+     DenseMatrix<Integers> AA(new_matrix_integers(A, A_nr, A_nc));
+     DenseMatrix<Integers> BB(new_matrix_integers(B, B_nr, B_nc));
      if (A_nc != B_nr)
 	 return -1;   // error
-     DenseMatrix<GMP_Integers> CC(ZZ, A_nr, B_nc);
+     DenseMatrix<Integers> CC(ZZ, A_nr, B_nc);
 
-     MatrixDomain<GMP_Integers> MD(ZZ);
+     MatrixDomain<Integers> MD(ZZ);
 
      MD.mul(CC, AA, BB);
 
@@ -421,6 +425,9 @@ void printPolynomial (const Field &F, const Polynomial &v)
 
  void linbox_integer_dense_det(mpz_t ans, mpz_t** matrix, size_t nrows,
 			       size_t ncols) {
+   commentator.setMaxDetailLevel(0);
+   commentator.setMaxDepth (0);
+
      DenseMatrix<Integers> A(new_matrix_integers(matrix, nrows, ncols));
      GMP_Integers::Element d;
      det(d, A);
