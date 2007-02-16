@@ -138,5 +138,7 @@ from morphism import is_RingHomomorphism
 
 from homset import is_RingHomset
 
+#from fast_polynomial.compiled_polynomial import compiled_polynomial
+
 CC = ComplexField()
 I = CC.gen()

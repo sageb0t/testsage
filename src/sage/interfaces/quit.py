@@ -32,6 +32,11 @@ def kill_spawned_jobs():
                 os.killpg(int(pid), 9)
             except OSError, msg:
                 pass
+            else:
+                j += 1
+                if j > 5:
+                    os.kill(int(pid), 9)
+                    break
 
 def is_running(pid):
     """
