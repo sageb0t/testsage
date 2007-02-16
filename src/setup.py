@@ -491,10 +491,6 @@ ext_modules = [ \
               libraries = ['gmp']
               ), \
 
-    Extension('sage.graphs.graph_fast',
-              ['sage/graphs/graph_fast.pyx'],
-              libraries = ['gmp']), \
-
     ]
 
 #mpc = Extension('sage.rings.mpc',
@@ -816,10 +812,12 @@ setup(name        = 'sage',
 
                      'sage.dsage',
                      'sage.dsage.database',
+                     'sage.dsage.database.tests',
                      'sage.dsage.server',
                      'sage.dsage.errors',
                      'sage.dsage.tests',
-                     'sage.dsage.pb',
+                     'sage.dsage.twisted',
+                     'sage.dsage.twisted.tests',
                      'sage.dsage.dist_functions',
                      'sage.dsage.misc',
                      'sage.dsage.interface',
@@ -829,7 +827,6 @@ setup(name        = 'sage',
       scripts = ['sage/dsage/scripts/dsage_server.py',
                  'sage/dsage/scripts/dsage_worker.py',
                  'sage/dsage/scripts/dsage_setup.py',
-                 'sage/dsage/scripts/dsage_console.py'
                 ],
 
       ext_modules = ext_modules,
