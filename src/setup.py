@@ -491,9 +491,6 @@ ext_modules = [ \
               libraries = ['gmp']
               ), \
 
-    Extension('sage.dsage.scripts.dsage_activate',
-              sources = ['sage/dsage/scripts/dsage_activate.pyx']), \
-
     ]
 
 #mpc = Extension('sage.rings.mpc',
