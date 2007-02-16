@@ -29,14 +29,14 @@ from twisted.internet import reactor
 from twisted.cred import portal, credentials
 from twisted.conch.ssh import keys
 
-from dsage.pb.dsage_pb import Realm
-from dsage.pb.dsage_pb import DSage
-from dsage.pb.dsage_pb import _SSHKeyPortalRoot
-from dsage.pb.dsage_pb import ClientPBClientFactory
-from dsage.pb.pubkeyauth import PublicKeyCredentialsChecker
-from dsage.database.jobdb import JobDatabaseZODB
-from dsage.database.job import Job
-from dsage.errors.exceptions import BadJobError
+from sage.dsage.twisted.pb import Realm
+from sage.dsage.server.server import DSageServer
+from sage.dsage.twisted.pb import _SSHKeyPortalRoot
+from sage.dsage.twisted.pb import ClientPBClientFactory
+from sage.dsage.twisted.pubkeyauth import PublicKeyCredentialsChecker
+from sage.dsage.database.jobdb import JobDatabaseZODB
+from sage.dsage.database.job import Job
+from sage.dsage.errors.exceptions import BadJobError
 
 DSAGE_DIR = os.path.join(os.getenv('DOT_SAGE'), 'dsage')
 # Begin reading configuration
@@ -74,7 +74,7 @@ class ClientRemoteCallsTest(unittest.TestCase):
 
     def setUp(self):
         self.jobdb = JobDatabaseZODB(test=True)
-        self.dsage = DSage(self.jobdb, log_level=5)
+        self.dsage = DSageServer(self.jobdb, log_level=5)
         self.realm = Realm(self.dsage)
         self.p = _SSHKeyPortalRoot(portal.Portal(Realm(self.dsage)))
         self.p.portal.registerChecker(PublicKeyCredentialsChecker(PUBKEY_DATABASE))
