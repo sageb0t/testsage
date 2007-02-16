@@ -65,6 +65,9 @@ from sage.libs.linbox.linbox cimport Linbox_integer_dense
 cdef Linbox_integer_dense linbox
 linbox = Linbox_integer_dense()
 
+import sage.misc.misc
+USE_LINBOX_POLY = not sage.misc.misc.is_64bit()
+
 cdef class Matrix_integer_dense(matrix_dense.Matrix_dense):   # dense or sparse
     r"""
     Matrix over the integers.
@@ -655,7 +658,8 @@ cdef class Matrix_integer_dense(matrix_dense.Matrix_dense):   # dense or sparse
             algorithm -- 'linbox' (default)
                          'generic'
 
-        NOTE: Linbox only used on Darwin OS X right now.
+        NOTE: Linbox charpoly disabled on 64-bit machines, since it
+        hangs in many cases.
 
         EXAMPLES:
             sage: A = matrix(ZZ,6, range(36))
@@ -672,6 +676,9 @@ cdef class Matrix_integer_dense(matrix_dense.Matrix_dense):   # dense or sparse
         key = 'charpoly_%s_%s'%(algorithm, var)
         x = self.fetch(key)
         if x: return x
+
+        if algorithm == 'linbox' and not USE_LINBOX_POLY:
+            algorithm = 'generic'
 
         if algorithm == 'linbox':
             g = self._charpoly_linbox(var)
@@ -690,7 +697,8 @@ cdef class Matrix_integer_dense(matrix_dense.Matrix_dense):   # dense or sparse
             algorithm -- 'linbox' (default)
                          'generic'
 
-        NOTE: Linbox only used on Darwin OS X right now.
+        NOTE: Linbox charpoly disabled on 64-bit machines, since it
+        hangs in many cases.
 
         EXAMPLES:
             sage: A = matrix(ZZ,6, range(36))
@@ -703,6 +711,9 @@ cdef class Matrix_integer_dense(matrix_dense.Matrix_dense):   # dense or sparse
         key = 'minpoly_%s_%s'%(algorithm, var)
         x = self.fetch(key)
         if x: return x
+
+        if algorithm == 'linbox' and not USE_LINBOX_POLY:
+            algorithm = 'generic'
 
         if algorithm == 'linbox':
             g = self._minpoly_linbox(var)
