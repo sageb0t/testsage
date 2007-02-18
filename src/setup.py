@@ -491,6 +491,11 @@ ext_modules = [ \
               libraries = ['gmp']
               ), \
 
+    Extension('sage.graphs.graph_fast',
+              ['sage/graphs/graph_fast.pyx'],
+              libraries = ['gmp']
+              ), \
+
     ]
 
 #mpc = Extension('sage.rings.mpc',
