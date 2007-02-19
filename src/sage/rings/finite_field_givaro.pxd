@@ -9,7 +9,7 @@ cdef extern from "Python.h":
     ctypedef struct PyObject
     int PyObject_TypeCheck(object o, PyTypeObject *t)
 
-cdef extern from "givaro/givconfig.h":
+cdef extern from "givaro-config.h":
     pass
 
 cdef extern from "givaro/givrandom.h":

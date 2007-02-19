@@ -31,7 +31,7 @@ import sage.server.support as support
 
 from cell import Cell, TextCell
 
-INTERRUPT_TRIES = 50
+INTERRUPT_TRIES = 200
 INITIAL_NUM_CELLS = 1
 HISTORY_MAX_OUTPUT = 92*5
 HISTORY_NCOLS = 90
@@ -938,16 +938,19 @@ class Worksheet:
             return '%s = load("%s");'%(name, filename)
 
         if filename in files_seen_so_far:
-            return "print 'WARNING: Not loading %s -- would create recursive load'"%filename
+            t = "print 'WARNING: Not loading %s -- would create recursive load'"%filename
         try:
             F = open(filename).read()
         except IOError:
-            t = "print 'Error loading %s -- file not found'"%filename
+            return "print 'Error loading %s -- file not found'"%filename
         else:
             if filename[-3:] == '.py':
                 t = F
             elif filename[-5:] == '.sage':
                 t = self.preparse(F)
+            else:
+                t = "print 'Loading of file \"%s\" has type not implemented.'"%filename
+
         t = self.do_sage_extensions_preparsing(t,
                           files_seen_so_far + [this_file], filename)
         return t
@@ -1028,6 +1031,10 @@ class Worksheet:
         return s
 
     def check_for_system_switching(self, s, C):
+        r"""
+        Check for input cells that start with \code{\%foo},
+        where foo is an object with an eval method.
+        """
         z = s
         s = s.lstrip()
         S = self.system()
@@ -1131,6 +1138,7 @@ class Worksheet:
 
             input += '\n'
 
+        print input
         return input
 
     def notebook(self):
