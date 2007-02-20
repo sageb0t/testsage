@@ -202,6 +202,7 @@ cdef class FreeModuleElement(element_Vector):   # abstract base class
     def __init__(self, parent):
         self._parent = parent
         self._degree = parent.degree()
+        self._is_mutable = 1
 
     def _vector_(self, R):
         return self.change_ring(R)
@@ -602,6 +603,10 @@ cdef class FreeModuleElement(element_Vector):   # abstract base class
 # Generic dense element
 #############################################
 def make_FreeModuleElement_generic_dense(parent, entries, degree):
+    # If you think you want to change this function, don't.
+    # Instead make a new version with a name like
+    #    make_FreeModuleElement_generic_dense_v1
+    # and changed the reduce method below.
     cdef FreeModuleElement_generic_dense v
     v = FreeModuleElement_generic_dense.__new__(FreeModuleElement_generic_dense)
     v._entries = entries
@@ -717,7 +722,7 @@ cdef class FreeModuleElement_generic_dense(FreeModuleElement):
         v = [None]*n
         for i from 0 <= i < n:
             v[i] = (<RingElement>left._entries[i])._mul_c((<FreeModuleElement_generic_dense>right)._entries[i])
-        return self._new_c(v)
+        return left._new_c(v)
 
     def __reduce__(self):
         return (make_FreeModuleElement_generic_dense, (self._parent, self._entries, self._degree))
