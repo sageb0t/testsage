@@ -59,6 +59,9 @@ cdef class MultiModularBasis_base:
         mpz_init_set_ui(self.partial_products[0], p)
         self.C[0] = 1
 
+        mpz_init(self.product)
+        mpz_init(self.half_product)
+
     def __dealloc__(self):
         sage_free(self.moduli)
         sage_free(self.partial_products)
@@ -94,6 +97,8 @@ cdef class MultiModularBasis_base:
             self._refresh_precomputations(0)
         else:
             self._extend_moduli_to_height(height)
+
+        self._refresh_prod()
 
     def _extend_moduli_to_height(self, height):
         cdef Integer h
@@ -185,6 +190,12 @@ cdef class MultiModularBasis_base:
             mpz_set_ui(z, self.moduli[i])
             mpz_mul(self.partial_products[i], self.partial_products[i-1], z)
         mpz_clear(z)
+        self._refresh_prod()
+
+    cdef void _refresh_prod(self):
+        # record the product and half product for balancing the lifts.
+        mpz_set(self.product, self.partial_products[self.n-1])
+        mpz_fdiv_q_ui(self.half_product, self.product, 2)
 
     cdef void _refresh_precomputations(self, int start):
         r"""
@@ -297,6 +308,10 @@ cdef class MultiModularBasis_base:
             mpz_set_ui(u, ((b[i] + m[i] - mpz_fdiv_ui(z, m[i])) * self.C[i]) % m[i])
             mpz_mul(u, u, self.partial_products[i-1])
             mpz_add(z, z, u)
+
+        # normalize to be between -prod/2 and prod/2.
+        if mpz_cmp(z, self.half_product) > 0:
+            mpz_sub(z, z, self.product)
         mpz_clear(u)
         return 0
 
@@ -322,12 +337,14 @@ cdef class MultiModularBasis_base:
         cdef int i, j
         cdef mpz_t u
         cdef mod_int* m
+
         m = self.moduli + offset
         mpz_init(u)
         if offset == 0:
             s = 1
         else:
             s = 0
+
         for j from 0 <= j < vc:
             i = s
             if offset == 0:
@@ -340,6 +357,16 @@ cdef class MultiModularBasis_base:
                 mpz_mul(u, u, self.partial_products[i-1])
                 mpz_add(z[j], z[j], u)
                 i += 1
+
+            # normalize to be between -prod/2 and prod/2.
+            if mpz_cmp(z[j], self.half_product) > 0:
+                mpz_sub(z[j], z[j], self.product)
+
+        cdef Integer zz
+        zz = PY_NEW(Integer)
+        mpz_init_set(zz.value, self.product)
+        mpz_set(zz.value, self.half_product)
+
         mpz_clear(u)
         return 0
 
