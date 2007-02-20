@@ -8,3 +8,6 @@ def diff(f, *args):
     return f.derivative(*args)
 
 derivative = diff
+
+def solve(f, *args):
+    return f.solve(*args)
