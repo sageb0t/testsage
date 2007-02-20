@@ -655,6 +655,15 @@ cdef class Matrix_integer_dense(matrix_dense.Matrix_dense):   # dense or sparse
                         return 1
         return 0
 
+    def is_zero(self):
+        cdef mpz_t *a, *b
+        cdef Py_ssize_t i, j
+        cdef int k
+        for i from 0 <= i < self._nrows * self._ncols:
+            if mpz_cmp_si(self._entries[i], 0):
+                return False
+        return True
+
     cdef Vector _vector_times_matrix_c_impl(self, Vector v):
         """
         Returns the vector times matrix product.
@@ -777,6 +786,9 @@ cdef class Matrix_integer_dense(matrix_dense.Matrix_dense):   # dense or sparse
         return self._poly_linbox(var=var, typ='minpoly')
 
     def _charpoly_linbox(self, var='x'):
+        if self.is_zero():  # program around a bug in linbox on 32-bit linux
+            x = self.base_ring()[var].gen()
+            return x ** self._nrows
         return self._poly_linbox(var=var, typ='charpoly')
 
     def _poly_linbox(self, var='x', typ='minpoly'):
@@ -1469,7 +1481,7 @@ cdef class Matrix_integer_dense(matrix_dense.Matrix_dense):   # dense or sparse
                     k = random()%nc
                     mpz_urandomm(self._matrix[i][k], state, n_width.value)
                     if min_is_nonzero:
-                        mpz_add(self._matrix[i][k], self._matrix[i][j], n_min.value)
+                        mpz_add(self._matrix[i][k], self._matrix[i][k], n_min.value)
         _sig_off
 
     #### Rank
