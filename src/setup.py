@@ -254,6 +254,14 @@ real_double_vector = Extension('sage.modules.real_double_vector',['sage/modules/
 complex_double_vector = Extension('sage.modules.complex_double_vector',['sage/modules/complex_double_vector.pyx'],
                            libraries = ['gsl', CBLAS, 'pari', 'gmp'],define_macros=[('GSL_DISABLE_DEPRECATED','1')])
 
+vector_integer_dense = Extension('sage.modules.vector_integer_dense',
+                                 ['sage/modules/vector_integer_dense.pyx'],
+                                 libraries = ['gmp'])
+
+vector_rational_sparse = Extension('sage.modules.vector_rational_sparse',
+                                 ['sage/modules/vector_rational_sparse.pyx'],
+                                 libraries = ['gmp'])
+
 gsl_array = Extension('sage.gsl.gsl_array',['sage/gsl/gsl_array.pyx'],
                 libraries=['gsl',CBLAS],define_macros=[('GSL_DISABLE_DEPRECATED','1')])
 
@@ -274,6 +282,11 @@ ext_modules = [ \
 
     complex_double_vector,
     real_double_vector,
+
+    vector_integer_dense,
+
+    #vector_rational_sparse,
+
     ec,
     pari,
 
