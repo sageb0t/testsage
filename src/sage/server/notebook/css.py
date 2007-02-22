@@ -815,7 +815,6 @@ span.banner a.banner img{
 }
 
 span.banner a.banner:hover {
-   background-color:none;
 }
 
 input.btn {
