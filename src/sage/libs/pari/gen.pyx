@@ -4115,6 +4115,10 @@ cdef class gen(sage.structure.element.RingElement):
         _sig_on
         return idealval(self.g, t0, t1)
 
+    def modreverse(self):
+        _sig_on
+        return self.new_gen(polymodrecip(self.g))
+
     def nfbasis(self, long flag=0, p=0):
         cdef gen _p
         cdef GEN g
@@ -4125,6 +4129,11 @@ cdef class gen(sage.structure.element.RingElement):
             g = <GEN>NULL
         _sig_on
         return self.new_gen(nfbasis0(self.g, flag, g))
+
+    def nffactor(self, x):
+        t0GEN(x)
+        _sig_on
+        return self.new_gen(nffactor(self.g, t0))
 
     def nfgenerator(self):
         f = self[0]
@@ -4156,10 +4165,10 @@ cdef class gen(sage.structure.element.RingElement):
         _sig_on
         return self.new_gen(rnfelementreltoabs(self.g, t0))
 
-    def rnfequation(self, poly):
+    def rnfequation(self, poly, long flag=0):
         t0GEN(poly)
         _sig_on
-        return self.new_gen(rnfequation0(self.g, t0, 0))
+        return self.new_gen(rnfequation0(self.g, t0, flag))
 
     def rnfidealabstorel(self, x):
         t0GEN(x)
@@ -4357,6 +4366,14 @@ cdef class gen(sage.structure.element.RingElement):
     def polrecip(self):
         _sig_on
         return self.new_gen(polrecip(self.g))
+
+    def polred(self, flag=0, fa=None):
+        _sig_on
+        if fa is None:
+            return self.new_gen(polred0(self.g, flag, NULL))
+        else:
+            t0GEN(fa)
+            return self.new_gen(polred0(self.g, flag, t0))
 
     def polresultant(self, y, var=-1, flag=0):
         t0GEN(y)
