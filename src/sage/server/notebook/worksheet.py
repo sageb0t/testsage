@@ -792,7 +792,7 @@ class Worksheet:
             # no sage running anyways!
             return
 
-        alarm(2)
+        alarm(3)
         try:
             S.quit()
             S._expect = None
@@ -812,7 +812,7 @@ class Worksheet:
     def postprocess_output(self, out, C):
         i = out.find('\r\n')
         out = out[i+2:]
-        out = out.rstrip()
+        #out = out.rstrip()
         if C.introspect():
             return out
 
