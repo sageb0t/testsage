@@ -83,8 +83,8 @@ class TextCell(Cell_generic):
 class Cell(Cell_generic):
     def __init__(self, id, input, out, worksheet):
         self.__id    = int(id)
-        self.__in    = str(input)
-        self.__out   = str(out)
+        self.__in    = str(input).replace('\r','')
+        self.__out   = str(out).replace('\r','')
         self.__worksheet = worksheet
         self.__interrupted = False
         self.__completions = False
@@ -340,7 +340,6 @@ class Cell(Cell_generic):
             s = t
             if not self.is_html() and len(s.strip()) > 0:
                 s = '<pre class="shrunk">' + s.strip('\n') + '</pre>'
-#                s = s.strip('\n')
 
         return s.strip('\n')
 
@@ -547,10 +546,13 @@ class Cell(Cell_generic):
         if do_print:
             btn = ""
         else:
-            btn = """<span class="cell_evaluate"><img src="/evaluate.png"
-                                                      onMouseOver="this.src='/evaluate_over.png'"
-                                                      onMouseOut="this.src='/evaluate.png'"
-                                                      onClick="evaluate_cell(%s,0);"></span>"""%self.__id
+            btn = """
+                <span class="hidden" id="evaluate_button_%s"><img
+                    src="/evaluate.png"
+                    onMouseOver="this.src='/evaluate_over.png'"
+                    onMouseOut="this.src='/evaluate.png'"
+                    onClick="evaluate_cell(%s,0);"></span>
+                  """%(self.__id,self.__id)
         tbl = btn + """
                <table class="cell_output_box"><tr>
                <td class="cell_number" id="cell_number_%s" onClick="cycle_cell_output_type(%s);">
