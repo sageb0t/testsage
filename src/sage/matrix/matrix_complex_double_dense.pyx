@@ -462,7 +462,7 @@ cdef class Matrix_complex_double_dense(matrix_dense.Matrix_dense):   # dense
         sage: m=matrix(CDF,[[1,2],[3,4]])
         sage: m=I*m
         sage: n=m.numpy()
-        sage: numpy.linalg.eig(n)
+        sage: e=numpy.linalg.eig(n)
 
         """
         import_array() #This must be called before using the numpy C/api or you will get segfault
