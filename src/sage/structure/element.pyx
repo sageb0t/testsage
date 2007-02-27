@@ -31,6 +31,8 @@ SageObject
             AlgebraElement   (note -- can't derive from module, since no multiple inheritence)
                 CommutativeAlgebraElement
             InfinityElement
+                PlusInfinityElement
+                MinusInfinityElement
 \end{verbatim}
 
 \subsection{How to Define a New Element Class}
@@ -1656,6 +1658,12 @@ def is_InfinityElement(x):
     return IS_INSTANCE(x, InfinityElement)
 
 cdef class InfinityElement(RingElement):
+    pass
+
+cdef class PlusInfinityElement(InfinityElement):
+    pass
+
+cdef class MinusInfinityElement(InfinityElement):
     pass
 
 cdef int have_same_parent(left, right):
