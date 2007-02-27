@@ -219,7 +219,9 @@ class Tachyon(SageObject):
             filename = 'sage%s.png'%i
             self.save(filename, verbose=verbose, extra_opts=extra_opts)
         else:
-            raise NotImplementedError
+            filename = sage.misc.misc.tmp_filename() + '.png'
+            self.save(filename, verbose=verbose, extra_opts=extra_opts)
+            os.system('%s %s 2>/dev/null 1>/dev/null &'%(sage.misc.viewer.browser(), filename))
 
     def _res(self):
         return '\nresolution %s %s\n'%(self._xres, self._yres)
