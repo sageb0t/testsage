@@ -279,3 +279,6 @@ class pAdicFieldGeneric(sage.rings.padics.padic_generic.pAdicGeneric):
             return 1
         else:
             return 0
+
+class pAdicFieldBaseGeneric(pAdicFieldGeneric):
+    pass
