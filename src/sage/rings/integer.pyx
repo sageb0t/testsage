@@ -2001,9 +2001,9 @@ cdef extern from "gmp.h":
 cdef int sizeof_Integer
 
 # We use a global Integer element to steal all the references
-# from. This Integer is initialized by Pyrex automatically. DO NOT
-# INITIALIZE IT AGAIN and DO NOT REFERENCE IT!
+# from.  DO NOT INITIALIZE IT AGAIN and DO NOT REFERENCE IT!
 cdef Integer global_dummy_Integer
+global_dummy_Integer = Integer()
 
 # Accessing the .value attribute of an Integer object causes Pyrex to
 # refcount it. This is problematic, because that causes overhead and
@@ -2101,7 +2101,7 @@ cdef void fast_tp_dealloc(PyObject* o):
 
     PyObject_FREE(o)
 
-#hook_fast_tp_functions()
+hook_fast_tp_functions()
 
 def hook_fast_tp_functions():
     """
