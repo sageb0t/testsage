@@ -2101,7 +2101,7 @@ cdef void fast_tp_dealloc(PyObject* o):
 
     PyObject_FREE(o)
 
-hook_fast_tp_functions()
+#hook_fast_tp_functions()
 
 def hook_fast_tp_functions():
     """
