@@ -647,6 +647,9 @@ class pAdicLazy_unitpart(pAdicLazyElement):
             self._x.set_precision_relative()
             self._recompute()
 
+    def valuation(self):
+        return Integer(0)
+
 class pAdicLazy_log(pAdicLazyElement):
     def __init__(self, x):
         pAdicGenericElement.__init__(self, x.parent())
