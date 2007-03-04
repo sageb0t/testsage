@@ -903,6 +903,12 @@ class ModularSymbolsAmbient(space.ModularSymbolsSpace, hecke.AmbientHeckeModule)
         self._factorization = D
         return self._factorization
 
+    def factor(self):
+        """
+        Synonym for self.factorization().
+        """
+        return self.factorization()
+
     def hecke_bound(self):
         # TODO
         misc.verbose("WARNING: ambient.py -- hecke_bound; returning unproven guess.")
