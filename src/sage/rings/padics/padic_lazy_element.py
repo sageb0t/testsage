@@ -255,7 +255,11 @@ class pAdicLazyElement(sage.rings.padics.padic_generic_element.pAdicGenericEleme
             return infinity
         if self._cache != 0:
             return self._base_valuation
-        return self._min_valuation()
+        if halt is None:
+            halt = self.parent().halting_parameter()
+        #The following is a stopgap measure until valuation.py is working.
+        self.set_precision_relative(1)
+        return self.valuation()
 
     def _min_valuation(self):
         if self._cache != 0:
@@ -391,7 +395,7 @@ class pAdicLazy_integral(pAdicLazyElement):
         raise NotImplementedError
 
 # The following subclasses are used to create pAdicLazyElements from other pAdicLazyElements
-#As above, they need to implement set_precision_relative, set_precision_absolute, __init__, (copy)
+#As above, they need to implement set_precision_relative , set_precision_absolute, __init__, (copy)
 
 class pAdicLazy_bintype(pAdicLazyElement):
     def __init__(self, x, y, op):
@@ -431,6 +435,7 @@ class pAdicLazy_addtype(pAdicLazyElement):
                         self._x.set_precision_absolute(self._base_valuation + n, halt)
                         self._y.set_precision_absolute(self._base_valuation + n, halt)
                         self._recompute()
+                        break
                 if self.precision_relative() == 0:
                     raise HaltingError, "Stopped computing sum: set halting paramter higher if you want computation to continue"
 
