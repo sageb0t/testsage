@@ -16,7 +16,11 @@ This file gathers together all the tables in SAGE.
 
     * Sloane's tables -- sloane_sequence, sloane_find
 
+    * SymbolicData() -- many benchmark and testing ideals
+
     * Linear codes -- linear_code_bound
+
+    * Symbolic Data -- benchmark and test ideals
 
 EXAMPLES:
     sage: ConwayPolynomials()
@@ -33,6 +37,9 @@ EXAMPLES:
 
     sage: SteinWatkinsDatabase()
     The Stein-Watkins database of elliptic curves
+
+    sage: SymbolicData()
+    SymbolicData with 372 ideals
 
 """
 
@@ -69,6 +76,8 @@ from install import database_install
 
 from sloane import sloane_sequence, sloane_find, SloaneEncyclopedia
 
+from symbolic_data import SymbolicData
+
 from lincodes import linear_code_bound
 
 from odlyzko import zeta_zeros
@@ -82,3 +91,5 @@ from db_modular_polynomials import \
 
 from db_class_polynomials import \
      HilbertClassPolynomialDatabase
+
+from symbolic_data import SymbolicData
