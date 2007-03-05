@@ -795,10 +795,12 @@ cdef class RealNumber(sage.structure.element.RingElement):
         if s == <char*> 0:
             raise RuntimeError, "Unable to convert an mpfr number to a string."
         t = str(s)
-        free(s)
+        mpfr_free_str(s)
 
         cdef int digits
         digits = len(t)
+        if t[0] == "-":
+            digits = digits - 1
 
         if no_sci is None:
             no_sci = not (<RealField>self._parent).sci_not
