@@ -55,4 +55,4 @@ from calculus import (a,
                       Y,
                       Z)
 
-from functional import diff
+from functional import (diff, solve, integrate)
