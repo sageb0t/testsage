@@ -2030,8 +2030,7 @@ cdef class RealNumber(sage.structure.element.RingElement):
              sage: r = sqrt(2); r
              1.41421356237310
              sage: r.algdep(5)
-             x^2 - 2                          # 32-bit
-             x^5 - x^4 - 2*x^3 + x^2 + 2    # 64-bit
+             x^2 - 2
         """
         return sage.rings.arith.algdep(self,n)
 
@@ -2048,8 +2047,7 @@ cdef class RealNumber(sage.structure.element.RingElement):
               sage: r = sqrt(2); r
               1.41421356237310
               sage: r.algdep(5)
-              x^2 - 2                        # 32-bit
-              x^5 - x^4 - 2*x^3 + x^2 + 2    # 64-bit
+              x^2 - 2
         """
         return sage.rings.arith.algdep(self,n)
 
