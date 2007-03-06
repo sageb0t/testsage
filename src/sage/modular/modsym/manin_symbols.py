@@ -48,6 +48,7 @@ class ManinSymbolList(SageObject):
     def __init__(self, weight, list):
         self._weight = weight
         self._list = list
+        self._index = dict([(list[i],i) for i in range(len(list))])
 
     def __cmp__(self, right):
         if not isinstance(right, ManinSymbolList):
@@ -87,12 +88,13 @@ class ManinSymbolList(SageObject):
         OUTPUT:
             int -- the index of the Manin symbol equivalent to (i,u,v).
         """
-        t, i = search(self._list, x)
-        if t: return i
+        if self._index.has_key(x):
+            return self._index[x]
         x = self.normalize(x)
-        t, i = search(self._list, x)
-        if t: return i
-        return -1
+        try:
+            return self._index[x]
+        except KeyError:
+            return -1
 
     def manin_symbol_list(self):
         try:
@@ -395,12 +397,13 @@ class ManinSymbolList_character(ManinSymbolList):
             int -- the index of the Manin symbol equivalent to (i,u,v).
             scalar -- element of the base field or the int 0.
         """
-        t, i = search(self._list, x)
-        if t: return i, 1
-        x, s = self.normalize(x)
-        t, i = search(self._list, x)
-        if t: return i, s
-        return -1, 0
+        if self._index.has_key(x):
+            return self._index[x], 1
+        x, s= self.normalize(x)
+        try:
+            return self._index[x], s
+        except KeyError:
+            return -1, 0
 
     def level(self):
         return self.__level
