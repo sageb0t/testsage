@@ -84,10 +84,10 @@ class PolynomialQuotientRingElement(commutative_ring_element.CommutativeRingElem
                     Q = Q + S
                     R = R - S*B
                 polynomial = R
-        self.__polynomial = polynomial
+        self._polynomial = polynomial
 
     def _im_gens_(self, codomain, im_gens):
-        return self.__polynomial._im_gens_(codomain, im_gens)
+        return self._polynomial._im_gens_(codomain, im_gens)
 
     def __reduce__(self):
         """
@@ -99,10 +99,10 @@ class PolynomialQuotientRingElement(commutative_ring_element.CommutativeRingElem
             sage: loads(dumps(2*a^3)) == 2*a^3
             True
         """
-        return PolynomialQuotientRingElement, (self.parent(), self.__polynomial, False)
+        return PolynomialQuotientRingElement, (self.parent(), self._polynomial, False)
 
     def _repr_(self):
-        return self.__polynomial._repr(self.parent().variable_name())
+        return self._polynomial._repr(self.parent().variable_name())
 
     ##################################################
     # Arithmetic
@@ -119,7 +119,7 @@ class PolynomialQuotientRingElement(commutative_ring_element.CommutativeRingElem
             2*a^2 - 4*a - 6
         """
         R = self.parent()
-        prod = self.__polynomial * right.__polynomial
+        prod = self._polynomial * right._polynomial
         return PolynomialQuotientRingElement(R, prod, check=False)
 
     def _sub_(self, right):
@@ -135,7 +135,7 @@ class PolynomialQuotientRingElement(commutative_ring_element.CommutativeRingElem
             -a + 1
         """
         return PolynomialQuotientRingElement(self.parent(),
-                                             self.__polynomial - right.__polynomial, check=False)
+                                             self._polynomial - right._polynomial, check=False)
 
     def _add_(self, right):
         """
@@ -150,7 +150,7 @@ class PolynomialQuotientRingElement(commutative_ring_element.CommutativeRingElem
             a + 1
         """
         return PolynomialQuotientRingElement(self.parent(),
-                                             self.__polynomial + right.__polynomial, check=False)
+                                             self._polynomial + right._polynomial, check=False)
 
     def _div_(self, right):
         """
@@ -165,7 +165,7 @@ class PolynomialQuotientRingElement(commutative_ring_element.CommutativeRingElem
         return self * ~right
 
     def __neg__(self):
-        return PolynomialQuotientRingElement(self.parent(), -self.__polynomial)
+        return PolynomialQuotientRingElement(self.parent(), -self._polynomial)
 
     def __pow__(self, nn):
         """
@@ -214,10 +214,10 @@ class PolynomialQuotientRingElement(commutative_ring_element.CommutativeRingElem
             sage: S(x^3)
             2
         """
-        return cmp(self.__polynomial, other.__polynomial)
+        return cmp(self._polynomial, other._polynomial)
 
     def __getitem__(self, n):
-        return self.__polynomial[n]
+        return self._polynomial[n]
 
     def __int__(self):
         """
@@ -233,13 +233,13 @@ class PolynomialQuotientRingElement(commutative_ring_element.CommutativeRingElem
             ...
             TypeError: cannot coerce nonconstant polynomial to int
         """
-        return int(self.__polynomial)
+        return int(self._polynomial)
 
     def __invert__(self):
-        if self.__polynomial.is_zero():
+        if self._polynomial.is_zero():
             raise ZeroDivisionError, \
                "element %s of quotient polynomial ring not invertible"%self
-        g, _, a = self.parent().modulus().xgcd(self.__polynomial)
+        g, _, a = self.parent().modulus().xgcd(self._polynomial)
         if g.degree() != 0:
             raise ZeroDivisionError, \
                "element %s of quotient polynomial ring not invertible"%self
@@ -260,7 +260,7 @@ class PolynomialQuotientRingElement(commutative_ring_element.CommutativeRingElem
             ...
             TypeError: cannot coerce nonconstant polynomial to long
         """
-        return long(self.__polynomial)
+        return long(self._polynomial)
 
     def field_extension(self, names):
         r"""
@@ -422,7 +422,7 @@ class PolynomialQuotientRingElement(commutative_ring_element.CommutativeRingElem
             sage: b.lift()
             x^2 - 3
         """
-        return self.__polynomial
+        return self._polynomial
 
     def list(self):
         """
@@ -437,7 +437,7 @@ class PolynomialQuotientRingElement(commutative_ring_element.CommutativeRingElem
             sage: (a^10).list()
             [300, -35, -134]
         """
-        v = self.__polynomial.list()
+        v = self._polynomial.list()
         R = self.parent()
         n = R.degree()
         return v + [R.base_ring()(0)]*(n - len(v))
