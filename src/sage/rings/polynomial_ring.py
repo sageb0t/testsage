@@ -499,7 +499,7 @@ class PolynomialRing_general(sage.algebras.algebra.Algebra):
 
     def _monics_degree( self, of_degree ):
         """
-        Refer to monics for full documentation.
+        Refer to monics() for full documentation.
         """
         base = self.base_ring()
         for coeffs in sage.misc.mrange.xmrange_iter([[base(1)]]+[base]*of_degree):
@@ -510,7 +510,7 @@ class PolynomialRing_general(sage.algebras.algebra.Algebra):
 
     def _monics_max( self, max_degree ):
         """
-        Refer to monics for full documentation.
+        Refer to monics() for full documentation.
         """
         for degree in xrange(max_degree + 1):
             for m in self._monics_degree( degree ):
@@ -518,7 +518,7 @@ class PolynomialRing_general(sage.algebras.algebra.Algebra):
 
     def _polys_degree( self, of_degree ):
         """
-        Refer to polynomials for full documentation.
+        Refer to polynomials() for full documentation.
         """
         base = self.base_ring()
         for leading_coeff in base:
@@ -532,7 +532,7 @@ class PolynomialRing_general(sage.algebras.algebra.Algebra):
 
     def _polys_max( self, max_degree ):
         """
-        Refer to polynomials for full documentation.
+        Refer to polynomials() for full documentation.
         """
         base = self.base_ring()
         for coeffs in sage.misc.mrange.xmrange_iter([base]*(max_degree+1)):
@@ -587,7 +587,7 @@ class PolynomialRing_general(sage.algebras.algebra.Algebra):
             sage: for p in P.polynomials( max_degree = 1, of_degree = 3 ): print p
             Traceback (most recent call last):
             ...
-            ValueError
+            ValueError: you should pass exactly one of of_degree and max_degree
 
         AUTHOR:
             Joel B. Mohler
@@ -599,7 +599,7 @@ class PolynomialRing_general(sage.algebras.algebra.Algebra):
             return self._polys_degree( of_degree )
         if max_degree is not None and of_degree is None:
             return self._polys_max( max_degree )
-        raise ValueError # You should pass exactly one of of_degree and max_degree
+        raise ValueError, "you should pass exactly one of of_degree and max_degree"
 
     def monics( self, of_degree = None, max_degree = None ):
         """
@@ -641,7 +641,7 @@ class PolynomialRing_general(sage.algebras.algebra.Algebra):
             sage: for p in P.monics( max_degree = 1, of_degree = 3 ): print p
             Traceback (most recent call last):
             ...
-            ValueError
+            ValueError: you should pass exactly one of of_degree and max_degree
 
         AUTHOR:
             Joel B. Mohler
@@ -653,7 +653,7 @@ class PolynomialRing_general(sage.algebras.algebra.Algebra):
             return self._monics_degree( of_degree )
         if max_degree is not None and of_degree is None:
             return self._monics_max( max_degree )
-        raise ValueError # You should pass exactly one of of_degree and max_degree
+        raise ValueError, "you should pass exactly one of of_degree and max_degree"
 
 class PolynomialRing_commutative(PolynomialRing_general, commutative_algebra.CommutativeAlgebra):
     """
