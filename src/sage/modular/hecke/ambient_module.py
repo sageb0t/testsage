@@ -591,7 +591,5 @@ class AmbientHeckeModule(module.HeckeModule_free_module):
 
         if self.is_full_hecke_module(compute=False):
             S._is_full_hecke_module = True
-        elif self.is_anemic_hecke_module():
-            S._is_anemic_hecke_module = True
 
         return S
