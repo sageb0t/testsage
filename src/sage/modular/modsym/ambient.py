@@ -393,7 +393,7 @@ class ModularSymbolsAmbient(space.ModularSymbolsSpace, hecke.AmbientHeckeModule)
     def _compute_dual_hecke_matrix(self, n):
         return self.hecke_matrix(n).transpose()
 
-    def _compute_hecke_matrix_prime(self, p):
+    def _compute_hecke_matrix_prime(self, p, rows=None):
         """
         Compute and return the matrix of the p-th Hecke operator.
 
@@ -458,12 +458,14 @@ class ModularSymbolsAmbient(space.ModularSymbolsSpace, hecke.AmbientHeckeModule)
             x^6 + 3*x^4 - 19*x^3 + 24*x^2 - 9*x
         """
         p = int(p)
-        try:
-            return self._hecke_matrices[p]
-        except AttributeError:
-            self._hecke_matrices = {}
-        except KeyError:
-            pass
+        assert arith.is_prime(p), "p must be prime."
+        if rows is None:
+            try:
+                return self._hecke_matrices[p]
+            except AttributeError:
+                self._hecke_matrices = {}
+            except KeyError:
+                pass
         tm = misc.verbose("Computing Hecke operator T_%s"%p)
 
         if arith.is_prime(p):
@@ -472,6 +474,8 @@ class ModularSymbolsAmbient(space.ModularSymbolsSpace, hecke.AmbientHeckeModule)
             H = heilbronn.HeilbronnMerel(p)
 
         B = self.manin_basis()
+        if not rows is None:
+            B = [B[i] for i in rows]
         cols = []
         N = self.level()
         mod2term = self._mod2term
@@ -498,7 +502,8 @@ class ModularSymbolsAmbient(space.ModularSymbolsSpace, hecke.AmbientHeckeModule)
             tm = misc.verbose("done matrix multiply",tm)
             Tp = Tp.dense_matrix()
             misc.verbose("done making Hecke operator matrix dense",tm)
-        self._hecke_matrices[p] = Tp
+        if rows is None:
+            self._hecke_matrices[p] = Tp
         return Tp
 
     def __heilbronn_operator(self, M, H, t=1):
@@ -1306,7 +1311,7 @@ class ModularSymbolsAmbient_wt2_g0(ModularSymbolsAmbient_wtk_g0):
         else:
             raise NotImplementedError
 
-    def _compute_hecke_matrix_prime(self, p):
+    def _compute_hecke_matrix_prime(self, p, rows=None):
         """
         Compute and return the matrix of the p-th Hecke operator.
         EXAMPLES:
@@ -1315,17 +1320,21 @@ class ModularSymbolsAmbient_wt2_g0(ModularSymbolsAmbient_wtk_g0):
             x^5 + x^4 - 8*x^3 - 12*x^2
         """
         assert arith.is_prime(p), "p must be prime."
-        try:
-            return self._hecke_matrices[p]
-        except AttributeError:
-            self._hecke_matrices = {}
-        except KeyError:
-            pass
+        if rows is None:
+            try:
+                return self._hecke_matrices[p]
+            except AttributeError:
+                self._hecke_matrices = {}
+            except KeyError:
+                pass
         tm = misc.verbose("Computing Hecke operator T_%s"%p)
 
         H = heilbronn.HeilbronnCremona(p)
         ##H = heilbronn.HeilbronnMerel(p)
         B = self.manin_basis()
+        if not rows is None:
+            B = [B[i] for i in rows]
+
         cols = []
         N = self.level()
         P1 = self.p1list()
@@ -1367,7 +1376,8 @@ class ModularSymbolsAmbient_wt2_g0(ModularSymbolsAmbient_wtk_g0):
             tm = misc.verbose("done multiplying",tm)
             Tp = Tp.dense_matrix()
             misc.verbose("done making hecke operator dense",tm)
-        self._hecke_matrices[p] = Tp
+        if rows is None:
+            self._hecke_matrices[p] = Tp
         return Tp
 
     def boundary_space(self):
