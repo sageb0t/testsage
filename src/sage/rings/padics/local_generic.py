@@ -15,9 +15,9 @@ import sage.rings.ring
 import sage.structure.parent_gens
 
 class LocalGeneric(sage.rings.ring.CommutativeRing):
-    def __init__(self, prec):
+    def __init__(self, prec, names):
         self._prec = prec
-        sage.structure.parent_gens.ParentWithGens.__init__(self, self, ('x',), normalize=False)
+        sage.structure.parent_gens.ParentWithGens.__init__(self, self, (names,), normalize=False)
 
     def __call__(self, x):
         raise NotImplementedError
@@ -59,7 +59,7 @@ class LocalGeneric(sage.rings.ring.CommutativeRing):
         """
         return self._prec
 
-    def get_print_mode(self):
+    def print_mode(self):
         raise NotImplementedError
 
     def set_print_mode(self):
