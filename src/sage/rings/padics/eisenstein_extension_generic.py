@@ -58,3 +58,6 @@ class EisensteinExtensionGeneric(pAdicGeneric, PolynomialQuotientRing_domain):
 
         #For our use of the shift1list in shifting, we want it over by 1, so we pop.
         self._shift1list.pop(0)
+
+    def _uniformizer_print(self):
+        return self.variable_name()
