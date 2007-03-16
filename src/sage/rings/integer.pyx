@@ -1644,7 +1644,7 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
             128
         """
         if PY_TYPE_CHECK(x, Integer) and isinstance(y, (Integer, int, long)):
-            return (<Integer>x)._lshift(long(y))
+            return (<Integer>x)._lshift(int(y))
         return bin_op(x, y, operator.lshift)
 
     cdef _rshift(Integer self, unsigned long int n):
@@ -1666,7 +1666,7 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
             8
         """
         if PY_TYPE_CHECK(x, Integer) and isinstance(y, (Integer, int, long)):
-            return (<Integer>x)._rshift(long(y))
+            return (<Integer>x)._rshift(int(y))
         return bin_op(x, y, operator.rshift)
 
     cdef _and(Integer self, Integer other):
