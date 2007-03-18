@@ -38,6 +38,9 @@ import sage.rings.arith as arith
 from   sage.rings.all import PowerSeriesRing, Integer, O, QQ, ZZ, is_NumberField
 from   sage.structure.all import Sequence
 
+def is_ModularSymbolsSpace(x):
+    return isinstance(x, ModularSymbolsSpace)
+
 class ModularSymbolsSpace(hecke.HeckeModule_free_module):
     def __init__(self, group, weight, character, sign, base_ring):
         self.__group = group
