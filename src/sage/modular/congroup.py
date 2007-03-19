@@ -27,7 +27,7 @@ import sage.rings.arith as arith
 
 from sage.groups.group import Group
 
-from sage.rings.integer_ring import IntegerRing
+from sage.rings.integer_ring import IntegerRing, ZZ
 from sage.rings.integer_mod_ring import IntegerModRing
 
 from sage.rings.infinity import infinity
@@ -60,7 +60,7 @@ def is_CongruenceSubgroup(x):
 
 class CongruenceSubgroup(Group):
     def __init__(self, level):
-        level=int(level)
+        level = ZZ(level)
         if level <= 0:
             raise ArithmeticError, "Congruence groups only defined for positive levels."
         self.__level = level
@@ -74,6 +74,7 @@ class CongruenceSubgroup(Group):
     def modular_symbols(self, sign=0, weight=2, base_ring=QQ):
         """
         EXAMPLES:
+            sage: G = Gamma0(23)
             sage: G.modular_symbols()
             Modular Symbols space of dimension 5 for Gamma_0(23) of weight 2 with sign 0 over Rational Field
             sage: G.modular_symbols(weight=4)
