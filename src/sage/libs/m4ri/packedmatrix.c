@@ -16,6 +16,8 @@
 *                  http://www.gnu.org/licenses/
 ******************************************************************************/
 
+#include <stdlib.h>
+#include <string.h>
 #include "packedmatrix.h"
 
 word packingmask[RADIX];

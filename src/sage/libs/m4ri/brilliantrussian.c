@@ -17,6 +17,7 @@
 ******************************************************************************/
 
 #include "brilliantrussian.h"
+#include <stdlib.h>
 
 int forceNonZero2PackedFlex(packedmatrix *m, int xstart, int xstop, int y) {
   int i;
@@ -64,9 +65,9 @@ void combineFlex( packedmatrix * s1, int row1, int startblock1,
   int wide=s1->width - startblock1;
   int i;
 
-  word * b1_ptr = s1->values + startblock1 + s1->rowswap[row1];
-  word * b2_ptr = s2->values + startblock2 + s2->rowswap[row2];
-  word * b3_ptr;
+  word *b1_ptr = s1->values + startblock1 + s1->rowswap[row1];
+  word *b2_ptr = s2->values + startblock2 + s2->rowswap[row2];
+  word *b3_ptr;
 
   /* this is a quite likely case, and we treat is specially to ensure
      cache register friendlyness. (Keep in mind that the x86 has only
@@ -84,7 +85,6 @@ void combineFlex( packedmatrix * s1, int row1, int startblock1,
       return;
 
     } else {
-
       for(i = wide ; i > 0 ; i--) {
 	*b1_ptr++ ^= *b2_ptr++;
       }
@@ -103,8 +103,8 @@ void combineFlex( packedmatrix * s1, int row1, int startblock1,
 }
 
 void makeTablePackedFlex( packedmatrix *m, int ai, int k,
-			  packedmatrix *tablepacked, int *lookuppacked) {
-  int homeblock=ai/RADIX;
+			  packedmatrix *tablepacked, int *lookuppacked, int full) {
+  int homeblock= full ? 0 : ai/RADIX;
   int i, rowneeded, id;
   int twokay= TWOPOW(k);
 
@@ -238,7 +238,7 @@ int doAByteColumnFlex(packedmatrix *m, int full, int k, int ai,
    * precomputed.
    */
 
-  makeTablePackedFlex(m, ai, k, tablepacked, lookuppacked);
+  makeTablePackedFlex(m, ai, k, tablepacked, lookuppacked, 0);
 
   /*
    * Stage 3: One can rapidly process the remaining rows from i + 3k
@@ -336,4 +336,54 @@ packedmatrix *invertPackedFlexRussian(packedmatrix *m,
   destroyPackedMatrix(big);
 
   return answer;
+}
+
+packedmatrix *m4rmPacked(packedmatrix *A, packedmatrix *B, int k) {
+  int i,j;
+  int a,b,c;
+  unsigned int x;
+  packedmatrix *C;
+  int *lookuppacked;
+  packedmatrix *T;
+
+  if(A->cols != B->rows) die("A cols need to match B rows");
+
+  a = A->rows;
+  b = A->cols;
+  c = B->cols;
+
+  T =createPackedMatrix(TWOPOW(k), c);
+  lookuppacked = (int *)safeCalloc(TWOPOW(k), sizeof(int));
+
+  C = createPackedMatrix(a,c);
+
+  for(i=0 ; i < b/k ; i++) {
+
+    //Make a Gray Code table of all the 2^k linear combinations of the k rows of Bi .
+    //Call the xth row Tx .
+    makeTablePackedFlex( B, i*k, k, T, lookuppacked, 1);
+
+    for(j = 0; j<a ; j++) {
+
+      //Read the entries aj,(i-1)k+1 , aj,(i-1)k+2 , . . . , aj,(i-1)k+k .
+      //Let x be the k bit binary number formed by the concatenation of aj,(i-1)k+1 , . . . , aj,ik .
+      x = lookuppacked[getValueFlex(A, j, i*k, k)];
+
+      //for h = 1, 2, . . . , c do
+      //    Calculate Cjh = Cjh + Txh.
+      combineFlex(C,j,0,  T,x,0,  C,j,0 );
+    }
+  }
+
+  //handle rest
+  if (b%k) {
+    makeTablePackedFlex( B, b/k * k , b%k, T, lookuppacked, 1);
+
+    for(j = 0; j<a ; j++) {
+      x = lookuppacked[getValueFlex(A, j, i*k, b%k)];
+      combineFlex(C,j,0, T,x,0,  C,j,0);
+    }
+  }
+
+  return C;
 }
