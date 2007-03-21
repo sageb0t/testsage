@@ -85,6 +85,9 @@ cdef class ComplexDoubleVectorSpaceElement(free_module_element.FreeModuleElement
             return self
         return self._new_c(self.gsl_vector_complex_copy())
 
+    def __reduce__(self):
+        return (unpickle_v0, (self._parent, self.list(), self._degree))
+
     def __init__(self,parent,x, coerce = True, copy = True):
         """
             parent -- free module element
@@ -342,3 +345,12 @@ cdef int ispow(int n):
     while n and n%2==0:
         n = n>>1
     return n == 1
+
+def unpickle_v0(parent, entries):
+    # If you think you want to change this function, don't.
+    # Instead make a new version with a name like
+    #    make_FreeModuleElement_generic_dense_v1
+    # and changed the reduce method below.
+    cdef ComplexDoubleVectorSpaceElement v
+    v = ComplexDoubleVectorSpaceElement(parent, entries, coerce=False, copy=False)
+    return v
