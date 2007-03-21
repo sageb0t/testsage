@@ -146,4 +146,6 @@ packedmatrix *invertPackedFlexRussian(packedmatrix *m, packedmatrix *identity, i
 
 packedmatrix *m4rmPacked(packedmatrix *A, packedmatrix *B, int k);
 
+packedmatrix *m4rmTransposePacked(packedmatrix *A, packedmatrix *B, int k);
+
 #endif //BRILLIANTRUSSIAN_H
