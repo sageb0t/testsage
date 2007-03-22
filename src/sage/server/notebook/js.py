@@ -79,7 +79,8 @@ function async_callback(id) {
                 callback('success', "empty");
             }
     } catch(e) {
-        async_release(id);      //release immediately
+        if(async_oblist[id] != null) //release immediately
+            async_release(id);
         callback("failure", e);
     }
 }
@@ -742,6 +743,19 @@ function unlock_worksheet_callback(status, response_text) {
     }
 }
 
+function sync_active_cell_list() {
+    async_request('/get_queue', sync_active_cell_list_callback, 'worksheet_id='+worksheet_id);
+}
+
+function sync_active_cell_list_callback(status, response_text) {
+    if(status == 'success') {
+        active_cell_list = response_text.split(",");
+        for(var i = 0; i < active_cell_list.length; i++)
+            cell_set_running(active_cell_list[i]);
+        start_update_check();
+    }
+}
+
 ///////////////////////////////////////////////////////////////////
 //
 // CELL functions -- for the individual cells
@@ -786,8 +800,11 @@ function cell_colorize_callback(status, response_text) {
     var X = response_text.split(SEP);
     var id = X[0];
     var text = X[1];
+    if(is_whitespace(text))
+        text = ' ';
 
     var display_cell = get_element('cell_display_' + id)
+
     display_cell.innerHTML = text;
 }
 
@@ -1808,6 +1825,7 @@ function restart_sage_callback(status, response_text) {
     link.className = "restart_sage";
     link.innerHTML = "Restart";
     set_variable_list('');
+    sync_active_cell_list();
 }
 
 function restart_sage() {

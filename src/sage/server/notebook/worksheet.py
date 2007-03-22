@@ -816,6 +816,9 @@ class Worksheet:
         except AttributeError:
             pass
 
+        self._enqueue_auto_cells()
+        self.start_next_comp()
+
     def postprocess_output(self, out, C):
         i = out.find('\r\n')
         out = out[i+2:]
