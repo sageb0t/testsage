@@ -866,7 +866,7 @@ cdef class MonoidElement(Element):
 
     def __pow__(self, nn, dummy):
         """
-        Retern the (integral) power of self.
+        Return the (integral) power of self.
         """
         cdef int cn
 
