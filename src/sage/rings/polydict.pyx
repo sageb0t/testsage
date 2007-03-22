@@ -830,7 +830,7 @@ cdef class ETuple:
         EXAMPLES:
             sage: from sage.rings.polydict import ETuple
             sage: e = ETuple([1,1,0])
-            sage: e == loads(dumps(e))
+            sage: bool(e == loads(dumps(e)))
             True
         """
 

@@ -6,11 +6,7 @@ AUTHORS:
 
 TESTS:
     sage: R = MPolynomialRing(GF(2**8,'a'),10,'x', order='revlex')
-    sage: RS = R._singular_()
     sage: R == loads(dumps(R))
-    True
-
-    sage: RS == loads(dumps(RS))
     True
 
 """
