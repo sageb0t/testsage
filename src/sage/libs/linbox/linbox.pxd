@@ -1,5 +1,8 @@
 include "../../ext/cdefs.pxi"
 
+cdef extern from "../libs/m4ri/packedmatrix.h":
+    ctypedef struct packedmatrix
+
 ctypedef size_t mod_int
 
 cdef class Linbox_modn_dense:
@@ -13,6 +16,14 @@ cdef class Linbox_modn_dense:
                                 mod_int **ans,
                                 mod_int **B,
                                 size_t B_nr, size_t B_nc)
+    cdef unsigned long rank(self) except -1
+
+cdef class Linbox_mod2_dense:
+    cdef packedmatrix *matrix
+
+    cdef set(self, packedmatrix *matrix)
+    cdef int echelonize(self)
+    cdef matrix_matrix_multiply(self, packedmatrix *ans, packedmatrix *B)
     cdef unsigned long rank(self) except -1
 
 cdef class Linbox_integer_dense:
