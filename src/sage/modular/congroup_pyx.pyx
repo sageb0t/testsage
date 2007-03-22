@@ -22,8 +22,8 @@ include '../ext/stdsage.pxi'
 
 def degeneracy_coset_representatives_gamma0(int N, int M, int t):
     r"""
-    Let $N$ be a positive integer and $M$ a multiple of $N$.  Let $t$ be a
-    divisor of $N/M$, and let $T$ be the $2x2$ matrix $T=[0,0; 0,t]$.
+    Let $N$ be a positive integer and $M$ a divisor of $N$.  Let $t$ be a
+    divisor of $N/M$, and let $T$ be the $2x2$ matrix $T=[1,0; 0,t]$.
     This function returns representatives for the orbit set
     $\Gamma_0(N) \backslash T \Gamma_0(M)$, where $\Gamma_0(N)$
     acts on the left on $T \Gamma_0(M)$.
@@ -74,6 +74,15 @@ def degeneracy_coset_representatives_gamma0(int N, int M, int t):
           step 1.
 
     \end{enumerate}
+
+    EXAMPLES:
+        sage: import sage.modular.congroup as congroup
+        sage: len(congroup.degeneracy_coset_representatives_gamma0(13, 1, 1))
+        14
+        sage: len(congroup.degeneracy_coset_representatives_gamma0(13, 13, 1))
+        1
+        sage: len(congroup.degeneracy_coset_representatives_gamma0(13, 1, 13))
+        14
     """
     import sage.modular.dims
 
@@ -129,8 +138,8 @@ def degeneracy_coset_representatives_gamma0(int N, int M, int t):
 
 def degeneracy_coset_representatives_gamma1(int N, int M, int t):
     r"""
-    Let $N$ be a positive integer and $M$ a multiple of $N$.  Let $t$ be a
-    divisor of $N/M$, and let $T$ be the $2x2$ matrix $T=[0,0; 0,t]$.
+    Let $N$ be a positive integer and $M$ a divisor of $N$.  Let $t$ be a
+    divisor of $N/M$, and let $T$ be the $2x2$ matrix $T=[1,0; 0,t]$.
     This function returns representatives for the orbit set
     $\Gamma_1(N) \backslash T \Gamma_1(M)$, where $\Gamma_1(N)$
     acts on the left on $T \Gamma_1(M)$.
@@ -148,8 +157,8 @@ def degeneracy_coset_representatives_gamma1(int N, int M, int t):
     spaces of modular symbols, hence its name.
 
     ALGORITHM:
-    Everything is the same as for degeneracy_coset_representatives_gamma1,
-    except for coset equivalent.   Here $\Gamma_1(N/t,t)$ consists
+    Everything is the same as for degeneracy_coset_representatives_gamma0,
+    except for coset equivalence.   Here $\Gamma_1(N/t,t)$ consists
     of matrices that are of the form $[1,*;0,1]$ module $N/t$ and
     $[1,0;*,1]$ modulo $t$.
 
@@ -166,8 +175,12 @@ def degeneracy_coset_representatives_gamma1(int N, int M, int t):
 
     EXAMPLES:
         sage: import sage.modular.congroup as congroup
-        sage: congroup.degeneracy_coset_representatives_gamma1(13, 1, 1)
-        [hangs]
+        sage: len(congroup.degeneracy_coset_representatives_gamma1(13, 1, 1))
+        168
+        sage: len(congroup.degeneracy_coset_representatives_gamma1(13, 13, 1))
+        1
+        sage: len(congroup.degeneracy_coset_representatives_gamma1(13, 1, 13))
+        168
     """
     import sage.modular.dims
 
@@ -199,7 +212,7 @@ def degeneracy_coset_representatives_gamma1(int N, int M, int t):
         cc = cc / g
         if cc % M != 0: continue
         dd = dd / g
-        if dd % M != 1: continue
+        if M != 1 and dd % M != 1: continue
         # Test if we've found a new coset representative.
         is_new = 1
         for i from 0 <= i < k:
@@ -212,7 +225,9 @@ def degeneracy_coset_representatives_gamma1(int N, int M, int t):
                 break
         # If our matrix is new add it to the list.
         if is_new:
-            if k > n: raise RuntimeError, "bug!!"
+            if k > n:
+                sage_free(R)
+                raise RuntimeError, "bug!!"
             R[4*k] = aa
             R[4*k+1] = bb
             R[4*k+2] = cc
