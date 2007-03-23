@@ -591,6 +591,7 @@ class Worksheet:
             cell -- the cell with given id
         """
         cell = self.get_cell_with_id(id)
+
         if cell in self.__queue:
             status = 'w'
         else:
@@ -1148,7 +1149,7 @@ class Worksheet:
 
             input += '\n'
 
-        print input
+        #print input
         return input
 
     def notebook(self):
