@@ -591,6 +591,7 @@ class Worksheet:
             cell -- the cell with given id
         """
         cell = self.get_cell_with_id(id)
+
         if cell in self.__queue:
             status = 'w'
         else:
@@ -815,6 +816,9 @@ class Worksheet:
             del self.__variables
         except AttributeError:
             pass
+
+        self._enqueue_auto_cells()
+        self.start_next_comp()
 
     def postprocess_output(self, out, C):
         i = out.find('\r\n')
@@ -1145,7 +1149,7 @@ class Worksheet:
 
             input += '\n'
 
-        print input
+        #print input
         return input
 
     def notebook(self):
