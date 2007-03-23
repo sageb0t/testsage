@@ -50,7 +50,7 @@ from extended_integer_ring import ExtendedIntegerRing
 
 # Rational integers.
 from integer_ring import IntegerRing, ZZ, crt_basis
-from integer import Integer
+from integer import Integer, is_Integer
 
 # Rational numbers
 from rational_field import RationalField, QQ, is_RationalField
@@ -130,6 +130,9 @@ from big_oh import O
 from fraction_field import FractionField, is_FractionField
 Frac = FractionField
 from fraction_field_element import is_FractionFieldElement
+
+# continued fractions
+from contfrac import continued_fraction, CFF, ContinuedFractionField
 
 # Arithmetic
 from arith import *
