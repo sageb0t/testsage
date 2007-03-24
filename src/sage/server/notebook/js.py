@@ -795,7 +795,6 @@ function cell_blur(id) {
     if (t.length == 0) {
         t = ' ';
     }
-    display_cell.innerHTML = t.replace(/</g,'&lt;');
     cell_colorize(id,t)
 
     return true;
@@ -815,7 +814,7 @@ function cell_colorize_callback(status, response_text) {
     var X = response_text.split(SEP);
     var id = X[0];
     var text = X[1];
-    if(is_whitespace(text))
+    if(is_whitespace(text))   // this doesn't work, because empty colorized text is an empty span!
         text = ' ';
 
     var display_cell = get_element('cell_display_' + id)
