@@ -35,9 +35,6 @@ class JobTestCase(unittest.TestCase):
         job = Job()
         self.assertRaises(TypeError, job.id, 5)
 
-    def testjobNum(self):
-        job = Job()
-        self.assertEquals(None, job.num)
     def testjobFile(self):
         job = Job()
         self.assertRaises(TypeError, job.code, 1)
@@ -52,10 +49,10 @@ class JobTestCase(unittest.TestCase):
         self.assert_(job.finish_time == None)
         self.assertRaises(TypeError, job.finish_time, 'test')
 
-    def testjobUpdatedTime(self):
+    def testjobUpdateTime(self):
         job = Job()
         self.assertEquals(job.update_time, None)
-        self.assertRaises(TypeError, job.updated_time, 'test')
+        self.assertRaises(TypeError, job.update_time, 'test')
 
     def testjobStatus(self):
         job = Job()
