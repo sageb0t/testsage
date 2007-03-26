@@ -1,3 +1,7 @@
+"""
+The SAGE calculus module
+"""
+
 from sage.rings.all import (CommutativeRing, RealField, is_Polynomial,
                             is_RealNumber, is_ComplexNumber, RR,
                             Integer, Rational, CC)
