@@ -22,7 +22,7 @@ import os
 from optparse import OptionParser
 import ConfigParser
 
-from twisted.internet import reactor, error, ssl
+from twisted.internet import reactor, error, ssl, task
 from twisted.spread import pb
 from twisted.python import log
 from twisted.cred import portal
@@ -38,6 +38,8 @@ from sage.dsage.twisted.pubkeyauth import PublicKeyCredentialsChecker
 from sage.dsage.twisted.pubkeyauth import PublicKeyCredentialsCheckerDB
 from sage.dsage.server.server import DSageServer, DSageWorkerServer
 from sage.dsage.misc.constants import delimiter as DELIMITER
+
+DSAGE_DIR = os.path.join(os.getenv('DOT_SAGE'), 'dsage')
 
 def usage():
     """Prints usage help."""
@@ -61,6 +63,12 @@ def usage():
 #     sys.path.append(os.path.abspath(options.dir))
     return options
 
+def write_stats(dsage_server):
+    fname = os.path.join(DSAGE_DIR, 'dsage.xml')
+    f = open(fname, 'w')
+    f.write(dsage_server.generate_xml_stats())
+    f.close()
+
 def startLogging(log_file):
     """This method initializes the logging facilities for the server. """
     if log_file == 'stdout':
@@ -73,7 +81,6 @@ def startLogging(log_file):
 def main():
     """Main execution loop of the server."""
 
-    DSAGE_DIR = os.path.join(os.getenv('DOT_SAGE'), 'dsage')
     # Begin reading configuration
     try:
         conf_file = os.path.join(DSAGE_DIR, 'server.conf')
@@ -115,6 +122,10 @@ def main():
 
     # HACK: unsafeTracebacks should eventually be TURNED off
     client_factory = pb.PBServerFactory(p, unsafeTracebacks=True)
+
+    # Create the looping call that will output the XML file for Dashboard
+    tsk1 = task.LoopingCall(write_stats, dsage_server)
+    tsk1.start(10.0, now=False)
 
     # Create the PBServerFactory for workers
     # Use this for unauthorized workers
