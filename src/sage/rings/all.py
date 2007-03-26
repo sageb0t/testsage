@@ -50,7 +50,7 @@ from extended_integer_ring import ExtendedIntegerRing
 
 # Rational integers.
 from integer_ring import IntegerRing, ZZ, crt_basis
-from integer import Integer
+from integer import Integer, is_Integer
 
 # Rational numbers
 from rational_field import RationalField, QQ, is_RationalField
@@ -75,13 +75,8 @@ from polynomial_quotient_ring import PolynomialQuotientRing, is_PolynomialQuotie
 from polynomial_quotient_ring_element import PolynomialQuotientRingElement
 
 # p-adic field
-#from padic_field import pAdicField, Qp, is_pAdicField
-#from padic import pAdic
-# To turn on the new p-adics, comment out the above two lines and uncomment the two below.
-from padics.zp import Zp, Zq, Zp as pAdicRing
-from padics.qp import Qp, Qq, Qp as pAdicField
 
-from padics.padic_ring_extension import pAdicRingExtension
+from padics.all import *
 
 # Real numbers
 from real_mpfr import (RealField, is_RealField, is_RealNumber, RR,
@@ -135,6 +130,9 @@ from big_oh import O
 from fraction_field import FractionField, is_FractionField
 Frac = FractionField
 from fraction_field_element import is_FractionFieldElement
+
+# continued fractions
+from contfrac import continued_fraction, CFF, ContinuedFractionField
 
 # Arithmetic
 from arith import *
