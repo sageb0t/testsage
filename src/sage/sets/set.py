@@ -1006,8 +1006,8 @@ class Set_object_difference(Set_object):
             False
             sage: ComplexField().0 in X
             False
-            sage: sqrt(2) in X
-            False
+            sage: sqrt(2) in X     # since sqrt(2) is a numerical approx
+            True
             sage: 5/2 in X
             True
         """
@@ -1145,8 +1145,8 @@ class Set_object_symmetric_difference(Set_object):
             True
             sage: ComplexField().0 in X
             False
-            sage: sqrt(2) in X
-            False
+            sage: sqrt(2) in X      # since sqrt(2) is currently a numerical approx.
+            True
             sage: pi in X
             False
             sage: 5/2 in X
