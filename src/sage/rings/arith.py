@@ -13,7 +13,8 @@ import math
 
 import sage.misc.misc as misc
 import sage.misc.search
-from sage.libs.pari.all import pari
+from sage.libs.pari.all import pari, PariError
+
 import sage.rings.rational_field
 import sage.rings.rational
 import sage.rings.complex_field
@@ -267,7 +268,11 @@ def prime_pi(x):
     """
     if x < 2:
         return integer_ring.ZZ(0)
-    return integer_ring.ZZ(pari(x).primepi())
+    try:
+        return integer_ring.ZZ(pari(x).primepi())
+    except PariError:
+        pari.init_primes(pari(x)+1)
+        return integer_ring.ZZ(pari(x).primepi())
 
 number_of_primes = prime_pi
 
@@ -665,11 +670,13 @@ def primes(start, stop=None):
     proves correctness.
 
     EXAMPLES:
-        sage.: for p in primes(5,10):
+        sage: for p in primes(5,10):
         ...     print p
         ...
         5
         7
+        sage: list(primes(11))
+        [2, 3, 5, 7]
         sage: list(primes(10000000000, 10000000100))
         [10000000019, 10000000033, 10000000061, 10000000069, 10000000097]
     """
@@ -683,7 +690,7 @@ def primes(start, stop=None):
     n = start - 1
     while True:
         n = next_prime(n)
-        if n <= stop:
+        if n < stop:
             yield n
         else:
             return
@@ -848,12 +855,18 @@ def previous_prime_power(n):
         n -= 1
     return n
 
-def random_prime(n):
+def random_prime(n, pseudo=False):
     """
-    Returns a random prime p satisfying between 2 and p (i.e. 2 <= p <= n).
+    Returns a random prime p between 2 and n (i.e. 2 <= p <= n).
+    The returned prime is chosen uniformly at random from the
+    set of prime numbers less than or equal to n.
 
     INPUT:
         n -- an integer >= 2.
+        pseudo -- bool (default: False) If True, the function uses
+                a pseudo-primality test, which is much faster for
+                really big numbers but does not provide a proof
+                of primality.
 
     EXAMPLES:
         sage: random_prime(100000)
@@ -863,6 +876,7 @@ def random_prime(n):
 
     AUTHOR:
         -- Jon Hanke: 2006-08-08  (with standard Stein cleanup)
+        -- Jonathan Bober: 2007-03-17
     """
     import random    # since we don't want random to get
                      # pulled when you say "from sage.arith import *".
@@ -872,7 +886,20 @@ def random_prime(n):
     elif n == 2:
         return integer_ring.ZZ(n)
     else:
-        return previous_prime(random.randint(3,n+1))
+        if pseudo:
+            prime_test = is_pseudoprime
+        else:
+            prime_test = is_prime
+        while(1):
+            # In order to ensure that the returned prime is chosen
+            # uniformly from the set of primes it is necessary to
+            # choose a random number and then test for primality.
+            # The method of choosing a random number and then returning
+            # the closest prime smaller than it would typically not,
+            # for example, return the first of a pair of twin primes.
+            p = random.randint(2,n)
+            if prime_test(p):
+                return p
 
 def divisors(n):
     """
@@ -976,12 +1003,12 @@ def gcd(a, b=0, integer=False):
         10
     """
     if integer:
-        if isinstance(a,list):
+        if isinstance(a,(list,tuple)):
             return sage.rings.integer.GCD_list(a)
         else:
             return integer_ring.ZZ(a).gcd(\
                 integer_ring.ZZ(b))
-    if isinstance(a,list):
+    if isinstance(a,(list,tuple)):
         return __GCD_list(a)
     if not isinstance(a, RingElement):
         a = integer_ring.ZZ(a)
@@ -1020,12 +1047,12 @@ def lcm(a, b=None, integer=False):
         4349
     """
     if integer:
-        if isinstance(a,list):
+        if isinstance(a,(list,tuple)):
             return sage.rings.integer.LCM_list(a)
         else:
             return integer_ring.ZZ(a).lcm(\
                 integer_ring.ZZ(b))
-    if isinstance(a, list):
+    if isinstance(a, (list,tuple)):
         return __LCM_list(a)
     if not isinstance(a, RingElement):
         a = integer_ring.ZZ(a)
@@ -1668,16 +1695,21 @@ def euler_phi(n):
     return integer_ring.ZZ(pari(n).phi())
     #return misc.mul([(p-1)*p**(r-1) for p, r in factor(n)])
 
-def crt(a,b=0,m=1,n=1):
+def crt(a,b,m,n):
     """
     Use the Chinese Remainder Theorem to find some integer x such
     that x=a (mod m) and x=b (mod n).   Note that x is only well-defined
     modulo m*n.
 
-    sage: crt(2, 1, 3, 5)
-    -4
-    sage: crt(13,20,100,301)
-    -2087
+    EXAMPLES:
+        sage: crt(2, 1, 3, 5)
+        -4
+        sage: crt(13,20,100,301)
+        -2087
+
+    You can also use upper case:
+        sage: CRT(2,3, 3, 5)
+        8
     """
     if isinstance(a,list):
         return CRT_list(a,b)
@@ -1689,6 +1721,15 @@ def crt(a,b=0,m=1,n=1):
 CRT = crt
 
 def CRT_list(v, moduli):
+    """
+    Given a list v of integers and a list of corresponding
+    moduli, find a single integer that reduces to each
+    element of v modulo the corresponding moduli.
+
+    EXAMPLES:
+        sage: CRT_list([2,3,2], [3,5,7])
+        23
+    """
     if len(v) == 0:
         return 0
     x = v[0]
@@ -1815,6 +1856,8 @@ def kronecker_symbol(x,y):
 
     IMPLEMENTATION: Using Pari.
     """
+    x = integer_ring.ZZ(x)
+    y = integer_ring.ZZ(y)
     return integer_ring.ZZ(pari(x).kronecker(y).python())
 
 def kronecker(x,y):
@@ -1822,6 +1865,41 @@ def kronecker(x,y):
     Synonym for \code{kronecker_symbol}.
     """
     return kronecker_symbol(x,y)
+
+def legendre_symbol(x,p):
+    r"""
+    The Legendre symbol (x|p), for $p$ prime.
+
+    NOTE: The \code{kronecker_symbol} command extends the
+    Legendre symbol to composite moduli and $p=2$.
+
+    INPUT:
+        x -- integer
+        p -- an odd prime number
+
+    EXAMPLES:
+        sage: legendre_symbol(2,3)
+        -1
+        sage: legendre_symbol(1,3)
+        1
+        sage: legendre_symbol(1,2)
+        Traceback (most recent call last):
+        ...
+        ValueError: p must be odd
+        sage: legendre_symbol(2,15)
+        Traceback (most recent call last):
+        ...
+        ValueError: p must be a prime
+        sage: kronecker_symbol(2,15)
+        1
+    """
+    x = integer_ring.ZZ(x)
+    p = integer_ring.ZZ(p)
+    if not p.is_prime():
+        raise ValueError, "p must be a prime"
+    if p == 2:
+        raise ValueError, "p must be odd"
+    return integer_ring.ZZ(pari(x).kronecker(p).python())
 
 def primitive_root(n):
     """
@@ -2124,9 +2202,24 @@ def partitions(n):
         if p and (len(p) < 2 or p[1] > p[0]):
             yield (p[0] + 1,) + p[1:]
 
-def continued_fraction(x, partial_convergents=False):
+## def convergents_pnqn(x):
+##     """
+##     Return the pairs (pn,qn) that are the numerators and denominators
+##     of the partial convergents of the continued fraction of x.  We
+##     include (0,1) and (1,0) at the beginning of the list (these are
+##     the -2 and -1 th convergents).
+##     """
+##     v = pari(x).contfrac()
+##     w = [(0,1), (1,0)]
+##     for n in range(len(v)):
+##         pn = w[n+1][0]*v[n] + w[n][0]
+##         qn = w[n+1][1]*v[n] + w[n][1]
+##         w.append(int(pn), int(qn))
+##     return w
+
+def continued_fraction_list(x, partial_convergents=False, bits=None):
     r"""
-    Returns the continued fraction of x.
+    Returns the continued fraction of x as a list.
 
     \begin{note}
     This may be slow since it's implemented in pure
@@ -2135,11 +2228,17 @@ def continued_fraction(x, partial_convergents=False):
     \end{note}
 
     EXAMPLES:
-        sage: continued_fraction(45/17)
+        sage: continued_fraction_list(45/17)
         [2, 1, 1, 1, 5]
-        sage: continued_fraction(RR(sqrt(2)))
+        sage: continued_fraction_list(e, bits=20)
+        [2, 1, 2, 1, 1, 4, 1, 1, 6]
+        sage: continued_fraction_list(e, bits=30)
+        [2, 1, 2, 1, 1, 4, 1, 1, 6, 1, 1, 8, 1, 1]
+        sage: continued_fraction_list(sqrt(2))
         [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1]
-        sage: continued_fraction(RR(pi), partial_convergents=True)
+        sage: continued_fraction_list(sqrt(4/19))
+        [0, 2, 5, 1, 1, 2, 1, 16, 1, 2, 1, 1, 5, 4, 5, 1, 1, 2, 1, 15, 2]
+        sage: continued_fraction_list(RR(pi), partial_convergents=True)
         ([3, 7, 15, 1, 292, 1, 1, 1, 2, 1, 3, 1, 14, 3],
          [(3, 1),
           (22, 7),
@@ -2155,14 +2254,17 @@ def continued_fraction(x, partial_convergents=False):
           (5419351, 1725033),
           (80143857, 25510582),
           (245850922, 78256779)])
-        sage: continued_fraction(e)
+        sage: continued_fraction_list(e)
         [2, 1, 2, 1, 1, 4, 1, 1, 6, 1, 1, 8, 1, 1, 10, 1, 1, 12, 1, 1, 11]
-        sage: continued_fraction(RR(e))
+        sage: continued_fraction_list(RR(e))
         [2, 1, 2, 1, 1, 4, 1, 1, 6, 1, 1, 8, 1, 1, 10, 1, 1, 12, 1, 1, 11]
-        sage: print continued_fraction(RealField(200)(e))
+        sage: print continued_fraction_list(RealField(200)(e))
         [2, 1, 2, 1, 1, 4, 1, 1, 6, 1, 1, 8, 1, 1, 10, 1, 1, 12, 1, 1, 14, 1, 1, 16, 1, 1, 18, 1, 1, 20, 1, 1, 22, 1, 1, 24, 1, 1, 26, 1, 1, 28, 1, 1, 30, 1, 1, 32, 1, 1, 34, 1, 1, 36, 1, 1, 38, 1, 1]
     """
-    if isinstance(x, (integer.Integer, sage.rings.rational.Rational,
+    if not bits is None:
+        x = sage.rings.real_mpfr.RealField(bits)(x)
+    elif not partial_convergents and \
+           isinstance(x, (integer.Integer, sage.rings.rational.Rational,
                       int, long)):
         return pari(x).contfrac().python()
     x_in = x
@@ -2171,6 +2273,7 @@ def continued_fraction(x, partial_convergents=False):
     start = x
     i = 0
     try:
+        last = None
         while True:
             i += 1
             a = integer_ring.ZZ(int(x.floor()))
@@ -2180,12 +2283,14 @@ def continued_fraction(x, partial_convergents=False):
             qn = v[n]*w[n+1][1] + w[n][1]
             w.append((pn, qn))
             x -= a
-            if abs(start - pn/qn) == 0:
+            s = start - pn/qn
+            if abs(s) == 0 or (not last is None  and last == s):
                 del w[0]; del w[0]
                 if partial_convergents:
                     return v, w
                 else:
                     return v
+            last = s
             x = 1/x
     except (AttributeError, NotImplementedError, TypeError), msg:
         raise NotImplementedError, "%s\ncomputation of continued fraction of x not implemented; try computing continued fraction of RR(x) instead."%msg
@@ -2228,21 +2333,6 @@ def convergent(v, n):
         x = Q(v[i]) + 1/x
         i -= 1
     return x
-
-## def convergents_pnqn(x):
-##     """
-##     Return the pairs (pn,qn) that are the numerators and denominators
-##     of the partial convergents of the continued fraction of x.  We
-##     include (0,1) and (1,0) at the beginning of the list (these are
-##     the -2 and -1 th convergents).
-##     """
-##     v = pari(x).contfrac()
-##     w = [(0,1), (1,0)]
-##     for n in range(len(v)):
-##         pn = w[n+1][0]*v[n] + w[n][0]
-##         qn = w[n+1][1]*v[n] + w[n][1]
-##         w.append(int(pn), int(qn))
-##     return w
 
 def convergents(v):
     """
