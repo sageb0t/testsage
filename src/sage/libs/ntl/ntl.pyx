@@ -5,6 +5,7 @@ AUTHORS:
    - William Stein
    - Martin Albrecht <malb@informatik.uni-bremen.de>
    - David Harvey (2007-02): speed up getting data in/out of NTL
+   - Joel B. Mohler:  fast conversions to and from sage Integer type
 """
 
 #*****************************************************************************
@@ -28,7 +29,11 @@ include 'misc.pxi'
 include 'decl.pxi'
 
 from sage.rings.integer import Integer
+from sage.rings.integer_ring import IntegerRing
 from sage.rings.integer cimport Integer
+from sage.rings.integer_ring cimport IntegerRing_class
+
+ZZ_sage = IntegerRing()
 
 ##############################################################################
 # ZZ: Arbitrary precision integers
@@ -91,7 +96,7 @@ cdef class ntl_ZZ:
         return make_ZZ(ZZ_pow(self.x, e))
 
     cdef set(self, void *y):  # only used internally for initialization; assumes self.x not set yet!
-        self.x = <ZZ*> y
+        self.x = <ntl_c_ZZ*> y
 
     cdef int get_as_int(ntl_ZZ self):
         r"""
@@ -115,6 +120,18 @@ cdef class ntl_ZZ:
         """
         return self.get_as_int()
 
+    def get_as_sage_int(self):
+        r"""
+        Gets the value as a sage int.
+
+        sage: n=ntl.ZZ(2983)
+        sage: type(n.get_as_sage_int())
+        <type 'sage.rings.integer.Integer'>
+
+        AUTHOR: Joel B. Mohler
+        """
+        return (<IntegerRing_class>ZZ_sage)._coerce_ZZ(self.x)
+
     cdef void set_from_int(ntl_ZZ self, int value):
         r"""
         Sets the value from a C int.
@@ -122,6 +139,21 @@ cdef class ntl_ZZ:
         AUTHOR: David Harvey (2006-08-05)
         """
         ZZ_set_from_int(self.x, value)
+
+    def set_from_sage_int(self, Integer value):
+        r"""
+        Sets the value from a sage int.
+
+        sage: n=ntl.ZZ(2983)
+        sage: n
+        2983
+        sage: n.set_from_sage_int(1234)
+        sage: n
+        1234
+
+        AUTHOR: Joel B. Mohler
+        """
+        value._to_ZZ(self.x)
 
     def set_from_int_doctest(self, value):
         r"""
@@ -136,7 +168,7 @@ cdef class ntl_ZZ:
 
     # todo: add wrapper for int_to_ZZ in wrap.cc?
 
-cdef public make_ZZ(ZZ* x):
+cdef public make_ZZ(ntl_c_ZZ* x):
     cdef ntl_ZZ y
     _sig_off
     y = ntl_ZZ()
@@ -414,7 +446,7 @@ cdef class ntl_ZZX:
         """
         _sig_on
         cdef int divisible
-        cdef ZZX* q
+        cdef ntl_c_ZZX* q
         q = ZZX_div(self.x, other.x, &divisible)
         if not divisible:
             raise ArithmeticError, "self (=%s) is not divisible by other (=%s)"%(self, other)
@@ -452,7 +484,7 @@ cdef class ntl_ZZX:
            sage: q*g + r == f
            True
         """
-        cdef ZZX *r, *q
+        cdef ntl_c_ZZX *r, *q
         _sig_on
         ZZX_quo_rem(self.x, other.x, &r, &q)
         return (make_ZZX(q), make_ZZX(r))
@@ -656,7 +688,7 @@ cdef class ntl_ZZX:
             sage: g.pseudo_quo_rem(f)
             ([-1 3], [2])
         """
-        cdef ZZX *r, *q
+        cdef ntl_c_ZZX *r, *q
         _sig_on
         ZZX_pseudo_quo_rem(self.x, other.x, &r, &q)
         return (make_ZZX(q), make_ZZX(r))
@@ -710,8 +742,8 @@ cdef class ntl_ZZX:
             sage: f.xgcd(g)
             (169, [-13], [13])
         """
-        cdef ZZX *s, *t
-        cdef ZZ *r
+        cdef ntl_c_ZZX *s, *t
+        cdef ntl_c_ZZ *r
         _sig_on
         ZZX_xgcd(self.x, other.x, &r, &s, &t, proof)
         return (make_ZZ(r), make_ZZX(s), make_ZZX(t))
@@ -1109,9 +1141,9 @@ cdef class ntl_ZZX:
         _sig_off
 
     cdef set(self, void* x):  # only used internally for initialization; assumes self.x not set yet!
-        self.x = <ZZX*>x
+        self.x = <ntl_c_ZZX*>x
 
-cdef make_ZZX(ZZX* x):
+cdef make_ZZX(ntl_c_ZZX* x):
     cdef ntl_ZZX y
     _sig_off
     y = ntl_ZZX()
@@ -1271,7 +1303,7 @@ def make_new_ZZ_p(x='0'):
     return n
 
 def set_ZZ_p_modulus(ntl_ZZ p):
-    ntl_ZZ_set_modulus(<ZZ*>p.x)
+    ntl_ZZ_set_modulus(<ntl_c_ZZ*>p.x)
 
 def ntl_ZZ_p_random():
     """
@@ -2158,7 +2190,7 @@ cdef class ntl_mat_ZZ:
             for i from 0 <= i < nrows:
                 for j from 0 <= j < ncols:
                     tmp = make_new_ZZ(v[i*ncols+j])
-                    mat_ZZ_setitem(self.x, i, j, <ZZ*> tmp.x)
+                    mat_ZZ_setitem(self.x, i, j, <ntl_c_ZZ*> tmp.x)
 
     def __reduce__(self):
         raise NotImplementedError
@@ -2217,7 +2249,7 @@ cdef class ntl_mat_ZZ:
         if i < 0 or i >= self.__nrows or j < 0 or j >= self.__ncols:
             raise IndexError, "array index out of range"
         _sig_on
-        mat_ZZ_setitem(self.x, i, j, <ZZ*> y.x)
+        mat_ZZ_setitem(self.x, i, j, <ntl_c_ZZ*> y.x)
         _sig_off
 
     def __getitem__(self, ij):
@@ -2283,7 +2315,7 @@ cdef class ntl_mat_ZZ:
         else:
             _D = ntl_ZZ(D)
         _sig_on
-        return make_mat_ZZ(mat_ZZ_HNF(self.x, <ZZ*>_D.x))
+        return make_mat_ZZ(mat_ZZ_HNF(self.x, <ntl_c_ZZ*>_D.x))
 
     def charpoly(self):
         return make_ZZX(mat_ZZ_charpoly(self.x));
@@ -2365,7 +2397,7 @@ cdef class ntl_mat_ZZ:
         WARNING: This method modifies self. So after applying this method your matrix
         will be a vector of vectors.
         """
-        cdef ZZ *det2
+        cdef ntl_c_ZZ *det2
         cdef mat_ZZ *U
         if return_U:
             _sig_on

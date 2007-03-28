@@ -1251,6 +1251,33 @@ def Schemes(X=None):
         X = Schemes()(X)
     return Schemes_over_base(X)
 
+class ModularAbelianVarieties(Category_over_base):
+    """
+    The category of modular abelian varieties over a given field.
+
+    EXAMPLES:
+        sage: ModularAbelianVarieties(QQ)
+        Category of modular abelian varieties over Rational Field
+    """
+    def __init__(self, Y):
+        assert Y.is_field()
+        Category_over_base.__init__(self, Y)
+
+    def base_field(self):
+        return self.base()
+
+    def _repr_(self):
+        return "Category of modular abelian varieties over %s"%self.base_field()
+
+    def __reduce__(self):
+        """
+        EXAMPLES:
+            sage: C = ModularAbelianVarieties(QQ)
+            sage: loads(C.dumps()) == C
+            True
+        """
+        return ModularAbelianVarieties, (self.base_field(), )
+
 ###################################################################
 #
 # Natural inclusions between categories.
@@ -1290,6 +1317,7 @@ category_hierarchy = {\
     Sequences              : [Sets], \
     Schemes_abstract       : [Sets], \
     Schemes_over_base      : [Schemes_abstract, Sets], \
+    ModularAbelianVarieties: [Sets], \
     }
 
 for k in category_hierarchy:
