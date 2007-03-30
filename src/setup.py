@@ -451,11 +451,11 @@ ext_modules = [ \
               libraries=['ntl'],
               include_dirs=['sage/libs/ntl/']), \
 
-    Extension('sage.rings.polynomial_element',
-              sources = ['sage/rings/polynomial_element.pyx']), \
+    Extension('sage.rings.polynomial.polynomial_element',
+              sources = ['sage/rings/polynomial/polynomial_element.pyx']), \
 
-    Extension('sage.rings.polynomial_pyx',
-              sources = ['sage/rings/polynomial_pyx.pyx',
+    Extension('sage.rings.polynomial.polynomial_pyx',
+              sources = ['sage/rings/polynomial/polynomial_pyx.pyx',
                          'sage/ext/arith_gmp.pyx'],
               libraries=['gmp']), \
 
@@ -470,8 +470,8 @@ ext_modules = [ \
               sources = ['sage/rings/sparse_poly.pyx'],
               libraries=['gmp']), \
 
-    Extension('sage.rings.polydict',
-              sources = ['sage/rings/polydict.pyx']), \
+    Extension('sage.rings.polynomial.polydict',
+              sources = ['sage/rings/polynomial/polydict.pyx']), \
 
     Extension('sage.misc.search',
               ['sage/misc/search.pyx']), \
@@ -832,6 +832,7 @@ setup(name        = 'sage',
                      'sage.rings',
                      'sage.rings.number_field',
                      'sage.rings.padics',
+                     'sage.rings.polynomial',
 
                      'sage.tests',
 

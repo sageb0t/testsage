@@ -77,12 +77,12 @@ cdef class Ring(ParentWithGens):
 
         """
 
-        from sage.rings.polynomial_element import is_Polynomial
+        from sage.rings.polynomial.polynomial_element import is_Polynomial
         if is_Polynomial(x):
             x = str(x)
 
         if not isinstance(x, list):
-            from sage.rings.polynomial_ring import PolynomialRing
+            from sage.rings.polynomial.polynomial_ring import PolynomialRing
             P = PolynomialRing(self, x)
             return P
 
@@ -95,7 +95,7 @@ cdef class Ring(ParentWithGens):
             P = PowerSeriesRing
 
         elif isinstance(x, (tuple, str)):
-            from sage.rings.polynomial_ring import PolynomialRing
+            from sage.rings.polynomial.polynomial_ring import PolynomialRing
             P = PolynomialRing
             if isinstance(x, tuple):
                 y = []
@@ -104,7 +104,7 @@ cdef class Ring(ParentWithGens):
                 x = tuple(y)
 
         else:
-            from sage.rings.polynomial_ring import PolynomialRing
+            from sage.rings.polynomial.polynomial_ring import PolynomialRing
             P = PolynomialRing
             x = (str(x),)
 
@@ -1254,7 +1254,7 @@ cdef class FiniteField(Field):
             sage: k.polynomial_ring()
             Univariate Polynomial Ring in alpha over Finite Field of size 3
         """
-        from sage.rings.polynomial_ring import PolynomialRing
+        from sage.rings.polynomial.polynomial_ring import PolynomialRing
         from sage.rings.finite_field import GF
 
         if self.__polynomial_ring is not None:
