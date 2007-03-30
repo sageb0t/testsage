@@ -315,7 +315,7 @@ class DSageServer(pb.Root):
 
         """
 
-        return client_tracker.client_list
+        return self.clientdb.get_client_list()
 
     def get_cluster_speed(self):
         r"""
