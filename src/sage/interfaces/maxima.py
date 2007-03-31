@@ -1324,7 +1324,7 @@ class MaximaElement(ExpectElement):
     def _latex_(self):
         self._check_valid()
         P = self.parent()
-        s = maxima._eval_line('tex(%s)'%self.name(), reformat=False)
+        s = P._eval_line('tex(%s)'%self.name(), reformat=False)
         if not '$$' in s:
             raise RuntimeError, "Error texing maxima object."
         i = s.find('$$')
