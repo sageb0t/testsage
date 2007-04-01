@@ -1827,7 +1827,7 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
         mpz_clear(x)
         return ans
 
-    def _gcd(self, Integer n):
+    def gcd(self, Integer n):
         """
         Return the greatest common divisor of self and $n$.
 
