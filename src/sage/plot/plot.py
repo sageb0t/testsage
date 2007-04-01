@@ -126,6 +126,8 @@ TODO:
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
 
+import pdb
+
 from sage.structure.sage_object import SageObject
 
 ## IMPORTANT: Do not import matplotlib at module scope.  It takes a
@@ -2285,7 +2287,7 @@ class PlotFactory(GraphicPrimitiveFactory):
             try:
                 y = f(x)
                 data.append((x, float(y)))
-            except (TypeError, ValueError), msg:
+            except (ZeroDivisionError, TypeError, ValueError), msg:
                 #raise ValueError, "%s\nUnable to compute f(%s)"%(msg, x)
                 pass
         # adaptive refinement
