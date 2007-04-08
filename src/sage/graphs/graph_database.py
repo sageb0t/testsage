@@ -159,7 +159,7 @@ class GraphDatabase():
 
             # Inspect and display graphs individually:
             sage: glist[0]
-            A graph on 5 vertices
+            Graph on 5 vertices
             sage.: glist[8].show(layout='circular')
 
             # Now we can use functions from the graphs_list.
