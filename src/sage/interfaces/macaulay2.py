@@ -94,7 +94,7 @@ TODO:
 
 import os
 
-from expect import Expect, ExpectElement
+from expect import Expect, ExpectElement, AsciiArtString
 
 from sage.misc.misc import verbose
 from sage.misc.multireplace import multiple_replace
@@ -159,7 +159,7 @@ class Macaulay2(Expect):
         ans = Expect.eval(self, code, strip=strip).strip('\n')
         if strip:
             ans = remove_output_labels(ans)
-        return ans
+        return AsciiArtString(ans)
 
     def get(self, var):
         """
