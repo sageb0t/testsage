@@ -56,7 +56,7 @@ TUTORIAL:
 
                 sage: d = {0: [1,4,5], 1: [2,6], 2: [3,7], 3: [4,8], 4: [9], 5: [7, 8], 6: [8,9], 7: [9]}
                 sage: G = Graph(d); G
-                A graph on 10 vertices
+                Graph on 10 vertices
                 sage: G.save('sage.png')
 
                     b. A NetworkX graph:
@@ -70,7 +70,7 @@ TUTORIAL:
 
                 sage: s = ':I`AKGsaOs`cI]Gb~'
                 sage: G = Graph(s); G
-                A looped multi-graph on 10 vertices
+                Looped multi-graph on 10 vertices
                 sage: G.save('sage.png')
 
                 iii. adjacency matrix: In an adjacency matrix, each column and each row represent
@@ -89,7 +89,7 @@ TUTORIAL:
                 [0 0 0 1 0 1 1 0 0 0]
                 [0 0 0 0 1 0 1 1 0 0]
                 sage: G = Graph(M); G
-                A graph on 10 vertices
+                Graph on 10 vertices
                 sage: G.save('sage.png')
 
                 iv. incidence matrix: In an incidence matrix, each row represents a vertex
@@ -108,7 +108,7 @@ TUTORIAL:
                 [ 0  0  0  0  0  0  0  0  1 -1  0  0  0  1  0]
                 [ 0  0  0  0  0  0  1 -1  0  0  0  0  0  0  1]
                 sage: G = Graph(M); G
-                A graph on 10 vertices
+                Graph on 10 vertices
                 sage: G.save('sage.png')
 
         2. Generators
@@ -164,13 +164,13 @@ TUTORIAL:
 
             sage: d = {0 : graphs.DodecahedralGraph(), 1 : graphs.FlowerSnark(),2 : graphs.MoebiusKantorGraph(), 3 : graphs.PetersenGraph() }
             sage: d[2]
-            Moebius-Kantor Graph: A graph on 16 vertices
+            Moebius-Kantor Graph: Graph on 16 vertices
             sage: T = graphs.TetrahedralGraph()
             sage: T.vertices()
             [0, 1, 2, 3]
             sage: T.associate(d)
             sage: T.obj(1)
-            Flower Snark: A graph on 20 vertices
+            Flower Snark: Graph on 20 vertices
 
         4. Database
 
@@ -285,7 +285,7 @@ class GenericGraph(SageObject):
 
         EXAMPLES:
             sage: g = Graph({0:[1,2,3], 2:[5]}); g
-            A graph on 5 vertices
+            Graph on 5 vertices
             sage: 2 in g
             True
             sage: 10 in g
@@ -319,7 +319,8 @@ class GenericGraph(SageObject):
         name = self._nxg.name
         if name != "No Name" and (not name is None):
             return self._nxg.name
-        else: return repr(self)
+        else:
+            return repr(self)
 
     def _latex_(self):
         """
@@ -384,12 +385,12 @@ class GenericGraph(SageObject):
         EXAMPLE:
             sage: d = {0: [1,4,5], 1: [2,6], 2: [3,7], 3: [4,8], 4: [9], 5: [7, 8], 6: [8,9], 7: [9]}
             sage: G = Graph(d); G
-            A graph on 10 vertices
+            Graph on 10 vertices
             sage: G.name("Petersen Graph"); G
             'Petersen Graph'
-            Petersen Graph: A graph on 10 vertices
+            Petersen Graph: Graph on 10 vertices
             sage: G.name(set_to_none=True); G
-            A graph on 10 vertices
+            Graph on 10 vertices
         """
         if not new is None:
             if not isinstance(new, str):
@@ -408,16 +409,16 @@ class GenericGraph(SageObject):
 
         EXAMPLE:
             sage: G = Graph(); G
-            A graph on 0 vertices
+            Graph on 0 vertices
             sage: G.loops(True); G
             True
-            A looped graph on 0 vertices
+            Looped graph on 0 vertices
 
             sage: D = DiGraph(); D
-            A digraph on 0 vertices
+            Digraph on 0 vertices
             sage: D.loops(True); D
             True
-            A looped digraph on 0 vertices
+            Looped digraph on 0 vertices
         """
         if not new is None:
             if new:
@@ -476,10 +477,10 @@ class GenericGraph(SageObject):
 
         EXAMPLES:
             sage: G = Graph(); G.add_vertex(); G
-            A graph on 1 vertex
+            Graph on 1 vertex
 
             sage: D = DiGraph(); D.add_vertex(); D
-            A digraph on 1 vertex
+            Digraph on 1 vertex
         """
         if name is None: # then find an integer to use as a key
             i = 0
@@ -515,7 +516,7 @@ class GenericGraph(SageObject):
 
             sage: D = DiGraph({0:[1,2,3,4,5],1:[2],2:[3],3:[4],4:[5],5:[1]})
             sage: D.delete_vertex(0); D
-            A digraph on 5 vertices
+            Digraph on 5 vertices
         """
         self._nxg.delete_node(vertex)
 
@@ -527,7 +528,7 @@ class GenericGraph(SageObject):
         EXAMPLE:
             sage: D = DiGraph({0:[1,2,3,4,5],1:[2],2:[3],3:[4],4:[5],5:[1]})
             sage: D.delete_vertices([1,2,3,4,5]); D
-            A digraph on 1 vertex
+            Digraph on 1 vertex
         """
         self._nxg.delete_nodes_from(vertices)
 
@@ -561,13 +562,13 @@ class GenericGraph(SageObject):
         EXAMPLES:
             sage: d = {0 : graphs.DodecahedralGraph(), 1 : graphs.FlowerSnark(), 2 : graphs.MoebiusKantorGraph(), 3 : graphs.PetersenGraph() }
             sage: d[2]
-            Moebius-Kantor Graph: A graph on 16 vertices
+            Moebius-Kantor Graph: Graph on 16 vertices
             sage: T = graphs.TetrahedralGraph()
             sage: T.vertices()
             [0, 1, 2, 3]
             sage: T.associate(d)
             sage: T.obj(1)
-            Flower Snark: A graph on 20 vertices
+            Flower Snark: Graph on 20 vertices
         """
         for v in self.vertices():
             if not vertex_dict.has_key(v):
@@ -584,13 +585,13 @@ class GenericGraph(SageObject):
         EXAMPLES:
             sage: d = {0 : graphs.DodecahedralGraph(), 1 : graphs.FlowerSnark(), 2 : graphs.MoebiusKantorGraph(), 3 : graphs.PetersenGraph() }
             sage: d[2]
-            Moebius-Kantor Graph: A graph on 16 vertices
+            Moebius-Kantor Graph: Graph on 16 vertices
             sage: T = graphs.TetrahedralGraph()
             sage: T.vertices()
             [0, 1, 2, 3]
             sage: T.associate(d)
             sage: T.obj(1)
-            Flower Snark: A graph on 20 vertices
+            Flower Snark: Graph on 20 vertices
         """
         return self._assoc[vertex]
 
@@ -965,11 +966,11 @@ class Graph(GenericGraph):
         sage: import networkx
         sage: g = networkx.Graph({0:[1,2,3], 2:[5]})
         sage: Graph(g)
-        A graph on 5 vertices
+        Graph on 5 vertices
 
     2. A dictionary of dictionaries:
         sage: g = Graph({0:{1:'x',2:'z',3:'a'}, 2:{5:'out'}}); g
-        A graph on 5 vertices
+        Graph on 5 vertices
 
     The labels ('x', 'z', 'a', 'out') are labels for edges. For example, 'out' is
     the label for the edge on 2 and 5. Labels can be used as weights, if all the
@@ -977,26 +978,26 @@ class Graph(GenericGraph):
 
     3. A dictionary of lists:
         sage: g = Graph({0:[1,2,3], 2:[5]}); g
-        A graph on 5 vertices
+        Graph on 5 vertices
 
     4. A numpy matrix or ndarray:
         sage: import numpy
         sage: A = numpy.array([[0,1,1],[1,0,1],[1,1,0]])
         sage: Graph(A)
-        A graph on 3 vertices
+        Graph on 3 vertices
 
     5. A graph6 or sparse6 string:
     SAGE automatically recognizes whether a string is in graph6 or sage6 format:
 
         sage: s = ':I`AKGsaOs`cI]Gb~'
         sage: Graph(s)
-        A looped multi-graph on 10 vertices
+        Looped multi-graph on 10 vertices
 
     There are also list functions to take care of lists of graphs:
 
         sage: s = ':IgMoqoCUOqeb\n:I`AKGsaOs`cI]Gb~\n:I`EDOAEQ?PccSsge\N\n'
         sage: graphs_list.from_sparse6(s)
-        [A looped multi-graph on 10 vertices, A looped multi-graph on 10 vertices, A looped multi-graph on 10 vertices]
+        [Looped multi-graph on 10 vertices, Looped multi-graph on 10 vertices, Looped multi-graph on 10 vertices]
 
     6. A SAGE matrix:
     Note: If format is not specified, then SAGE assumes a square matrix is an adjacency
@@ -1016,7 +1017,7 @@ class Graph(GenericGraph):
         [0 0 0 1 0 1 1 0 0 0]
         [0 0 0 0 1 0 1 1 0 0]
         sage: Graph(M)
-        A graph on 10 vertices
+        Graph on 10 vertices
 
         B. an incidence matrix:
 
@@ -1028,7 +1029,7 @@ class Graph(GenericGraph):
         [ 0  0  0  1 -1]
         [ 0  0  0  0  0]
         sage: Graph(M)
-        A graph on 6 vertices
+        Graph on 6 vertices
     """
     def __init__(self, data=None, pos=None, loops=False, format=None, boundary=None, **kwds):
         import networkx
@@ -1165,12 +1166,7 @@ class Graph(GenericGraph):
         self._boundary = boundary
 
     def _repr_(self):
-        if not self._nxg.name is None and not self._nxg.name == "":
-            name = self._nxg.name
-            name = name + ": "
-        else:
-            name = ""
-        name += "A "
+        name = ""
         if self.loops():
             name += "looped "
         if self.multiple_edges():
@@ -1180,6 +1176,9 @@ class Graph(GenericGraph):
             name += "ex"
         else:
             name += "ices"
+        name = name.capitalize()
+        if not self._nxg.name is None and not self._nxg.name == "":
+            name = self._nxg.name + ": " + name
         return name
 
     def copy(self):
@@ -1196,7 +1195,7 @@ class Graph(GenericGraph):
 
         EXAMPLE:
             sage: graphs.PetersenGraph().to_directed()
-            A digraph on 10 vertices
+            Digraph on 10 vertices
         """
         return DiGraph(self._nxg.to_directed(), pos=self._pos)
 
@@ -1206,7 +1205,7 @@ class Graph(GenericGraph):
 
         EXAMPLE:
             sage: graphs.PetersenGraph().to_undirected()
-            Petersen graph: A graph on 10 vertices
+            Petersen graph: Graph on 10 vertices
         """
         return self.copy()
 
@@ -1227,10 +1226,10 @@ class Graph(GenericGraph):
 
         EXAMPLE:
             sage: G = Graph(multiedges=True); G
-            A multi-graph on 0 vertices
+            Multi-graph on 0 vertices
             sage: G.multiple_edges(False); G
             False
-            A graph on 0 vertices
+            Graph on 0 vertices
         """
         if not new is None:
             if new:
@@ -1299,7 +1298,7 @@ class Graph(GenericGraph):
             sage: G = graphs.DodecahedralGraph()
             sage: H = Graph()
             sage: H.add_edges( G.edge_iterator() ); H
-            A graph on 20 vertices
+            Graph on 20 vertices
         """
         self._nxg.add_edges_from( edges )
 
@@ -1913,13 +1912,13 @@ class Graph(GenericGraph):
         EXAMPLES:
             sage: G = graphs.CompleteGraph(9)
             sage: H = G.subgraph([0,1,2]); H
-            A graph on 3 vertices
+            Graph on 3 vertices
             sage: G
-            Complete graph: A graph on 9 vertices
+            Complete graph: Graph on 9 vertices
             sage: K = G.subgraph([0,1,2], inplace=True); K
-            Subgraph of (Complete graph): A graph on 3 vertices
+            Subgraph of (Complete graph): Graph on 3 vertices
             sage: G
-            Subgraph of (Complete graph): A graph on 3 vertices
+            Subgraph of (Complete graph): Graph on 3 vertices
             sage: G is K
             True
         """
@@ -2183,9 +2182,9 @@ class Graph(GenericGraph):
         EXAMPLE:
             sage: D = graphs.DodecahedralGraph()
             sage: E = D.canonical_label(); E
-            Dodecahedron: A graph on 20 vertices
+            Dodecahedron: Graph on 20 vertices
             sage: D.canonical_label(proof=True)
-            (Dodecahedron: A graph on 20 vertices, {0: 0, 1: 19, 2: 16, 3: 15, 4: 9, 5: 1, 6: 10, 7: 8, 8: 14, 9: 12, 10: 17, 11: 11, 12: 5, 13: 6, 14: 2, 15: 4, 16: 3, 17: 7, 18: 13, 19: 18})
+            (Dodecahedron: Graph on 20 vertices, {0: 0, 1: 19, 2: 16, 3: 15, 4: 9, 5: 1, 6: 10, 7: 8, 8: 14, 9: 12, 10: 17, 11: 11, 12: 5, 13: 6, 14: 2, 15: 4, 16: 3, 17: 7, 18: 13, 19: 18})
             sage: D.is_isomorphic(E)
             True
         """
@@ -2240,11 +2239,11 @@ class DiGraph(GenericGraph):
         sage: import networkx
         sage: g = networkx.DiGraph({0:[1,2,3], 2:[5]})
         sage: DiGraph(g)
-        A digraph on 5 vertices
+        Digraph on 5 vertices
 
     2. A dictionary of dictionaries:
         sage: g = DiGraph({0:{1:'x',2:'z',3:'a'}, 2:{5:'out'}}); g
-        A digraph on 5 vertices
+        Digraph on 5 vertices
 
     The labels ('x', 'z', 'a', 'out') are labels for arcs. For example, 'out' is
     the label for the arc from 2 to 5. Labels can be used as weights, if all the
@@ -2252,13 +2251,13 @@ class DiGraph(GenericGraph):
 
     3. A dictionary of lists:
         sage: g = DiGraph({0:[1,2,3], 2:[5]}); g
-        A digraph on 5 vertices
+        Digraph on 5 vertices
 
     4. A numpy matrix or ndarray:
         sage: import numpy
         sage: A = numpy.array([[0,1,0],[1,0,0],[1,1,0]])
         sage: DiGraph(A)
-        A digraph on 3 vertices
+        Digraph on 3 vertices
 
     5. A SAGE matrix:
     Note: If format is not specified, then SAGE assumes a square matrix is an adjacency
@@ -2273,7 +2272,7 @@ class DiGraph(GenericGraph):
         [0 0 0 0 0]
         [0 0 0 0 0]
         sage: DiGraph(M)
-        A digraph on 5 vertices
+        Digraph on 5 vertices
 
         B. an incidence matrix:
 
@@ -2285,7 +2284,7 @@ class DiGraph(GenericGraph):
         [ 0  0  0  1 -1]
         [ 0  0  0  0  0]
         sage: DiGraph(M)
-        A digraph on 6 vertices
+        Digraph on 6 vertices
     """
 
     def __init__(self, data=None, pos=None, loops=False, format=None, boundary=None, **kwds):
@@ -2352,12 +2351,7 @@ class DiGraph(GenericGraph):
         self._boundary = boundary
 
     def _repr_(self):
-        if not self._nxg.name is None and not self._nxg.name == "":
-            name = self._nxg.name
-            name = name + ": "
-        else:
-            name = ""
-        name += "A "
+        name = ""
         if self.loops():
             name += "looped "
         if self.multiple_arcs():
@@ -2367,6 +2361,9 @@ class DiGraph(GenericGraph):
             name += "ex"
         else:
             name += "ices"
+        name = name.capitalize()
+        if not self._nxg.name is None and not self._nxg.name == "":
+            name = self._nxg.name + ": " + name
         return name
 
     def copy(self):
@@ -2382,7 +2379,7 @@ class DiGraph(GenericGraph):
 
         EXAMPLE:
             sage: DiGraph({0:[1,2,3],4:[5,1]}).to_directed()
-            A digraph on 6 vertices
+            Digraph on 6 vertices
         """
         return self.copy()
 
@@ -2417,10 +2414,10 @@ class DiGraph(GenericGraph):
 
         EXAMPLE:
             sage: D = DiGraph(multiedges=True); D
-            A multi-digraph on 0 vertices
+            Multi-digraph on 0 vertices
             sage: D.multiple_arcs(False); D
             False
-            A digraph on 0 vertices
+            Digraph on 0 vertices
         """
         if not new is None:
             if new:
@@ -2499,7 +2496,7 @@ class DiGraph(GenericGraph):
             sage: G = graphs.DodecahedralGraph().to_directed()
             sage: H = DiGraph()
             sage: H.add_arcs( G.arc_iterator() ); H
-            A digraph on 20 vertices
+            Digraph on 20 vertices
         """
         self._nxg.add_edges_from( arcs )
 
@@ -3129,13 +3126,13 @@ class DiGraph(GenericGraph):
         EXAMPLES:
             sage: D = graphs.CompleteGraph(9).to_directed()
             sage: H = D.subgraph([0,1,2]); H
-            A digraph on 3 vertices
+            Digraph on 3 vertices
             sage: D
-            A digraph on 9 vertices
+            Digraph on 9 vertices
             sage: K = D.subgraph([0,1,2], inplace=True); K
-            Subgraph of (None): A digraph on 3 vertices
+            Subgraph of (None): Digraph on 3 vertices
             sage: D
-            Subgraph of (None): A digraph on 3 vertices
+            Subgraph of (None): Digraph on 3 vertices
             sage: D is K
             True
         """
