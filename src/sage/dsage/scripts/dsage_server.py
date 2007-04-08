@@ -152,8 +152,8 @@ def main():
                     SSL_CERT)
         while True:
             if attempts > 50:
-                print err_msg
-                print 'Last attempted port: %s' % (CLIENT_PORT)
+                log.err(err_msg)
+                log.err('Last attempted port: %s' % (CLIENT_PORT))
             try:
                 reactor.listenSSL(CLIENT_PORT,
                                   client_factory,
@@ -165,8 +165,8 @@ def main():
     else:
         while True:
             if attempts > 50:
-                print err_msg
-                print 'Last attempted ports: %s' % (CLIENT_PORT)
+                log.err(err_msg)
+                log.err('Last attempted port: %s' % (CLIENT_PORT))
             try:
                 reactor.listenTCP(CLIENT_PORT, client_factory)
                 break
