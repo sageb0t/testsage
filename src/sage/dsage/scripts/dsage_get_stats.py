@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 ##############################################################################
 #
 #  DSAGE: Distributed SAGE
@@ -16,10 +17,21 @@
 #                  http://www.gnu.org/licenses/
 #
 ##############################################################################
-from sage.dsage.dsage import dsage
-from sage.dsage.dist_functions.all import *
 
-def DSage(server=None, port=8081, username=None, pubkey_file=None, privkey_file=None):
-    from sage.dsage.interface.dsage_interface import BlockingDSage
-    return BlockingDSage(server=server, port=port, username=username,
-                         pubkey_file=pubkey_file, privkey_file=privkey_file)
+from sage.dsage.server.server import DSageServer
+from sage.dsage.database.jobdb import JobDatabaseSQLite
+from sage.dsage.database.monitordb import MonitorDatabase
+from sage.dsage.database.clientdb import ClientDatabase
+
+def main():
+    jobdb = JobDatabaseSQLite()
+    monitordb = MonitorDatabase()
+    clientdb = ClientDatabase()
+    dsage_server = DSageServer(jobdb, monitordb, clientdb)
+    f = open('dsage.xml', 'w')
+    f.write(dsage_server.generate_xml_stats())
+    f.close()
+    print 'Wrote dsage.xml...'
+
+if __name__ == '__main__':
+    main()
