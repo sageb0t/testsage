@@ -40,6 +40,7 @@ cdef extern from "gmp.h":
     # The mpz type
     void mpz_abs (mpz_t rop, mpz_t op)
     void mpz_add (mpz_t rop, mpz_t op1, mpz_t op2)
+    void mpz_add_ui(mpz_t rop, mpz_t op1, unsigned long op2)
     void mpz_addmul (mpz_t rop, mpz_t op1, mpz_t op2)
     void mpz_and (mpz_t rop, mpz_t op1, mpz_t op2)
     void mpz_ior (mpz_t rop, mpz_t op1, mpz_t op2)
@@ -117,6 +118,10 @@ cdef extern from "gmp.h":
     int mpz_perfect_power_p(mpz_t op)
     unsigned long int mpz_scan0(mpz_t op, unsigned long int starting_bit)
     unsigned long int mpz_scan1(mpz_t op, unsigned long int starting_bit)
+    int mpz_fits_sint_p(mpz_t op)
+    int mpz_fits_uint_p(mpz_t op)
+    int mpz_fits_slong_p(mpz_t op)
+    int mpz_fits_ulong_p(mpz_t op)
 
     # The mpq type
     void mpq_abs (mpq_t rop, mpq_t op)
