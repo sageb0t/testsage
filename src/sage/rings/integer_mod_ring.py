@@ -392,6 +392,15 @@ class IntegerModRing_generic(quotient_ring.QuotientRing_generic):
             self.__mult_gen = a
             return a
 
+    def quadratic_nonresidue(self):
+        try:
+            return self._nonresidue
+        except AttributeError:
+            for a in self:
+                if not a.is_square():
+                    self._nonresidue = a
+                    return a
+
     def factored_order(self):
         """
         EXAMPLES:
