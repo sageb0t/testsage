@@ -1347,7 +1347,7 @@ cdef class IntegerMod_int(IntegerMod_abstract):
         return z
 
     def __float__(IntegerMod_int self):
-        return self.ivalue
+        return <double>self.ivalue
 
     def __hash__(self):
         """
@@ -1839,7 +1839,7 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
             sage: float(a)
             8943.0
         """
-        return float(self.ivalue)
+        return <double>self.ivalue
 
     def __hash__(self):
         """
