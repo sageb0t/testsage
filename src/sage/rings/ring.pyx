@@ -835,7 +835,7 @@ def is_Field(x):
 
     EXAMPLES:
     """
-    return isinstance(x, Field)
+    return bool(isinstance(x, Field))
 
 cdef class Field(PrincipalIdealDomain):
     """

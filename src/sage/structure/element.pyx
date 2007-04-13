@@ -1728,7 +1728,7 @@ cdef class PlusInfinityElement(InfinityElement):
 cdef class MinusInfinityElement(InfinityElement):
     pass
 
-cdef int have_same_parent(left, right):
+cdef inline int have_same_parent(left, right):
     """
     Return nonzero true value if and only if left and right are
     elements and have the same parent.
