@@ -101,3 +101,12 @@ cdef class Conversion:
             return self.si2sa_QQ(n,_ring)
         else:
             raise ValueError, "cannot convert SINGULAR number"
+
+    cdef public number *sa2si(self, Element elem, ring * _ring):
+        if PY_TYPE_CHECK(elem._parent, FiniteField_prime_modn):
+            return n_Init(int(elem),_ring)
+
+        elif PY_TYPE_CHECK(elem._parent, RationalField):
+            return self.sa2si_QQ(elem, _ring)
+        else:
+            raise ValueError, "cannot convert SINGULAR number"
