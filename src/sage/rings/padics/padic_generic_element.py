@@ -568,10 +568,9 @@ class pAdicGenericElement(sage.rings.padics.local_generic_element.LocalGenericEl
             ...       assert ll.precision_absolute() == prec
 
         AUTHORS:
-            -- William Stein: initial version
             -- David Harvey (2006-09-13): corrected subtle precision bug
                (need to take denominators into account! -- see trac \#53)
-            -- Genya Zaytman (2007-02-14): adapted to new p-adic class
+            -- Genya Zaytman (2007-02-14): addapted to new p-adic class
 
         TODO:
             -- Currently implemented as $O(N^2)$. This can be improved to
