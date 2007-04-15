@@ -463,6 +463,10 @@ ext_modules = [ \
               sources = ['sage/rings/padics/padic_ring_capped_absolute_element.pyx', \
                          'sage/rings/padics/padic_generic_element.c'],
               libraries=['gmp']),
+    Extension('sage.rings.padics.padic_capped_relative_element',
+              sources = ['sage/rings/padics/padic_capped_relative_element.pyx', \
+                         'sage/rings/padics/padic_generic_element.c'],
+              libraries=['gmp']),
 
     Extension('sage.rings.memory', \
               sources = ['sage/rings/memory.pyx'], \
