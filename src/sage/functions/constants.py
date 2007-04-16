@@ -128,6 +128,7 @@ AUTHORS:
     -- Alex Clemesha  <aclemesh@ucsd.edu>, 2006-01-15
     -- William Stein
     -- Alex Clemesha \& William Stein (2006-02-20): added new constants; removed todos
+    -- didier deshommes <dfdeshom@gmail.com> (2007-03-27): added constants from RQDF
 """
 
 #*****************************************************************************
@@ -141,7 +142,7 @@ AUTHORS:
 
 import math, operator
 
-from sage.rings.all import CommutativeRing, RealField, Integer, RingElement
+from sage.rings.all import CommutativeRing, RealField, Integer, RingElement, RQDF
 import sage.interfaces.all
 import sage.rings.all
 from sage.libs.pari.all import pari
@@ -305,6 +306,9 @@ class Pi(Constant):
     def _real_double_(self):
         return sage.rings.all.RD.pi()
 
+    def _rqdf_(self):
+        return sage.rings.all.RQDF.pi()
+
     def __abs__(self):
         if self.str()[0] != '-':
             return self
@@ -373,6 +377,15 @@ class E(Constant):
     def _real_double_(self):
         return sage.rings.all.RD.e()
 
+    def _rqdf_(self):
+        """
+        EXAMPLES:
+            sage: RQDF = RealQuadDoubleField ()
+            sage: RQDF.e()
+            2.71828182845904509079559829842764884233474731445312500000000000
+        """
+        return sage.rings.all.RQDF.e()
+
     # This just gives a string in singular anyways, and it's
     # *REALLY* slow!
     #def _singular_(self, singular):
@@ -398,6 +411,14 @@ class NotANumber(Constant):
 
     def _real_double_(self):
         return sage.rings.all.RD.nan()
+
+    def _rqdf_(self):
+        """
+        EXAMPLES:
+            sage:RQDF (NaN)
+            'NaN'
+        """
+        return sage.rings.all.RQDF.NaN()
 
 NaN = NotANumber()
 
@@ -440,6 +461,9 @@ class GoldenRatio(Constant):
             1.61803398875
         """
         return sage.rings.all.RDF(1.61803398874989484820458)
+
+    def _rqdf_(self):
+        return RQDF('1.61803398874989484820458683436563811772030917980576286213544862')
 
     def _mpfr_(self,R):  #is this OK for _mpfr_ ?
 	return (R(1)+R(5).sqrt())*R(0.5)
@@ -498,6 +522,14 @@ class Log2(Constant):
         """
         return sage.rings.all.RD.log2()
 
+    def _rqdf_(self):
+        """
+        EXAMPLES:
+            sage: RDF(log2)
+            0.693147180559945309417232121458176568075500134360255254120680010
+        """
+        return sage.rings.all.RQDF.log2()
+
     def _mpfr_(self,R):
         return R.log2()
 
@@ -545,6 +577,9 @@ class EulerGamma(Constant):
         """
         return sage.rings.all.RD.euler()
 
+    def _rqdf_(self):
+        return RQDF('0.577215664901532860606512090082402431042159335939923598805767235')
+
     def floor(self):
         return Integer(0)
 
@@ -579,6 +614,9 @@ class Catalan(Constant):
             0.915965594177
         """
         return sage.rings.all.RDF(0.91596559417721901505460351493252)
+
+    def _rqdf_(self):
+        return RQDF('0.915965594177219015054603514932384110774149374281672134266498120')
 
     def __float__(self):
         """
@@ -637,6 +675,9 @@ class Khinchin(Constant):
         """
 	return sage.rings.all.RDF(2.685452001065306445309714835481795693820)
 
+    def _rqdf_(self):
+        return RQDF(self.__value[:63])
+
     def __float__(self):
         return 2.685452001065306445309714835481795693820
 
@@ -685,6 +726,9 @@ class TwinPrime(Constant):
             0.660161815847
         """
 	return sage.rings.all.RDF(0.660161815846869573927812110014555778432)
+
+    def _rqdf_(self):
+        return RQDF(self.__value[:63])
 
     def __float__(self):
         """
@@ -745,6 +789,9 @@ class Merten(Constant):
             0.261497212848
         """
         return sage.rings.all.RDF(0.261497212847642783755426838608695859051)
+
+    def _rqdf_(self):
+        return RQDF(self.__value[:63])
 
     def __float__(self):
         """
@@ -809,6 +856,9 @@ class Brun(Constant):
         """
         return sage.rings.all.RDF(1.9021605831040)
 
+    def _rqdf_(self):
+        return RQDF(self.__value[:63])
+
     def __float__(self):
         """
         EXAMPLES:
@@ -857,6 +907,9 @@ class UniversalPolynomialElement(Constant):
         raise TypeError
 
     def _real_double_(self):
+        raise TypeError
+
+    def _rqdf_(self):
         raise TypeError
 
     def __abs__(self):
