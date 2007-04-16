@@ -1090,6 +1090,7 @@ div.cell_output_hidden {
 
 pre.shrunk {
 /*   height:0px; */
+  font-size:12pt;
    display:inline;
 }
 
