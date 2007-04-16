@@ -8,7 +8,7 @@ AUTHOR:
 EXAMPLES:
     sage: f = x^2 + y^2 == 1
     sage: f.solve(x)
-    [x == -sqrt(1 - y^2), x == sqrt(1 - y^2)]
+    [x == (-sqrt(1 - y^2)), x == sqrt(1 - y^2)]
 
     sage: f = x^5 + a
     sage: solve(f==0,x)
@@ -37,6 +37,9 @@ latex_symbols = {operator.lt:' < ', operator.le:' \\leq ', operator.eq:' = ',
 
 comparisons = {operator.lt:set([-1]), operator.le:set([-1,0]), operator.eq:set([0]),
                operator.ne:set([-1,1]),  operator.ge:set([0,1]), operator.gt:set([1])}
+
+def var_cmp(x,y):
+    return cmp(str(x), str(y))
 
 def paren(x):
     if x._is_atomic():
@@ -77,7 +80,7 @@ class SymbolicEquation(SageObject):
         """
         EXAMPLES:
             sage: f =  (x+y+w) == (x^2 - y^2 - z^3);   f
-            (y + x + w) == (-z^3 - y^2 + x^2)
+            (x + y + w) == (x^2 - y^2 - z^3)
             sage: f.variables()
             [w, x, y, z]
         """
@@ -85,7 +88,7 @@ class SymbolicEquation(SageObject):
             return self.__variables
         except AttributeError:
             v = list(set(list(self._left.variables()) + list(self._right.variables())))
-            v.sort()
+            v.sort(var_cmp)
             self.__variables = v
             return v
 
@@ -103,7 +106,7 @@ class SymbolicEquation(SageObject):
         EXAMPLES:
             sage: f =  (x^2 - x == 0)
             sage: f
-            x^2 - x == 0
+            (x^2 - x) == 0
             sage: print f
                                                2
                                               x  - x == 0
@@ -216,7 +219,12 @@ def assume(*args):
         *args -- assumptions
 
     EXAMPLES:
-        sage:
+        sage: assume(x > 0)
+        sage: bool(sqrt(x^2) == x)
+        True
+        sage: forget()
+        sage: bool(sqrt(x^2) == x)
+        False
     """
     for x in args:
         if isinstance(x, (tuple, list)):
@@ -239,14 +247,6 @@ def forget(*args):
         *args -- assumptions (default: forget all assumptions)
 
     EXAMPLES:
-        sage: assume(x > 0)
-        sage: sqrt(x^2)
-        x
-        sage: forget()
-        Forgetting all assumptions.
-        sage: sqrt(x^2)
-        abs(x)
-
     We define and forget multiple assumptions:
         sage: assume(x>0, y>0, z == 1, y>0)
         sage: assumptions()
@@ -256,7 +256,6 @@ def forget(*args):
         [y > 0]
     """
     if len(args) == 0:
-        print "Forgetting all assumptions."
         forget_all()
         return
     for x in args:
@@ -271,10 +270,13 @@ def forget(*args):
 
 def assumptions():
     """
+    List all current symbolic assumptions.
+
     EXAMPLES:
+        sage: forget()
         sage: assume(x^2+y^2 > 0)
         sage: assumptions()
-        [(y^2 + x^2) > 0]
+        [(x^2 + y^2) > 0]
         sage: forget(x^2+y^2 > 0)
         sage: assumptions()
         []
@@ -283,7 +285,6 @@ def assumptions():
         sage: assumptions()
         [x > y, z > w]
         sage: forget()
-        Forgetting all assumptions.
         sage: assumptions()
         []
     """
@@ -291,7 +292,10 @@ def assumptions():
 
 def forget_all():
     global _assumptions
-    maxima._eval_line('forget([%s]);'%(','.join([x._maxima_init_() for x in _assumptions])))
+    if len(_assumptions) == 0:
+        return
+    maxima._eval_line('forget(facts());')
+    #maxima._eval_line('forget([%s]);'%(','.join([x._maxima_init_() for x in _assumptions])))
     _assumptions = []
 
 def solve(f, *args, **kwds):

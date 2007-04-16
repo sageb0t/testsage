@@ -195,6 +195,18 @@ class Constant(Function):
     def _has_op(self, x):
         return False
 
+    def _recursive_sub(self, kwds):
+        return self
+
+    def _recursive_sub(self, kwds):
+        return self
+
+    def _recursive_sub_over_ring(self, kwds, ring):
+        return ring(self)
+
+    def variables(self):
+        return []
+
     def _ser(self):
         try:
             return self.__ser
