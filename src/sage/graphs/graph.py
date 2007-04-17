@@ -643,7 +643,7 @@ class GenericGraph(SageObject):
         """
         return self._nxg.nodes()
 
-    def relabel(self, perm, inplace=True):
+    def relabel(self, perm, inplace=True, quick=False):
         r"""
         Uses a dictionary or permutation to relabel the (di)graph.
         If perm is a dictionary, each old vertex v is a key in the
@@ -654,6 +654,10 @@ class GenericGraph(SageObject):
         assumption that V = {0,1,...,n-1} is the vertex set, and
         the permutation acts on the set {1,2,...,n}, where we think
         of n = 0.
+
+        INPUT:
+            quick -- if True, simply return the enumeration of the new graph
+        without constructing it. Requires that perm is of type list.
 
         EXAMPLES:
             sage: G = Graph({0:[1],1:[2],2:[]})
@@ -687,6 +691,17 @@ class GenericGraph(SageObject):
             [1 1 0]
         """
         if type(perm) == list:
+            if quick:
+                n = self.order()
+                numbr = 0
+                if isinstance(self, Graph):
+                    for i,j,l in self.edge_iterator():
+                        numbr += 1<<((n-(perm[i]+1))*n + n-(perm[j]+1))
+                        numbr += 1<<((n-(perm[j]+1))*n + n-(perm[i]+1))
+                elif isinstance(self, DiGraph):
+                    for i,j,l in self.arc_iterator():
+                        numbr += 1<<((n-(perm[i]+1))*n + n-(perm[j]+1))
+                return numbr
             if isinstance(self, Graph):
                 oldd = self._nxg.adj
                 newd = {}
@@ -3477,6 +3492,7 @@ def enum(graph, quick=False):
         if isinstance(graph, Graph):
             for i, j, l in graph.edge_iterator():
                 enumeration += 1 << ((n-(i+1))*n + n-(j+1))
+                enumeration += 1 << ((n-(j+1))*n + n-(i+1))
         elif isinstance(graph, DiGraph):
             for i, j, l in graph.arc_iterator():
                 enumeration += 1 << ((n-(i+1))*n + n-(j+1))
