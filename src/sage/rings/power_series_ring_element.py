@@ -1178,7 +1178,7 @@ class PowerSeries_poly(PowerSeries):
         """
         return self.__f
 
-    def __call__(self, x):
+    def __call__(self, *xs):
         """
         EXAMPLE:
             sage: R.<t> = GF(7)[[]]
@@ -1186,13 +1186,17 @@ class PowerSeries_poly(PowerSeries):
             sage: f(1)
             2
         """
+        if isinstance(xs[0], tuple):
+            xs = xs[0]
+        x = xs[0]
         try:
             if x.parent() is self.parent():
                 if not (self.prec() is infinity):
                     x = x.add_bigoh(self.prec()*x.valuation())
+                    xs = list(xs); xs[0] = x; xs = tuple(xs) # tuples are immutable
         except AttributeError:
             pass
-        return self.__f(x)
+        return self.__f(xs)
 
     def __setitem__(self, n, value):
         """
