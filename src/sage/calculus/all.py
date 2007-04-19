@@ -8,6 +8,7 @@ from calculus import (SymbolicExpressionRing,
                       is_SymbolicExpressionRing)
 
 from functional import (diff, derivative,
+                        expand,
                         integrate, limit, lim,
                         taylor, simplify)
 
