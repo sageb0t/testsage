@@ -1,6 +1,11 @@
 from equations import SymbolicEquation, forget, assume, assumptions, solve
 
 from calculus import (SymbolicExpressionRing,
+                      is_SymbolicExpressionRing,
+                      is_SymbolicExpression,
+                      CallableSymbolicExpressionRing,
+                      is_CallableSymbolicExpressionRing,
+                      is_CallableSymbolicExpression,
                       SER,
                       sin, cos, sec, tan, log, erf, sqrt, asin, acos, atan,
                       abs_symbolic, exp,
@@ -8,10 +13,11 @@ from calculus import (SymbolicExpressionRing,
                       is_SymbolicExpressionRing)
 
 from functional import (diff, derivative,
+                        expand,
                         integrate, limit, lim,
                         taylor, simplify)
 
-from var import var
+from var import (var, function)
 
 from predefined import (a,
                       b,
