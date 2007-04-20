@@ -485,6 +485,9 @@ ext_modules = [ \
     Extension('sage.misc.reset',
               ['sage/misc/reset.pyx']), \
 
+    Extension('sage.calculus.var',
+              ['sage/calculus/var.pyx']), \
+
     Extension('sage.modular.modsym.heilbronn',
               ['sage/modular/modsym/heilbronn.pyx',
                'sage/modular/modsym/p1list.pyx',

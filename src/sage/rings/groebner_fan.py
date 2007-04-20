@@ -40,6 +40,14 @@ EXAMPLES:
     sage: g = i.groebner_fan()
     sage: g.reduced_groebner_bases()
     [[1 - y^2 + x^2], [-1 + y^2 - x^2]]
+
+TESTS:
+    sage: x,y = QQ['x,y'].gens()
+    sage: i = ideal(x^2 - y^2 + 1)
+    sage: g = i.groebner_fan()
+    sage: g == loads(dumps(g))
+    True
+
 """
 
 __doc_exclude = ['to_intvec', 'multiple_replace', 'forall', \
@@ -116,6 +124,9 @@ class GroebnerFan(SageObject):
 
         self.__ideal = I
         self.__ring = S
+
+    def __eq__(self,right):
+        return type(self) == type(right) and self.ideal() == right.ideal()
 
     def ideal(self):
         """
