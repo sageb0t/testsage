@@ -17,7 +17,7 @@ from functional import (diff, derivative,
                         integrate, limit, lim,
                         taylor, simplify)
 
-from var import var
+from var import (var, function)
 
 from predefined import (a,
                       b,
