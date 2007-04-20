@@ -770,7 +770,7 @@ class ExpectElement(RingElement):
         return reduce_load, (self.parent(), self._reduce())
 
     def _reduce(self):
-        return str(self)
+        return repr(self)
 
     def _r_action(self, x):   # used for coercion
         raise AttributeError
