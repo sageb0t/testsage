@@ -344,6 +344,8 @@ class RingMap_lift(RingMap):
           From: Quotient of Polynomial Ring in x, y over Rational Field by the ideal (y, y^2 + x^2)
           To:   Polynomial Ring in x, y over Rational Field
           Defn: Choice of lifting map
+        sage: S.lift() == 0
+        False
     """
     def __init__(self, R, S):
         H = R.Hom(S, Sets())
@@ -353,6 +355,11 @@ class RingMap_lift(RingMap):
             S._coerce_(R(0).lift())
         except TypeError:
             raise TypeError, "No natural lift map"
+
+    def __cmp__(self, other):
+        if not isinstance(other, RingMap_lift):
+            return cmp(type(self), type(other))
+        return 0
 
     def _repr_defn(self):
         return "Choice of lifting map"
@@ -391,7 +398,9 @@ class RingHomomorphism(RingMap):
 
         A *ring* homomorphism is considered to be 0 if and only if
         it sends the 1 element of the domain to the 0 element of the
-        codomain.
+        codomain.  Since rings in SAGE all have a 1 element, the
+        zero homomorphism is only to a ring of order 1, where 1==0,
+        e.g., the ring \code{Integers(1)}.
 
         EXAMPLES:
         First an example of a map that is obviously nonzero.
@@ -464,6 +473,50 @@ class RingHomomorphism_im_gens(RingHomomorphism):
     def im_gens(self):
         return self.__im_gens
 
+    def __cmp__(self, other):
+        """
+        EXAMPLES:
+        A single variate quotient over QQ.
+            sage: R.<x> = QQ[]
+            sage: Q.<a> = R.quotient(x^2 + x + 1)
+            sage: f1 = R.hom([a])
+            sage: f2 = R.hom([a + a^2 + a + 1])
+            sage: f1 == f2
+            True
+            sage: f1 == R.hom([a^2])
+            False
+            sage: f1(x^3 + x)
+            a + 1
+            sage: f2(x^3 + x)
+            a + 1
+
+        TESTS:
+            sage: loads(dumps(f2)) == f2
+            True
+
+        EXAMPLES:
+        A multivariate quotient over a finite field.
+            sage: R.<x,y> = GF(7)[]
+            sage: Q.<a,b> = R.quotient([x^2 + x + 1, y^2 + y + 1])
+            sage: f1 = R.hom([a, b])
+            sage: f2 = R.hom([a + a^2 + a + 1, b + b^2 + b + 1])
+            sage: f1 == f2
+            True
+            sage: f1 == R.hom([b,a])
+            False
+            sage: f1(x^3 + x + y^2)
+            6*b + a
+            sage: f2(x^3 + x + y^2)
+            6*b + a
+
+        TEST:
+            sage: loads(dumps(f2)) == f2
+            True
+        """
+        if not isinstance(other, RingHomomorphism_im_gens):
+            return cmp(type(self), type(other))
+        return cmp(self.__im_gens, other.__im_gens)
+
     def _repr_defn(self):
         D = self.domain()
         ig = self.__im_gens
@@ -488,8 +541,8 @@ class RingHomomorphism_cover(RingHomomorphism):
         sage: phi(x+y)
         b + a
     """
-    def __init__(self, ring, quotient_ring):
-        RingHomomorphism.__init__(self, ring.Hom(quotient_ring))
+    def __init__(self, parent):
+        RingHomomorphism.__init__(self, parent)
 
     def _call_(self, x):
         return self.codomain()(x)
@@ -499,6 +552,21 @@ class RingHomomorphism_cover(RingHomomorphism):
 
     def kernel(self):
         return self.codomain().defining_ideal()
+
+    def __cmp__(self, other):
+        """
+        EXAMPLES:
+            sage: R.<x,y> = PolynomialRing(QQ, 2)
+            sage: S.<a,b> = R.quo(x^2 + y^2)
+            sage: phi = S.cover()
+            sage: phi == loads(dumps(phi))
+            True
+            sage: phi == R.quo(x^2 + y^3).cover()
+            False
+        """
+        if not isinstance(other, RingHomomorphism_cover):
+            return cmp(type(self), type(other))
+        return 0  # since parents are the same, i.e., both cover maps with same domain and codomain
 
 class RingHomomorphism_from_quotient(RingHomomorphism):
     r"""
@@ -527,6 +595,8 @@ class RingHomomorphism_from_quotient(RingHomomorphism):
                 c |--> a
         sage: phi(a+b+c)
         c + b + a
+        sage: loads(dumps(phi)) == phi
+        True
 
      Validity of the homomorphism is determined, when possible, and a
      TypeError is raised if there is no homomorphism sending the
@@ -548,8 +618,32 @@ class RingHomomorphism_from_quotient(RingHomomorphism):
         self.__lift = pi.lift()
         self.__phi = phi
 
+    def _phi(self):
+        """
+        Underlying morphism used to define this quotient map (i.e.,
+        morphism from the cover of the domain).
+        """
+        return self.__phi
+
     def morphism_from_cover(self):
         return self.__phi
+
+    def __cmp__(self, other):
+        """
+        EXAMPLES:
+            sage: R.<x, y, z> = PolynomialRing(GF(19), 3)
+            sage: S.<a, b, c> = R.quo(x^3 + y^3 + z^3)
+            sage: phi = S.hom([b, c, a])
+            sage: psi = S.hom([c, b, a])
+            sage: f = S.hom([b, c, a + a^3 + b^3 + c^3])
+            sage: phi == psi
+            False
+            sage: phi == f
+            True
+        """
+        if not isinstance(other, RingHomomorphism_from_quotient):
+            return cmp(type(self), type(other))
+        return cmp(self.__phi, other.__phi)
 
     def _repr_defn(self):
         D = self.domain()
