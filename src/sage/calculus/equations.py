@@ -116,9 +116,13 @@ class SymbolicEquation(SageObject):
 
     def left(self):
         return self._left
+    lhs = left
+    left_hand_side = left
 
     def right(self):
         return self._right
+    rhs = right
+    right_hand_side = right
 
     def __str__(self):
         """
@@ -143,6 +147,11 @@ class SymbolicEquation(SageObject):
     #    result = self._left.__cmp__(self._right)
     #    return result in comparisons[self._op]
     def __nonzero__(self):
+        """
+        Return True if this equality is definitely true.  Return False
+        if it is false or the algorithm for testing equality is
+        inconclusive.
+        """
         m = self._maxima_()
         try:
             s = m.parent()._eval_line('is (%s)'%m.name())
