@@ -1321,7 +1321,10 @@ class MaximaElement(ExpectElement):
     integrate = integral
 
     def __float__(self):
-        return float(str(self.numer()))
+        try:
+            return float(str(self.numer()))
+        except ValueError:
+            raise TypeError, "unable to coerce '%s' to float"%repr(self)
 
     def __len__(self):
         """

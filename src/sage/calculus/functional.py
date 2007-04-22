@@ -131,8 +131,7 @@ def laplace(f, t, s):
     r"""
     Attempts to compute and return the Laplace transform of self
     with respect to the variable t and transform parameter s.  If
-    Laplace cannot find a solution, a formal function is returned
-    in terms of \code{laplace0}.
+    Laplace cannot find a solution, a delayed function is returned.
 
     The function that is returned maybe be viewed as a function of s.
 
@@ -156,8 +155,8 @@ def inverse_laplace(f, t, s):
     r"""
     Attempts to compute and return the inverse Laplace transform of
     self with respect to the variable t and transform parameter s.  If
-    Laplace cannot find a solution, a formal function
-    \code{inverselaplace0(...)} is returned.
+    Laplace cannot find a solution, a delayed function is returned, which
+    is called \code{ilt}.
 
     EXAMPLES:
         sage: L = laplace(f, t, s); L
@@ -171,9 +170,9 @@ def inverse_laplace(f, t, s):
                  e    (-------------- - --------------) + -----
                           sqrt(3)             3             3
 
-    No explicit inverse Laplace transform, so one is returned formally.
+    No explicit inverse Laplace transform, so one is returned formally as a function ilt.
         sage: inverse_laplace(cos(s), s, t)
-        inverselaplace0(cos(s), s, t)
+        ilt(cos(s), s, t)
     """
     if not isinstance(f, SymbolicExpression):
         f = SER(f)
