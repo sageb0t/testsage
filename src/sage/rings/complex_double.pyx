@@ -79,6 +79,9 @@ import  complex_number
 import complex_field
 CC = complex_field.ComplexField()
 
+import real_mpfr
+RR = real_mpfr.RealField()
+
 # PREC is the precision (in decimal digits) that all PARI computations with doubles
 # are done with in this module.  A double is by definition 8 bytes or 64 bits.  Since
 #              log(2^64,10) = 19.265919722494793  < 28
@@ -271,10 +274,8 @@ cdef class ComplexDoubleField_class(sage.rings.ring.Field):
             sage: parent(a)
             Complex Double Field
         """
-        import sage.functions.constants
         return self._coerce_try(x, [self.real_double_field(),
-                                    sage.functions.constants.ConstantRing,
-                                    CC])
+                                    CC, RR])
 
     def gen(self, n=0):
         """
