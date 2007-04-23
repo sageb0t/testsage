@@ -313,6 +313,7 @@ cdef class Matrix_complex_double_dense(matrix_dense.Matrix_dense):   # dense
                        self acting from the ** LEFT **
 
         EXAMPLES:
+            sage: I = CDF.gen()
             sage: m = I*Matrix(CDF, 3, range(9))
             sage: vals, vecs = m.eigen_left()
             sage: m*vecs      # random precision
@@ -342,7 +343,7 @@ cdef class Matrix_complex_double_dense(matrix_dense.Matrix_dense):   # dense
                        self acting from the ** RIGHT **.
 
         EXAMPLES:
-            sage: m = I*Matrix(CDF, 3, range(9))
+            sage: m = CDF.gen() * matrix(CDF, 3, range(9))
             sage: vals, vecs = m.eigen()
             sage: vecs*m                 # random lower order precision
 
@@ -410,6 +411,7 @@ cdef class Matrix_complex_double_dense(matrix_dense.Matrix_dense):   # dense
         Solve the equation A*x = b, where
 
         EXAMPLES:
+            sage: I = CDF.gen()
             sage: A =I*matrix(CDF, 3,3, [1,2,5,7.6,2.3,1,1,2,-1])
             sage: A   # slightly random output
             [1.0*I             2.0*I                5.0*I]
@@ -452,7 +454,8 @@ cdef class Matrix_complex_double_dense(matrix_dense.Matrix_dense):   # dense
         Solve the equation A*x = b, where
 
         EXAMPLES:
-            sage: A =I*matrix(CDF, 3,3, [1,2,5,7.6,2.3,1,1,2,-1])
+            sage: I = CDF.gen()
+            sage: A = I*matrix(CDF, 3,3, [1,2,5,7.6,2.3,1,1,2,-1])
             sage: A   # slightly random output
             [1.0*I             2.0*I                5.0*I]
 	    [7.59999990463*I   2.29999995232*I      1.0*I]
@@ -632,6 +635,7 @@ cdef class Matrix_complex_double_dense(matrix_dense.Matrix_dense):   # dense
         is fast as the copy is done using the numpy C/api.
 
         EXAMPLES:
+            sage: I = CDF.gen()
             sage: m = matrix(CDF,[[1,2],[3,4]])
             sage: m = I*m
             sage: n = m.numpy()
