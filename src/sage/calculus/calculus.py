@@ -1822,6 +1822,41 @@ class SymbolicExpression(RingElement):
         """
         return self.parent()(self._maxima_().imag())
 
+    def conjugate(self):
+        """
+        The complex conjugate of self.
+
+        EXAMPLES:
+            sage: a = 1 + 2*I
+            sage: a.conjugate()
+            1 - 2*I
+            sage: a = sqrt(2) + 3^(1/3)*I; a
+            3^(1/3)*I + sqrt(2)
+            sage: a.conjugate()
+            sqrt(2) - 3^(1/3)*I
+        """
+        return self.parent()(self._maxima_().conjugate())
+
+    def norm(self):
+        """
+        The complex norm of self, i.e., self times its complex conjugate.
+
+        EXAMPLES:
+            sage: a = 1 + 2*I
+            sage: a.norm()
+            5
+            sage: a = sqrt(2) + 3^(1/3)*I; a
+            3^(1/3)*I + sqrt(2)
+            sage: a.norm()
+            3^(2/3) + 2
+            sage: CDF(a).norm()
+            4.08008382305
+            sage: CDF(a.norm())
+            4.08008382305
+        """
+        m = self._maxima_()
+        return self.parent()((m*m.conjugate()).expand())
+
     ###################################################################
     # Partial fractions
     ###################################################################
@@ -2459,6 +2494,7 @@ def var(s, create=True):
         pass
     v = SymbolicVariable(s)
     _vars[s] = weakref.ref(v)
+    _syms[s] = v
     return v
 
 #########################################################################################
@@ -3902,7 +3938,6 @@ def symbolic_expression_from_maxima_string(x, equals_sub=False, maxima=maxima):
             if a[0] == '%':
                 symtable2[a] = a[1:]
                 a = a[1:]
-            _syms[a] = var(a)
 
     if symtable2:
         s = multiple_replace(symtable2, s)
