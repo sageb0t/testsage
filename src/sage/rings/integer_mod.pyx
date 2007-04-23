@@ -815,9 +815,9 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
         """
         return bool(mpz_cmp_si(self.value, 1) == 0)
 
-    def is_zero(IntegerMod_gmp self):
+    def __nonzero__(IntegerMod_gmp self):
         """
-        Returns \code{True} if this is $0$, otherwise \code{False}.
+        Returns \code{True} if this is not $0$, otherwise \code{False}.
 
         EXAMPLES:
             sage: mod(13,5^23).is_zero()
@@ -825,7 +825,7 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
             sage: (mod(25,5^23)^23).is_zero()
             True
         """
-        return bool(mpz_cmp_si(self.value, 0) == 0)
+        return bool(mpz_cmp_si(self.value, 0) != 0)
 
     def is_unit(self):
         return bool(self.lift().gcd(self.modulus()) == 1)
@@ -1133,9 +1133,9 @@ cdef class IntegerMod_int(IntegerMod_abstract):
         """
         return bool(self.ivalue == 1)
 
-    def is_zero(IntegerMod_int self):
+    def __nonzero__(IntegerMod_int self):
         """
-        Returns \code{True} if this is $0$, otherwise \code{False}.
+        Returns \code{True} if this is not $0$, otherwise \code{False}.
 
         EXAMPLES:
             sage: mod(13,5).is_zero()
@@ -1143,7 +1143,7 @@ cdef class IntegerMod_int(IntegerMod_abstract):
             sage: mod(25,5).is_zero()
             True
         """
-        return bool(self.ivalue == 0)
+        return bool(self.ivalue != 0)
 
     def is_unit(IntegerMod_int self):
         return bool(gcd_int(self.ivalue, self.__modulus.int32) == 1)
@@ -1631,9 +1631,9 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
         """
         return bool(self.ivalue == 1)
 
-    def is_zero(IntegerMod_int64 self):
+    def __nonzero__(IntegerMod_int64 self):
         """
-        Returns \code{True} if this is $0$, otherwise \code{False}.
+        Returns \code{True} if this is not $0$, otherwise \code{False}.
 
         EXAMPLES:
             sage: mod(13,5^10).is_zero()
@@ -1641,7 +1641,7 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
             sage: mod(5^12,5^10).is_zero()
             True
         """
-        return bool(self.ivalue == 0)
+        return bool(self.ivalue != 0)
 
     def is_unit(IntegerMod_int64 self):
         return bool(gcd_int64(self.ivalue, self.__modulus.int64) == 1)

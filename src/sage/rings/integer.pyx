@@ -1072,9 +1072,6 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
     def __long__(self):
         return mpz_get_pylong(self.value)
 
-    def __nonzero__(self):
-        return not self.is_zero()
-
     def __float__(self):
         return mpz_get_d(self.value)
 
@@ -1321,9 +1318,9 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
         """
         return bool(mpz_cmp_si(self.value, 1) == 0)
 
-    def is_zero(self):
+    def __nonzero__(self):
         r"""
-        Returns \code{True} if the integers is $0$, otherwise \code{False}.
+        Returns \code{True} if the integers is not $0$, otherwise \code{False}.
 
         EXAMPLES:
             sage: Integer(1).is_zero()
@@ -1331,7 +1328,7 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
             sage: Integer(0).is_zero()
             True
         """
-        return bool(mpz_cmp_si(self.value, 0) == 0)
+        return bool(mpz_cmp_si(self.value, 0) != 0)
 
     def is_unit(self):
         r"""

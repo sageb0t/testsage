@@ -129,7 +129,7 @@ cdef class Polynomial:
     def is_irreducible(self):
         raise NotImplementedError
 
-    def is_zero(self):
+    def __nonzero__(self):
         raise NotImplementedError
 
     def leading_coefficient(self):

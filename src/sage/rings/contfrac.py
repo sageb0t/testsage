@@ -754,9 +754,9 @@ class ContinuedFraction(FieldElement):
         """
         return self._rational_().is_one()
 
-    def is_zero(self):
+    def __nonzero__(self):
         """
-        Return True if self is zero.
+        Return False if self is zero.
 
         EXAMPLES:
             sage: continued_fraction(0).is_zero()
@@ -764,7 +764,7 @@ class ContinuedFraction(FieldElement):
             sage: continued_fraction(1).is_zero()
             False
         """
-        return self._rational_().is_zero()
+        return not self._rational_().is_zero()
 
     def _pari_(self):
         """
