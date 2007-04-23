@@ -500,8 +500,11 @@ class MPolynomialRing_polydict( MPolynomialRing_macaulay2_repr, MPolynomialRing_
                 raise TypeError, "Unable to coerce macaulay2 object"
             return multi_polynomial_element.MPolynomial_polydict(self, x)
 
-        c = self.base_ring()(x)
-        return multi_polynomial_element.MPolynomial_polydict(self, {self._zero_tuple:c})
+        if isinstance(x, dict):
+            return multi_polynomial_element.MPolynomial_polydict(self, x)
+        else:
+            c = self.base_ring()(x)
+            return multi_polynomial_element.MPolynomial_polydict(self, {self._zero_tuple:c})
 
 class MPolynomialRing_polydict_domain(integral_domain.IntegralDomain,
                                       MPolynomialRing_polydict,
