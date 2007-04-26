@@ -1914,6 +1914,10 @@ class Symbolic_object(SymbolicExpression):
         SymbolicExpression.__init__(self)
         self._obj = obj
 
+    #def derivative(self, *args):
+        # TODO: remove
+    #    return self.parent().zero_element()
+
     def obj(self):
         """
         EXAMPLES:
