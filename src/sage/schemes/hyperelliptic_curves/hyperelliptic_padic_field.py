@@ -175,7 +175,7 @@ class HyperellipticCurve_padic_field(hyperelliptic_generic.HyperellipticCurve_ge
         dim = len(basis_values)
         return f(P[0], P[1]) - f(Q[0], Q[1]) + sum([vec[i] * basis_values[i] for i in range(dim)]) # this is just a dot product...
 
-# TODO: add this to padics (if it isn't there in the new version already).
+# TODO: add this to new padics (if it isn't there in the new version already).
 def padic_teichmuller(a):
     K = a.parent()
     p = K.prime()
