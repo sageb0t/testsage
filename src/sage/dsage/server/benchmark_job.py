@@ -17,10 +17,24 @@
 #
 ##############################################################################
 
-from sage.dsage.dsage import dsage
-from sage.dsage.dist_functions.all import *
+from sage.dsage.database.job import Job
 
-def DSage(server=None, port=None, username=None, pubkey_file=None, privkey_file=None):
-    from sage.dsage.interface.dsage_interface import BlockingDSage
-    return BlockingDSage(server=server, port=port, username=username,
-                         pubkey_file=pubkey_file, privkey_file=privkey_file)
+class BenchmarkJob(object):
+    """
+    This job is sent to workers as a way to benchmark their performance.
+
+    """
+
+    def __init__(self):
+        pass
+
+    def get_job(self):
+        job = Job()
+        job.code = """import time
+start = time.time()
+os.system("openssl speed rsa1024")
+end = time.time()
+DSAGE_RESULT = end - start
+"""
+
+        return job
