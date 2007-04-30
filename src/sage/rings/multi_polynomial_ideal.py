@@ -580,7 +580,7 @@ class MPolynomialIdeal_singular_repr:
             return f
         try:
             return self.ring()(h)
-        except TypeError:
+        except (TypeError, RuntimeError):
             return self.ring()(h[1])
             # Why the above?
             # For mysterious reasons, sometimes Singular returns a length
