@@ -419,8 +419,9 @@ def is_pseudoprime(n, flag=0):
 
 def is_prime_power(n, flag=0):
     r"""
-    Returns True if $x$ is a prime power, and False otherwise.  The result
-    is proven correct -- {\em this is NOT a pseudo-primality test!}.
+    Returns True if $x$ is a prime power, and False otherwise.
+    The result is proven correct -- {\em this is NOT a
+    pseudo-primality test!}.
 
     INPUT:
         n -- an integer
@@ -428,11 +429,6 @@ def is_prime_power(n, flag=0):
                 0 (default): use a combination of algorithms.
                 1: certify primality using the Pocklington-Lehmer Test.
                 2: certify primality using the APRCL test.
-
-    OUTPUT:
-        bool -- True or False
-
-    IMPLEMENTATION: Calls the PARI isprime and ispower functions.
 
     EXAMPLES::
         sage: is_prime_power(389)
@@ -451,17 +447,7 @@ def is_prime_power(n, flag=0):
         True
     """
     Z = integer_ring.ZZ
-    n = Z(n)
-    if n == 1:
-        return True
-    if n < 1:
-        return False
-    if is_prime(n, flag):
-        return True
-    k, g = pari(n).ispower()
-    if not k:
-        return False
-    return g.isprime(flag)
+    return Z(n).is_prime_power(flag=flag)
 
 def valuation(m, p):
     """
