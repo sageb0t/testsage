@@ -360,8 +360,13 @@ class SymbolicExpression(RingElement):
             self._simp = self
 
     def __nonzero__(self):
-        # Best to error on side of being nonzero in most cases.
-        return not bool(self == SR.zero_element())
+        try:
+            return self.__nonzero
+        except AttributeError:
+            # Best to error on side of being nonzero in most cases.
+            ans = not bool(self == SR.zero_element())
+            self.__nonzero = ans
+        return ans
 
     def __str__(self):
         """
