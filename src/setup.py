@@ -124,8 +124,8 @@ givaro_gfq = Extension('sage.rings.finite_field_givaro',
                        language='c++'
                        )
 
-qd = Extension('sage.rings.real_qdrf',
-                       sources = ["sage/rings/real_qdrf.pyx"],
+qd = Extension('sage.rings.real_rqdf',
+                       sources = ["sage/rings/real_rqdf.pyx"],
                        libraries = ['qd', 'm', 'stdc++','gmp','mpfr' ],
                        language='c++'
                        )
