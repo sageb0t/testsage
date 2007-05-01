@@ -308,7 +308,7 @@ class SymbolicExpressionRing_class(CommutativeRing):
         elif isinstance(x, complex):
             return evaled_symbolic_expression_from_maxima_string('%s+%%i*%s'%(x.real,x.imag))
         else:
-            raise TypeError, 'cannot coerce %s into a SymbolicExpression.'%x
+            raise TypeError, "cannot coerce type '%s' into a SymbolicExpression."%type(x)
 
     def _repr_(self):
         return 'Symbolic Ring'
@@ -1445,12 +1445,13 @@ class SymbolicExpression(RingElement):
             much faster and applies to arbitrary user defined functions.
 
         EXAMPLES:
-            sage: exp(-sqrt(x)).nintegral(x, 0, 1)
+            sage: f(x) = exp(-sqrt(x))
+            sage: f.nintegral(x, 0, 1)
             (0.52848223531423055, 4.1633141378838452e-11, 231, 0)
 
         We can also use the \code{numerical_integral} function, which calls
         the GSL C library.
-            sage: numerical_integral(exp(-sqrt(x)), 0, 1)             # random low-order bits
+            sage: numerical_integral(f, 0, 1)       # random low-order bits
             (0.52848223225314706, 6.8392846084921134e-07)
         """
         v = self._maxima_().quad_qags(var(x),
@@ -1871,7 +1872,8 @@ class SymbolicExpression(RingElement):
             **kwds  -- named parameters
 
         EXAMPLES:
-            sage: u = (x^3 - 3*y + 4*t)
+            sage: x,y,t = var('x,y,t')
+            sage: u = x^3 - 3*y + 4*t
             sage: u.substitute(x=y, y=t)
             y^3 + t
 
@@ -2293,6 +2295,7 @@ class SymbolicOperation(SymbolicExpression):
         form of self.  The ordering is alphabetic.
 
         EXAMPLES:
+            sage: x,y,z,w = var('x,y,z,w')
             sage: f = (x - x) + y^2 - z/z + (w^2-1)/(w+1); f
             y^2 + (w^2 - 1)/(w + 1) - 1
             sage: f.variables()
@@ -2322,7 +2325,7 @@ class SymbolicOperation(SymbolicExpression):
         return vars
 
 def var_cmp(x,y):
-    return cmp(str(x), str(y))
+    return cmp(repr(x), repr(y))
 
 symbols = {operator.add:' + ', operator.sub:' - ', operator.mul:'*',
             operator.div:'/', operator.pow:'^'}
@@ -3280,6 +3283,16 @@ class PrimitiveFunction(SymbolicExpression):
         SymbolicExpression.__init__(self)
         self._tex_needs_braces = needs_braces
 
+    def _recursive_sub(self, kwds):
+        if kwds.has_key(self):
+            return kwds[self]
+        return self
+
+    def _recursive_sub_over_ring(self, kwds, ring):
+        if kwds.has_key(self):
+            return kwds[self]
+        return self
+
     def plot(self, *args, **kwds):
         f = self(var('x'))
         return SymbolicExpression.plot(f, *args, **kwds)
@@ -3889,7 +3902,7 @@ class Function_sqrt(PrimitiveFunction):
                  roots of self, instead of just one.
         """
         if isinstance(x, float):
-            return math.float(x)
+            return math.sqrt(x)
         if not isinstance(x, (Integer, Rational)):
             try:
                 return x.sqrt(*args, **kwds)
