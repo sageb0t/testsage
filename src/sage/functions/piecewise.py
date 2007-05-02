@@ -708,7 +708,7 @@ class PiecewisePolynomial:
         dlist = [[(p[0][0], p[0][1]), tanline] for p in self.list()]
         return Piecewise(dlist)
 
-    def plot(self, **kwds):
+    def plot(self, *args, **kwds):
         """
         Returns the plot of self.
 
@@ -728,7 +728,7 @@ class PiecewisePolynomial:
         then open it in a graphics viewer such as GIMP.
         """
         plot = sage.plot.plot.plot
-        return sum([plot(p[1], p[0][0], p[0][1], **kwds ) for p in self.list()])
+        return sum([plot(p[1], p[0][0], p[0][1], *args, **kwds ) for p in self.list()])
 
     def fourier_series_cosine_coefficient(self,n,L):
         r"""
