@@ -356,8 +356,7 @@ class Expect(ParentWithBase):
         """
         EXAMPLES:
             sage: a = maxima('y')
-            sage: a
-            y
+            sage: maxima.quit()
             sage: a._check_valid()
             Traceback (most recent call last):
             ...
