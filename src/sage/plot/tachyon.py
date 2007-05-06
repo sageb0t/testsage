@@ -34,7 +34,7 @@ class Tachyon(SageObject):
                  zoom = 1.0,
                  antialiasing = False,
                  aspectratio = 1.0,
-                 raydepth = 12,
+                 raydepth = 5,
                  camera_center = (-3, 0, 0),
                  updir = (0, 0, 1),
                  look_at = (0,0,0),
@@ -162,7 +162,7 @@ class Tachyon(SageObject):
                  zoom = 1.0,
                  antialiasing = False,
                  aspectratio = 1.0,
-                 raydepth = 12,
+                 raydepth = 8,
                  camera_center = (-3, 0, 0),
                  updir = (0, 0, 1),
                  look_at = (0,0,0),
@@ -188,6 +188,7 @@ class Tachyon(SageObject):
 
     def save(self, filename='sage.png', verbose=0, block=True, extra_opts=''):
         """
+        INPUT:
             filename -- (default: 'sage.png')
                        output filename; the extension of
                        the filename determines the type.
@@ -214,6 +215,7 @@ class Tachyon(SageObject):
         import sage.server.support
         if sage.server.support.EMBEDDED_MODE:
             filename = sage.misc.misc.graphics_filename()
+            self.save(filename, verbose=verbose, extra_opts=extra_opts)
         else:
             filename = sage.misc.misc.tmp_filename() + '.png'
             self.save(filename, verbose=verbose, extra_opts=extra_opts)
