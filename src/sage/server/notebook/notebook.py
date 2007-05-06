@@ -850,7 +850,7 @@ class Notebook(SageObject):
             interrupt_class = "interrupt"
         else:
             interrupt_class = "interrupt_grey"
-        main_body = worksheet.html(authorized = True)
+        main_body = worksheet.html(authorized = True, confirm_before_leave=False)
 
         vbar = '<span class="vbar"></span>'
 
@@ -928,8 +928,6 @@ class Notebook(SageObject):
 
         head +=' <script type="text/javascript" src="/highlight/prettify.js"></script>\n'
         head += '<link rel=stylesheet href="/highlight/prettify.css" type="text/css">\n'
-
-        #head += '<script type="text/javascript">' + js.javascript() + '</script>\n'
 
         return head
 
