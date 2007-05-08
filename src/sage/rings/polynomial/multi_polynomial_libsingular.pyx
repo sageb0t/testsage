@@ -44,7 +44,7 @@ from sage.rings.polynomial.polydict import ETuple
 from sage.rings.rational_field import RationalField
 from sage.rings.finite_field import FiniteField_prime_modn
 
-from  sage.rings.rational cimport Rational
+from sage.rings.rational cimport Rational
 
 from sage.interfaces.singular import singular as singular_default, is_SingularElement, SingularElement
 from sage.interfaces.macaulay2 import macaulay2 as macaulay2_default, is_Macaulay2Element
@@ -53,7 +53,7 @@ from sage.structure.factorization import Factorization
 from sage.rings.complex_field import is_ComplexField
 from sage.rings.real_mpfr import is_RealField
 
-from sage.rings.integer_ring import IntegerRing
+from sage.rings.integer_ring import IntegerRing, is_IntegerRing
 from sage.structure.element cimport EuclideanDomainElement, \
      RingElement, \
      ModuleElement, \
