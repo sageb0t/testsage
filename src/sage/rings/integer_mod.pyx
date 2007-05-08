@@ -682,6 +682,9 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
                 v.sort()
                 return v
 
+    def square_root(self):
+        return self.sqrt()
+
     def _balanced_abs(self):
         """
         This function returns x or -x, whichever has a positive

@@ -143,6 +143,16 @@ cdef class pAdicRingCappedAbsoluteElement(pAdicBaseGenericElement):
         mpz_clear(self.p)
         mpz_clear(self.value)
 
+    def __reduce__(self):
+        """
+        sage: a = ZpCA(5)(-3)
+        sage: type(a)
+        <type 'sage.rings.padics.padic_ring_capped_absolute_element.pAdicRingCappedAbsoluteElement'>
+        sage: loads(dumps(a)) == a
+        True
+        """
+        return make_pAdicCappedAbsoluteElement, (self.parent(), self.lift(), self.absprec)
+
     cdef void set_precs(pAdicRingCappedAbsoluteElement self, unsigned int absprec):
         """
         Sets self.absprec and self.modulus
@@ -161,11 +171,14 @@ cdef class pAdicRingCappedAbsoluteElement(pAdicBaseGenericElement):
         else:
             mpz_set(self.value, value)
 
-    cdef void set_from_Integers(pAdicRingCappedAbsoluteElement self, Integer value, Integer absprec):
+    cdef void set_from_Integers(pAdicRingCappedAbsoluteElement self, Integer value, absprec):
         """
         Set self.value, self.absprec and self.modulus.
         """
-        self.set_precs(mpz_get_ui(absprec.value))
+        if PY_TYPE_CHECK(absprec, Integer):
+            self.set_precs(mpz_get_ui((<Integer>absprec).value))
+        else:
+            self.set_precs(absprec)
         self.set_value_from_mpz(value.value)
 
     cdef pAdicRingCappedAbsoluteElement _new_c(self):
@@ -890,3 +903,6 @@ cdef class pAdicRingCappedAbsoluteElement(pAdicBaseGenericElement):
             ans = PY_NEW(Integer)
             mpz_xor(ans.value, self.modulus, self.value)
             return hash(ans)
+
+def make_pAdicCappedAbsoluteElement(parent, x, absprec):
+    return parent(x, absprec=absprec)
