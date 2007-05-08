@@ -104,6 +104,11 @@ In addition, there are arrows within each type from higher precision_cap to lowe
 #*****************************************************************************
 
 import sage.rings.padics.padic_ring_base_generic
+#import sage.rings.padics.padic_generic
+import sage.rings.padics.padic_capped_relative_element
+#import sage.rings.padics.padic_ring_fixed_mod
+#import sage.rings.padics.padic_lazy_element
+#import sage.rings.infinity
 import padic_base_generic_element
 import padic_capped_relative_ring_generic
 import sage.rings.integer
@@ -159,7 +164,7 @@ class pAdicRingCappedRelative(pAdicRingBaseGeneric, pAdicCappedRelativeRingGener
             the p-adic field that is the fraction field of this ring
 
         """
-        from sage.rings.padics.qp import Qp
+        from sage.rings.padics.factory import Qp
         return Qp(self.prime(), self.precision_cap(), 'capped-rel', self.print_mode())
 
     def random_element(self, algorithm='default'):
