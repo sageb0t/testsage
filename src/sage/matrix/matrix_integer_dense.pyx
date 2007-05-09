@@ -1106,7 +1106,7 @@ cdef class Matrix_integer_dense(matrix_dense.Matrix_dense):   # dense or sparse
 
     #### Elementary divisors
 
-    def elementary_divisors(self, algorithm='linbox'):
+    def elementary_divisors(self, algorithm='pari'):
         """
         Return the elementary divisors of self, in order.
 
@@ -1122,9 +1122,9 @@ cdef class Matrix_integer_dense(matrix_dense.Matrix_dense):   # dense or sparse
 
         INPUT:
             self -- matrix
-            algorithm -- (default: 'linbox')
+            algorithm -- (default: 'pari')
                  'pari': works robustless, but is slower.
-                 'linbox' -- use linbox
+                 'linbox' -- use linbox (currently off, broken)
 
         OUTPUT:
             list of int's
@@ -1147,6 +1147,7 @@ cdef class Matrix_integer_dense(matrix_dense.Matrix_dense):   # dense or sparse
             d = []
         else:
             if algorithm == 'linbox':
+                raise ValueError, "linbox too broken -- currently Linbox SNF is disabled."
                 # This fails in linbox: a = matrix(ZZ,2,[1, 1, -1, 0, 0, 0, 0, 1])
                 try:
                     d = self._elementary_divisors_linbox()
