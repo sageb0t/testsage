@@ -576,7 +576,11 @@ cdef class ntl_ZZX:
             sage: g
             [1 0 0 2]
         """
-        return bool(ZZX_is_monic(self.x))
+        if ZZX_is_zero(self.x):
+             return False
+        return bool(ZZ_is_one(ZZX_leading_coefficient(self.x)))
+
+        # return bool(ZZX_is_monic(self.x))
 
     def __neg__(self):
         """
@@ -1616,8 +1620,18 @@ cdef class ntl_ZZ_pX:
             False
             sage: g
             [1 0 0 2]
+            sage: f = ntl.ZZ_pX([1,2,0,3,0,2])
+            sage: f.is_monic()
+            False
         """
-        return bool(ZZ_pX_is_monic(self.x))
+        # The following line is what we should have.  However, strangely this is *broken*
+        # on PowerPC Intel in NTL, so we program around
+        # the problem.  (William Stein)
+        #return bool(ZZ_pX_is_monic(self.x))
+
+        if ZZ_pX_is_zero(self.x):
+             return False
+        return bool(ZZ_p_is_one(ZZ_pX_leading_coefficient(self.x)))
 
     def __neg__(self):
         """
@@ -2751,9 +2765,9 @@ def ntl_GF2E_sage(names='a'):
         sage: ntl.GF2E_sage()
         Finite Field in a of size 2^8
     """
-    from sage.rings.finite_field import FiniteField_ext_pari
+    from sage.rings.finite_field import FiniteField
     f = ntl_GF2E_modulus()._sage_()
-    return FiniteField_ext_pari(int(2)**GF2E_degree(),modulus=f,name=names)
+    return FiniteField(int(2)**GF2E_degree(),modulus=f,name=names)
 
 def ntl_GF2E_random():
     """
@@ -2876,15 +2890,22 @@ cdef class ntl_GF2E(ntl_GF2X):
 
         OUTPUT:
             FiniteFieldElement over k
+
+        EXAMPLE:
+            sage: ntl.GF2E_modulus([1,1,0,1,1,0,0,0,1])
+            sage: e = ntl.GF2E([0,1])
+            sage: a = e._sage_(); a
+            a
+
         """
         cdef int i
         cdef int length
         deg= GF2E_degree()
 
         if k==None:
-            from sage.rings.finite_field import FiniteField_ext_pari
+            from sage.rings.finite_field import FiniteField
             f = ntl_GF2E_modulus()._sage_()
-            k = FiniteField_ext_pari(2**deg,modulus=f)
+            k = FiniteField(2**deg,name='a',modulus=f)
 
         if cache != None:
             try:

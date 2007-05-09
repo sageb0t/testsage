@@ -190,6 +190,9 @@ cdef class Matrix_mod2_dense(matrix_dense.Matrix_dense):   # dense or sparse
         """
         cdef int i,j,e
 
+        if entries is None:
+            return
+
         # scalar ?
         if not isinstance(entries, list):
             if int(entries) % 2 == 1:
@@ -736,7 +739,7 @@ cdef class Matrix_mod2_dense(matrix_dense.Matrix_dense):   # dense or sparse
                 for j from 0 <= j < num_per_row:
                     k = ((random()>>16)+random())%nc # is this safe?
                     # 16-bit seems safe
-                    writePackedCell(self._entries, i, j, (random()>>16) % 2)
+                    writePackedCell(self._entries, i, k, (random()>>16) % 2)
             _sig_off
 
     cdef rescale_row_c(self, Py_ssize_t row, multiple, Py_ssize_t start_col):
