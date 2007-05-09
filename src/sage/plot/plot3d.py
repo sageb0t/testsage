@@ -289,11 +289,7 @@ class Graphics3d(SageObject):
 	Extension types can be: '.png', '.eps', '.svg'.
 	"""
         if filename is None:
-            i = 0
-            while os.path.exists('sage%s.png'%i):
-                i += 1
-            filename = 'sage%s.png'%i
-
+            filename = sage.misc.misc.graphics_filename()
         try:
             ext = os.path.splitext(filename)[1].lower()
         except IndexError:
@@ -600,3 +596,14 @@ class SurfaceFactory(Graphic3dPrimitiveFactory):
 
 # unique surface factory
 surface = SurfaceFactory()
+
+def plot3d(x, *args, **kwds):
+    """
+    Plot a given object in 3d.
+
+    NOTE: 3d plotting in SAGE is *not* very powerful yet.
+    """
+    if hasattr(x, 'plot3d'):
+        return x.plot3d(*args, **kwds)
+    else:
+        raise NotImplementedError, "3d Plotting of %s not yet implemented"%x

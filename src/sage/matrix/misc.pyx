@@ -107,7 +107,7 @@ def matrix_integer_dense_rational_reconstruction(Matrix_integer_dense A, Integer
 
     cdef Integer _bnd
     import math
-    _bnd = Integer(int((N//2).sqrt()))
+    _bnd = Integer(int((N//2).sqrt_approx()))
     mpz_init_set(bnd, _bnd.value)
     mpz_sub(other_bnd, N.value, bnd)
 
@@ -184,7 +184,7 @@ def matrix_integer_sparse_rational_reconstruction(Matrix_integer_sparse A, Integ
 
     cdef Integer _bnd
     import math
-    _bnd = Integer(int((N//2).sqrt()))
+    _bnd = Integer(int((N//2).sqrt_approx()))
     mpz_init_set(bnd, _bnd.value)
     mpz_sub(other_bnd, N.value, bnd)
 
