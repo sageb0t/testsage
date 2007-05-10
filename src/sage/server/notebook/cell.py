@@ -24,6 +24,13 @@ MAX_OUTPUT = 65536
 
 TRACEBACK = 'Traceback (most recent call last):'
 
+import re
+
+# This regexp matches "cell://blah..." in a non-greedy way (the ?), so
+# we don't get several of these combined in one.
+re_cell = re.compile('"cell://.*?"')
+re_cell_2 = re.compile("'cell://.*?'")   # same, but with single quotes
+
 import os, shutil
 
 from   sage.misc.misc import word_wrap
@@ -312,6 +319,13 @@ class Cell(Cell_generic):
             self.__introspect_html = ''
             return ''
 
+    def process_cell_urls(self, x):
+        end = '?%d"'%self.version()
+        begin = '"%s/'%self.directory()
+        for s in re_cell.findall(x) + re_cell_2.findall(x):
+            x = x.replace(s,begin + s[7:-1] + end)
+        return x
+
     def output_text(self, ncols=0, html=True, raw=False):
         s = self.__out
 
@@ -321,6 +335,10 @@ class Cell(Cell_generic):
         if html:
             def format(x):
                 return word_wrap(x.replace('<','&lt;'), ncols=ncols)
+
+            def format_html(x):
+                x = self.process_cell_urls(x)
+                return x
 
             # if there is an error in the output,
             # specially format it.
@@ -337,9 +355,9 @@ class Cell(Cell_generic):
                     break
                 j = s.find('</html>')
                 if j == -1:
-                    t += format(s)
+                    t += format(s[:i])
                     break
-                t += format(s[:i]) + s[i+6:j]
+                t += format(s[:i]) + format_html(s[i+6:j])
                 s = s[j+7:]
             s = t
             if not self.is_html() and len(s.strip()) > 0:
@@ -496,7 +514,7 @@ class Cell(Cell_generic):
         """%(cls, id, id, t)
         return s
 
-    def files_html(self):
+    def files_html(self, out=''):
         dir = self.directory()
         D = os.listdir(dir)
         D.sort()
@@ -508,6 +526,8 @@ class Cell(Cell_generic):
         # the async request requests the output text for a computation.
         # This is inspired by http://www.irt.org/script/416.htm/.
         for F in D:
+            if 'cell://%s'%F in out:
+                continue
             if F[-4:] in ['.png', '.bmp']:
                 images.append('<img src="%s/%s?%d">'%(dir,F,self.version()))
             elif F[-4:] == '.svg':
