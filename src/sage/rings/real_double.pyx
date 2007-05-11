@@ -1345,7 +1345,7 @@ def RealDoubleField():
     return _RDF
 
 def is_RealDoubleElement(x):
-    return PY_TYPE_CHECK(x, RealDoubleElement)
+    return bool(PY_TYPE_CHECK(x, RealDoubleElement))
 
 ################# FAST CREATION CODE ######################
 ########### Based on fast integer creation code   #########
