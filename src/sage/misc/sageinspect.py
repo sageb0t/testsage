@@ -239,6 +239,8 @@ def sage_getargspec(obj):
         func_obj = obj
     elif inspect.ismethod(obj):
         func_obj = obj.im_func
+    elif inspect.isclass(obj):
+        return sage_getargspec(obj.__call__)
     else:
         # Perhaps it is binary and defined in a Sagex file
         source = sage_getsource(obj, is_binary=True)
