@@ -134,7 +134,7 @@ cdef class PowComputer_class(SageObject):
 
     def _modulus(self):
         """
-        Returns self.prime()^self.cache_limit()
+        Returns self.prime()^self.prec_cap()
         """
         cdef Integer ans
         ans = PY_NEW(Integer)
