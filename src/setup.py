@@ -493,6 +493,13 @@ ext_modules = [ \
               libraries=['ntl'],
               include_dirs=['sage/libs/ntl/']), \
 
+    Extension('sage.schemes.hyperelliptic_curves.frobenius',
+                 sources = ['sage/schemes/hyperelliptic_curves/frobenius.pyx',
+                            'sage/schemes/hyperelliptic_curves/frobenius_cpp.cpp'],
+                 libraries = ['ntl', 'stdc++'],
+                 language = 'c++',
+                 include_dirs=['sage/libs/ntl/']), \
+
     Extension('sage.rings.polynomial.polynomial_element',
               sources = ['sage/rings/polynomial/polynomial_element.pyx']), \
 
