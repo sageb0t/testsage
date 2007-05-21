@@ -2683,7 +2683,7 @@ common_varnames = ['alpha',
                    'zeta',
                    'eta',
                    'theta',
-                   'Theta'
+                   'Theta',
                    'iota',
                    'kappa',
                    'lambda',
@@ -2691,18 +2691,18 @@ common_varnames = ['alpha',
                    'mu',
                    'nu',
                    'xi',
-                   'Xi'
+                   'Xi',
                    'pi',
-                   'Pi'
+                   'Pi',
                    'rho',
                    'sigma',
-                   'Sigma'
+                   'Sigma',
                    'tau',
                    'upsilon',
                    'varphi',
                    'chi',
                    'psi',
-                   'Psi'
+                   'Psi',
                    'omega',
                    'Omega']
 
