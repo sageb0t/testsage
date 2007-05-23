@@ -181,10 +181,10 @@ class Cell(Cell_generic):
                     #    s += '<BLANKLINE>\n'
                     elif len(v.lstrip()) != len(v):  # starts with white space
                         in_loop = True
-                        s += '...' + v + '\n'
+                        s += '...   ' + v + '\n'
                     elif v[:5] == 'else:':
                         in_loop = True
-                        s += '... ' + v + '\n'
+                        s += '...   ' + v + '\n'
                     else:
                         if in_loop:
                             s += '...\n'
@@ -274,9 +274,6 @@ class Cell(Cell_generic):
 
     def set_output_text(self, output, html, sage=None):
         output = output.replace('\r','')
-        i = output.find(worksheet.SAGE_VARS)
-        if i != -1:
-            output = output[:i]
         if len(output) > MAX_OUTPUT:
             if not self.computing():
                 file = "%s/full_output.txt"%self.directory()
