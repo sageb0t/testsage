@@ -461,7 +461,7 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
             if not f.is_square():
                 return []
             else:
-                y = f.sqrt(extend=False)
+                y = f.sqrt()
                 return [self.point([x,  y, one], check=False),
                         self.point([x, -y, one], check=False)]
         else:
@@ -472,7 +472,7 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
             if not D.is_square():
                 return []
             else:
-                sqrtD = D.sqrt(extend=False)
+                sqrtD = D.sqrt()
                 return [self.point([x, (-b+sqrtD)/2, one], check=False),
                         self.point([x, (-b-sqrtD)/2, one], check=False)]
 
