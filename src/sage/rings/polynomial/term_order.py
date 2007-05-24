@@ -21,21 +21,6 @@ EXAMPLES:
     sage: x^3*y^2*z^4 < x^3*y^2*z^1
     False
 
-\item[Reverse lexicographic (\emph{revlex})], defined as
-
-$x^a < x^b \Leftrightarrow \exists\; 1 \le i \le n : a_n = b_n, \ldots, a_{i+1} = b_{i+1}, a_i > b_i.$
-
-EXAMPLES:
-    sage: P.<x,y,z> = PolynomialRing(GF(127),3,order='revlex')
-    sage: x > y
-    True
-    sage: x > y^2
-    True
-    sage: x > 1
-    False
-    sage: x*y > z
-    True
-
 \item[Degree reverse lexicographic (\emph{degrevlex})], defined as:
 
 Let $deg(x^a) = a_1 + \cdots + a_n,$ then
@@ -52,7 +37,7 @@ EXAMPLES:
     True
     sage: x^1*y^5*z^2 > x^4*y^1*z^3
     True
-    sage: x^4*y^7*z^1 < x^4*y^2*z^3
+    sage: x^2*y*z^2 > x*y^3*z
     False
 
 \item[Degree lexicographic (\emph{deglex})], defined as:
@@ -71,8 +56,23 @@ EXAMPLES:
     True
     sage: x^1*y^2*z^3 > x^3*y^2*z^0
     True
-    sage: x^1*y^2*z^4 < x^1*y^1*z^5
+    sage: x^2*y*z^2 > x*y^3*z
+    True
+
+\item[Reverse lexicographic (\emph{revlex})], defined as
+
+$x^a < x^b \Leftrightarrow \exists\; 1 \le i \le n : a_n = b_n, \ldots, a_{i+1} = b_{i+1}, a_i > b_i.$
+
+EXAMPLES:
+    sage: P.<x,y,z> = PolynomialRing(GF(127),3,order='revlex')
+    sage: x > y
+    True
+    sage: x > y^2
+    True
+    sage: x > 1
     False
+    sage: x*y > z
+    True
 
 \item[Negative lexicographic (\emph{neglex})], defined as
 
@@ -101,14 +101,14 @@ EXAMPLES:
     sage: P.<x,y,z> = PolynomialRing(QQ,3,order='negdegrevlex')
     sage: x > y
     True
-    sage: x > y^2
+    sage: x > x^2
     True
     sage: x > 1
     False
     sage: x^1*y^2 > y^3*z^4
     True
-    sage: x^3*y^2*z^4 < x^3*y^2*z^1
-    True
+    sage: x^2*y*z^2 > x*y^3*z
+    False
 
 \item[Negative degree lexicographic (\emph{negdeglex})], defined as:
 
@@ -120,13 +120,13 @@ EXAMPLES:
     sage: P.<x,y,z> = PolynomialRing(QQ,3,order='negdeglex')
     sage: x > y
     True
-    sage: x > y^2
+    sage: x > x^2
     True
     sage: x > 1
     False
     sage: x^1*y^2 > y^3*z^4
     True
-    sage: x^3*y^2*z^4 < x^3*y^2*z^1
+    sage: x^2*y*z^2 > x*y^3*z
     True
 
 \end{description}
@@ -145,7 +145,7 @@ $x^a y^b < x^A y^B \Leftrightarrow x^a <_1 x^A \textrm{ or }(x^a =x^A \textrm{ a
 
 These block orderings are constructed in SAGE by giving a comma
 separated list of monomial orderings with the length of each block
-attached to them
+attached to them.
 
 EXAMPLE:
 
