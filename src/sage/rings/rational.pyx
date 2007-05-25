@@ -592,9 +592,11 @@ cdef class Rational(sage.structure.element.FieldElement):
             sage: x = 64/4
             sage: x.sqrt()
             4
-            sage: x = 1000/10
+            sage: x = 100/1
             sage: x.sqrt()
             10
+            sage: x.sqrt(all=True)
+            [10, -10]
             sage: x = 81/5
             sage: x.sqrt()
             9/sqrt(5)
@@ -627,6 +629,9 @@ cdef class Rational(sage.structure.element.FieldElement):
         AUTHOR:
             -- Naqi Jaffery (2006-03-05): some examples
         """
+        if mpq_sgn(self.value) == 0:
+            return [self] if all else self
+
         if mpq_sgn(self.value) < 0:
             if not extend:
                 raise ValueError, "square root of negative number not rational"
@@ -662,6 +667,8 @@ cdef class Rational(sage.structure.element.FieldElement):
                 return K(self).sqrt(all=all)
             from sage.calculus.calculus import sqrt
             return sqrt(self, all=all)
+        if all:
+            return [z, -z]
         return z
 
     def period(self):
