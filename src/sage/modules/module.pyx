@@ -70,7 +70,7 @@ def is_Module(x):
         sage: is_Module(10)
         False
     """
-    return bool(isinstance(x, Module))
+    return isinstance(x, Module)
 
 def is_VectorSpace(x):
     """
@@ -87,4 +87,4 @@ def is_VectorSpace(x):
         False
     """
     import sage.modules.free_module
-    return bool(isinstance(x, sage.modules.free_module.FreeModule_generic_field))
+    return isinstance(x, sage.modules.free_module.FreeModule_generic_field)
