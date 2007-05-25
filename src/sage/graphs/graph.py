@@ -572,10 +572,13 @@ class GenericGraph(SageObject):
             sage: T.obj(1)
             Flower Snark: Graph on 20 vertices
         """
-        for v in self.vertices():
-            if not vertex_dict.has_key(v):
-                vertex_dict[v] = None
-        self._assoc = vertex_dict
+        try:
+            for v in vertex_dict:
+                self._assoc[v] = vertex_dict[v]
+        except:
+            self._assoc = {}
+            for v in vertex_dict:
+                self._assoc[v] = vertex_dict[v]
 
     def obj(self, vertex):
         """
@@ -595,7 +598,10 @@ class GenericGraph(SageObject):
             sage: T.obj(1)
             Flower Snark: Graph on 20 vertices
         """
-        return self._assoc[vertex]
+        try:
+            return self._assoc[vertex]
+        except:
+            return None
 
     def loop_vertices(self):
         """
