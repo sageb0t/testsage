@@ -529,7 +529,7 @@ class NumberField_generic(field.Field):
             name = name[0]
         if name is None:
             raise TypeError, "the variable name must be specified."
-        return NumberField_extension(self, poly, repr(name))
+        return NumberField_extension(self, poly, str(name))
 
     def factor_integer(self, n):
         r"""
