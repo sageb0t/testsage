@@ -13,6 +13,10 @@ for F in os.listdir('.'):
         Y = X.read()
         X.close()
         #print "Making interpreter for script %s relative"%F
-        O = open(F,'w')
+        try:
+            O = open(F,'w')
+        except IOError:
+            os.system('chmod u+w "%s"'%F)
+            O = open(F,'w')
         O.write("#!/usr/bin/env python\n"+Y)
         O.close()
