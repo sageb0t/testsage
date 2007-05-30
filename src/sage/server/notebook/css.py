@@ -585,7 +585,7 @@ button.delete_worksheet_menu {
 span.pane div.worksheet_list {
    font-size:12px;
    top:0ex;
-   height:25ex;
+   height:45ex;
    border:2px solid <color2>;
    overflow:auto;
    width: 180px;
@@ -678,7 +678,7 @@ span.pane a.worksheet_current_computing {
  }
 
 span.pane a.worksheet_other {
-   font-size:12px;
+   font-size:14px;
    padding-left:1ex;
    border-top:1px solid <color2>;
    background-color:white;
