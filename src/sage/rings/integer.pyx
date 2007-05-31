@@ -2216,6 +2216,12 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
         """
         return Integer(1)/self    # todo: optimize
 
+    def inverse_of_unit(self):
+        if mpz_cmp_si(self.value, 1) or mpz_cmp_si(self.value, -1):
+            return self
+        else:
+            raise ZeroDivisionError, "Inverse does not exist."
+
     def inverse_mod(self, n):
         """
         Returns the inverse of self modulo $n$, if this inverse exists.
