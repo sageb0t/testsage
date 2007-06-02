@@ -513,7 +513,7 @@ cdef class ntl_ZZX:
         if n < 0:
             raise NotImplementedError
         import sage.rings.arith
-        return sage.rings.arith.generic_power(self, n, make_new_ZZX([1]))
+        return sage.rings.arith.generic_power(self, n, one_ZZX.copy())
 
     def __cmp__(ntl_ZZX self, ntl_ZZX other):
         """
@@ -895,7 +895,7 @@ cdef class ntl_ZZX:
             []
         """
         if m <= 0:
-            return make_new_ZZX()
+            return zero_ZZX.copy()
         return make_ZZX(ZZX_truncate(self.x, m))
 
     def multiply_and_truncate(self, ntl_ZZX other, long m):
@@ -911,7 +911,7 @@ cdef class ntl_ZZX:
             [10 20]
         """
         if m <= 0:
-            return make_new_ZZX()
+            return zero_ZZX.copy()
         return make_ZZX(ZZX_multiply_and_truncate(self.x, other.x, m))
 
     def square_and_truncate(self, long m):
@@ -926,7 +926,7 @@ cdef class ntl_ZZX:
             [1 4 10 20]
         """
         if m < 0:
-            return make_new_ZZX()
+            return zero_ZZX.copy()
         return make_ZZX(ZZX_square_and_truncate(self.x, m))
 
     def invert_and_truncate(self, long m):
@@ -1188,6 +1188,9 @@ def make_new_ZZX(v=[]):
     z.x = str_to_ZZX(s)
     _sig_off
     return z
+
+one_ZZX = make_new_ZZX([1])
+zero_ZZX = make_new_ZZX()
 
 ##############################################################################
 #
