@@ -19,6 +19,8 @@ Elliptic curve constructor
 
 import sage.rings.all as rings
 
+from sage.structure.sequence import Sequence
+
 def EllipticCurve(x, y=None):
     r"""
     There are several ways to construct an elliptic curve:
@@ -87,6 +89,11 @@ def EllipticCurve(x, y=None):
         #ArithmeticError: Point (1/4, -5/8) is not on curve.
     #
     import ell_generic, ell_finite_field, ell_number_field, ell_rational_field, ell_padic_field  # here to avoid circular includes
+
+    if isinstance(x,(list,tuple)):
+        x = Sequence(x)
+        x, y = x[0].parent(), x
+
     if rings.is_Ring(x):
         if rings.is_RationalField(x):
             return ell_rational_field.EllipticCurve_rational_field(x, y)
@@ -113,6 +120,8 @@ def EllipticCurve(x, y=None):
 
     if not isinstance(x,list):
         raise TypeError, "invalid input to EllipticCurve constructor"
+
+    x = Sequence(x)
 
     if isinstance(x[0], (rings.Rational, rings.Integer, int, long)):
         return ell_rational_field.EllipticCurve_rational_field(x, y)
