@@ -141,7 +141,7 @@ class CubeGroup(PermutationGroup_generic):
         return g
 
     def facets(self):
-        """
+        r"""
         Returns the set of facets on which the group acts. This function is a "constant".
 
         EXAMPLES:
@@ -155,10 +155,12 @@ class CubeGroup(PermutationGroup_generic):
         return fcts
 
     def faces(self, mv):
-        """
-        Returns the dictionary of faces created by the effect of the move mv, which is a string
-        of the form X^a*Y^b*...", where X, Y, ... are in {R,L,F,B,U,D} and a,b, ... are
-        integers. We call the ordering of the faces used the "BDFLRU, L2R, T2B ordering".
+        r"""
+        Returns the dictionary of faces created by the effect of the
+        move mv, which is a string of the form $X^a*Y^b*...$, where
+        $X$, $Y$, ... are in $\{R,L,F,B,U,D\}$ and $a,b, ...$ are
+        integers.  We call this ordering of the faces the
+        "BDFLRU, L2R, T2B ordering".
 
         EXAMPLES:
             sage: rubik = CubeGroup()
@@ -178,8 +180,8 @@ class CubeGroup(PermutationGroup_generic):
         return {'right':faceR,'left':faceL,'up':faceU,'down':faceD,'front':faceF,'back':faceB}
 
     def move(self,mv):
-        """
-       Returns the group element and the reordered list of facets, as moved by
+        r"""
+        Returns the group element and the reordered list of facets, as moved by
 	the list mv (read left-to-right)
 
 	INPUT: mv is a string of the form X^a*Y^b*...",
@@ -232,7 +234,7 @@ class CubeGroup(PermutationGroup_generic):
 	return [g,pos]
 
     def display2d(self,mv):
-        """
+        r"""
         Displays a 2d map of the Rubik's cube after the move mv has been made.
         Nothing is returned.
 
@@ -341,8 +343,10 @@ class CubeGroup(PermutationGroup_generic):
 
     def solve(self,state):
         """
-        Solves the cube in the \code{state}, given as a dictionary as in \code{legal}.
-        This uses GAP's \code{EpimorphismFromFreeGroup} and \code{PreImagesRepresentative}.
+
+        Solves the cube in the \code{state}, given as a dictionary as
+        in \code{legal}.  This uses GAP's \code{EpimorphismFromFreeGroup}
+        and \code{PreImagesRepresentative}.
 
         EXAMPLES:
             sage: rubik = CubeGroup()
