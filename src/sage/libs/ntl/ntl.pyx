@@ -513,7 +513,7 @@ cdef class ntl_ZZX:
         if n < 0:
             raise NotImplementedError
         import sage.rings.arith
-        return sage.rings.arith.generic_power(self, n, make_new_ZZX([1]))
+        return sage.rings.arith.generic_power(self, n, one_ZZX.copy())
 
     def __cmp__(ntl_ZZX self, ntl_ZZX other):
         """
@@ -895,7 +895,7 @@ cdef class ntl_ZZX:
             []
         """
         if m <= 0:
-            return make_new_ZZX()
+            return zero_ZZX.copy()
         return make_ZZX(ZZX_truncate(self.x, m))
 
     def multiply_and_truncate(self, ntl_ZZX other, long m):
@@ -911,7 +911,7 @@ cdef class ntl_ZZX:
             [10 20]
         """
         if m <= 0:
-            return make_new_ZZX()
+            return zero_ZZX.copy()
         return make_ZZX(ZZX_multiply_and_truncate(self.x, other.x, m))
 
     def square_and_truncate(self, long m):
@@ -926,7 +926,7 @@ cdef class ntl_ZZX:
             [1 4 10 20]
         """
         if m < 0:
-            return make_new_ZZX()
+            return zero_ZZX.copy()
         return make_ZZX(ZZX_square_and_truncate(self.x, m))
 
     def invert_and_truncate(self, long m):
@@ -1144,6 +1144,32 @@ cdef class ntl_ZZX:
         ZZX_preallocate_space(self.x, n)
         _sig_off
 
+    def square_free_decomposition(self):
+        """
+        Returns the square-free decomposition of self (a partial
+        factorization into square-free, relatively prime polynomials)
+        as a list of 2-tuples, where the first element in each tuple
+        is a factor, and the second is its exponent.
+        Assumes that self is primitive.
+
+        EXAMPLES:
+            sage: f = ntl.ZZX([0, 1, 2, 1])
+            sage: f.square_free_decomposition()
+            [([0 1], 1), ([1 1], 2)]
+        """
+        cdef ntl_c_ZZX** v
+        cdef long* e
+        cdef long i, n
+        _sig_on
+        ZZX_square_free_decomposition(&v, &e, &n, self.x)
+        _sig_off
+        F = []
+        for i from 0 <= i < n:
+            F.append((make_ZZX(v[i]), e[i]))
+        free(v)
+        free(e)
+        return F
+
     cdef set(self, void* x):  # only used internally for initialization; assumes self.x not set yet!
         self.x = <ntl_c_ZZX*>x
 
@@ -1162,6 +1188,9 @@ def make_new_ZZX(v=[]):
     z.x = str_to_ZZX(s)
     _sig_off
     return z
+
+one_ZZX = make_new_ZZX([1])
+zero_ZZX = make_new_ZZX()
 
 ##############################################################################
 #

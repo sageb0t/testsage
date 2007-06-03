@@ -43,7 +43,7 @@ import sage.rings.rational
 from sage.rings.integer cimport Integer
 
 def is_RealDoubleField(x):
-    return bool(PY_TYPE_CHECK(x, RealDoubleField_class))
+    return PY_TYPE_CHECK(x, RealDoubleField_class)
 
 cdef class RealDoubleField_class(Field):
     """
@@ -406,6 +406,7 @@ cdef class RealDoubleElement(FieldElement):
             sage: a = RDF(0)/RDF(0); a.str()
             'nan'
         """
+        cdef int v
         if gsl_isnan(self._value):
             return "nan"
         else:
@@ -695,16 +696,16 @@ cdef class RealDoubleElement(FieldElement):
     ###########################################
 
     def is_NaN(self):
-        return bool(gsl_isnan(self._value))
+        return gsl_isnan(self._value)
 
     def is_positive_infinity(self):
-        return bool(gsl_isinf(self._value) > 0)
+        return gsl_isinf(self._value) > 0
 
     def is_negative_infinity(self):
-        return bool(gsl_isinf(self._value) < 0)
+        return gsl_isinf(self._value) < 0
 
     def is_infinity(self):
-        return bool(gsl_isinf(self._value))
+        return gsl_isinf(self._value)
 
     def __richcmp__(left, right, int op):
         return (<Element>left)._richcmp(right, op)
@@ -781,7 +782,7 @@ cdef class RealDoubleElement(FieldElement):
             sage: RDF(-4).is_square()
             False
         """
-        return bool(self._value >= 0)
+        return self._value >= 0
 
     def cube_root(self):
         """
@@ -1345,7 +1346,7 @@ def RealDoubleField():
     return _RDF
 
 def is_RealDoubleElement(x):
-    return bool(PY_TYPE_CHECK(x, RealDoubleElement))
+    return PY_TYPE_CHECK(x, RealDoubleElement)
 
 ################# FAST CREATION CODE ######################
 ########### Based on fast integer creation code   #########

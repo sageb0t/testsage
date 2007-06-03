@@ -25,12 +25,9 @@ import cStringIO
 from twisted.spread import pb
 from twisted.python import log
 
-from sage.dsage.misc.hostinfo import HostInfo
-from sage.dsage.server.hostinfo_tracker import hostinfo_list
 from sage.dsage.errors.exceptions import BadTypeError
 from sage.dsage.database.job import expand_job
-
-pb.setUnjellyableForClass(HostInfo, HostInfo)
+from sage.dsage.misc.misc import timedelta_to_seconds
 
 class DSageServer(pb.Root):
     """
@@ -80,6 +77,7 @@ class DSageServer(pb.Root):
             if self.LOG_LEVEL > 3:
                 log.msg('[DSage, get_job]' + ' Sending job %s' % job_id)
             jdict['status'] = 'processing'
+            jdict['start_time'] = datetime.datetime.now()
             self.jobdb.store_job(jdict)
 
         return jdict
@@ -162,15 +160,20 @@ class DSageServer(pb.Root):
 
         if self.LOG_LEVEL > 3:
             log.msg('[DSage, submit_job] %s' % (jdict))
-
         if jdict['code'] is None:
             return False
         if jdict['name'] is None:
             jdict['name'] = 'Default'
 
+        # New jobs should not have a job_id
+        jdict['job_id'] = None
+
         jdict['update_time'] = datetime.datetime.now()
 
-        return self.jobdb.store_job(jdict)
+        job_id = self.jobdb.store_job(jdict)
+        log.msg('Received job %s' % job_id)
+
+        return job_id
 
     def get_all_jobs(self):
         """
@@ -214,7 +217,7 @@ class DSageServer(pb.Root):
 
         return self.jobdb.get_next_job_id()
 
-    def job_done(self, job_id, output, result, completed):
+    def job_done(self, job_id, output, result, completed, cpu_time):
         """
         job_done is called by the workers check_output method.
 
@@ -228,9 +231,9 @@ class DSageServer(pb.Root):
         """
 
         if self.LOG_LEVEL > 0:
-            log.msg('[DSage, job_done] Job %s called back' % (job_id))
+            log.msg('[DSage, job_done] %s called back' % (job_id))
         if self.LOG_LEVEL > 3:
-            log.msg('[DSage, job_done] Output: %s ' % output)
+            log.msg('[DSage, job_done] output: %s ' % output)
             log.msg('[DSage, job_done] completed: %s ' % completed)
 
         jdict = self.get_job_by_id(job_id)
@@ -241,7 +244,12 @@ class DSageServer(pb.Root):
             jdict['output'] = output
         if completed:
             jdict['result'] = result
+            jdict['cpu_time'] = cpu_time
+            delta = timedelta_to_seconds(datetime.datetime.now() -
+                                         jdict['start_time'])
+            jdict['wall_time'] = delta
             jdict['status'] = 'completed'
+            log.msg('%s completed!' % job_id)
 
         jdict['update_time'] = datetime.datetime.now()
 
@@ -320,18 +328,7 @@ class DSageServer(pb.Root):
         Returns an approximation of the total CPU speed of the cluster.
 
         """
-
-        cluster_speed = 0
-        if self.LOG_LEVEL > 3:
-            log.msg(hostinfo_list)
-            log.msg(len(hostinfo_list))
-        for h in hostinfo_list:
-            speed_multiplier = int(h['cpus'])
-            for k,v in h.iteritems():
-                if k == 'cpu_speed':
-                    cluster_speed += float(v) * speed_multiplier
-
-        return cluster_speed
+        raise NotImplementedError
 
     def get_worker_count(self):
         """
@@ -349,21 +346,6 @@ class DSageServer(pb.Root):
         count['working'] = working_workers
 
         return count
-
-    def submit_host_info(self, h):
-        """
-        Takes a dict of workers machine specs.
-
-        """
-
-        if self.LOG_LEVEL > 0:
-            log.msg(h)
-        if len(hostinfo_list) == 0:
-            hostinfo_list.append(h)
-        else:
-            for h in hostinfo_list:
-                if h['uuid'] not in h.values():
-                    hostinfo_list.append(h)
 
     def generate_xml_stats(self):
         """
@@ -581,9 +563,3 @@ class DSageWorkerServer(DSageServer):
 
     def remote_get_killed_jobs_list(self):
         return DSageServer.get_killed_jobs_list(self)
-
-    def remote_submit_host_info(self, hostinfo):
-        if not isinstance(hostinfo, dict):
-            log.msg('BadType in remote_submit_host_info')
-            raise BadTypeError()
-        return DSageServer.submit_host_info(self, hostinfo)
