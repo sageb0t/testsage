@@ -99,7 +99,7 @@ from random import random
 from sage.structure.parent_gens import ParentWithGens
 
 def is_ComplexDoubleField(x):
-    return bool(PY_TYPE_CHECK(x, ComplexDoubleField_class))
+    return PY_TYPE_CHECK(x, ComplexDoubleField_class)
 
 cdef class ComplexDoubleField_class(sage.rings.ring.Field):
     """
@@ -319,7 +319,7 @@ def new_ComplexDoubleElement():
     return z
 
 def is_ComplexDoubleElement(x):
-    return bool(PY_TYPE_CHECK(x, ComplexDoubleElement))
+    return PY_TYPE_CHECK(x, ComplexDoubleElement)
 
 cdef class ComplexDoubleElement(FieldElement):
     """

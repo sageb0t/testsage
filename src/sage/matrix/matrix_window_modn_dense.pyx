@@ -228,5 +228,5 @@ cdef class MatrixWindow_modn_dense(matrix_window.MatrixWindow):
                         s = s % p + gather * p2 # using unsigned ints
                     self_row[j] = s % p
 
-    cdef int element_is_zero(self, Py_ssize_t i, Py_ssize_t j):
+    cdef bint element_is_zero(self, Py_ssize_t i, Py_ssize_t j):
         return (<Matrix_modn_dense>self._matrix)._matrix[i+self._row][j+self._col] == 0
