@@ -464,6 +464,19 @@ class Notebook(SageObject):
     def history_text(self):
         return '\n\n'.join([H.strip() for H in self.history()])
 
+    def history_html(self):
+        t = self.history_text()
+        t = t.replace('<','&lt;')
+        s = '<head>\n'
+        s += '<title>SAGE Input History</title>\n'
+        s += '</head>\n'
+        s += '<body>\n'
+        s += '<pre>' + t + '</pre>\n'
+        s += '<a name="bottom"></a>\n'
+        s += '<script type="text/javascript"> window.location="#bottom"</script>\n'
+        s += '</body>\n'
+        return s
+
     def history_with_start(self, start):
         n = len(start)
         return [x for x in self.history() if x[:n] == start]
@@ -476,6 +489,18 @@ class Notebook(SageObject):
             filename, W.filename(), filename)
         print cmd
         os.system(cmd)
+
+    def plain_text_worksheet_html(self, name, prompts=True):
+        W = self.get_worksheet_with_filename(name)
+        t = W.plain_text(prompts = prompts)
+        t = t.replace('<','&lt;')
+        s = '<head>\n'
+        s += '<title>SAGE Worksheet: %s</title>\n'%W.name()
+        s += '</head>\n'
+        s += '<body>\n'
+        s += '<pre>' + t + '</pre>'
+        s += '</body>\n'
+        return s
 
     def tmpdir(self):
         d = '%s/tmp'%self.__dir
@@ -625,9 +650,12 @@ class Notebook(SageObject):
         self.__auth = '%s:%s'%(username, password)
 
     def __makedirs(self):
-        os.makedirs(self.__dir)
-        os.makedirs(self.__worksheet_dir)
-        os.makedirs(self.__object_dir)
+        if not os.path.exists(self.__dir):
+            os.makedirs(self.__dir)
+        if not os.path.exists(self.__worksheet_dir):
+            os.makedirs(self.__worksheet_dir)
+        if not os.path.exists(self.__object_dir):
+            os.makedirs(self.__object_dir)
 
     def worksheet_ids(self):
         return set([W.id() for W in self.__worksheets.itervalues()])
@@ -671,6 +699,22 @@ class Notebook(SageObject):
         W = self.__worksheets.keys()
         W.sort()
         return W
+
+    def worksheet_html(self, name, do_print=False):
+        W = self.get_worksheet_with_filename(name)
+        s = '<head>\n'
+        s += '<title>SAGE Worksheet: %s</title>\n'%W.name()
+        if do_print:
+            s += '<script type="text/javascript" src="/javascript/jsmath/jsMath.js"></script>\n'
+        s += '<script type="text/javascript" src="/javascript/main.js"></script>\n'
+        s += '<link rel=stylesheet href="/css/main.css">\n'
+        s += '</head>\n'
+        s += '<body>\n'
+        s += W.html(include_title=False, do_print=do_print)
+        if do_print:
+            s += '<script type="text/javascript">jsMath.Process();</script>\n'
+        s += '\n</body>\n'
+        return s
 
     def get_worksheet_with_name(self, name):
         return self.__worksheets[name]
@@ -808,9 +852,8 @@ class Notebook(SageObject):
             name += ' (%s)'%len(W)
             name += ' '*(m-len(name))
             name = name.replace(' ','&nbsp;')
-            txt = '<a class="%s" onClick="switch_to_worksheet(\'%s\')" onMouseOver="show_worksheet_menu(%s)" href="/%s">%s</a>'%(
-                #cls,W.id(),W.id(),W.id(),name)
-                cls,W.id(),W.id(), W.filename(),name)
+            txt = '<a class="%s" onMouseOver="show_worksheet_menu(%s)" href="/w/%s">%s</a>'%(
+                cls,W.id(), W.filename(),name)
             s.append(txt)
         return '<br>'.join(s)
 
@@ -1184,6 +1227,10 @@ Output
         return s
 
     def help_window(self):
+        try:
+            return self._help_window
+        except AttributeError:
+            pass
         help = [
             ('Full Text Search of Docs and Source', 'Search the SAGE documentation by typing <pre>search_doc("my query")</pre> in an input cell and press shift-enter.  Search the source code of SAGE by typing <pre>search_src("my query")</pre> and pressing shift-enter.  Arbitrary regular expressions are allowed as queries.'),
             ('HTML', 'Begin an input block with %html and it will be output as HTML.  Use the &lt;sage>...&lt;/sage> tag to do computations in an HTML block and have the typeset output inserted.  Use &lt;$>...&lt;/$> and &lt;$$>...&lt;/$$> to insert typeset math in the HTML block.  This does <i>not</i> require latex.'),
@@ -1282,7 +1329,7 @@ Output
         <table class="help_window">
         """
         for x, y in help:
-            s += '<tr><td class="help_window_cmd">%s</td><td class="help_window_how">%s</td></tr>'%(x,y)
+            s += '<tr><td class="help_window_cmd">%s</td><td class="help_window_how">%s</td></tr>\n'%(x,y)
         s += '</table></div>'
 
         s +="""
@@ -1293,6 +1340,7 @@ Output
         either under the GPL or a GPL-compatible license</a>.
         <br>
         """
+        self._help_window = s
         return s
 
     def upload_window(self):
@@ -1344,8 +1392,8 @@ Output
         </html>
         """%(head, body)
 
-    def html(self, worksheet_id=None, authorized=False,
-                   show_debug=False, worksheet_authorized=False):
+    def html(self, worksheet_id=None, authorized=True,
+                   show_debug=False, worksheet_authorized=True):
         if worksheet_id is None or worksheet_id == '':
             if not self.splashpage():
                 W = self.default_worksheet()
