@@ -435,13 +435,9 @@ function toggle_left_pane() {
   if(get_class('left_pane') == "hidden") {
     set_class('left_pane', 'pane');
     set_class('worksheet', 'worksheet');
-//    set_class('left_pane_bar', 'hidden');
-//    set_html('left_pane_hider', '&laquo;&laquo;');
   } else {
     set_class('left_pane', 'hidden');
     set_class('worksheet', 'slideshow');
-//    set_class('left_pane_bar', 'left_pane_bar');
-//    set_html('left_pane_hider', '&raquo; Control Bar &raquo;');
   }
 }
 
@@ -1168,40 +1164,6 @@ function debug_append(txt) {
     output.innerHTML = txt + "\n" + output.innerHTML;
 }
 
-/* old_id = -1;
-function make_cell_input_active(id) {
-   if (old_id != -1) {
-        make_cell_input_inactive(old_id);
-   }
-   var txt = get_cell(id);
-   if (txt.style.display == "inline") {
-       return;
-   }
-   cell_input_resize(txt);
-   current_cell = id;
-   txt.style.display = "inline";
-
-   var pre = get_element('cell_input_pre_'+id);
-   pre.style.display = "none";
-   txt.value = pre.innerHTML;
-   pre.innerHTML = '';
-}
-
-function make_cell_input_inactive(id) {
-   var txt = get_cell(id);
-   if (txt.style.display != "inline") {
-       return;
-   }
-
-   txt.style.display = "none";
-
-   var pre = get_element('cell_input_pre_'+id);
-   pre.style.display = "inline";
-   pre.innerHTML = txt.value;
-   txt.value = '';
-}
-*/
-
 function jump_to_cell(id, delta, bottom) {
      if(delta != 0)
         id = id_of_cell_delta(id, delta)
@@ -1314,7 +1276,7 @@ function evaluate_cell_introspection(id, before, after) {
     var before_cursor_e = escape0(before);
     var after_cursor_e = escape0(after);
     cell_set_running(id);
-    async_request('/introspect', evaluate_cell_callback,
+    async_request(worksheet_command('introspect'), evaluate_cell_callback,
           'id=' + id + '&before_cursor='+before_cursor_e + '&after_cursor='+after_cursor_e);
 }
 
@@ -1349,7 +1311,7 @@ function cell_output_set_type(id, typ, do_async) {
 
     /* Do async request back to the server */
     if(do_async != false)
-        async_request('/cell_output_set', generic_callback, 'id='+id+'&type=' + typ)
+        async_request(worksheet_command('set_cell_output_type'), generic_callback, 'id='+id+'&type=' + typ)
 }
 
 function cycle_cell_output_type(id) {
@@ -1542,8 +1504,13 @@ function check_for_cell_update_callback(status, response_text) {
     var stat = response_text.substring(0,1)
 
     if(response_text == 'empty') {
-        cancel_update_check();
-        return;
+    /* TODO  -- hack -- we are sometimes getting something nothing back from
+       twisted for some reason.  Ignoring it seems to work....
+       */
+       continue_update_check();
+       return;
+  /*        cancel_update_check();
+        return; */
     }
 
     if(stat == 'e') {
@@ -1794,7 +1761,8 @@ function append_new_cell(id, html) {
 
 function interrupt_callback(status, response_text) {
     if (response_text == "failed") {
-
+       alert('Unable to immediately interrupt calculation.');
+       return;
     } else if(status == "success") {
         halt_active_cells()
     }
@@ -1839,7 +1807,7 @@ function hide_all() {
     for(i=0; i<n; i++) {
         cell_output_set_type(v[i],'hidden', false);
     }
-    async_request('/hide_all', hide_all_callback, 'worksheet_id='+worksheet_id);
+    async_request(worksheet_command('hide_all'), hide_all_callback);
 }
 
 function show_all_callback() {
@@ -1852,7 +1820,7 @@ function show_all() {
     for(i=0; i<n; i++) {
         cell_output_set_type(v[i],'wrap', false);
     }
-    async_request('/show_all', show_all_callback, 'worksheet_id='+worksheet_id);
+    async_request(worksheet_command('show_all'), show_all_callback);
 }
 
 function halt_active_cells() {
