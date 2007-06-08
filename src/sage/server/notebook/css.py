@@ -502,7 +502,7 @@ span.pane div.worksheets_topbar {
    color:black;
    height: 2ex;
    top: 0ex;
-   background: url('corner.png') no-repeat top left;
+   background: url('/images/corner.png') no-repeat top left;
    background-color: <color2>;
    text-decoration: none;
    font-size:12px;
@@ -618,7 +618,7 @@ div.worksheet_title {
    height:31px;
    padding-top: 3px;
    padding-left: 1em;
-   background: url('corner.png') no-repeat top left;
+   background: url('/images/corner.png') no-repeat top left;
    background-color: <color1>;
    width: 100%;
    font-family:arial;
