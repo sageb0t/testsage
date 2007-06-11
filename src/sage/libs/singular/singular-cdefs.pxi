@@ -31,6 +31,19 @@ cdef extern from "stdlib.h":
 
 cdef extern from "libsingular.h":
 
+    # numbers, i.e. coefficients (except modInt)
+    ctypedef struct number "snumber":
+        mpz_t z
+        mpz_t n
+        int s
+
+    ctypedef struct napoly "polyrec"
+
+    ctypedef struct lnumber "slnumber":
+        napoly *z
+        napoly *n
+        int s
+
     # This is the basis ring datatype of SINGULAR
     #
     # Please note: This is not the SINGULAR ring, it has one pointer
@@ -44,8 +57,13 @@ cdef extern from "libsingular.h":
         int  OrdSgn
         int  ShortOut
         int  CanShortOut
+        number *minpoly
         char **names
+        char **parameter
+        ring *algring
         short N
+        short P
+        int ch
 
     # This is the basic polynomial datatype of SINGULAR
     #
@@ -76,12 +94,6 @@ cdef extern from "libsingular.h":
     # oMalloc Bins
     ctypedef struct omBin "omBin_s"
 
-    # numbers, i.e. coefficients (except modInt)
-    ctypedef struct number "snumber":
-        mpz_t z
-        mpz_t n
-        int s
-
     # SINGULAR Init
     # ------------------------
     void feInitResources(char *name)
@@ -89,6 +101,7 @@ cdef extern from "libsingular.h":
     void rChangeCurrRing(ring *r)
     cdef ring *currRing
     cdef omBin *rnumber_bin
+    cdef omBin *sip_sring_bin
     cdef int (*pLDeg)(poly *p, int *l, ring *r)
 
     int siInit(char *)
@@ -96,6 +109,7 @@ cdef extern from "libsingular.h":
     # OMalloc
     void *omAlloc0(size_t size)
     void *omAllocBin(omBin *bin)
+    void *omAlloc0Bin(omBin *bin)
     char *omStrDup(char *)
     void omFree(void *)
 
@@ -135,6 +149,8 @@ cdef extern from "libsingular.h":
     void rWrite(ring *r)
 
     int rRing_has_Comp(ring *r)
+
+    ring *rCopy0(ring *)
 
     ### Polynomials
     ### The rule of thumb is: p_XXX accepts a ring as parameter, while
@@ -300,6 +316,17 @@ cdef extern from "libsingular.h":
     number *nlGetNom(number *n, ring *r)
     number *nlGetDenom(number *n, ring *r)
     number *nlRInit(int)
+
+    # Algebraic Numbers
+    number *naPar(int)
+    void naPower(number *, int, number **)
+    number *naMult(number *, number *)
+    number *naAdd(number *, number *)
+    number *naCopy(number *)
+    number *naInit(int)
+    void naDelete(number **, ring*)
+    int naIsZero(number *)
+    char * naRead(char *s, number *)
 
     #
     # Ideals
