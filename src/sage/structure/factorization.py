@@ -89,7 +89,7 @@ class Factorization(SageObject, list):
         True
 
     """
-    def __init__(self, x, unit=None, cr=False):
+    def __init__(self, x, unit=None, cr=False, sort=True):
         if not isinstance(x, list):
             raise TypeError, "x must be a list"
         if isinstance(x, Factorization):
@@ -112,7 +112,8 @@ class Factorization(SageObject, list):
         list.__init__(self, x)
         self.__unit = unit
         self.__cr = cr
-        self.sort()
+        if sort:
+            self.sort()
 
     def _set_cr(self, cr):
         self.__cr = cr

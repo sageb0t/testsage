@@ -457,7 +457,7 @@ cdef class RealField(sage.rings.ring.Field):
             status -- (bool --) optional flag
         """
         if status is None:
-            return bool(self.sci_not)
+            return self.sci_not
         else:
             self.sci_not = status
 
@@ -930,6 +930,9 @@ cdef class RealNumber(sage.structure.element.RingElement):
             sage: a.integer_part()
             100000000000000000
         """
+        if not mpfr_number_p(self.value):
+            raise ValueError, 'Cannot convert infinity or NaN to SAGE Integer'
+
         cdef Integer z = Integer()
         mpfr_get_z(z.value, self.value, GMP_RNDZ)
         return z
@@ -1332,6 +1335,9 @@ cdef class RealNumber(sage.structure.element.RingElement):
         """
         Returns integer truncation of this real number.
         """
+        if not mpfr_number_p(self.value):
+            raise ValueError, 'Cannot convert infinity or NaN to Python int'
+
         cdef Integer z = Integer()
         mpfr_get_z(z.value, self.value, GMP_RNDZ)
         return z.__int__()
@@ -1340,6 +1346,9 @@ cdef class RealNumber(sage.structure.element.RingElement):
         """
         Returns long integer truncation of this real number.
         """
+        if not mpfr_number_p(self.value):
+            raise ValueError, 'Cannot convert infinity or NaN to Python long'
+
         cdef Integer z = Integer()
         mpfr_get_z(z.value, self.value, GMP_RNDZ)
         return z.__long__()
@@ -1806,7 +1815,7 @@ cdef class RealNumber(sage.structure.element.RingElement):
     ###########################################
 
     def is_NaN(self):
-        return bool(mpfr_nan_p(self.value))
+        return mpfr_nan_p(self.value)
 
     def is_positive_infinity(self):
         """
@@ -1822,7 +1831,7 @@ cdef class RealNumber(sage.structure.element.RingElement):
             sage: a.is_positive_infinity()
             False
         """
-        return bool(mpfr_inf_p(self.value) and mpfr_sgn(self.value) > 0)
+        return mpfr_inf_p(self.value) and mpfr_sgn(self.value) > 0
 
     def is_negative_infinity(self):
         """
@@ -1838,7 +1847,7 @@ cdef class RealNumber(sage.structure.element.RingElement):
             sage: a.is_negative_infinity()
             True
         """
-        return bool(mpfr_inf_p(self.value) and mpfr_sgn(self.value) < 0)
+        return mpfr_inf_p(self.value) and mpfr_sgn(self.value) < 0
 
     def is_infinity(self):
         """
@@ -1854,7 +1863,13 @@ cdef class RealNumber(sage.structure.element.RingElement):
             sage: RR(1.5).is_infinity()
             False
         """
-        return bool(mpfr_inf_p(self.value))
+        return mpfr_inf_p(self.value)
+
+    def is_unit(self):
+        return mpfr_sgn(self.value) != 0
+
+    def __nonzero__(self):
+        return mpfr_sgn(self.value) != 0
 
     def __richcmp__(left, right, int op):
         return (<RingElement>left)._richcmp(right, op)
@@ -1950,7 +1965,7 @@ cdef class RealNumber(sage.structure.element.RingElement):
             sage: r.is_square()
             False
         """
-        return bool(self >= 0)
+        return mpfr_sgn(self.value) >= 0
 
     def cube_root(self):
         """
@@ -2648,7 +2663,7 @@ def create_RealNumber(s, int base=10, int pad=0, rnd="RNDN", min_prec=53):
     return RealNumber(R, s, base)
 
 def is_RealField(x):
-    return bool(PY_TYPE_CHECK(x, RealField))
+    return PY_TYPE_CHECK(x, RealField)
 
 def is_RealNumber(x):
     """
@@ -2665,7 +2680,7 @@ def is_RealNumber(x):
         sage: is_RealNumber(pi)
         False
     """
-    return bool(PY_TYPE_CHECK(x, RealNumber))
+    return PY_TYPE_CHECK(x, RealNumber)
 
 def __create__RealField_version0(prec, sci_not, rnd):
     return RealField(prec, sci_not, rnd)
