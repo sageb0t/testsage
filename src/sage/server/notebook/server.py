@@ -212,7 +212,6 @@ class WebServer(BaseHTTPServer.BaseHTTPRequestHandler):
         id = C['id']
         input_text = C['input']
         input_text = input_text.replace('\r\n', '\n') #TB: dos make crazy
-        #input_text = input_text.replace("%2B",'+')
         verbose('%s: %s'%(id, input_text))
         W = notebook.get_worksheet_that_has_cell_with_id(id)
         if not self.auth_worksheet(W):
@@ -542,7 +541,7 @@ x.innerHTML = prettyPrintOne(x.innerHTML);
         If no doc-browser has been opened/created, one is started.
         The doc-browser is an instance of a special worksheet; each
         page of documentation requested is formated into a worksheet
-        which replaces the doc-browsers previous worksheet.
+        which replaces the doc-browser's previous worksheet.
         """
         path_split = path.split('?')
         full_path = path_split[1]
@@ -635,47 +634,17 @@ x.innerHTML = prettyPrintOne(x.innerHTML);
 
     def plain_text_worksheet(self, filename, prompts=True):
         self.send_head()
-        W = notebook.get_worksheet_with_filename(filename)
-        t = W.plain_text(prompts = prompts)
-        t = t.replace('<','&lt;')
-        s = '<head>\n'
-        s += '<title>SAGE Worksheet: %s</title>\n'%W.name()
-        s += '</head>\n'
-        s += '<body>\n'
-        s += '<pre>' + t + '</pre>'
-        s += '</body>\n'
+        s = notebook.plain_text_worksheet_html(worksheet_id = filename, prompts=prompt)
         self.wfile.write(s)
 
     def html_worksheet(self, filename, do_print=False):
         self.send_head()
-        W = notebook.get_worksheet_with_filename(filename)
-        s = '<head>\n'
-        s += '<title>SAGE Worksheet: %s</title>\n'%W.name()
-        if do_print:
-            s += '<script type="text/javascript" src="/jsmath/jsMath.js"></script>\n'
-        s += '<script type="text/javascript" src="/__main__.js"></script>\n'
-        s += '<link rel=stylesheet href="/__main__.css">\n'
-        s += '</head>\n'
-        s += '<body>\n'
-        s += W.html(include_title=False, do_print=do_print)
-        if do_print:
-            s += '<script type="text/javascript">jsMath.Process();</script>\n'
-        s += '\n</body>\n'
+        s = notebook.worksheet_html(filename, do_print = do_print)
         self.wfile.write(s)
 
     def input_history_text(self):
         self.send_head()
-        t = notebook.history_text()
-        t = t.replace('<','&lt;')
-        s = '<head>\n'
-        s += '<title>SAGE Input History</title>\n'
-        s += '</head>\n'
-        s += '<body>\n'
-        s += '<pre>' + t + '</pre>\n'
-        s += '<a name="bottom"></a>\n'
-        s += '<script type="text/javascript"> window.location="#bottom"</script>\n'
-        s += '</body>\n'
-        self.wfile.write(s)
+        self.wfile.write(notebook.history_html())
 
     def help_window(self):
         self.send_head()
