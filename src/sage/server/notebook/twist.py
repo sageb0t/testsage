@@ -173,7 +173,6 @@ class Worksheet_introspect(WorksheetResource, resource.PostableResource):
     key in the browser in order to introspect.
     """
     def render(self, ctx):
-        print ctx.args
         try:
             id = int(ctx.args['id'][0])
         except (KeyError,TypeError):
@@ -528,6 +527,7 @@ def notebook_setup(self):
         return
     shutil.copyfile(dsage + '/cacert.pem', private_pem)
     shutil.copyfile(dsage + '/pubcert.pem', public_pem)
+    print "Successfully configured notebook."
 
 def notebook_twisted(self,
              directory='sage_notebook',
@@ -590,7 +590,7 @@ s.setServiceParent(application)
         config.close()
 
         ## Start up twisted
-        print_open_msg(address, port)
+        print_open_msg(address, port, ssl=ssl)
         e = os.system('cd "%s" && sage -twistd -ny twistedconf.py'%directory)
         if e == 256:
             raise socket.error
