@@ -251,7 +251,7 @@ class GraphGenerators():
             sage: for i in range(2):
             ...    n = []
             ...    for m in range(3):
-            ...        n.append(g[3*i + m].plot(node_size=50, vertex_labels=False))
+            ...        n.append(g[3*i + m].plot(vertex_size=50, vertex_labels=False))
             ...    j.append(n)
             ...
             sage: G = sage.plot.plot.GraphicsArray(j)
@@ -339,7 +339,7 @@ class GraphGenerators():
             sage: for i in range(3):
             ...    n = []
             ...    for m in range(3):
-            ...        n.append(g[3*i + m].plot(node_size=50, vertex_labels=False))
+            ...        n.append(g[3*i + m].plot(vertex_size=50, vertex_labels=False))
             ...    j.append(n)
             ...
             sage: G = sage.plot.plot.GraphicsArray(j)
@@ -428,7 +428,7 @@ class GraphGenerators():
             sage.: for i in range(3):
             ...    n = []
             ...    for m in range(3):
-            ...        n.append(g[3*i + m].plot(node_size=50, vertex_labels=False))
+            ...        n.append(g[3*i + m].plot(vertex_size=50, vertex_labels=False))
             ...    j.append(n)
             ...
             sage.: G = sage.plot.plot.GraphicsArray(j)
@@ -445,7 +445,7 @@ class GraphGenerators():
             sage.: for i in range(3):
             ...    n = []
             ...    for m in range(3):
-            ...        n.append(g[3*i + m].plot(node_size=50, vertex_labels=False))
+            ...        n.append(g[3*i + m].plot(vertex_size=50, vertex_labels=False))
             ...    j.append(n)
             ...
             sage.: G = sage.plot.plot.GraphicsArray(j)
@@ -711,7 +711,7 @@ class GraphGenerators():
             sage: for i in range(3):
             ...    n = []
             ...    for m in range(3):
-            ...        n.append(g[3*i + m].plot(node_size=50, vertex_labels=False))
+            ...        n.append(g[3*i + m].plot(vertex_size=50, vertex_labels=False))
             ...    j.append(n)
             ...
             sage: G = sage.plot.plot.GraphicsArray(j)
@@ -759,7 +759,7 @@ class GraphGenerators():
             sage: for i in range(2):
             ...    n = []
             ...    for m in range(3):
-            ...        n.append(g[3*i + m].plot(node_size=50, vertex_labels=False))
+            ...        n.append(g[3*i + m].plot(vertex_size=50, vertex_labels=False))
             ...    j.append(n)
             ...
             sage: G = sage.plot.plot.GraphicsArray(j)
@@ -916,7 +916,7 @@ class GraphGenerators():
             sage.: for i in range(3):
             ...    n = []
             ...    for m in range(3):
-            ...        n.append(g[3*i + m].plot(node_size=50, vertex_labels=False))
+            ...        n.append(g[3*i + m].plot(vertex_size=50, vertex_labels=False))
             ...    j.append(n)
             ...
             sage.: G = sage.plot.plot.GraphicsArray(j)
@@ -933,7 +933,7 @@ class GraphGenerators():
             sage.: for i in range(3):
             ...    n = []
             ...    for m in range(3):
-            ...        n.append(g[3*i + m].plot(node_size=50, vertex_labels=False))
+            ...        n.append(g[3*i + m].plot(vertex_size=50, vertex_labels=False))
             ...    j.append(n)
             ...
             sage.: G = sage.plot.plot.GraphicsArray(j)
@@ -980,7 +980,7 @@ class GraphGenerators():
             sage.: for i in range(3):
             ...    n = []
             ...    for m in range(3):
-            ...        n.append(g[3*i + m].plot(node_size=50, vertex_labels=False))
+            ...        n.append(g[3*i + m].plot(vertex_size=50, vertex_labels=False))
             ...    j.append(n)
             ...
             sage.: G = sage.plot.plot.GraphicsArray(j)
@@ -998,7 +998,7 @@ class GraphGenerators():
             sage.: for i in range(3):
             ...    n = []
             ...    for m in range(3):
-            ...        n.append(g[3*i + m].plot(node_size=50, vertex_labels=False))
+            ...        n.append(g[3*i + m].plot(vertex_size=50, vertex_labels=False))
             ...    j.append(n)
             ...
             sage.: G = sage.plot.plot.GraphicsArray(j)
@@ -1062,7 +1062,7 @@ class GraphGenerators():
             sage: for i in range(2):
             ...    n = []
             ...    for m in range(2):
-            ...        n.append(g[i + m].plot(node_size=50, vertex_labels=False))
+            ...        n.append(g[i + m].plot(vertex_size=50, vertex_labels=False))
             ...    j.append(n)
             sage: G = sage.plot.plot.GraphicsArray(j)
             sage: G.save('sage.png')
@@ -1103,7 +1103,7 @@ class GraphGenerators():
             sage: for i in range(3):
             ...    n = []
             ...    for m in range(3):
-            ...        n.append(g[3*i + m].plot(node_size=50, vertex_labels=False))
+            ...        n.append(g[3*i + m].plot(vertex_size=50, vertex_labels=False))
             ...    j.append(n)
             ...
             sage: G = sage.plot.plot.GraphicsArray(j)
@@ -1146,7 +1146,7 @@ class GraphGenerators():
             sage: for i in range(3):
             ...    n = []
             ...    for m in range(3):
-            ...        n.append(g[3*i + m].plot(node_size=50, vertex_labels=False))
+            ...        n.append(g[3*i + m].plot(vertex_size=50, vertex_labels=False))
             ...    j.append(n)
             ...
             sage: G = sage.plot.plot.GraphicsArray(j)
@@ -1190,7 +1190,7 @@ class GraphGenerators():
             sage: for i in range(3):
             ...    n = []
             ...    for m in range(3):
-            ...        n.append(g[3*i + m].plot(node_size=50, vertex_labels=False))
+            ...        n.append(g[3*i + m].plot(vertex_size=50, vertex_labels=False))
             ...    j.append(n)
             ...
             sage: G = sage.plot.plot.GraphicsArray(j)
@@ -1232,7 +1232,7 @@ class GraphGenerators():
             sage: for i in range(3):
             ...    n = []
             ...    for m in range(3):
-            ...        n.append(g[3*i + m].plot(node_size=50, vertex_labels=False))
+            ...        n.append(g[3*i + m].plot(vertex_size=50, vertex_labels=False))
             ...    j.append(n)
             ...
             sage: G = sage.plot.plot.GraphicsArray(j)
@@ -1613,7 +1613,7 @@ class GraphGenerators():
             sage.: for i in range(3):
             ...    n = []
             ...    for m in range(3):
-            ...        n.append(g[3*i + m].plot(node_size=50, vertex_labels=False))
+            ...        n.append(g[3*i + m].plot(vertex_size=50, vertex_labels=False))
             ...    j.append(n)
             ...
             sage.: G = sage.plot.plot.GraphicsArray(j)
@@ -1631,7 +1631,7 @@ class GraphGenerators():
             sage.: for i in range(3):
             ...    n = []
             ...    for m in range(3):
-            ...        n.append(g[3*i + m].plot(node_size=50, vertex_labels=False))
+            ...        n.append(g[3*i + m].plot(vertex_size=50, vertex_labels=False))
             ...    j.append(n)
             ...
             sage.: G = sage.plot.plot.GraphicsArray(j)
@@ -1724,7 +1724,7 @@ class GraphGenerators():
             sage.: for i in range(3):
             ...    n = []
             ...    for m in range(3):
-            ...        n.append(g[3*i + m].plot(node_size=50, vertex_labels=False))
+            ...        n.append(g[3*i + m].plot(vertex_size=50, vertex_labels=False))
             ...    j.append(n)
             ...
             sage.: G = sage.plot.plot.GraphicsArray(j)
@@ -1741,7 +1741,7 @@ class GraphGenerators():
             sage.: for i in range(3):
             ...    n = []
             ...    for m in range(3):
-            ...        n.append(g[3*i + m].plot(node_size=50, vertex_labels=False))
+            ...        n.append(g[3*i + m].plot(vertex_size=50, vertex_labels=False))
             ...    j.append(n)
             ...
             sage.: G = sage.plot.plot.GraphicsArray(j)
@@ -1792,7 +1792,7 @@ class GraphGenerators():
             sage: for i in range(2):
             ...    n = []
             ...    for m in range(3):
-            ...        n.append(g[3*i + m].plot(node_size=50, vertex_labels=False))
+            ...        n.append(g[3*i + m].plot(vertex_size=50, vertex_labels=False))
             ...    j.append(n)
             ...
             sage: G = sage.plot.plot.GraphicsArray(j)
@@ -1800,7 +1800,7 @@ class GraphGenerators():
 
         Use the plot options to display larger n-cubes
             sage: g = graphs.CubeGraph(9)
-            sage.: g.show(figsize=[12,12],vertex_labels=False, node_size=20)
+            sage.: g.show(figsize=[12,12],vertex_labels=False, vertex_size=20)
         """
         from sage.rings.integer import Integer
         # generate vertex labels:
@@ -1977,7 +1977,7 @@ class GraphGenerators():
             sage: for i in range(3):
             ...    n = []
             ...    for m in range(3):
-            ...        n.append(g[3*i + m].plot(node_size=50, vertex_labels=False))
+            ...        n.append(g[3*i + m].plot(vertex_size=50, vertex_labels=False))
             ...    j.append(n)
             ...
             sage: G = sage.plot.plot.GraphicsArray(j)
@@ -2026,7 +2026,7 @@ class GraphGenerators():
             sage.: for i in range(3):
             ...    n = []
             ...    for m in range(3):
-            ...        n.append(g[3*i + m].plot(node_size=50, vertex_labels=False))
+            ...        n.append(g[3*i + m].plot(vertex_size=50, vertex_labels=False))
             ...    j.append(n)
             ...
             sage.: G = sage.plot.plot.GraphicsArray(j)
@@ -2067,7 +2067,7 @@ class GraphGenerators():
             sage: for i in range(3):
             ...    n = []
             ...    for m in range(3):
-            ...        n.append(g[3*i + m].plot(node_size=50, vertex_labels=False))
+            ...        n.append(g[3*i + m].plot(vertex_size=50, vertex_labels=False))
             ...    j.append(n)
             ...
             sage: G = sage.plot.plot.GraphicsArray(j)
@@ -2103,7 +2103,7 @@ class GraphGenerators():
             sage: for i in range(3):
             ...    n = []
             ...    for m in range(3):
-            ...        n.append(g[3*i + m].plot(node_size=50, vertex_labels=False))
+            ...        n.append(g[3*i + m].plot(vertex_size=50, vertex_labels=False))
             ...    j.append(n)
             ...
             sage: G = sage.plot.plot.GraphicsArray(j)
