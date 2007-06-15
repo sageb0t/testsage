@@ -1208,7 +1208,7 @@ function text_cursor_split(input) {
 }
 
 function worksheet_command(cmd) {
-    return ('/ws/' + worksheet_name + '/' + cmd);
+    return (cmd);
 }
 
 function evaluate_cell(id, action) {
