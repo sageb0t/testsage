@@ -572,14 +572,23 @@ class Images(resource.Resource):
 ############################
 
 class RegistrationPage(resource.PostableResource):
+    # TODO: IMPORTANT -- figure out how to get a handle on the database here; we
+    # want to throw an error when a user tries to register a name that already
+    # exists
     def render(self, request):
         if request.args.has_key('email'):
             if request.args['email'][0] is not None :
-                email = """%s""" % request.args['email'][0]
+                user = request.args['username'][0]
+                passwd  = request.args['password'][0]
+                destaddr = """%s""" % request.args['email'][0]
                 from sage.server.notebook.smtpsend import send_mail
-                fromaddr = "test@test.com"
-                send_mail(self, fromaddr, email, "Foo", "Foo2")
-
+                from sage.server.notebook.register import make_key, build_msg
+                # TODO: make this come from the server settings
+                fromaddr = "no-reply@sage.math.washington.edu"
+                key = make_key()
+                body = build_msg(key, user, passwd)
+                print body
+                send_mail(self, fromaddr, destaddr, "SAGE Notebook Registration",body)
             # now say that the user has been registered.
             s = """\
 <html><h1>Registration information received</h1>
@@ -643,6 +652,10 @@ setattr(Toplevel, 'child_history.html', History())
 
 # site = server.Site(Toplevel())
 notebook = None  # this gets set on startup.
+
+##########################################################
+# This holds options about the notebook
+##########################################################
 
 ##########################################################
 # This actually serves up the notebook.
