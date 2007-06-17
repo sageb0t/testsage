@@ -9,6 +9,7 @@ from twisted.web2 import static, http_headers, responsecode
 import css, js, keyboards
 
 from sage.misc.misc import SAGE_EXTCODE, DOT_SAGE, walltime
+from sage.server.notebook.avatars import PasswordFileChecker
 
 p = os.path.join
 css_path        = p(SAGE_EXTCODE, "notebook/css")
@@ -705,7 +706,6 @@ class Toplevel(resource.PostableResource):
         username = _username
 
 class AnonymousToplevel(Toplevel):
-    from sage.server.notebook.avatars import PasswordFileChecker
     addSlash = True
     child_register = RegistrationPage(PasswordFileChecker('passwords.txt'))
     child_confirm = RegConfirmation()
@@ -724,6 +724,7 @@ class UserToplevel(Toplevel):
     child_doc = Doc()
     child_upload = Upload()
     child_upload_worksheet = UploadWorksheet()
+    child_register = RegistrationPage(PasswordFileChecker('passwords.txt'))
 
     def render(self, ctx):
         s = notebook.html(username=username)
