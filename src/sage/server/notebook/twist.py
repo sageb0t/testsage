@@ -136,6 +136,9 @@ class Doc(resource.Resource):
 # Uploading a saved worksheet file
 ############################
 
+def redirect(url):
+    return '<html><head><meta http-equiv="REFRESH" content="0; URL=%s"></head></html>'%url
+
 class Upload(resource.Resource):
     def render(self, ctx):
         return http.Response(stream = notebook.upload_window())
@@ -152,8 +155,7 @@ class UploadWorksheet(resource.PostableResource):
             s = "<html>Error uploading worksheet '%s'.  <a href='/'>continue</a></html>"%msg
             return http.Response(stream = s)
         os.unlink(tmp)
-        s = redirect('/ws/' + W.filename())
-        return http.Response(stream = s)
+        return http.RedirectResponse('/ws/'+W.filename())
 
 ############################
 # A resource attached to a given worksheet.
@@ -197,14 +199,12 @@ class Worksheet_data(WorksheetResource, resource.Resource):
 # request.  See WorksheetDelete and WorksheetAdd for
 # examples.
 ########################################################
-def redirect(url):
-    return '<html><head><meta http-equiv="REFRESH" content="0; URL=%s"></head></html>'%url
 
 class FastRedirect(resource.Resource):
     def __init__(self, dest):
         self.dest = dest
     def render(self, ctx):
-        return http.Response(stream = redirect(self.dest))
+        return http.RedirectResponse(self.dest)
 
 class FastRedirectWithEffect(FastRedirect):
     def __init__(self, dest, effect):
@@ -313,8 +313,7 @@ class Worksheet_save(WorksheetResource, resource.PostableResource):
     def render(self, ctx):
         if ctx.args.has_key('button_save'):
             self.worksheet.edit_save(ctx.args['textfield'][0])
-        s = notebook.html(worksheet_id = self.name)
-        return http.Response(stream=s)
+        return http.RedirectResponse('/ws/'+self.worksheet.filename())
 
 ########################################################
 # Set output type of a cell
@@ -506,7 +505,11 @@ class Worksheet(WorksheetResource, resource.Resource):
     def childFactory(self, request, op):
         notebook_save_check()
         try:
+            #MAGIC!
+            #rather than a bunch of if-else statements, we can wrap
+            #any Worksheet_... class as a subresource of a worksheet.
             R = globals()['Worksheet_%s'%op]
+            #/MAGIC!
             return R(self.name)
         except KeyError:
             return NotImplementedWorksheetOp(op)
