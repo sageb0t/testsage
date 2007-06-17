@@ -82,6 +82,7 @@ class PasswordFileChecker(PasswordDictChecker):
 
         self.password_file = password_file
 
+        passwords = {}
         if not os.path.exists(password_file):
             open(password_file,'w').close()
         f = open(password_file).readlines()
@@ -100,7 +101,6 @@ class PasswordFileChecker(PasswordDictChecker):
         f.close()
 
     def check_username(self, username):
-        import pdb; pdb.set_trace()
         usernames = []
         f = open(self.password_file).readlines()
         for line in f:
