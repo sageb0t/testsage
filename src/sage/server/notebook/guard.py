@@ -65,7 +65,7 @@ class SessionsManager(object):
         session = self.sessionFactory(self.createSessionID(), self)
         uid = session.get_uid()
         self.sessions[uid] = session
-        log.msg('Session %r created' % uid)
+        #log.msg('Session %r created' % uid)
         #log.msg('All sessions %r' % self.sessions)
         if not self.tick.running and len(self.sessions) > 0:
             self.tick.start(self.tickTime)
@@ -74,7 +74,7 @@ class SessionsManager(object):
     def expiredSession(self, session):
         uid = session.get_uid()
         if uid in self.sessions:
-            log.msg('Session %r expired' % uid)
+            #log.msg('Session %r expired' % uid)
             self.sessions.pop(uid)
         if self.tick.running and len(self.sessions) == 0:
             self.tick.stop()
@@ -100,7 +100,7 @@ class SessionsManager(object):
             #if session.persistent:
             #    max = self.sessionPersistentLifetime
             if age > max:
-                log.msg('Session %r expired' % uid)
+                #log.msg('Session %r expired' % uid)
                 self.sessions[uid].expire()
         if not self.sessions and self.tick.running:
             self.tick.stop()
@@ -126,7 +126,7 @@ class MySessionWrapper(object):
     def renderHTTP(self, request):
         """When, if ever, would this get called?
         """
-        log.msg("=== renderHTTP ===")
+        #log.msg("=== renderHTTP ===")
         d = defer.maybeDeferred(self._delegate, request, [])
         def _cb(resource, request):
             res = iweb.IResource(resource)
@@ -140,8 +140,8 @@ class MySessionWrapper(object):
         Inital logic occurs here to decide the
         authentication status of a given user.
         """
-        log.msg("=== locateChild 'guard.py' ===")
-        log.msg("=== %s ==" % request.args)
+        #log.msg("=== locateChild 'guard.py' ===")
+        #log.msg("=== %s ==" % request.args)
         #log.msg("request.args: %s, segments: %s" % (str(request.args), segments))
         #see if the user already has a session going
         if segments and segments[0] == "login":
@@ -156,7 +156,7 @@ class MySessionWrapper(object):
             return self.requestAnonymousAuthentication(request, segments)
         else:
             if segments and segments[0] == "logout":
-                log.msg("=== logout ===")
+                #log.msg("=== logout ===")
                 return self.logout(session, request, segments)
             else:
                 #log.msg("session found ... locateResource")
@@ -171,7 +171,7 @@ class MySessionWrapper(object):
 
         It is in locateChild where the users session is checked.
         """
-        log.msg("=== locateResource 'myguard.py' ===")
+        #log.msg("=== locateResource 'myguard.py' ===")
         def _success(avatar, request, segments):
             iface, rsrc, logout = avatar
             return rsrc, segments
@@ -205,7 +205,7 @@ class MySessionWrapper(object):
         return a custom 'view' of protected resources.
 
         """
-        log.msg("=== requestPasswordAuthentication ===")
+        #log.msg("=== requestPasswordAuthentication ===")
         creds = self.getCredentials(request)
         session, newCookie = self.sessionManager.createSession()
         mind = [newCookie, request.args, segments]
@@ -218,7 +218,7 @@ class MySessionWrapper(object):
         Anonymous authentication, the user can only see
         non-protected resources.
         """
-        log.msg("=== requestAnonymousAuthentication ===")
+        #log.msg("=== requestAnonymousAuthentication ===")
         def _success(avatar, request, segments):
             iface, resource, logout = avatar
             return resource, segments
@@ -241,7 +241,7 @@ class MySessionWrapper(object):
         cookie = request.headers.getHeader('cookie')
         if cookie:
             cookie = cookie[0].value
-        log.msg("cookie from header: %s"%cookie)
+        #log.msg("cookie from header: %s"%cookie)
         session = self.sessionManager.getSession(cookie)
         return session
 
@@ -261,16 +261,15 @@ class MySessionWrapper(object):
         Also saved the credentials that the user used to log in
         to later associate these credentials with the users session.
         """
-        log.msg("=== _loginSuccess ===")
-        log.msg("resource: %s " % rsrc)
-        log.msg("segments: %s " % segments)
+        #log.msg("=== _loginSuccess ===")
+        #log.msg("resource: %s " % rsrc)
+        #log.msg("segments: %s " % segments)
         #put the users creds in the session object
         session.set_authCreds(creds)
         return rsrc, () #segments
 
     def _loginFailure(self, *x): #TODO
-        log.msg("=== _loginFailure ===")
-
+        #log.msg("=== _loginFailure ===")
         print x
 
     def incorrectLoginError(self, error, ctx, segments, loginFailure):
@@ -283,6 +282,6 @@ class MySessionWrapper(object):
         out of the sessions dict.  A new anonymous session
         is immediatly created for this user.
         """
-        log.msg("=== logout ===")
+        #log.msg("=== logout ===")
         self.sessionManager.expiredSession(session)
         return self.requestAnonymousAuthentication(request, segments)
