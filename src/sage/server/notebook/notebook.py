@@ -722,7 +722,7 @@ class Notebook(SageObject):
             raise ValueError, 'there can be at most %s worksheets'%MAX_WORKSHEETS
         self.__next_worksheet_id += 1
 
-        W = worksheet.Worksheet(worksheet_name, self, id, system=self.system(), user=username)
+        W = worksheet.Worksheet(worksheet_name, self, id, system=self.system(), owner=username)
         self.__worksheets[worksheet_name] = W
         return W
 
@@ -734,6 +734,7 @@ class Notebook(SageObject):
         if not (name in self.__worksheets.keys()):
             raise KeyError, "Attempt to delete missing worksheet"
         W = self.__worksheets[name]
+        W.quit()
         cmd = 'rm -rf "%s"'%(W.directory())
         print cmd
         os.system(cmd)
