@@ -58,6 +58,8 @@ EXAMPLES:
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
 
+from database import SQLQuery, GenericSQLQuery, SQLDatabase, MutableSQLDatabase
+
 from conway import ConwayPolynomials
 
 from cremona import CremonaDatabase, \
