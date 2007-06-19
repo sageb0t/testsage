@@ -768,6 +768,7 @@ class Toplevel(resource.PostableResource):
 setattr(Toplevel, 'child_favicon.ico', static.File(image_path + '/favicon.ico'))
 
 from sage.server.notebook.template import login_template
+from sage.server.notebook.template import failed_login_template
 
 class LoginResourceClass(resource.Resource):
     def render(self, ctx):
@@ -793,11 +794,12 @@ class AnonymousToplevel(Toplevel):
         return LoginResource
 
 class FailedToplevel(Toplevel):
-    def __init__(self, info):
+    def __init__(self, info, problem):
         self.info = info
+        self.problem= problem
 
     def render(self, ctx):
-        return http.Response(stream=failed_login_template(problem="username"))
+        return http.Response(stream=failed_login_template(problem=self.problem))
 
 class UserToplevel(Toplevel):
     addSlash = True
