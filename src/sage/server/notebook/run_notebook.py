@@ -38,7 +38,7 @@ def notebook_twisted(self,
              port        = 8000,
              address     = 'localhost',
              port_tries  = 0,
-             secure      = True,
+             secure      = False,
              server_pool = None,
              ulimit      = None):
     r"""
@@ -51,7 +51,7 @@ def notebook_twisted(self,
         address    -- (default: 'localhost'), address to listen on
         port_tries -- (default: 0), number of additional ports to try if the
                       first one doesn't work (*not* implemented)
-        secure     -- (default: True) if True use https so all
+        secure     -- (default: False) if True use https so all
                       communication, e.g., logins and passwords,
                       between web browsers and the SAGE notebook is
                       encrypted (via GNU TLS).
@@ -116,6 +116,7 @@ sage.server.notebook.notebook.JSMATH=True
 import sage.server.notebook.notebook as notebook
 import sage.server.notebook.twist as twist
 twist.notebook = notebook.load_notebook(%s)
+twist.OPEN_MODE = %s
 import sage.server.notebook.worksheet as worksheet
 worksheet.init_sage_prestart(twist.notebook.get_server(), twist.notebook.get_ulimit())
 
@@ -151,7 +152,7 @@ application = service.Application("SAGE Notebook")
 s = strports.service('%s', factory)
 s.setServiceParent(application)
 password_checker.add_first_admin()
-"""%(notebook_opts, strport))
+"""%(notebook_opts, not secure, strport))
 
         config.close()
 

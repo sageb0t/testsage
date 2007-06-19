@@ -1183,6 +1183,12 @@ span.red{
   color:red;
 }
 
+/****************** Other **************/
+
+a.worksheetname{
+   text-decoration: none;
+}
+
 """
     if color == 'gmail':
         color1 = '#c3d9ff'
