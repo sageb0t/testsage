@@ -637,18 +637,30 @@ div.worksheet_top_padding {
    height:5%;
 }
 
+div.worksheet_menu {
+   top:50px;
+}
+
+a.worksheet_title {
+   text-decoration:none;
+   font-size:20px;
+   font-family:arial;
+   font-weight:bold;
+   color:#000000;
+}
+
+a.worksheet_title:hover {
+   background-color:#ffffcc;
+   cursor:pointer;
+}
+
 div.worksheet_title {
    z-index:2;
    top:36px;
    height:31px;
    padding-top: 3px;
    padding-left: 1em;
-   background: url('/images/corner.png') no-repeat top left;
-   background-color: <color1>;
-   width: 100%;
-   font-family:arial;
-   font-size: 16px;
-   font-weight:bold;
+   background-color: #ffffff;
    color:black;
    position: fixed;
 }
@@ -815,11 +827,10 @@ div.worksheet {
 
 span.banner{
   background-color:white;
-  /* font-family:arial;
-  font-size:30px;
+  font-family: sans-serif;
+  font-size:18px;
   text-decoration: none;
-  font-weight: bold;
-  color: #387CAF; */
+  color: #1950c8;
 }
 
 span.banner a.banner img{
