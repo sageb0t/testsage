@@ -797,7 +797,7 @@ class FailedToplevel(Toplevel):
         self.info = info
 
     def render(self, ctx):
-        return http.Response(stream = 'You -- %s -- you failed!'%self.info)
+        return http.Response(stream=failed_login_template(problem="username"))
 
 class UserToplevel(Toplevel):
     addSlash = True
