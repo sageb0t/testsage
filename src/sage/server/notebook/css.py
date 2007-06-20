@@ -1243,6 +1243,11 @@ a.usercontrol {
   color: #112abb;
   padding:1ex;
   font-size:14px;
+  text-decoration:underline;
+}
+
+a.usercontrol:hover {
+  cursor:pointer;
 }
 
 a.boldusercontrol {
