@@ -152,7 +152,6 @@ from twisted.application import service, strports
 application = service.Application("SAGE Notebook")
 s = strports.service('%s', factory)
 s.setServiceParent(application)
-password_checker.add_first_admin()
 """%(notebook_opts, not secure, strport))
 
         config.close()
