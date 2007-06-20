@@ -703,6 +703,10 @@ function save_as(typ) {
     open(worksheet_command('save_as') + '?typ=' +typ);
 }
 
+function edit_worksheet() {
+    window.location.replace(worksheet_command(""));
+}
+
 function save_worksheet() {
     async_request(worksheet_command('save_snapshot'), save_worksheet_callback, null);
 }
