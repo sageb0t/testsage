@@ -1315,15 +1315,11 @@ Output
         return s
 
     def help_window(self):
-        try:
-            return self._help_window
-        except AttributeError:
-            pass
         from tutorial import notebook_help
         s = """
         <html>
         <body>
-        <br><hr>
+        <a href="/">Home</a>
         <style>
         div.help_window {
             background-color:white;
@@ -1352,6 +1348,8 @@ Output
             width:70%;
         }
         </style>
+
+        <br>
         <h1 align=center><font color='darkred'>SAGE</font> Notebook Quickstart</h1>
         <div class="help_window">
 
@@ -1360,7 +1358,8 @@ Output
         A <i>notebook</i> is a collection of worksheets and saved objects.
         <br>
         <br>
-        To get started with SAGE, <a href="doc_browser?/tut/?tut.html">view the tutorial</a>.
+        To get started with SAGE, <a href="/doc/live/tut/tut.html">view the tutorial</a> (if
+        you have trouble with it, view the <a href="/doc/static/tut/tut.html">static version</a>).
         <br><br>
 
         <table class="help_window">
@@ -1371,13 +1370,12 @@ Output
 
         s +="""
         <br>
-        AUTHORS: Tom Boothby, Alex Clemesha, Bobby Moretti, Yi Qiang, Dorian Ramier, and William Stein<br><br>
+        AUTHORS: Tom Boothby, Alex Clemesha, Bobby Moretti, Yi Qiang, Dorian Ramier, and William Stein.  User interface design based on Google Documents.<br><br>
         LICENSE: SAGE is <a href="/license.html">GPL-compatible</a>.
         <br>
         </body>
         </html>
         """
-        self._help_window = s
         return s
 
     def upload_window(self):
