@@ -120,7 +120,7 @@ class Notebook(SageObject):
     # Moving, copying, creating, renaming, and listing worksheets
     ##########################################################
 
-    def create_new_worksheet(self, worksheet_name, username):
+    def create_new_worksheet(self, worksheet_name, username, docbrowser=False):
         filename = worksheet.worksheet_filename(worksheet_name, username)
         if self.__worksheets.has_key(filename):
             return self.__worksheets[filename]
@@ -135,8 +135,12 @@ class Notebook(SageObject):
                 dirname = str(i)
         else:
             dirname = '0'
+
         W = worksheet.Worksheet(worksheet_name, dirname, self,
-                        system = self.system(username), owner=username)
+                                system = self.system(username),
+                                owner=username,
+                                docbrowser = docbrowser)
+
         self.__worksheets[W.filename()] = W
         return W
 
@@ -600,7 +604,7 @@ class Notebook(SageObject):
         return s
 
     def html_worksheet_list_for_user(self, user, active_only=True, sort='last_edited', reverse=False):
-        W = self.get_worksheets_with_viewer(user)
+        W = [x for x in self.get_worksheets_with_viewer(user) if not x.docbrowser()]
         sort_worksheet_list(W, sort, reverse)  # changed W in place
 
         top = self.html_worksheet_list_top(user, active_only=active_only)
@@ -1146,6 +1150,7 @@ Output
         <html>
         <head>%s</head>
         <body>%s</body>
+        <script type="text/javascript">jsmath_init()</script>
         </html>
         """%(head, body)
 
