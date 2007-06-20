@@ -22,3 +22,6 @@ class User:
 
     def account_type(self):
         return self.__account_type
+
+    def is_admin(self):
+        return self.__account_type == 'admin'

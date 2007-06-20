@@ -1213,20 +1213,22 @@ a.worksheetname{
    text-decoration: none;
 }
 
+a.worksheetname_moved{
+   color:#888888;
+   text-decoration: none;
+   font-weight:normal;
+}
+
 .flush-right {
     position:absolute;      /* All browsers */
     top: auto;              /* Standards  browsers */
-    top: position-static;   /*All IE and Mozilla or ignored as invalid*/
     right: 0;               /* All except IE */
-    left: expression(parentNode.offsetWidth - offsetWidth + 'px');
 }
 
 .thin-right {
     position:absolute;      /* All browsers */
     top: auto;              /* Standards  browsers */
-    top: position-static;   /*All IE and Mozilla or ignored as invalid*/
     right: 0;               /* All except IE */
-    left: expression(parentNode.offsetWidth - offsetWidth + 'px');
     width: 70%;
 }
 
@@ -1266,7 +1268,7 @@ a.control {
   padding-left:1ex;
   padding-right:1ex;
   font-size:15px;
-  text-weight:bold;
+  font-weight:bold;
   text-decoration: none;
 }
 
@@ -1388,6 +1390,12 @@ td.worksheet_link {
   font-family: sans-serif;
   font-size:12px;
   font-weight:bold;
+  color: #000000;
+}
+
+td.archived_worksheet_link {
+  font-family: sans-serif;
+  font-size:12px;
   color: #000000;
 }
 
