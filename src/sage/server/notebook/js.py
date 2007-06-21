@@ -631,26 +631,6 @@ function set_worksheet_list_checks() {
     }
 }
 
-function worksheet_list_button0(action, desc) {
-    /* For each filename listed in worksheet_filenames, look up the corresponding
-       input check box, see if it is checked, and if so, do the corresponding
-       action.
-     */
-    var i, id, X;
-
-    for(i=0; i<worksheet_filenames.length; i++) {
-        id = worksheet_filenames[i];
-        X  = get_element(id);
-        if (X.checked) {
-            X.checked = 0;
-            async_request(action, worksheet_list_button_callback, 'filename='+worksheet_filenames[i]);
-            Y = get_element('name/' + id);
-            Y.innerHTML = desc + ' ' + Y.innerHTML;
-            Y.className = "worksheetname_moved";
-        }
-    }
-}
-
 function worksheet_list_button(action, desc) {
     /* For each filename listed in worksheet_filenames, look up the corresponding
        input check box, see if it is checked, and if so, do the corresponding
@@ -677,7 +657,7 @@ function worksheet_list_button_callback(status, response_text) {
    } else {
       alert("Failure deleting worksheet." + response_text);
    }
-   window.location.replace(".");
+  window.location.reload(true);
 }
 
 function delete_button() {
@@ -769,9 +749,9 @@ function entsub(event) {
      return true;
 }
 
-function search_worksheets() {
+function search_worksheets(typ) {
     X = get_element('search_worksheets');
-    url = '?search=' + escape0(X.value);
+    url = '?typ=' + typ + '&search=' + escape0(X.value);
     window.location.replace(url);
 }
 
