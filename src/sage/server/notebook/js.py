@@ -695,7 +695,8 @@ function share_worksheet() {
 }
 
 function publish_worksheet() {
-    open(worksheet_command("publish"));
+    window.open(worksheet_command("publish"), "",
+      "menubar=1,scrollbars=1,width=800,height=600,toolbar=1,  resizable=1");
 }
 
 function save_as(typ) {
@@ -753,6 +754,10 @@ function search_worksheets(typ) {
     X = get_element('search_worksheets');
     url = '?typ=' + typ + '&search=' + escape0(X.value);
     window.location.replace(url);
+}
+
+function system_select(s) {
+    async_request(worksheet_command('system/'+s), null, null);
 }
 
 function add_worksheet(name) {
@@ -949,7 +954,8 @@ function list_share_worksheet(filename) {
 }
 
 function list_publish_worksheet(filename) {
-   window.location.replace('/home/' + filename + '/publish');
+   window.open('/home/' + filename + '/publish', "",
+      "menubar=1,scrollbars=1,width=800,height=600,toolbar=1,  resizable=1");
 }
 
 function list_revisions_of_worksheet(filename) {
@@ -2142,12 +2148,12 @@ function history_window() {
 
 function doctest_window(worksheet) {
     log = window.open ("/home/" + worksheet+"/plain","",
-    "menubar=1,scrollbars=1,width=700,height=600,toolbar=1, resizable=1");
+    "menubar=1,scrollbars=1,width=800,height=600,toolbar=1, resizable=1");
 }
 
 function print_worksheet(worksheet) {
     log = window.open (worksheet_command("print"),"",
-      "menubar=1,scrollbars=1,width=700,height=600,toolbar=1,  resizable=1");
+      "menubar=1,scrollbars=1,width=800,height=600,toolbar=1,  resizable=1");
 }
 
 //////////////////////////////////
