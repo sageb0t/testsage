@@ -1506,6 +1506,18 @@ div.docidx {
   font-weight:bold;
 }
 
+span.ping {
+   display:none;
+}
+
+span.pingdown {
+   font-family:sans-serif;
+   font-size:15px;
+   font-weight:bold;
+   color:white;
+   background-color: darkred;
+}
+
 """
     if color == 'gmail':
         color1 = '#c3d9ff'
