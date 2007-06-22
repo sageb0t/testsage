@@ -126,8 +126,6 @@ class IdentityFunctor(ForgetfulFunctor_generic):
             raise TypeError, "x (=%s) must be in the category %s"%(x,self.domain())
         return x
 
-from category import category_hierarchy
-
 def ForgetfulFunctor(domain, codomain):
     """
     Construct the forgetful function from one category to another.
@@ -139,6 +137,7 @@ def ForgetfulFunctor(domain, codomain):
         sage: F
         The forgetful functor from Rings to AbelianGroups
     """
+    from category import category_hierarchy
     if domain == codomain:
         return IdentityFunctor(domain, codomain)
     if not domain.is_subcategory(codomain):
