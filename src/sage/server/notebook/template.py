@@ -31,5 +31,6 @@ class PageTemplate:
 
 # Define variables for each template
 G = globals()
-for name in ['login', 'yes_no']:
+templates = ['login', 'yes_no', 'failed_login']
+for name in templates:
     G[name + '_template'] =  PageTemplate(pjoin(path, '%s.template'%name))
