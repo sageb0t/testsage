@@ -1,9 +1,5 @@
 TODO for the new Twisted notebook
 
-* implement notebook() command as described in docs
-
-* make sure notebook? gives docs.
-
 * safari os x
 
 * firefox os x
@@ -26,6 +22,10 @@ Later...
 
 BUG FIXING:
 ----------
+done * implement notebook() command as described in docs
+
+done * make sure notebook? gives docs.
+
 [x] keep alive
 
  * anonymous login can still see something sort of
