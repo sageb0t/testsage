@@ -506,7 +506,6 @@ class Worksheet_revisions(WorksheetResource, resource.PostableResource):
         else:
             rev = ctx.args['rev'][0]
             action = ctx.args['action'][0]
-            print action
             if action == 'revert':
                 return worksheet_revision_revert(self.worksheet, rev)
             elif action == 'publish':
@@ -864,7 +863,6 @@ def render_worksheet_list(args, pub=False):
         sort = args['sort'][0]
     if args.has_key('reverse'):
         reverse = (args['reverse'][0] == 'True')
-        print args['reverse'], reverse
     else:
         reverse = False
 
@@ -1014,11 +1012,7 @@ class Notebook(resource.Resource):
 class Help(resource.Resource):
     addSlash = True
     def render(self, ctx):
-        try:
-            s = self._cache
-        except AttributeError:
-            s = notebook.html_notebook_help_window(username)
-            self._cache = s
+        s = notebook.html_notebook_help_window(username)
         return http.Response(stream=s)
 
 ############################
