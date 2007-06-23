@@ -128,3 +128,8 @@ cdef class Matrix(AlgebraElement):
 
     cdef bint is_sparse_c(self)
     cdef bint is_dense_c(self)
+
+cdef class CoercionModel:
+    cdef canonical_coercion_c(self, x, y)
+    cdef canonical_base_coercion_c(self, Element x, Element y)
+    cdef bin_op_c(self, x, y, op)
