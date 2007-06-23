@@ -15,6 +15,7 @@ import re
 import shutil
 import socket
 import time
+import bz2
 
 # SAGE libraries
 from   sage.structure.sage_object import SageObject, load
@@ -768,6 +769,7 @@ class Notebook(SageObject):
             entries.append(('/', 'Log in', 'Please log in to the SAGE notebook'))
         else:
             entries.append(('/home/%s'%user, 'Home', 'Back to your personal worksheet list'))
+            entries.append(('/pub', 'Published', 'Browse the published worksheets'))
             #entries.append(('/settings', 'Settings', 'Change user settings'))   # TODO -- settings
             entries.append(('/help', 'Help', 'Documentation'))
 
@@ -775,12 +777,11 @@ class Notebook(SageObject):
         #if self.user(user).is_admin():
         #    entries.insert(1, ('/notebook_settings', 'Server', 'Change general SAGE notebook server configuration'))
         if not pub:
-            entries.insert(1, ('history_window()', 'Log', 'View a log of recent computations'))
+            entries.insert(2, ('history_window()', 'Log', 'View a log of recent computations'))
         if not self.user_is_guest(user):
             entries.append(('/logout', 'Sign out', 'Logout of the SAGE notebook'))
 
-        s += self.html_user_control(user, entries)
-        s += self.html_banner()
+        s += self.html_banner_and_control(user, entries)
         s += '<hr class="usercontrol">'
         return s
 
@@ -794,9 +795,19 @@ class Notebook(SageObject):
             s += self.html_worksheet_actions(user, typ=typ)
         return s
 
+    def html_banner_and_control(self, user, entries):
+        return """
+        <table width=100%%><tr><td>
+        %s
+        </td><td align=right>
+        %s
+        </td></tr>
+        </table>
+        """%(self.html_banner(),
+             self.html_user_control(user, entries))
+
     def html_user_control(self, user, entries):
         s = ''
-        s += '<div class="flush-right">'
         s += '<span class="username">%s</span>'%user
         for href, name, title in entries:
             if '(' in href:
@@ -805,13 +816,14 @@ class Notebook(SageObject):
                 action = 'href="%s"'%href
             x = '<a title="%s" class="usercontrol" %s>%s</a>\n'%(title, action, name)
             s += vbar + x
-        s += '</div>'
         return s
 
     def html_banner(self):
         s = """
         <span class="banner">
-        <a class="banner" href="http://www.sagemath.org"><img align="top" src="/images/sagelogo.png" alt="SAGE"> Mathematics Software</a> <span class="ping" id="ping">Unable to contact SAGE server!</span>
+        <table><tr><td>
+        <a class="banner" href="http://www.sagemath.org"><img align="top" src="/images/sagelogo.png" alt="SAGE"> Notebook</a></td><td><span class="ping" id="ping">Unable to contact SAGE server!</span></td>
+        </tr></table>
         </span>
         """
         return s
@@ -862,7 +874,7 @@ class Notebook(SageObject):
 
             s += '<span>'
             s += '&nbsp;'*10
-            s += '<a class="control" href="/pub" title="Browse everyone\'s published worksheets">Published Worksheets</a>'
+            #s += '<a class="control" href="/pub" title="Browse everyone\'s published worksheets">Published Worksheets</a>'
             s += '&nbsp;'*10
             s += '&nbsp;<a class="usercontrol" href=".">Active</a>'
             s += '&nbsp;<a class="usercontrol" href=".?typ=archive">Archive</a>'
@@ -1032,7 +1044,7 @@ class Notebook(SageObject):
         head, body = self.html_worksheet_page_template(ws, username, "Revision from %s ago"%when, select="revisions")
 
         filename = ws.get_snapshot_text_filename(rev)
-        txt = open(filename).read()
+        txt = bz2.decompress(open(filename).read())
         W = self.scratch_worksheet()
         W.delete_cells_directory()
         W.edit_save(txt)
@@ -1087,7 +1099,7 @@ class Notebook(SageObject):
         body += '<hr class="usercontrol">'
         body += '<span class="username">SAGE Users:</span>'
         U = self.users()
-        K = [x for x, u in U.iteritems() if not u.is_guest() and u.username() != username]
+        K = [x for x, u in U.iteritems() if not u.is_guest() and not u.username() in [username, 'pub', '_sage_']]
         def mycmp(x,y):
             return cmp(x.lower(), y.lower())
         K.sort(mycmp)
@@ -1153,7 +1165,6 @@ class Notebook(SageObject):
     ###########################################################
 
     def save(self, filename=None):
-        #print "-"*70
 
         if filename is None:
             F = os.path.abspath(self.__filename)
@@ -1174,13 +1185,12 @@ class Notebook(SageObject):
         else:
             F = os.path.abspath(filename)
 
-        #print "Saving notebook to '%s'..."%F
         D, _ = os.path.split(F)
         if not os.path.exists(D):
             os.makedirs(D)
         SageObject.save(self, F, compress=False)
-        #print "Press control-C to stop the notebook server."
-        #print "-"*70
+        print "Saved notebook to '%s'."%F
+        print "Press control-C to stop the notebook server."
 
     def delete_doc_browser_worksheets(self):
         names = self.worksheet_names()
@@ -1241,14 +1251,17 @@ class Notebook(SageObject):
 
     def html_worksheet_topbar(self, worksheet, select=None):
         body = ''
-        body += worksheet.html_title()
-        body += worksheet.html_save_discard_buttons() + '<br>'
-
-        body += '<hr class="greybar">'
-        menu = worksheet.html_menu()
-        share = '<span class=thin-right>%s</span>'%worksheet.html_share_publish_buttons(select=select)
-
-        body += '<table><tr><td>%s</td><td>%s</td></tr></table>'%(menu, share)
+        body += """
+<table width=100%%>
+<tr>
+  <td align=left> %s </td>   <td align=right> %s </td>
+</tr>
+<tr>
+  <td align=left> %s </td>   <td align=right> %s </td>
+</tr>
+</table>
+"""%(worksheet.html_title(), worksheet.html_save_discard_buttons(),
+     worksheet.html_menu(), worksheet.html_share_publish_buttons(select=select))
 
         body += self.html_slide_controls()
         return body
@@ -1297,6 +1310,7 @@ class Notebook(SageObject):
         else:
 
             entries = [('/', 'Home', 'Back to your personal worksheet list'),
+                       ('/pub', 'Published', 'Browse the published worksheets'),
                        ('history_window()', 'Log', 'View a log of recent computations'),
                        #('settings', 'Settings', 'Worksheet settings'),  # TODO -- settings
                        ('/help', 'Help', 'Documentation')]
@@ -1304,14 +1318,12 @@ class Notebook(SageObject):
             if not self.user_is_guest(username):
                 entries.append(('/logout', 'Sign out', 'Logout of the SAGE notebook'))
 
-            body += self.html_user_control(username, entries)
-            body += self.html_banner()+ '<br><br>'
-
+            body += self.html_banner_and_control(username, entries)
             if top_only:
                 return body
 
             if worksheet_filename:
-                body += self.html_worksheet_topbar(worksheet, select="edit")
+                body += self.html_worksheet_topbar(worksheet, select="use")
 
             if self.__show_debug or show_debug:
                 body += self.html_debug_window()
@@ -1342,20 +1354,45 @@ class Notebook(SageObject):
 
         return body
 
-    def edit_window(self, worksheet, username):
+    def html_plain_text_window(self, worksheet, username):
+        """
+        Return a window that display plain text version of the worksheet
+
+        INPUT:
+            worksheet -- a worksheet
+            username -- name of the user
+        """
+        head, body = self.html_worksheet_page_template(worksheet, username, 'View plain text', select="text")
+
+        t = worksheet.plain_text(prompts=True, banner=False)
+        body += """
+        <pre class="plaintext" id="cell_intext" name="textfield">%s
+        </pre>
+        """%t.strip()
+
+        return """
+        <html>
+        <head>%s</head>
+        <body>%s</body>
+        </html>
+        """%(head, body)
+
+    def html_edit_window(self, worksheet, username):
         """
         Return a window for editing worksheet.
 
         INPUT:
             worksheet -- a worksheet
         """
-        head, body = self.html_worksheet_page_template(worksheet, username, 'Plain text &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="Save Changes" name="button_save"> <input type="submit" value="Cancel" name="button_cancel">', select="text")
+        head, body = self.html_worksheet_page_template(worksheet, username, 'Edit plain text &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="Save Changes" name="button_save"> <input type="submit" value="Cancel" name="button_cancel">', select="edit")
 
         t = worksheet.edit_text()
         t = t.replace('<','&lt;')
-        body = '        <form method="post" action="save" enctype="multipart/form-data">' + body
+        body = '<form method="post" action="save" enctype="multipart/form-data">' + body
+        body += '<pre class="plaintext">'
         body += """
         <textarea class="plaintextedit" id="cell_intext" name="textfield">%s</textarea>
+        </pre>
         </form>
         """%t
 

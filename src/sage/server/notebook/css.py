@@ -666,14 +666,9 @@ a.worksheet_title:hover {
 }
 
 div.worksheet_title {
-   z-index:2;
-   top:36px;
-   height:31px;
-   padding-top: 3px;
    padding-left: 1em;
    background-color: #ffffff;
    color:black;
-   position: fixed;
 }
 
 div.worksheet_title_under {
@@ -823,19 +818,12 @@ span.control:hover a.cs, span.control a:hover.cs {
 div.worksheet {
   position:fixed;
   overflow:auto;
-  z-index:1;
   background-color: white;
   border:1px solid #aaa;
-/*  border-top: 0px;
-  border-left: 2px solid <color1>;
-  */
-  top: 8em;
-  bottom: 0ex;
-  right: 0ex;
-  left:1ex;
-  padding-left: 0ex;
-  float: right;
-  padding-top: 0ex;
+    top: 8em;
+    bottom: 0ex;
+    right: 0ex;
+    left:1ex;
 }
 
 span.banner{
@@ -1229,6 +1217,12 @@ a.worksheetname_moved{
    font-weight:normal;
 }
 
+span.worksheet_buttons {
+    position:relative;
+    top: -20ex;
+    right: 0ex;
+}
+
 .flush-right {
     position:absolute;      /* All browsers */
     top: auto;              /* Standards  browsers */
@@ -1349,12 +1343,17 @@ hr.usercontrol {
    height: 1px;
 }
 
-hr.greybar {
+hr.greybar hr.negative_greybar {
    border: 0;
    width: 100%;
    color: #aaa;
    background-color: #aaa;
    height: 1px;
+}
+
+hr.negative_greybar {
+   top:-1em;
+   position:relative;
 }
 
 span.checkcol {
@@ -1492,6 +1491,22 @@ span.addtext {
 }
 
 textarea.plaintextedit {
+    position:fixed;
+    font-family: courier, monospace;
+    font-size:10pt;
+    border: 1px solid #8cacbb;
+    color: black;
+    background-color: white;
+    padding: 3px;
+    top: 10em;
+    bottom: 0ex;
+    right: 0ex;
+    left:1ex;
+    margin-top: 0.5em;
+}
+
+pre.plaintext {
+    overflow:auto;
     position:fixed;
     font-family: courier, monospace;
     font-size:10pt;
