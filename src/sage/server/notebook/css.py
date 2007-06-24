@@ -29,6 +29,10 @@ def css(color='default'):
         <type 'str'>
     """
     s = r"""
+body {
+  background-color: white;
+}
+
 div.hidden {
   display:none;
 }
@@ -1262,7 +1266,7 @@ span.pubmsg {
 a.usercontrol {
   color: #112abb;
   padding:0.6ex;
-  font-size:13px;
+  font-size:14px;
   text-decoration:underline;
 }
 

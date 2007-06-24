@@ -17,8 +17,6 @@ from twisted.web2 import static, http_headers, responsecode
 
 import css, js, keyboards
 
-from guard import SID_COOKIE
-
 import notebook as _notebook
 
 HISTORY_MAX_OUTPUT = 92*5
@@ -188,6 +186,36 @@ class Doc(resource.Resource):
     def render(self, ctx):
         s = notebook.html_doc(username)
         return http.Response(stream=s)
+
+############################
+# The source code browser
+############################
+
+SRC = os.path.abspath(os.environ['SAGE_ROOT'] + '/devel/sage/sage/')
+
+class SourceBrowser(resource.Resource):
+    addSlash = True
+
+    def render(self, ctx):
+        return static.File(SRC)
+
+    def childFactory(self, request, name):
+        return Source('%s/%s'%(SRC,name))
+
+class Source(resource.Resource):
+    addSlash = True
+
+    def __init__(self, path):
+        self.path = path
+
+    def render(self, ctx):
+        if os.path.isfile(self.path):
+            return http.Response(stream = notebook.html_src(self.path, username))
+        else:
+            return static.File(self.path)
+
+    def childFactory(self, request, name):
+        return Source(self.path + '/' + name)
 
 ############################
 # A New Worksheet
@@ -1285,6 +1313,7 @@ class AnonymousToplevel(Toplevel):
     child_confirm = RegConfirmation()
     child_images = Images()
     child_css = CSS()
+    child_src = SourceBrowser()
     child_javascript = Javascript()
     child_home = PublicWorksheetsHome()
     child_pub = PublicWorksheets()
@@ -1313,6 +1342,7 @@ class UserToplevel(Toplevel):
     child_home = Worksheets()
     child_notebook = Notebook()
     child_doc = Doc()
+    child_src = SourceBrowser()
     child_upload = Upload()
     child_upload_worksheet = UploadWorksheet()
     child_new_worksheet = NewWorksheet()
@@ -1350,6 +1380,7 @@ def set_cookie(cookie):
 notebook = None  # this gets set on startup.
 username = None  # This is set when a request comes in.
 OPEN_MODE = None # this gets set on startup.
+SID_COOKIE = None # gets set on startup
 
 def user_type(user):
     # one of admin, guest, user
