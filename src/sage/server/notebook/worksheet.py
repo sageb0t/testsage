@@ -450,6 +450,7 @@ class Worksheet:
         save(self.conf(), path + '/conf.sobj')
 
     def save_snapshot(self, user, E=None):
+        self.uncache_snapshot_data()
         path = self.snapshot_directory()
         basename = str(int(time.time()))
         filename = '%s/%s.bz2'%(path, basename)
@@ -496,12 +497,23 @@ class Worksheet:
             return ' ago'
 
     def snapshot_data(self):
+        try:
+            return self.__snapshot_data
+        except AttributeError:
+            pass
         filenames = os.listdir(self.snapshot_directory())
         filenames.sort()
         t = time.time()
         v = [(convert_seconds_to_meaningful_time_span(t - float(os.path.splitext(x)[0]))+ self._saved_by_info(x), x)  \
              for x in filenames]
+        self.__snapshot_data = v
         return v
+
+    def uncache_snapshot_data(self):
+        try:
+            del self.__snapshot_data
+        except AttributeError:
+            pass
 
     def revert_to_last_saved_state(self):
         filename = '%s/worksheet.txt'%(self.__dir)
@@ -616,7 +628,7 @@ class Worksheet:
                 if meta.has_key('id'):
                     id = meta['id']
                     if id in used_ids:
-                        # In this case don't reuse, since ids for must be unique.
+                        # In this case don't reuse, since ids must be unique.
                         id = next_available_id(ids)
                     html = True
                 else:
