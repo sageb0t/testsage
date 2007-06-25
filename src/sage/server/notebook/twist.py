@@ -1415,19 +1415,20 @@ class Toplevel(resource.PostableResource):
             username = _username
 
     def render(self, ctx):
-        return http.Response(stream =  login_template())
+        return http.Response(stream =  login_page_template(notebook.get_accounts()))
 
     def childFactory(self, request, name):
         return LoginResource
 
 setattr(Toplevel, 'child_favicon.ico', static.File(image_path + '/favicon.ico'))
 
-from sage.server.notebook.template import login_template
+from sage.server.notebook.template import login_page_template
+
 from sage.server.notebook.template import failed_login_template
 
 class LoginResourceClass(resource.Resource):
     def render(self, ctx):
-        return http.Response(stream =  login_template())
+        return http.Response(stream =  login_page_template(notebook.get_accounts()))
 
     def childFactory(self, request, name):
         return LoginResource
@@ -1448,7 +1449,7 @@ class AnonymousToplevel(Toplevel):
     child_login = LoginResource
 
     def render(self, ctx):
-        return http.Response(stream =  login_template())
+        return http.Response(stream =  login_page_template(notebook.get_accounts()))
 
     def childFactory(self, request, name):
         return InvalidPage()
@@ -1459,7 +1460,7 @@ class FailedToplevel(Toplevel):
         self.problem= problem
 
     def render(self, ctx):
-        return http.Response(stream=failed_login_template(problem=self.problem))
+        return http.Response(stream = login_template())
 
 class UserToplevel(Toplevel):
     addSlash = True
