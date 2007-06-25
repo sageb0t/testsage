@@ -352,7 +352,8 @@ class Notebook(SageObject):
         if P is None or len(P) == 0:
             return None
         try:
-            i = (self.__server_number + 1)%len(P)
+            self.__server_number = (self.__server_number + 1)%len(P)
+            i = self.__server_number
         except AttributeError:
             self.__server_number = 0
             i = 0
