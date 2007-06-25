@@ -217,7 +217,10 @@ class Worksheet:
         return self.__dir
 
     def data_directory(self):
-        return self.directory() + '/data/'
+        d = self.directory() + '/data/'
+        if not os.path.exists(d):
+            os.makedirs(d)
+        return d
 
     def attached_data_files(self):
         D = self.data_directory()
@@ -441,7 +444,8 @@ class Worksheet:
             the words appear in the text version of self.
         """
         E = self.edit_text() + \
-            ' '.join(self.collaborators()) + ' '.join(self.viewers()) + ' ' + self.publisher()
+            ' '.join(self.collaborators()) + ' '.join(self.viewers()) + ' ' + self.publisher() + \
+            ' '.join(self.attached_data_files())
         E = E.lower()
         for word in search.split():
             if not word.lower() in E:
@@ -704,7 +708,7 @@ class Worksheet:
         s += '<div class="worksheet_title">'
         s += '<a id="worksheet_title" class="worksheet_title" onClick="rename_worksheet(); return false;" title="Click to rename this worksheet">%s</a>'%(name.replace('<','&lt;'))
         s += '<br>' + self.html_time_last_edited()
-        if warn and username!='guest':
+        if warn and username != 'guest' and not self.is_doc_worksheet():
             s += '&nbsp;&nbsp;<span class="pingdown">Conflict WARNING!</span>'
         s += '</div>'
 
@@ -770,7 +774,7 @@ class Worksheet:
         return """
 <select class="worksheet"  onchange="go_option(this);">
 <option title="Select a file related function" value=""  selected=1>File...</option>
- <option title="Create a new worksheet" value="new_worksheet();">Create New Worksheet</option>
+ <option title="Create a new worksheet" value="new_worksheet();">New Worksheet</option>
  <option title="Save this worksheet to an sws file" value="download_worksheet('%s');">Download</option>
  <option title="Print this worksheet" value="print_worksheet();">Print</optooion>
  <option title="Rename this worksheet" value="rename_worksheet();">Rename worksheet</option>
@@ -793,9 +797,7 @@ class Worksheet:
 
 <select class="worksheet" onchange="go_data(this);" >
  <option title="Select an attached file" value="" selected=1>Data...</option>
- <option title="Upload a data file in a wide range of formats" value="__upload_data_file__">Upload a file...</option>
- <option title="Browse the data directory" value="data/">Browse data directory...</option>
- <option title="Browse the directory of output from cells" value="cells/">Browse cell output directories...</option>
+ <option title="Upload or create a data file in a wide range of formats" value="__upload_data_file__">Upload or create file...</option>
  <option value="">--------------------</option>
 %s
 </select>
@@ -803,6 +805,8 @@ class Worksheet:
  %s
  """%(_notebook.clean_name(self.name()), self.filename(),
       data, system_select)
+# <option title="Browse the data directory" value="data/">Browse data directory...</option>
+# <option title="Browse the directory of output from cells" value="cells/">Browse cell output directories...</option>
 
 # <option title="Configure this worksheet" value="worksheet_settings();">Worksheet settings</option>
 
@@ -1064,7 +1068,7 @@ class Worksheet:
         object_directory = os.path.abspath(self.notebook().object_directory())
         S = self.__sage
         try:
-            cmd = '__DIR__="%s/"; DIR=__DIR__;'%self.DIR()
+            cmd = '__DIR__="%s/"; DIR=__DIR__; DATA="%s/"; '%(self.DIR(), os.path.abspath(self.data_directory()))
             #cmd += '_support_.init("%s", globals()); '%object_directory
             cmd += '_support_.init(None, globals()); '
             S._send(cmd)   # non blocking
@@ -1717,6 +1721,23 @@ class Worksheet:
             a.append(filename)
         return a
 
+    def load_path(self):
+        D = self.cells_directory()
+        return [self.directory() + '/data/'] + [D + x for x in os.listdir(D)]
+
+    def hunt_file(self, filename):
+        if not os.path.exists(filename):
+            fn = os.path.split(filename)[-1]
+            for D in self.load_path():
+                t = D + '/' + fn
+                if os.path.exists(t):
+                    filename = t
+                    break
+                if os.path.exists(t + '.sobj'):
+                    filename = t + '.sobj'
+                    break
+        return os.path.abspath(filename)
+
     def _load_file(self, filename, files_seen_so_far, this_file):
         if filename.endswith('.sobj'):
             name = os.path.splitext(filename)[0]
@@ -1725,6 +1746,7 @@ class Worksheet:
 
         if filename in files_seen_so_far:
             t = "print 'WARNING: Not loading %s -- would create recursive load'"%filename
+
         try:
             F = open(filename).read()
         except IOError:
@@ -1752,12 +1774,14 @@ class Worksheet:
             if t.startswith('load '):
                 z = ''
                 for filename in self._normalized_filenames(after_first_word(t)):
+                    filename = self.hunt_file(filename)
                     z += self._load_file(filename, files_seen_so_far, this_file) + '\n'
                 t = z
 
             elif t.startswith('attach '):
                 z = ''
                 for filename in self._normalized_filenames(after_first_word(t)):
+                    filename = self.hunt_file(filename)
                     if not os.path.exists(filename):
                         z += "print 'Error attaching %s -- file not found'\n"%filename
                     else:
@@ -1766,6 +1790,7 @@ class Worksheet:
                 t = z
 
             elif t.startswith('detach '):
+                filename = self.hunt_file(filename)
                 for filename in self._normalized_filenames(after_first_word(t)):
                     self.detach(filename)
                 t = ''
@@ -1776,6 +1801,7 @@ class Worksheet:
                     filename = self.__filename
                 else:
                     filename = F
+                filename = self.hunt_file(filename)
                 if t.startswith('save'):
                     t = '_support_.save_session("%s")'%filename
                 else:
