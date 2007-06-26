@@ -144,6 +144,9 @@ class Notebook(SageObject):
         U = self.users()
         return U.keys()
 
+    def valid_login_names(self):
+        return [x for x in self.usernames() if not x in ['guest', '_sage_', 'pub']]
+
     def set_accounts(self, value):
         self.__accounts = value
 
@@ -868,7 +871,7 @@ class Notebook(SageObject):
     def html_banner(self):
         s = """
         <span class="banner">
-        <table><tr><td>
+        <table width=100%%><tr><td>
         <a class="banner" href="http://www.sagemath.org"><img align="top" src="/images/sagelogo.png" alt="SAGE"> Notebook</a></td><td><span class="ping" id="ping">Error connecting to the SAGE server.</span></td>
         </tr></table>
         </span>
@@ -1407,7 +1410,7 @@ class Notebook(SageObject):
                    and not worksheet.is_publisher(username):
                 rating += '&nbsp;&nbsp; Rate it: '
                 rating += '  '.join(['<a class="usercontrol" href="rate%s">&nbsp;%s&nbsp;</a>'%(i,i) for
-                                   i in range(1,5)])
+                                   i in range(5)])
             body += '<span class="ratingmsg">%s</span>'%rating
 
             body += '<hr class="usercontrol">'
