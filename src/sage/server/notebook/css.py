@@ -1270,7 +1270,6 @@ span.username {
 }
 
 span.ratingmsg {
-  font-family: sans-serif;
   color: #112abb;
   padding:0.6ex;
   font-size:14px;
@@ -1292,6 +1291,12 @@ a.usercontrol {
 
 a.usercontrol:hover {
   cursor:pointer;
+}
+
+span.usercontrol {
+  color: #112abb;
+  padding:0.6ex;
+  font-size:14px;
 }
 
 a.boldusercontrol {
