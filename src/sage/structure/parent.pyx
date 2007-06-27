@@ -464,7 +464,7 @@ cdef class Parent(sage_object.SageObject):
     # Set baseclass --
     ############################################################################
 
-class Set_generic(Parent):
+class Set_generic(Parent): # Cannot use Parent because Element._parent is ParentWithBase
     """
     Abstract base class for sets.
     """
