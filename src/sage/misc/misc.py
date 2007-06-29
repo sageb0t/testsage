@@ -1033,7 +1033,7 @@ set_trace = pdb.set_trace
 # temporary directory
 #################################################################
 
-def tmp_dir(name):
+def tmp_dir(name='dir'):
     r"""
     Create and return a temporary directory in \code{\$HOME/.sage/temp/hostname/pid/}
     """

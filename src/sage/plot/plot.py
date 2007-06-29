@@ -1471,7 +1471,7 @@ class GraphicPrimitiveFactory:
 
     def reset(self):
         # First the default options for all graphics primitives
-        self.options = {'alpha':1,'thickness':1,'rgbcolor':(0,0,0)}
+        self.options = {'alpha':1,'thickness':1,'rgbcolor':(0,0,1)}
         self._reset()
 
     def _coerce(self, xdata, ydata):
@@ -1658,7 +1658,7 @@ class ArrowFactory(GraphicPrimitiveFactory_arrow):
         sage: a3.save()
     """
     def _reset(self):
-        self.options={'width':0.02,'rgbcolor':(0, 0, 0)}
+        self.options={'width':0.02,'rgbcolor':(0, 0, 1)}
 
     def _repr_(self):
         return "type arrow? for help and examples"
@@ -1749,7 +1749,7 @@ class CircleFactory(GraphicPrimitiveFactory_circle):
 
     """
     def _reset(self):
-        self.options={'alpha':1,'fill':False,'thickness':1,'rgbcolor':(0, 0, 0)}
+        self.options={'alpha':1,'fill':False,'thickness':1,'rgbcolor':(0, 0, 1)}
 
     def _repr_(self):
         return "type circle? for help and examples"
@@ -1927,7 +1927,7 @@ class LineFactory(GraphicPrimitiveFactory_from_point_list):
         sage: H.save()
     """
     def _reset(self):
-        self.options = {'alpha':1,'rgbcolor':(0,0,0),'thickness':1}
+        self.options = {'alpha':1,'rgbcolor':(0,0,1),'thickness':1}
 
     def _repr_(self):
         return "type line? for help and examples."
@@ -2039,7 +2039,7 @@ class DiskFactory(GraphicPrimitiveFactory_disk):
 
     """
     def _reset(self):
-        self.options={'alpha':1,'fill':True,'rgbcolor':(0,0,0),'thickness':0}
+        self.options={'alpha':1,'fill':True,'rgbcolor':(0,0,1),'thickness':0}
 
     def _repr_(self):
         return "type disk? for help and examples"
@@ -2070,7 +2070,7 @@ class PointFactory(GraphicPrimitiveFactory_from_point_list):
 
     """
     def _reset(self):
-        self.options = {'alpha':1,'pointsize':10,'faceted':False,'rgbcolor':(0,0,0)}
+        self.options = {'alpha':1,'pointsize':10,'faceted':False,'rgbcolor':(0,0,1)}
 
     def _repr_(self):
         return "type point? for options help"
@@ -2162,7 +2162,7 @@ class PolygonFactory(GraphicPrimitiveFactory_from_point_list):
 
     """
     def _reset(self):
-        self.options={'alpha':1,'rgbcolor':(0,0,0),'thickness':0}
+        self.options={'alpha':1,'rgbcolor':(0,0,1),'thickness':0}
 
     def _repr_(self):
         return "SAGE polygon; type polygon? for help and examples."
@@ -2282,7 +2282,7 @@ class PlotFactory(GraphicPrimitiveFactory):
         o['plot_points'] = 200
         o['plot_division'] = 1000
         o['max_bend'] = 0.1
-        o['rgbcolor'] = (0,0,0)
+        o['rgbcolor'] = (0,0,1)
 
     def _repr_(self):
         return "plot; type plot? for help and examples."
@@ -2427,7 +2427,7 @@ class TextFactory(GraphicPrimitiveFactory_text):
 
     """
     def _reset(self):
-        self.options = {'fontsize':10, 'rgbcolor':(0,0,0),
+        self.options = {'fontsize':10, 'rgbcolor':(0,0,1),
                         'horizontal_alignment':'center',
                         'vertical_alignment':'center'}
 
