@@ -286,7 +286,13 @@ cdef class MPolynomialRing_libsingular(MPolynomialRing_generic):
     def __dealloc__(self):
         """
         """
-        rDelete(self._ring)
+        ##################################################
+        #
+        # TODO: This breaks like crazy on 32-bit linux.
+        #
+        # rDelete(self._ring)
+        #
+        ##################################################
 
     cdef _coerce_c_impl(self, element):
         """
