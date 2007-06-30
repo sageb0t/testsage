@@ -116,7 +116,6 @@ cdef init_singular():
     context these symbols are not known globally. The work around so
     far is to load the library again and to specifiy RTLD_GLOBAL.
     """
-
     cdef void *handle
 
     for extension in ["so", "dylib", "dll"]:
@@ -135,7 +134,7 @@ cdef init_singular():
     # Steal Memory Manager back or weird things may happen
     sage.rings.memory.pmem_malloc()
 
-# call it
+ # call it
 init_singular()
 
 order_dict = {"dp":ringorder_dp,
@@ -261,7 +260,9 @@ cdef class MPolynomialRing_libsingular(MPolynomialRing_generic):
             self._ring.algring = rCopy0(k._ring)
             rComplete(self._ring.algring,1)
             self._ring.P = self._ring.algring.N
-            self._ring.parameter = self._ring.algring.names
+            #self._ring.parameter = self._ring.algring.names
+            self._ring.parameter = <char**>omAlloc0(sizeof(char*)*2)
+            self._ring.parameter[0] = omStrDup(self._ring.algring.names[0])
 
             nmp = <lnumber*>omAlloc0Bin(rnumber_bin)
             nmp.z= <napoly*>p_Copy(minpoly._poly, self._ring.algring) # fragile?
@@ -297,13 +298,8 @@ cdef class MPolynomialRing_libsingular(MPolynomialRing_generic):
     def __dealloc__(self):
         """
         """
-        ##################################################
-        #
-        # TODO: This breaks like crazy on 32-bit linux.
-        #
-        # rDelete(self._ring)
-        #
-        ##################################################
+        rChangeCurrRing(self._ring)
+        rDelete(self._ring)
 
     cdef _coerce_c_impl(self, element):
         """
