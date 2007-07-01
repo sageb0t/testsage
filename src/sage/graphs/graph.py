@@ -3946,7 +3946,7 @@ class Graph(GenericGraph):
             else:
                 return a
 
-    def is_isomorphic(self, other, proof=False):
+    def is_isomorphic(self, other, proof=False, verbosity=0):
         """
         Tests for isomorphism between self and other.
 
@@ -3982,8 +3982,8 @@ class Graph(GenericGraph):
             raise NotImplementedError, "Search algorithm does not support multiple edges yet."
         from sage.graphs.graph_isom import search_tree
         if proof:
-            b,a = self.canonical_label(proof=True)
-            d,c = other.canonical_label(proof=True)
+            b,a = self.canonical_label(proof=True, verbosity=verbosity)
+            d,c = other.canonical_label(proof=True, verbosity=verbosity)
             map = {}
             cc = c.items()
             for vert in self.vertices():
@@ -3997,11 +3997,11 @@ class Graph(GenericGraph):
                 return False, None
         else:
             from sage.graphs.graph_isom import search_tree
-            b = self.canonical_label()
-            d = other.canonical_label()
+            b = self.canonical_label(verbosity=verbosity)
+            d = other.canonical_label(verbosity=verbosity)
             return enum(b) == enum(d)
 
-    def canonical_label(self, partition=None, proof=False):
+    def canonical_label(self, partition=None, proof=False, verbosity=0):
         """
         Returns the canonical label with respect to the partition. If no
         partition is given, uses the unit partition.
@@ -4022,10 +4022,10 @@ class Graph(GenericGraph):
         if partition is None:
             partition = [self.vertices()]
         if proof:
-            a,b,c = search_tree(self, partition, proof=True, dig=self.loops())
+            a,b,c = search_tree(self, partition, proof=True, dig=self.loops(), verbosity=verbosity)
             return b,c
         else:
-            a,b = search_tree(self, partition, dig=self.loops())
+            a,b = search_tree(self, partition, dig=self.loops(), verbosity=verbosity)
             return b
 
 class DiGraph(GenericGraph):
@@ -5212,7 +5212,7 @@ class DiGraph(GenericGraph):
 
     ### Automorphism and isomorphism
 
-    def automorphism_group(self, partition=None, translation=False):
+    def automorphism_group(self, partition=None, translation=False, verbosity=0):
         """
         Returns the largest subgroup of the automorphism group of the digraph
         whose orbit partition is finer than the partition given. If no
@@ -5239,9 +5239,9 @@ class DiGraph(GenericGraph):
             if partition is None:
                 partition = [self.vertices()]
             if translation:
-                a,b = search_tree(self, partition, dict=True, lab=False, dig=True)
+                a,b = search_tree(self, partition, dict=True, lab=False, dig=True, verbosity=verbosity)
             else:
-                a = search_tree(self, partition, dict=False, lab=False, dig=True)
+                a = search_tree(self, partition, dict=False, lab=False, dig=True, verbosity=verbosity)
             if len(a) != 0:
                 a = PermutationGroup([perm_group_elt(aa) for aa in a])
             else:
@@ -5251,7 +5251,7 @@ class DiGraph(GenericGraph):
             else:
                 return a
 
-    def is_isomorphic(self, other, proof=False):
+    def is_isomorphic(self, other, proof=False, verbosity=0):
         """
         Tests for isomorphism between self and other.
 
@@ -5270,8 +5270,8 @@ class DiGraph(GenericGraph):
             raise NotImplementedError, "Search algorithm does not support multiple edges yet."
         from sage.graphs.graph_isom import search_tree
         if proof:
-            b,a = self.canonical_label(proof=True)
-            d,c = other.canonical_label(proof=True)
+            b,a = self.canonical_label(proof=True, verbosity=verbosity)
+            d,c = other.canonical_label(proof=True, verbosity=verbosity)
             if enum(b) == enum(d):
                 map = {}
                 cc = c.items()
@@ -5285,11 +5285,11 @@ class DiGraph(GenericGraph):
                 return False, None
         else:
             from sage.graphs.graph_isom import search_tree
-            b = self.canonical_label()
-            d = other.canonical_label()
+            b = self.canonical_label(verbosity=verbosity)
+            d = other.canonical_label(verbosity=verbosity)
             return enum(b) == enum(d)
 
-    def canonical_label(self, partition=None, proof=False):
+    def canonical_label(self, partition=None, proof=False, verbosity=0):
         """
         Returns the canonical label with respect to the partition. If no
         partition is given, uses the unit partition.
@@ -5316,10 +5316,10 @@ class DiGraph(GenericGraph):
         if partition is None:
             partition = [self.vertices()]
         if proof:
-            a,b,c = search_tree(self, partition, proof=True, dig=True)
+            a,b,c = search_tree(self, partition, proof=True, dig=True, verbosity=verbosity)
             return b,c
         else:
-            a,b = search_tree(self, partition, dig=True)
+            a,b = search_tree(self, partition, dig=True, verbosity=verbosity)
             return b
 
     ### Directed Acyclic Graphs (DAGs)
