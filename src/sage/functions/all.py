@@ -4,7 +4,9 @@ piecewise = Piecewise
 
 from transcendental import (exponential_integral_1,
                             gamma, gamma_inc, incomplete_gamma,
-                            zeta, zeta_symmetric)
+                            zeta, zeta_symmetric,
+                            Li, Ei,
+                            prime_pi)
 
 #from elementary import (cosine, sine, exponential,
 #                        ElementaryFunction,

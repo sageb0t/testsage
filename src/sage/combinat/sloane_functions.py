@@ -2577,7 +2577,7 @@ class A000041(SloaneSequence):
         return "a(n) = number of partitions of n (the partition numbers)."
 
     def _eval(self, n):
-        return arith.number_of_partitions(n)
+        return combinat.number_of_partitions(n)
 
 class A000045(SloaneSequence):
     r"""

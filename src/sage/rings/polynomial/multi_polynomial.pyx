@@ -61,6 +61,3 @@ cdef class MPolynomial(CommutativeRingElement):
             return Integer(repr(self))
         else:
             raise TypeError
-
-    def subs(self, *x, **kwds):
-        return self.__call__(*x, **kwds)
