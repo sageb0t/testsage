@@ -39,3 +39,5 @@ from constants import (pi, e, NaN, golden_ratio, log2, euler_gamma, catalan,
                        khinchin, twinprime, merten, brun, I)
 
 i = I  # alias
+
+from spike_function import spike_function
