@@ -1,29 +1,24 @@
-"""
+r"""
+Generic Convolution.
+
 Asymptotically fast convolution of lists over any commutative ring in which
-the multiply-by-two map is injective. (More precisely, if x in R, and
-x = 2^k*y for some k >= 0, we require that R(x/2^k) returns y.)
+the multiply-by-two map is injective. (More precisely, if $x \in R$, and
+$x = 2^k*y$ for some $k \geq 0$, we require that $R(x/2^k)$ returns $y$.)
 
 The main function to be exported is convolution().
 
 EXAMPLES:
-   sage: from sage.rings.polynomial.convolution import convolution
+   sage: convolution([1, 2, 3, 4, 5], [6, 7])
+   [6, 19, 32, 45, 58, 35]
 
-   sage: convolution([1, 2, 3], [4, 5, 6, 7])
-   [4, 13, 28, 34, 32, 21]
-
-   sage: R = Integers(47)
-   sage: L1 = [R.random_element() for _ in range(1000)]
-   sage: L2 = [R.random_element() for _ in range(3756)]
-   sage: L3 = convolution(L1, L2)
-   sage: L3[2000] == sum([L1[i] * L2[2000-i] for i in range(1000)])
-   True
-   sage: len(L3) == 1000 + 3756 - 1
-   True
+The convolution function is reasonably fast, even though it is written
+in pure Python.  For example, the following takes less than a second:
+   sage: v=convolution(range(1000), range(1000))
 
 ALGORITHM:
-   Converts the problem to multiplication in the ring S[x]/(x^M - 1),
-   where S = R[y]/(y^K + 1) (where R is the original base ring). Performs
-   FFT with respect to the roots of unity 1, y, y^2, ..., y^{2K-1} in S.
+   Converts the problem to multiplication in the ring $S[x]/(x^M - 1)$,
+   where $S = R[y]/(y^K + 1)$ (where $R$ is the original base ring). Performs
+   FFT with respect to the roots of unity $1, y, y^2, \ldots, y^{2K-1}$ in $S$.
    The FFT/IFFT are accomplished with just additions and subtractions and
    rotating python lists. (I think this algorithm is essentially due to
    Schonhage, not completely sure.) The pointwise multiplications are handled
@@ -34,7 +29,7 @@ ALGORITHM:
 
 AUTHORS:
    -- David Harvey: first implementation (2007-07)
-
+   -- William Stein: editing the docstrings for inclusion in SAGE.
 """
 
 #################################################################################
@@ -57,6 +52,19 @@ def convolution(L1, L2):
    """
    Returns convolution of non-empty lists L1 and L2.
    L1 and L2 may have arbitrary lengths.
+
+   EXAMPLES:
+      sage: convolution([1, 2, 3], [4, 5, 6, 7])
+      [4, 13, 28, 34, 32, 21]
+
+      sage: R = Integers(47)
+      sage: L1 = [R.random_element() for _ in range(1000)]
+      sage: L2 = [R.random_element() for _ in range(3756)]
+      sage: L3 = convolution(L1, L2)
+      sage: L3[2000] == sum([L1[i] * L2[2000-i] for i in range(1000)])
+      True
+      sage: len(L3) == 1000 + 3756 - 1
+      True
    """
    if (not len(L1)) or (not len(L2)):
       raise ValueError, "cannot compute convolution of empty lists"
@@ -123,10 +131,10 @@ def _negaconvolution_naive(L1, L2):
 #      FFT/IFFT routines
 
 def _forward_butterfly(L1, L2, r):
-   """
-   L1 and L2 are both lists of length K, and 0 <= r <= K.
-   They represent polynomials in S = R[y]/(y^K + 1).
-   This function returns (L1 + y^r*L2, L1 - y^r*L2), as a list.
+   r"""
+   L1 and L2 are both lists of length K, and $0 \leq r \leq K$.
+   They represent polynomials in $S = R[y]/(y^K + 1)$.
+   This function returns $(L_1 + y^r L_2, L_1 - y^r L_2)$, as a list.
    """
    assert len(L1) == len(L2)
    assert 0 <= r <= len(L1)
@@ -138,10 +146,10 @@ def _forward_butterfly(L1, L2, r):
           [L1[i] - L2[i-r] for i in range(r, K)]
 
 def _inverse_butterfly(L1, L2, r):
-   """
-   L1 and L2 are both lists of length K, and 0 <= r <= K.
-   They represent polynomials in S = R[y]/(y^K + 1).
-   This function returns (L1 + L2, y^(-r)*(L1 - L2)), as a list.
+   r"""
+   L1 and L2 are both lists of length $K$, and $0 \leq r \leq K$.
+   They represent polynomials in $S = R[y]/(y^K + 1)$.
+   This function returns $(L_1 + L_2, y^{-r}*(L_1 - L_2))$, as a list.
    """
    assert len(L1) == len(L2)
    assert 0 <= r <= len(L1)
@@ -152,15 +160,15 @@ def _inverse_butterfly(L1, L2, r):
           [L2[i] - L1[i] for i in range(r)]
 
 def _fft(L, K, start, depth, root):
-   """
-   L is a list of length M = 2^m, each entry a list of length K = 2^k.
+   r"""
+   L is a list of length $M = 2^m$, each entry a list of length $K = 2^k$.
 
    This function only operates on the [start, start + D) portion of L,
-   where D = 2^depth. This portion is interpreted as a polynomial in
-   S[x]/(x^D - y^(2*root)), where S = R[y]/(y^K + 1).
+   where $D = 2^\text{depth}$. This portion is interpreted as a polynomial in
+   $S[x]/(x^D - y^(2*root))$, where $S = R[y]/(y^K + 1)$.
 
    This function performs an inplace FFT, i.e. evaluates the polynomial at
-   x = each D-th root of unity in S (namely the powers of y^(2K/D)), with
+   x = each D-th root of unity in S (namely the powers of $y^{2K/D}$), with
    results in bit-reversed order.
    """
    half = 1 << (depth - 1)
@@ -177,9 +185,9 @@ def _fft(L, K, start, depth, root):
       _fft(L, K, start2, depth - 1, (root + K) >> 1)
 
 def _ifft(L, K, start, depth, root):
-   """
-   Inverse operation of _fft_trunc()
-   (except that result is a factor of 2^depth too big)
+   r"""
+   Inverse operation of \code{_fft_trunc()}
+   (except that result is a factor of \code{2^depth} too big)
    """
    half = 1 << (depth - 1)
    start2 = start + half
@@ -199,9 +207,9 @@ def _ifft(L, K, start, depth, root):
 
 def _split(L, m, k):
    """
-   Assumes L is a list of length 2^(m+k-1).
-   Splits it into 2^m lists of length 2^(k-1), returned as a list of lists.
-   Each list is zero padded up to length 2^k.
+   Assumes L is a list of length $2^{m+k-1}$.  Splits it into $2^m$
+   lists of length $2^{k-1}$, returned as a list of lists.  Each list
+   is zero padded up to length $2^k$.
 
    EXAMPLES:
       sage: from sage.rings.polynomial.convolution import _split
@@ -218,11 +226,12 @@ def _split(L, m, k):
    return [[L[i+j] for j in range(K)] + zeroes for i in range(0, K << m, K)]
 
 def _combine(L, m, k):
-   """
-   Assumes L is a list of length 2^m, each entry a list of length 2^k.
-   Combines together into a single list, effectively inverting _split(),
-   but overlaying coefficients, i.e. list #i gets added in starting at
-   position 2^(k-1)*i. Note that the second half of the last list is ignored.
+   r"""
+   Assumes L is a list of length $2^m$, each entry a list of length
+   $2^k$.  Combines together into a single list, effectively inverting
+   \code{_split()}, but overlaying coefficients, i.e. list #i gets added in
+   starting at position $2^{k-1} i$. Note that the second half of the
+   last list is ignored.
    """
    M = 1 << m
    half_K = 1 << (k-1)
@@ -231,9 +240,10 @@ def _combine(L, m, k):
            for i in range(M-1) for j in range(half_K)]
 
 def _nega_combine(L, m, k):
-   """
-   Same as _combine(), but doesn't ignore the second half of the last list;
-   instead it makes that piece wrap around negacyclically.
+   r"""
+   Same as \code{_combine()}, but doesn't ignore the second half of
+   the last list; instead it makes that piece wrap around
+   negacyclically.
    """
    M = 1 << m
    half_K = 1 << (k-1)
@@ -247,7 +257,7 @@ def _nega_combine(L, m, k):
 def _negaconvolution(L1, L2, n):
    """
    Negacyclic convolution of L1 and L2.
-   L1 and L2 must both be length 2^n.
+   L1 and L2 must both be length $2^n$.
    """
    if n <= 3:    # arbitrary cutoff
       return _negaconvolution_naive(L1, L2)
@@ -257,7 +267,7 @@ def _negaconvolution(L1, L2, n):
 def _negaconvolution_fft(L1, L2, n):
    """
    Returns negacyclic convolution of lists L1 and L2, using FFT algorithm.
-   L1 and L2 must both be length 2^n, where n >= 3.
+   L1 and L2 must both be length $2^n$, where $n \geq 3$.
    Assumes all entries of L1 and L2 belong to the same ring.
 
    EXAMPLES:
@@ -310,7 +320,7 @@ def _negaconvolution_fft(L1, L2, n):
 def _convolution_fft(L1, L2):
    """
    Returns convolution of non-empty lists L1 and L2, using FFT algorithm.
-   L1 and L2 may have arbitrary lengths >= 4.
+   L1 and L2 may have arbitrary lengths $\geq 4$.
    Assumes all entries of L1 and L2 belong to the same ring.
 
    EXAMPLES:
