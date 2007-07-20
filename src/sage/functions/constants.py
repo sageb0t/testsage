@@ -354,9 +354,9 @@ class Constant(Function):
         """
         EXAMPLES:
             sage: solve(pi == 2*x)
-            [x == (pi/2)]
+            [x == pi/2]
             sage: solve(cos(x^2) == pi)
-            [x == (-sqrt(acos(pi))), x == sqrt(acos(pi))]
+            [x == -sqrt(acos(pi)), x == sqrt(acos(pi))]
         """
         return self._ser().__eq__(right)
 
@@ -455,6 +455,8 @@ class Pi(Constant):
 
 pi = Pi()
 
+python_complex_i = complex(0,1)
+
 class I_class(Constant):
     """
     The formal square root of -1.
@@ -514,6 +516,9 @@ class I_class(Constant):
 
     def _complex_double_(self, C):
         return C.gen()
+
+    def __complex__(self):
+        return python_complex_i
 
     def _real_double_(self, R):
         raise TypeError

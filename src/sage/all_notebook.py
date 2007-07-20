@@ -3,7 +3,9 @@
 from __future__ import with_statement
 
 from sage.all import *
-from sage.calculus.predefined import *
+preparser(on=True)
+
+from sage.calculus.predefined import x
 
 sage_mode = 'notebook'
 
