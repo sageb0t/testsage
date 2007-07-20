@@ -104,10 +104,11 @@ class Sage(Expect):
                        python    = False,
                        init_code = None,
                        server    = None,
+                       remote_cleaner = True,
                        **kwds):
         if python:
             if server:
-                command = "sage -cleaner & sage -python -u"
+                command = "sage -python -u"
             else:
                 command = "sage -python -u"
             prompt = ">>>"
@@ -127,6 +128,7 @@ class Sage(Expect):
                         logfile = logfile,
                         init_code = init_code,
                         server = server,
+                        remote_cleaner = remote_cleaner,
                         **kwds
                         )
         self._preparse = preparse

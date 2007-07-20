@@ -1,3 +1,6 @@
+"""nodoctest
+"""
+
 import crypt
 
 SALT = 'aa'
