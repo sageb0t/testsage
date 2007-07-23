@@ -1898,8 +1898,8 @@ cdef class Vector(ModuleElement):
                     raise ArithmeticError, "vector is not in free module"
         raise TypeError, arith_error_message(self, right, operator.div)
 
-cdef have_same_base(Element x, Element y):
-    return x._parent._base is y._parent._base
+#cdef have_same_base(Element x, Element y):
+#    return x._parent._base is y._parent._base
 
 def is_Vector(x):
     return IS_INSTANCE(x, Vector)
@@ -2647,7 +2647,7 @@ cdef muldiv_op_c(x, y, op):
     raise TypeError, arith_error_message(x,y,op)
 
 def coerce(Parent p, x):
-	try:
+    try:
         return p._coerce_c(x)
     except AttributeError:
         return p(x)
@@ -2689,6 +2689,10 @@ cdef class CoercionModel:
 
 import coerce
 cdef CoercionModel coercion_model = coerce.CoercionModel_cache_maps()
+
+# for now while I'm merging in base extension code
+cdef canonical_coercion_c(x, y):
+    return coercion_model.canonical_coercion_c(x,y)
 
 def set_coercion_model(cm):
     global coercion_model
