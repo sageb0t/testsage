@@ -694,7 +694,7 @@ class GenericGraph(SageObject):
                 bdy_verts.append(v)
             else:
                 int_verts.append(v)
-        return bdy_verts + int_verts
+        return bdy_verts + sorted(int_verts)
 
     def relabel(self, perm, inplace=True, quick=False):
         r"""
@@ -5577,15 +5577,15 @@ class DiGraph(GenericGraph):
             sage: DP = P.to_directed()
             sage: DP.canonical_label().adjacency_matrix()
             [0 0 0 0 0 0 0 1 1 1]
-            [0 0 0 0 1 0 1 0 1 0]
-            [0 0 0 1 0 0 1 0 0 1]
-            [0 0 1 0 0 1 0 0 1 0]
-            [0 1 0 0 0 1 0 0 0 1]
+            [0 0 0 0 1 0 1 0 0 1]
+            [0 0 0 1 0 0 1 0 1 0]
+            [0 0 1 0 0 1 0 0 0 1]
+            [0 1 0 0 0 1 0 0 1 0]
             [0 0 0 1 1 0 0 1 0 0]
             [0 1 1 0 0 0 0 1 0 0]
             [1 0 0 0 0 1 1 0 0 0]
-            [1 1 0 1 0 0 0 0 0 0]
             [1 0 1 0 1 0 0 0 0 0]
+            [1 1 0 1 0 0 0 0 0 0]
 
         """
         if self.multiple_arcs():
