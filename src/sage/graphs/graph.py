@@ -4265,6 +4265,12 @@ class Graph(GenericGraph):
             raise NotImplementedError, "Search algorithm does not support multiple edges yet."
         from sage.graphs.graph_isom import search_tree
         if proof:
+            if self.order() != other.order():
+                return False, None
+            if self.size() != other.size():
+                return False, None
+            if sorted(list(self.degree_iterator())) != sorted(list(other.degree_iterator())):
+                return False, None
             b,a = self.canonical_label(proof=True, verbosity=verbosity)
             d,c = other.canonical_label(proof=True, verbosity=verbosity)
             map = {}
@@ -4279,6 +4285,12 @@ class Graph(GenericGraph):
             else:
                 return False, None
         else:
+            if self.order() != other.order():
+                return False
+            if self.size() != other.size():
+                return False
+            if sorted(list(self.degree_iterator())) != sorted(list(other.degree_iterator())):
+                return False
             from sage.graphs.graph_isom import search_tree
             b = self.canonical_label(verbosity=verbosity)
             d = other.canonical_label(verbosity=verbosity)
@@ -5548,6 +5560,14 @@ class DiGraph(GenericGraph):
             raise NotImplementedError, "Search algorithm does not support multiple edges yet."
         from sage.graphs.graph_isom import search_tree
         if proof:
+            if self.order() != other.order():
+                return False, None
+            if self.size() != other.size():
+                return False, None
+            if sorted(list(self.in_degree_iterator())) != sorted(list(other.in_degree_iterator())):
+                return False, None
+            if sorted(list(self.out_degree_iterator())) != sorted(list(other.out_degree_iterator())):
+                return False, None
             b,a = self.canonical_label(proof=True, verbosity=verbosity)
             d,c = other.canonical_label(proof=True, verbosity=verbosity)
             if enum(b) == enum(d):
@@ -5562,6 +5582,14 @@ class DiGraph(GenericGraph):
             else:
                 return False, None
         else:
+            if self.order() != other.order():
+                return False
+            if self.size() != other.size():
+                return False
+            if sorted(list(self.in_degree_iterator())) != sorted(list(other.in_degree_iterator())):
+                return False
+            if sorted(list(self.out_degree_iterator())) != sorted(list(other.out_degree_iterator())):
+                return False
             from sage.graphs.graph_isom import search_tree
             b = self.canonical_label(verbosity=verbosity)
             d = other.canonical_label(verbosity=verbosity)
