@@ -413,11 +413,12 @@ class PGL(PermutationGroup_generic):
     """
     The projective general linear groups over GF(q).
     """
-    def __init__(self, n, q):
+    def __init__(self, n, q, name='a'):
         """
         INPUT:
             n -- positive integer; the degree
             q -- prime power; the size of the ground field
+            name -- (default: 'a') variable name of indeterminate of finite field GF(q)
 
         OUTPUT:
             PGL(n,q)
@@ -432,6 +433,10 @@ class PGL(PermutationGroup_generic):
             sage: G.order()
             24
 
+            sage: G = PGL(2, 9, 'b'); G
+            Permutation Group with generators [(3,10,9,8,4,7,6,5), (1,2,4)(5,6,8)(7,9,10)]
+            sage: G.base_ring()
+            Finite Field in b of size 3^2
         """
         from sage.groups.perm_gps.permgroup import PermutationGroup, PermutationGroup_generic
         if n == 1:
@@ -441,7 +446,7 @@ class PGL(PermutationGroup_generic):
         PermutationGroup_generic.__init__(self, id,
                                           from_group=True, check=False)
         self._q = q
-        self._base_ring = GF(q)
+        self._base_ring = GF(q, name=name)
         self._n = n
 
     def base_ring(self):
@@ -455,11 +460,12 @@ class PSL(PermutationGroup_generic):
     The projective special linear groups over GF(q).
     """
     from sage.groups.perm_gps.permgroup import PermutationGroup, PermutationGroup_generic
-    def __init__(self, n, q):
+    def __init__(self, n, q, name='a'):
         """
         INPUT:
             n -- positive integer; the degree
             q -- prime power; the size of the ground field
+            name -- (default: 'a') variable name of indeterminate of finite field GF(q)
 
         OUTPUT:
             PSL(n,q)
@@ -474,6 +480,16 @@ class PSL(PermutationGroup_generic):
             sage: print G
             The projective special linear group of degree 2 over Finite Field of size 3
 
+        We create two groups over nontrivial finite fields:
+            sage: G = PSL(2, 4, 'b'); G
+            Permutation Group with generators [(3,4,5), (1,2,3)]
+            sage: G.base_ring()
+            Finite Field in b of size 2^2
+            sage: G = PSL(2, 8); G
+            Permutation Group with generators [(3,8,6,4,9,7,5), (1,2,3)(4,7,5)(6,9,8)]
+            sage: G.base_ring()
+            Finite Field in a of size 2^3
+
         """
         if n == 1:
             id = 'Group([()])'
@@ -482,7 +498,7 @@ class PSL(PermutationGroup_generic):
         PermutationGroup_generic.__init__(self, id,
                                           from_group=True, check=False)
         self._q = q
-        self._base_ring = GF(q)
+        self._base_ring = GF(q, name=name)
         self._n = n
 
     def matrix_degree(self):
@@ -588,11 +604,12 @@ class PSp(PermutationGroup_generic):
     The projective symplectic linear groups over GF(q).
     """
     from sage.groups.perm_gps.permgroup import PermutationGroup, PermutationGroup_generic
-    def __init__(self, n, q):
+    def __init__(self, n, q, name='a'):
         """
         INPUT:
             n -- positive integer; the degree
             q -- prime power; the size of the ground field
+            name -- (default: 'a') variable name of indeterminate of finite field GF(q)
 
         OUTPUT:
             PSp(n,q)
@@ -613,6 +630,10 @@ class PSp(PermutationGroup_generic):
             sage: G.base_ring()
             Finite Field of size 3
 
+            sage: G = PSp(2, 8, name='alpha'); G
+            Permutation Group with generators [(3,8,6,4,9,7,5), (1,2,3)(4,7,5)(6,9,8)]
+            sage: G.base_ring()
+            Finite Field in alpha of size 2^3
         """
         if n%2 == 1:
             raise TypeError, "The degree n must be even"
@@ -621,7 +642,7 @@ class PSp(PermutationGroup_generic):
         PermutationGroup_generic.__init__(self, id,
                                           from_group=True, check=False)
         self._q = q
-        self._base_ring = GF(q)
+        self._base_ring = GF(q, name=name)
         self._n = n
 
     def base_ring(self):
@@ -639,22 +660,27 @@ class PSU(PermutationGroup_generic):
     INPUT:
         n -- positive integer; the degree
         q -- prime power; the size of the ground field
-
+        name -- (default: 'a') variable name of indeterminate of finite field GF(q)
     OUTPUT:
         PSU(n,q)
 
     EXAMPLE:
         sage: PSU(2,3)
         The projective special unitary group of degree 2 over Finite Field of size 3
+
+        sage: G = PSU(2, 8, name='alpha'); G
+        The projective special unitary group of degree 2 over Finite Field in alpha of size 2^3
+        sage: G.base_ring()
+        Finite Field in alpha of size 2^3
     """
     from sage.groups.perm_gps.permgroup import PermutationGroup, PermutationGroup_generic
-    def __init__(self, n, q, var='a'):
+    def __init__(self, n, q, name='a'):
         id = 'PSU(%s,%s)'%(n,q)
         PermutationGroup_generic.__init__(self, id,
                                           from_group=True, check=False)
         self._q = q
-        self._base_ring = GF(q)
-        self._field_of_definition = GF(q**2, var)
+        self._base_ring = GF(q, name=name)
+        self._field_of_definition = GF(q**2, name)
         self._n = n
 
     def field_of_definition(self):
@@ -673,6 +699,7 @@ class PGU(PermutationGroup_generic):
     INPUT:
         n -- positive integer; the degree
         q -- prime power; the size of the ground field
+        name -- (default: 'a') variable name of indeterminate of finite field GF(q)
 
     OUTPUT:
         PGU(n,q)
@@ -680,15 +707,20 @@ class PGU(PermutationGroup_generic):
     EXAMPLE:
         sage: PGU(2,3)
         The projective general unitary group of degree 2 over Finite Field of size 3
+
+        sage: G = PGU(2, 8, name='alpha'); G
+        The projective general unitary group of degree 2 over Finite Field in alpha of size 2^3
+        sage: G.base_ring()
+        Finite Field in alpha of size 2^3
     """
     from sage.groups.perm_gps.permgroup import PermutationGroup, PermutationGroup_generic
-    def __init__(self, n, q, var='a'):
+    def __init__(self, n, q, name='a'):
         id = 'PGU(%s,%s)'%(n,q)
         PermutationGroup_generic.__init__(self, id,
                                           from_group=True, check=False)
         self._q = q
-        self._base_ring = GF(q)
-        self._field_of_definition = GF(q**2, var)
+        self._base_ring = GF(q, name=name)
+        self._field_of_definition = GF(q**2, name)
         self._n = n
 
     def field_of_definition(self):
@@ -705,10 +737,14 @@ class SuzukiGroup(PermutationGroup_generic):
     The Suzuki group over GF(q), $^2 B_2(2^{2k+1}) = Sz(2^{2k+1})$. A wrapper for the GAP function SuzukiGroup.
 
     INPUT:
-        $q = 2^n$ -- an odd power of 2; the size of the ground field. (Strictly speaking, n should be
-	             greater than 1, or else this group os not simple.)
+        q -- 2^n, an odd power of 2; the size of the ground
+             field. (Strictly speaking, n should be greater than 1, or
+             else this group os not simple.)
+        name -- (default: 'a') variable name of indeterminate of
+                finite field GF(q)
+
     OUTPUT:
-        Sz(q)
+        A Suzuki group.
 
     EXAMPLE:
         sage: SuzukiGroup(8)
@@ -720,11 +756,19 @@ class SuzukiGroup(PermutationGroup_generic):
         sage: print SuzukiGroup(8)
         The Suzuki group over Finite Field in a of size 2^3
 
+        sage: G = SuzukiGroup(32, name='alpha')
+        sage: G.order()
+        32537600
+        sage: G.order().factor()
+        2^10 * 5^2 * 31 * 41
+        sage: G.base_ring()
+        Finite Field in alpha of size 2^5
+
     REFERENCES:
         http://en.wikipedia.org/wiki/Group_of_Lie_type\#Suzuki-Ree_groups
     """
     from sage.groups.perm_gps.permgroup import PermutationGroup, PermutationGroup_generic
-    def __init__(self, q, var='a'):
+    def __init__(self, q, name='a'):
         q = Integer(q)
         from sage.rings.arith import valuation
         t = valuation(q, 2)
@@ -734,7 +778,7 @@ class SuzukiGroup(PermutationGroup_generic):
         PermutationGroup_generic.__init__(self, id,
                                           from_group=True, check=False)
         self._q = q
-        self._base_ring = GF(q, var)
+        self._base_ring = GF(q, name=name)
 
     def base_ring(self):
         return self._base_ring
