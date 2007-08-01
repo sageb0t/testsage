@@ -122,7 +122,29 @@ class Notebook(SageObject):
         try:
             return self.users()[username]
         except KeyError:
+            if username in ['pub', '_sage_']:
+                self.add_user(username, '', '', account_type='user', force=True)
+                return self.users()[username]
+            elif username == 'admin':
+                self.add_user(username, '', '', account_type='user', force=True)
+                return self.users()[username]
+            elif username == 'guest':
+                self.add_user('guest', '', '', account_type='guest', force=True)
+                return self.users()[username]
             raise KeyError, "no user '%s'"%username
+
+    def create_user_with_same_password(self, user, other_user):
+        """
+        INPUT:
+           user -- a string
+           other_user -- a string
+        OUTPUT:
+           creates the given user and makes their password the
+           same as for other_user.
+        """
+        U = self.user(user)
+        passwd = U.password()
+        U.set_hashed_password(passwd)
 
     def user_is_admin(self, user):
         return self.user(user).is_admin()
