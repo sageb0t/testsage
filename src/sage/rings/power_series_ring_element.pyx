@@ -619,13 +619,8 @@ cdef class PowerSeries(AlgebraElement):
         else:
             return f._prec
 
-    cdef RingElement _mul_c_impl(self, RingElement right_r):
-        # TODO: doctest
+    def _mul_prec(self, RingElement right_r):
         cdef PowerSeries right = <PowerSeries>right_r
-        if self.is_zero():
-            return self
-        if right.is_zero():
-            return right
         sp = self._prec
         rp = right._prec
         if sp is infinity:
@@ -639,7 +634,7 @@ cdef class PowerSeries(AlgebraElement):
             else:
                 prec = min(rp + self.valuation(), sp + right.valuation())
         # endif
-        return self._mul_(right, prec) # ???
+        return prec
 
     def is_zero(self):
         """
