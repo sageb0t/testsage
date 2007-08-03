@@ -42,7 +42,7 @@ import operator
 
 import sage.rings.arith
 
-from sage.structure.element import CommutativeRingElement, Element
+from sage.structure.element import CommutativeRingElement, Element, is_Element
 
 from sage.interfaces.all import singular, macaulay2
 
