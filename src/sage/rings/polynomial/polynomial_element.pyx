@@ -1175,10 +1175,21 @@ cdef class Polynomial(CommutativeAlgebraElement):
             raise ArithmeticError, "coefficients of integral cannot be coerced into the base ring"
 
     def dict(self):
+        """
+        Return a sparse dictionary representation of this univariate polynomial.
+
+        EXAMPLES:
+            sage: R.<x> = QQ[]
+            sage: f = x^3 + -1/7*x + 13
+            sage: f.dict()
+            {0: 13, 1: -1/7, 3: 1}
+        """
         X = {}
         Y = self.list()
         for i in xrange(len(Y)):
-            X[i] = Y[i]
+            c = Y[i]
+            if c:
+                X[i] = c
         return X
 
     def factor(self):
@@ -1940,26 +1951,28 @@ cdef class Polynomial(CommutativeAlgebraElement):
         +Infinity
         """
         cdef int k
-        if self.is_zero():
+
+        if not self:
             return infinity
-        if p == infinity:
+
+        if p is infinity:
             return -self.degree()
+
         if p is None:
-            p = self.parent().gen()
+            for k from 0 <= k <= self.degree():
+                if self[k]:
+                    return ZZ(k)
+
         if not isinstance(p, Polynomial) or not p.parent() is self.parent():
             raise TypeError, "The polynomial, p, must have the same parent as self."
-        if p is None or p == self.parent().gen():
-            for i in xrange(self.degree()+1):
-                if self[i] != 0:
-                    return ZZ(i)
-        else:
-            if p.degree() == 0:
-                raise ArithmeticError, "The polynomial, p, must have positive degree."
-            k = 0
-            while self % p == 0:
-                k = k + 1
-                self = self.__floordiv__(p)
-            return sage.rings.integer.Integer(k)
+
+        if p.degree() == 0:
+            raise ArithmeticError, "The polynomial, p, must have positive degree."
+        k = 0
+        while self % p == 0:
+            k = k + 1
+            self = self.__floordiv__(p)
+        return sage.rings.integer.Integer(k)
         raise RuntimeError, "bug in computing valuation of polynomial"
 
     def ord(self, p=None):
@@ -2115,6 +2128,60 @@ cdef class Polynomial(CommutativeAlgebraElement):
             3*x^3 - 4*x^2 + 4*x - 1
         """
         return self // self.gcd(self.derivative())
+
+    def norm(self, p):
+        r"""
+        Return the $p$-norm of this polynomial.
+
+        DEFINITION: For integer $p$, the $p$-norm of a polynomial is
+        the $p$th root of the sum of the $p$th powers of the absolute
+        values of the coefficients of the polynomial.
+
+        INPUT:
+           p -- (positive integer or +infinity) the degree of
+                the norm
+
+        EXAMPLES:
+            sage: R.<x> =RR[]
+            sage: f = x^6 + x^2 + -x^4 - 2*x^3
+            sage: f.norm(2)
+            2.64575131106459
+            sage: N(sqrt(1^2 + 1^2 + (-1)^2 + (-2)^2))
+            2.64575131106459
+
+            sage: f.norm(1)
+            5.00000000000000
+            sage: f.norm(infinity)
+            2.00000000000000
+
+            sage: f.norm(-1)
+            Traceback (most recent call last):
+            ...
+            ValueError: The degree of the norm must be positive
+
+        TESTS:
+            sage: R.<x> = RR[]
+            sage: f = x^6 + x^2 + -x^4 -x^3
+            sage: f.norm(int(2))
+            2.00000000000000
+
+        AUTHOR:
+            -- didier deshommes
+            -- William Stein: fix bugs, add definition, etc.
+        """
+        if p <= 0 :
+            raise ValueError, "The degree of the norm must be positive"
+
+        coeffs = self.coeffs()
+        if p == infinity:
+            return RR(max([abs(i) for i in coeffs]))
+
+        p = sage.rings.integer.Integer(p)  # because we'll do 1/p below.
+
+        if p == 1:
+            return RR(sum([abs(i) for i in coeffs]))
+
+        return RR(sum([abs(i)**p for i in coeffs]))**(1/p)
 
 # ----------------- inner functions -------------
 # Sagex can't handle function definitions inside other function
