@@ -48,8 +48,15 @@ def init(object_directory=None, globs={}):
     sage.misc.latex.EMBEDDED_MODE = True
     sage.misc.pager.EMBEDDED_MODE = True
 
+    setup_systems(globs)
+
     # Turn on latex print mode by default.
     #sage.misc.latex.lprint()
+
+def setup_systems(globs):
+    from sage.misc.inline_fortran import InlineFortran
+    fortran = InlineFortran(globs)
+    globs['fortran'] = fortran
 
 ######################################################################
 # Introspection
@@ -62,7 +69,7 @@ def get_rightmost_identifier(s):
         i -= 1
     return s[i+1:]
 
-def completions(s, globs, format=False, width=90):
+def completions(s, globs, format=False, width=90, system="None"):
     """
     Return a list of completions in the context of globs.
     """
@@ -94,16 +101,14 @@ def completions(s, globs, format=False, width=90):
                 else:
                     v = [obj + '.'+x for x in D if x[:n] == method]
             except Exception, msg:
-                print msg
                 v = []
         v = list(set(v))   # make uniq
         v.sort()
     except Exception, msg:
-        print msg
         v = []
     if format:
         if len(v) == 0:
-            return "no completions of %s"%s
+            return "No completions of '%s' currently defined"%s
         else:
             return tabulate(v, width)
     return v
@@ -246,43 +251,43 @@ def syseval(system, cmd):
         return system.eval(cmd)
 
 ######################################################################
-# Sagex
+# Cython
 ######################################################################
-import sage.misc.sagex
+import sage.misc.cython
 import sys
 import __builtin__
 
-def sagex_import(filename, verbose=False, compile_message=False,
+def cython_import(filename, verbose=False, compile_message=False,
                  use_cache=False, create_local_c_file=True):
     """
     INPUT:
-        filename -- name of a file that contains sagex code
+        filename -- name of a file that contains cython code
 
     OUTPUT:
-        module -- the module that contains the compiled sagex code.
+        module -- the module that contains the compiled cython code.
 
     Raises an ImportError exception if anything goes wrong.
     """
-    name, build_dir = sage.misc.sagex.sagex(filename, verbose=verbose,
+    name, build_dir = sage.misc.cython.cython(filename, verbose=verbose,
                                             compile_message=compile_message,
                                             use_cache=use_cache,
                                             create_local_c_file=create_local_c_file)
     sys.path.append(build_dir)
     return __builtin__.__import__(name)
 
-def sagex_import_all(filename, globals, verbose=False, compile_message=False,
+def cython_import_all(filename, globals, verbose=False, compile_message=False,
                      use_cache=False, create_local_c_file=True):
     """
     INPUT:
-        filename -- name of a file that contains sagex code
+        filename -- name of a file that contains cython code
 
     OUTPUT:
-        changes globals using the attributes of the Sagex module
+        changes globals using the attributes of the Cython module
         that do not begin with an underscore.
 
     Raises an ImportError exception if anything goes wrong.
     """
-    m = sagex_import(filename, verbose=verbose, compile_message=compile_message,
+    m = cython_import(filename, verbose=verbose, compile_message=compile_message,
                      use_cache=use_cache,
                      create_local_c_file=create_local_c_file)
     for k, x in m.__dict__.iteritems():

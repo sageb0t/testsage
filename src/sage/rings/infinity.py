@@ -66,11 +66,11 @@ is then not well defined.
     sage: oo * 0
     Traceback (most recent call last):
     ...
-    TypeError: unsupported operand parent(s) for '*': 'The Unsigned Infinity Ring' and 'The Unsigned Infinity Ring'
+    TypeError: unsupported operand parent(s) for '*': 'The Unsigned Infinity Ring' and 'Integer Ring'
     sage: oo/oo
     Traceback (most recent call last):
     ...
-    TypeError: unsupported operand parent(s) for '/': 'The Unsigned Infinity Ring' and 'The Unsigned Infinity Ring'
+    TypeError: infinity 'ring' has no fraction field
 
 In the infinity ring, we can negate infinity, multiply positive numbers by infinity, etc.
     sage: P = InfinityRing; P
@@ -122,6 +122,12 @@ TESTS:
     True
 
     sage: P(2) == loads(dumps(P(2)))
+    True
+
+The following is assumed in a lot of code (i.e., "is" is used
+for testing whether something is infinity), so make sure it
+is satisfied:
+    sage: loads(dumps(infinity)) is infinity
     True
 
 """
@@ -178,6 +184,9 @@ class UnsignedInfinityRing_class(_uniq0, Ring):
 
     def ngens(self):
         return 1
+
+    def fraction_field(self):
+        raise TypeError, "infinity 'ring' has no fraction field"
 
     def gen(self, n=0):
         try:
@@ -324,6 +333,9 @@ class SignError(Exception):
 class InfinityRing_class(_uniq2, Ring):
     def __init__(self):
         ParentWithGens.__init__(self, self, names=('oo',), normalize=False)
+
+    def fraction_field(self):
+        raise TypeError, "infinity 'ring' has no fraction field"
 
     def ngens(self):
         return 2
@@ -575,7 +587,7 @@ class PlusInfinity(_uniq4, PlusInfinityElement):
             return -self
         if other > 0:
             return self
-        raise TypeError, "cannot multiply infinity by zero"
+        raise SignError, "cannot multiply infinity by zero"
 
     def _sub_(self, other):
         if isinstance(other, PlusInfinity):
