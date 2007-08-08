@@ -39,6 +39,11 @@ cdef extern from "libsingular.h":
 
     ctypedef struct napoly "polyrec"
 
+    cdef enum tHomog:
+        isNotHomog
+        isHomog
+        testHomog
+
     cdef enum rRingOrder_t:
         ringorder_no
         ringorder_a
@@ -114,8 +119,6 @@ cdef extern from "libsingular.h":
 
     # oMalloc Bins
     ctypedef struct omBin "omBin_s"
-
-    # numbers, i.e. coefficients
 
     # SINGULAR Init
     # ------------------------
@@ -350,3 +353,8 @@ cdef extern from "libsingular.h":
     ideal *idLift(ideal *mod, ideal *submod, ideal **rest, int goodShape, int isSB, int divide)
     void idShow(ideal *i)
     int IDELEMS(ideal *i)
+
+    void idSkipZeroes (ideal *ide)
+    long idRankFreeModule(ideal *m, ring *r)
+    ideal *kStd(ideal *i, ideal *q, tHomog h, intvec *w)
+    ideal *t_rep_gb(ring *r,ideal *arg_I, int syz_comp, int F4_mode)
