@@ -210,6 +210,8 @@ cdef extern from "libsingular.h":
 
     char *p_String(poly *p, ring *r, ring *r)
 
+    void p_Normalize(poly *p, ring *r)
+
     ## Arithmetic
     ## -------------------------------
 
