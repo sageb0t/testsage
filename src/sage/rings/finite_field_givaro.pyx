@@ -602,7 +602,7 @@ cdef class FiniteField_givaro(FiniteField):
         if PY_TYPE_CHECK(x, int) \
                or PY_TYPE_CHECK(x, long) or PY_TYPE_CHECK(x, Integer):
             cx = x % self.characteristic()
-            r = (<FiniteField_givaro>self).objectptr.read(r, cx%self.objectptr.characteristic())
+            r = (<FiniteField_givaro>self).objectptr.initi(r, cx%self.objectptr.characteristic())
             return make_FiniteField_givaroElement(<FiniteField_givaro>self,r)
 
         if PY_TYPE_CHECK(x, FiniteFieldElement) or \
@@ -721,7 +721,7 @@ cdef class FiniteField_givaro(FiniteField):
         elif n>=self.order_c():
             raise IndexError, "n=%d must be < self.order()"%n
         _sig_on
-        ret = int(self.objectptr.write(ret, n))
+        ret = int(self.objectptr.convert(ret, n))
         _sig_off
         return ret
 
@@ -747,7 +747,7 @@ cdef class FiniteField_givaro(FiniteField):
         """
         cdef int r
         _sig_on
-        ret =  int(self.objectptr.read(r,n))
+        ret =  int(self.objectptr.initi(r,n))
         _sig_off
         return ret
 
