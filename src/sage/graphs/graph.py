@@ -3365,7 +3365,7 @@ class Graph(GenericGraph):
         else:
             M = self.am()
         M = matrix(RDF, M.rows())
-        E = M.eigen()[0]
+        E = M.eigen_left()[0]
         return [e.real() for e in E]
 
     ### Representations
