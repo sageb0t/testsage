@@ -1045,6 +1045,7 @@ function list_preview_worksheet(filename) {
 
 function server_ping_while_alive() {
     async_request(worksheet_command('alive'), xx, null);
+    setTimeout("server_ping_while_alive();", server_ping_time);
 }
 
 function xx(status, response_text) {
@@ -1053,7 +1054,6 @@ function xx(status, response_text) {
     } else {
         server_up();
     }
-    setTimeout("server_ping_while_alive();", server_ping_time);
 }
 
 function server_down() {
