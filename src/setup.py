@@ -210,6 +210,9 @@ matrix_rational_sparse = Extension('sage.matrix.matrix_rational_sparse',
 matrix_cyclo_sparse = Extension('sage.matrix.matrix_cyclo_sparse',
                                    ['sage/matrix/matrix_cyclo_sparse.pyx'])
 
+matrix_mpolynomial_dense = Extension('sage.matrix.matrix_mpolynomial_dense',
+                                 ['sage/matrix/matrix_mpolynomial_dense.pyx'])
+
 #matrix_padic_capped_relative_dense = Extension('sage.matrix.padics.matrix_padic_capped_relative_dense',
 #                                               ['sage/matrix/padics/matrix_padic_capped_relative_dense.pyx'])
 
@@ -333,6 +336,8 @@ ext_modules = [ \
      matrix_modn_dense,
      matrix_modn_sparse,
      matrix_mod2_dense,
+     matrix_mpolynomial_dense, \
+
      givaro_gfq, \
 
      libsingular, \
