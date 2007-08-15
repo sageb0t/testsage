@@ -1610,7 +1610,7 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
             sage: x/0
             Traceback (most recent call last):
             ...
-            ZeroDivisionError
+            ZeroDivisionError: Rational division by zero
 
         """
         cdef poly *p
