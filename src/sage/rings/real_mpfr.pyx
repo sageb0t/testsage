@@ -107,8 +107,11 @@ def mpfr_prec_min():
     """
     return MPFR_PREC_MIN
 
+MY_MPFR_PREC_MAX = 16777216
 def mpfr_prec_max():
-    return MPFR_PREC_MAX
+    # lots of things in mpfr *crash* if we use MPFR_PREC_MAX!
+    # So don't.   Using 2**24 seems to work well. (see above)
+    return MY_MPFR_PREC_MAX
 
 #*****************************************************************************
 #
@@ -162,9 +165,9 @@ cdef class RealField(sage.rings.ring.Field):
     """
 
     def __init__(self, int prec=53, int sci_not=0, rnd="RNDN"):
-        if prec < MPFR_PREC_MIN or prec > MPFR_PREC_MAX:
+        if prec < MPFR_PREC_MIN or prec > MY_MPFR_PREC_MAX:
             raise ValueError, "prec (=%s) must be >= %s and <= %s."%(
-                prec, MPFR_PREC_MIN, MPFR_PREC_MAX)
+                prec, MPFR_PREC_MIN, MY_MPFR_PREC_MAX)
         self.__prec = prec
         if not isinstance(rnd, str):
             raise TypeError, "rnd must be a string"
@@ -389,7 +392,9 @@ cdef class RealField(sage.rings.ring.Field):
         """
         cdef RealNumber x
         x = self._new()
+        _sig_on
         mpfr_const_pi(x.value, self.rnd)
+        _sig_off
         return x
 
     # int mpfr_const_euler (mpfr_t rop, mp_rnd_t rnd)
@@ -403,7 +408,9 @@ cdef class RealField(sage.rings.ring.Field):
         """
         cdef RealNumber x
         x = self._new()
+        _sig_on
         mpfr_const_euler(x.value, self.rnd)
+        _sig_off
         return x
 
     # int mpfr_const_catalan (mpfr_t rop, mp_rnd_t rnd)
@@ -417,7 +424,9 @@ cdef class RealField(sage.rings.ring.Field):
         """
         cdef RealNumber x
         x = self._new()
+        _sig_on
         mpfr_const_catalan(x.value, self.rnd)
+        _sig_off
         return x
 
     # int mpfr_const_log2 (mpfr_t rop, mp_rnd_t rnd)
@@ -433,7 +442,9 @@ cdef class RealField(sage.rings.ring.Field):
             0.69314718055994530941723212146
         """
         cdef RealNumber x = self._new()
+        _sig_on
         mpfr_const_log2(x.value, self.rnd)
+        _sig_off
         return x
 
     def random_element(self, min=-1, max=1, distribution=None):
@@ -462,7 +473,9 @@ cdef class RealField(sage.rings.ring.Field):
         if n < 0:
             raise ArithmeticError, "n must be nonnegative"
         x = self._new()
+        _sig_on
         mpfr_fac_ui(x.value, n, self.rnd)
+        _sig_off
         return x
 
     def rounding_mode(self):
