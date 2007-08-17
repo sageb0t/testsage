@@ -2,8 +2,7 @@
 Dense matrice over multivariate polynomials over fields.
 
 This implementation inherits from Matrix_generic_dense, i.e. it is not
-optimized for speed. Only some methods were added to
-Matrix_generic_dense.
+optimized for speed only some methods were added.
 
 AUTHOR: Martin Albrecht <malb@informatik.uni-bremen.de>
 """
@@ -47,18 +46,18 @@ cdef class Matrix_mpolynomial_dense(Matrix_generic_dense):
 
     def echelon_form(self, algorithm="default", **kwds):
         """
-        Return the echelon form of self.
+        Return a not necessarily reduced echelon form of self.
 
         INPUT:
             algorithm -- string, which algorithm to use (default: 'default')
-                         'default' -- bareiss if possible, 'field' else
+                         'default' -- bareiss if possible, 'field' otherwise
                          'bareiss' -- fraction free Gauss-Bareiss algorithm with column swaps
-                         'field' -- compute echelon form over fraction field
-                         'row_reduction' -- compute echelon form as far as possible,
-                                            only divide by constant entries
+                         'field' -- reduced echelon form over fraction field
+                         'row_reduction' -- reduce as far as possible, only divide by constant
+                                            entries
 
         OUTPUT:
-            matrix -- The reduced row echelon form of A, as an
+            matrix -- A row echelon form of A, as an
             immutable matrix.  Note that self is *not* changed by this
             command.  Use A.echelonize() to change A in place.
 
@@ -74,9 +73,14 @@ cdef class Matrix_mpolynomial_dense(Matrix_generic_dense):
             sage: A.copy().echelon_form('row_reduction')
             [     1      x]
             [     0 -x + y]
+
+        NOTE: If 'row_reduction' is chosen as algorithm the result
+        will not be cached because it does not necessarily reduce to a
+        row echelon form.
+
         """
         x = self.fetch('echelon_form')
-        if not x is None:
+        if x is not None and algorithm != 'row_reduction':
             return x
 
         if algorithm == "default":
@@ -94,9 +98,9 @@ cdef class Matrix_mpolynomial_dense(Matrix_generic_dense):
             E = self.copy()
 
         E.echelonize(algorithm=algorithm, **kwds)
-        E.set_immutable()  # so we can cache the echelon form.
         if not algorithm == 'row_reduction':
             # do not cache incomplete echelon form
+            E.set_immutable()  # so we can cache the echelon form.
             self.cache('echelon_form', E)
             self.cache('pivots', E.pivots())
         return E
@@ -109,7 +113,7 @@ cdef class Matrix_mpolynomial_dense(Matrix_generic_dense):
         INPUT:
             algorithm -- string, which algorithm to use (default: 'bareiss')
                    'bareiss' -- fraction free Gauss-Bareiss algorithm with column swaps
-                   'row_reduction' -- compute echelon form as far as possible,
+                   'row_reduction' -- reduce as far as possible,
                                       only divide by constant entries
         EXAMPLES:
             sage: P.<x,y> = MPolynomialRing(QQ,2)
@@ -164,7 +168,6 @@ cdef class Matrix_mpolynomial_dense(Matrix_generic_dense):
         if not x is None: return  # already known to be in echelon form
 
         if PY_TYPE_CHECK(self.base_ring(), MPolynomialRing_libsingular):
-
             self.check_mutability()
             self.clear_cache()
 
@@ -178,8 +181,9 @@ cdef class Matrix_mpolynomial_dense(Matrix_generic_dense):
                     p = <MPolynomial_libsingular>self.get_unsafe(r,c)
                     i.m[self._nrows * c + r] = p_Copy(p._poly, _ring)
 
-            ii = idMatrix2Module(i)
+            ii = idMatrix2Module(i) # kills i
 
+            # this is actually a sparse implementation
             smCallNewBareiss(ii,0,0,res,&iv)
 
             ivv = iv.ivGetVec()
@@ -189,7 +193,7 @@ cdef class Matrix_mpolynomial_dense(Matrix_generic_dense):
 
             l = sorted(l)
 
-            # fix too short l vector
+            # fix if l is to short
             if len(l) < res.rank:
                 l = range(res.rank)
 
@@ -237,7 +241,7 @@ cdef class Matrix_mpolynomial_dense(Matrix_generic_dense):
 
         else:
 
-            raise NotImplementedError, "only MPolynomial_libsingular supported"
+            raise NotImplementedError, "cannot apply Gauss-Bareiss algorithm over this base ring"
 
     def _echelonize_row_reduction(self):
         r"""
@@ -298,14 +302,14 @@ cdef class Matrix_mpolynomial_dense(Matrix_generic_dense):
             [                 0                  0                  0                  0              x1*y0]
             [                 0                  0                  0                  0 x0*y0 + x1*y1 + x0]
 
-            This is the same result SINGULAR's rowred command returns.
+            This is the same result as SINGULAR's rowred command returns.
 
             sage: E = A._singular_().rowred()._sage_(P)
             sage: E == B
             True
 
         ALGORITHM: Gaussian elimination with division limited to
-        constant entries.  Based on SINGULAR's rowred command.
+        constant entries. Based on SINGULAR's rowred command.
 
         """
         from sage.matrix.constructor import matrix
