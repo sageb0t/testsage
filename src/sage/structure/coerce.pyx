@@ -704,7 +704,7 @@ cdef class LeftModuleAction(Action):
     def codomain(self):
         if self.extended_base is not None:
             return self.extended_base
-        return self._S
+        return self.S
 
 cdef class RightModuleAction(Action):
     def __init__(self, G, S):
@@ -748,4 +748,4 @@ cdef class RightModuleAction(Action):
     def codomain(self):
         if self.extended_base is not None:
             return self.extended_base
-        return self._S
+        return self.S
