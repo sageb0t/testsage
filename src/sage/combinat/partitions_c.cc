@@ -82,6 +82,15 @@
  *      along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#if defined(__sun)
+extern long double fabsl (long double);
+extern long double sinl (long double);
+extern long double cosl (long double);
+extern long double sqrtl (long double);
+extern long double coshl (long double);
+extern long double sinhl (long double);
+#endif
+
 #include <stdio.h>
 #include <cfloat>
 
