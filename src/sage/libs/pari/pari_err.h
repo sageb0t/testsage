@@ -35,3 +35,33 @@ static void *__catcherr = NULL;
 #define _pari_sig_on _sig_on; _pari_catch;
 #define _pari_sig_str(s) _sig_str(s); _pari_catch;
 #define _pari_sig_off _pari_endcatch; _sig_off;
+
+int
+gcmp_sage(GEN x, GEN y)
+{
+  long tx = typ(x), ty = typ(y), f;
+  pari_sp av;
+
+  if (is_intreal_t(tx))
+    { if (is_intreal_t(ty)) return mpcmp(x,y); }
+  else
+  {
+    if (tx==t_STR)
+    {
+      if (ty != t_STR) return 1;
+      f = strcmp(GSTR(x),GSTR(y));
+      return f > 0? 1
+                  : f? -1: 0;
+    }
+    if (tx != t_FRAC)
+    {
+      if (ty == t_STR) return -1;
+      return -1;
+      /* pari_err(typeer,"comparison"); */
+    }
+  }
+  if (ty == t_STR) return -1;
+  if (!is_intreal_t(ty) && ty != t_FRAC)
+    return 1; /* pari_err(typeer,"comparison"); */
+  av=avma; y=gneg_i(y); f=gsigne(gadd(x,y)); avma=av; return f;
+}
