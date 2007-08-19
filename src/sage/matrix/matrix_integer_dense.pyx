@@ -970,13 +970,10 @@ cdef class Matrix_integer_dense(matrix_dense.Matrix_dense):   # dense or sparse
         if row_list == NULL:
             raise MemoryError, "out of memory allocating multi-modular coefficent list"
 
-        cdef PyObject** res_seq
-        res_seq = FAST_SEQ_UNSAFE(res)
-
         _sig_on
         for i from 0 <= i < nr:
             for k from 0 <= k < n:
-                row_list[k] = (<Matrix_modn_dense>res_seq[k])._matrix[i]
+                row_list[k] = (<Matrix_modn_dense>res[k])._matrix[i]
             mm.mpz_reduce_vec(self._matrix[i], row_list, nc)
         _sig_off
 
@@ -2153,8 +2150,6 @@ def _lift_crt(Matrix_integer_dense M, residues, moduli=None):
     for b in residues:
         if not PY_TYPE_CHECK(b, Matrix_modn_dense):
             raise TypeError, "Can only perform CRT on list of type Matrix_modn_dense."
-    cdef PyObject** res
-    res = FAST_SEQ_UNSAFE(residues)
 
     cdef mod_int **row_list
     row_list = <mod_int**>sage_malloc(sizeof(mod_int*) * n)
@@ -2164,7 +2159,7 @@ def _lift_crt(Matrix_integer_dense M, residues, moduli=None):
     _sig_on
     for i from 0 <= i < nr:
         for k from 0 <= k < n:
-            row_list[k] = (<Matrix_modn_dense>res[k])._matrix[i]
+            row_list[k] = (<Matrix_modn_dense>residues[k])._matrix[i]
         mm.mpz_crt_vec(M._matrix[i], row_list, nc)
     _sig_off
 

@@ -1374,6 +1374,17 @@ class MaximaElement(ExpectElement):
     integrate = integral
 
     def __float__(self):
+        """
+        Return floating point version of this maxima element.
+
+        EXAMPLES:
+            sage: float(maxima("3.14"))
+            3.1400000000000001
+            sage: float(maxima("1.7e+17"))
+            1.7e+17
+            sage: float(maxima("1.7e-17"))
+            1.6999999999999999e-17
+        """
         try:
             return float(repr(self.numer()))
         except ValueError:
