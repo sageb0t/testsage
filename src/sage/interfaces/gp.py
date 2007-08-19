@@ -89,6 +89,7 @@ from expect import Expect, ExpectElement, ExpectFunction, FunctionElement
 from sage.misc.misc import verbose
 from sage.libs.pari.all import pari
 import sage.rings.all
+import sage.rings.complex_number
 
 class Gp(Expect):
     """
@@ -325,7 +326,7 @@ class GpElement(ExpectElement):
         real = str(self.real()).replace(' E','e')
         imag = str(self.imag()).replace(' E','e')
         GP.set_real_precision(orig)
-        return sage.rings.all.ComplexNumber(real, imag )
+        return sage.rings.complex_number.ComplexNumber(CC, real, imag )
 
     def __len__(self):
         return int(self.length())
