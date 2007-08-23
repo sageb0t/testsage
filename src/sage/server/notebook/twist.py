@@ -42,6 +42,7 @@ p = os.path.join
 css_path        = p(SAGE_EXTCODE, "notebook/css")
 image_path      = p(SAGE_EXTCODE, "notebook/images")
 javascript_path = p(SAGE_EXTCODE, "notebook/javascript")
+java_path       = p(SAGE_EXTCODE, "notebook/java")
 
 # the list of users waiting to register
 waiting = {}
@@ -1322,6 +1323,19 @@ class Javascript(resource.Resource):
 setattr(Javascript, 'child_main.js', Main_js())
 
 ############################
+# Java resources
+############################
+
+class Java(resource.Resource):
+    addSlash = True
+
+    def render(self, ctx):
+        return static.File(java_path)
+
+    def childFactory(self, request, name):
+        return static.File(java_path + "/" + name)
+
+############################
 # Logout
 ############################
 class Logout(resource.Resource):
@@ -1554,6 +1568,7 @@ class AnonymousToplevel(Toplevel):
     child_images = Images()
     child_css = CSS()
     child_javascript = Javascript()
+    child_java = Java()
 
     userchild_home = PublicWorksheetsHome
     userchild_pub = PublicWorksheets
@@ -1586,6 +1601,7 @@ class UserToplevel(Toplevel):
     child_images = Images()
     child_css = CSS()
     child_javascript = Javascript()
+    child_java = Java()
 
     child_upload = Upload()
     child_logout = Logout()
