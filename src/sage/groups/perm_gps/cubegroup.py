@@ -87,7 +87,7 @@ yellow = (1,1,0)           ## L face
 white = (1,1,1)             ## none
 orange = (1,0.6,0.3)       ## B face
 purple = (1,0,1)           ## none
-lpurple = (1,0.63,1)       ## U face
+lpurple = (1,0.5,1)       ## U face
 lightblue = (0,1,1)        ## none
 lgrey = (0.75,0.75,0.75)    ## sagemath.org color
 
@@ -787,6 +787,9 @@ class CubeGroup(PermutationGroup_generic):
 
         You can see the right face has been rotated but not the left face.
         """
+        print self.repr2d(mv)
+
+    def repr2d(self, mv):
         if isinstance(mv, str):
             lst = self.move(mv)[1]
         else:
@@ -804,7 +807,7 @@ class CubeGroup(PermutationGroup_generic):
         line11 = "                     | %s bottom %s |\n"%(lst[43],lst[44])
         line12 = "                     | %s   %s   %s |\n"%(lst[45],lst[46],lst[47])
         line13 = "                     +--------------+\n"
-        print line1+line2+line3+line4+line5+line6+line7+line8+line9+line10+line11+line12+line13
+        return line1+line2+line3+line4+line5+line6+line7+line8+line9+line10+line11+line12+line13
 
     def legal(self,state,mode="quiet"):
         r"""
@@ -999,8 +1002,8 @@ def cubie_faces():
         for j in [-1,0,1]:
             cubies[  i,  j, -1][1] = faceF[1+j][1+i]
             cubies[  i,  j,  1][4] = faceB[1+j][1-i]
-            cubies[  i, -1,  j][0] = faceU[1+j][1+i]
-            cubies[  i,  1,  j][3] = faceD[1-j][1+i]
+            cubies[  i, -1,  j][0] = faceU[1-j][1+i]
+            cubies[  i,  1,  j][3] = faceD[1+j][1+i]
             cubies[ -1,  i,  j][2] = faceL[1+i][1-j]
             cubies[  1,  i,  j][5] = faceR[1+i][1+j]
 
@@ -1008,9 +1011,11 @@ def cubie_faces():
 
 cubie_face_list = cubie_faces()
 
+rand_colors = [(RDF.random_element(), RDF.random_element(), RDF.random_element()) for _ in range(56)]
+
 class RubiksCube(SageObject):
 
-    def __init__(self, state=None, history=[], colors=[blue,yellow,red,green,orange,lpurple,'grey']):
+    def __init__(self, state=None, history=[], colors=[lpurple,yellow,red,green,orange,blue,'grey']):
         self.colors = colors
         self._history = history
         self._group = CubeGroup()
@@ -1033,7 +1038,7 @@ class RubiksCube(SageObject):
         return RubiksCube(self._state * ~g, self._history[:-1], self.colors)
 
     def __repr__(self):
-        return self._group.display2d(self._state)
+        return self._group.repr2d(self._state)
 
     def plot(self):
         return plot_cube(self._state)
@@ -1050,13 +1055,16 @@ class RubiksCube(SageObject):
         while len(self.colors) < 7:
             self.colors.append('grey')
         side_colors = [Texture(color=c, ambient=.75) for c in self.colors]
+        start_colors = rand_colors
         start_colors = sum([[c]*8 for c in side_colors], [])
         facets = self._group.facets(self._state)
-        facet_colors = [start_colors[facets[i]-1] for i in range(48)]
+        facet_colors = [0]*48
+        for i in range(48):
+            facet_colors[facets[i]-1] = start_colors[i]
         all_colors = side_colors + facet_colors
         pm = [-1,0,1]
         C = sum([self.cubie(.15, .03, x, y, z, all_colors) for x in pm for y in pm for z in pm], Box(.01, .01, .01))
-        return C.scale([1,-1,-1]).rotateZ(1.5)
+        return C.scale([1,-1,1]).rotateZ(1.5)
 
     def show3d(self):
         return self.plot3d().show()
