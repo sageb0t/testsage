@@ -289,6 +289,8 @@ function initialize_the_notebook(){
     }
 
     get_keyboard();
+
+    jsmath_init();
 }
 
 function true_function() {return true;}
@@ -1151,18 +1153,6 @@ function cell_blur(id) {
 
     var t = cell.value.replaceAll("<","&lt;");
 
-    var display_cell = get_element('cell_display_' + id)
-    if (t.indexOf('%hide') == -1) {
-        set_class('cell_display_' + id, 'cell_input')
-        // We do this so <'s don't result in being parsed as
-        // special html tags.
-        display_cell.innerHTML = t;
-        setTimeout("prettify_cell("+id+")",10);
-    } else {
-        set_class('cell_display_' + id, 'cell_input_hide')
-        display_cell.innerHTML = '<font color="grey">' + t + '</font>'
-    }
-
     if(cell_has_changed)
         send_cell_input(id);
     return true;
@@ -1173,14 +1163,6 @@ function send_cell_input(id) {
     if(cell == null) return;
 
     async_request("/set_cell_input", generic_callback, "cell_id="+id+"&input="+cell.value);
-}
-
-function prettify_cell(id) {
-    var cell = get_cell(id);
-    var display_cell = get_element('cell_display_' + id)
-    if(cell == null || display_cell == null) return;
-    var t = cell.value.replaceAll("<","&lt;");
-    display_cell.innerHTML = prettyPrintOne(t+' '); //add a space to keep the cell from being too skinny
 }
 
 function debug_focus() {
@@ -1212,8 +1194,7 @@ function cell_focus(id, bottom) {
     var cell = get_cell(id);
     if (cell) {
         cell.focus();
-        set_class('cell_display_' + id, 'hidden');
-        cell.className="cell_input_active";
+//        cell.className="cell_input_active";
         cell_input_resize(cell);
         if (!bottom)
             move_cursor_to_top_of_cell(cell);
@@ -1387,8 +1368,8 @@ function cell_input_key_event(id, e) {
         halt_introspection();
     }
 
-    cell_input_resize(cell_input);
-    cell_input.focus();
+//    cell_input_resize_(cell_input); // nix this for now, onInput *should* do the trick
+//    cell_input.focus();  //why is this here?  cell shouldn't lose focus unless we've gotten a tab, and that gets checked later
 /*    if (browser_saf)   {
         cell_input.scrollIntoView();
     }
