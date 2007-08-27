@@ -213,6 +213,7 @@ class SteinWatkinsAllData:
                 X.append(C)
             elif M > N:
                 return X
+        return X
 
     def iter_levels(self):
         """

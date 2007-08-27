@@ -41,7 +41,6 @@ class Cocoa(Expect):
                  maxread=100000, script_subdirectory=None,
                  logfile=None,
                  server=None,
-                 server=None,
                  init_list_length=1024):
         Expect.__init__(self,
 
