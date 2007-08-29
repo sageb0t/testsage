@@ -57,6 +57,7 @@ class Cocoa(Expect):
 
                         maxread = maxread,
                         server=server,
+                        server_tmpdir=server_tmpdir,
                         script_subdirectory = script_subdirectory,
 
                         # If this is true, then whenever the user presses Control-C to

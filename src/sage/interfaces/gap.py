@@ -145,7 +145,7 @@ AUTHORS:
 #*****************************************************************************
 
 import expect
-from expect import Expect, ExpectElement, FunctionElement, ExpectFunction, tmp
+from expect import Expect, ExpectElement, FunctionElement, ExpectFunction
 from sage.misc.misc import SAGE_ROOT, DOT_SAGE, is_64_bit
 from IPython.genutils import page
 import re
@@ -164,9 +164,13 @@ if not os.path.exists('%s/gap/'%DOT_SAGE):
 
 gap_cmd = "gap"
 
-def gap_command(use_workspace_cache=True):
+def gap_command(use_workspace_cache=True, local=True):
     if use_workspace_cache:
-        return "%s -L %s"%(gap_cmd, WORKSPACE), False
+        if local:
+            return "%s -L %s"%(gap_cmd, WORKSPACE), False
+        else:
+            # TO DO: Use remote workspace
+            return gap_cmd, False
     else:
         return gap_cmd, True
 
@@ -180,10 +184,11 @@ class Gap(Expect):
                  maxread=100000, script_subdirectory=None,
                  use_workspace_cache = True,
                  server=None,
+                 server_tmpdir=None,
                  logfile = None):
 
         self.__use_workspace_cache = use_workspace_cache
-        cmd, self.__make_workspace = gap_command(use_workspace_cache)
+        cmd, self.__make_workspace = gap_command(use_workspace_cache, server is None)
         cmd += " -b -p -T"
         if max_workspace_size != None:
             cmd += " -o %s"%int(max_workspace_size)
@@ -199,6 +204,7 @@ class Gap(Expect):
                         command = cmd,
                         maxread = maxread,
                         server = server,
+                        server_tmpdir = server_tmpdir,
                         script_subdirectory = script_subdirectory,
                         restart_on_ctrlc = True,
                         verbose_start = False,
@@ -306,14 +312,21 @@ class Gap(Expect):
         """
         Print help on a given topic.
         """
-        self.eval('$SAGE.tempfile := "%s";'%tmp)
+        tmp_to_use = self._local_tmpfile()
+        if self.is_remote():
+            tmp_to_use = self._remote_tmpfile()
+        else:
+            tmp_to_use = self._local_tmpfile()
+        self.eval('$SAGE.tempfile := "%s";'%tmp_to_use)
         line = Expect.eval(self, "? %s"%s)
         match = re.search("Page from (\d+)", line)
         if match == None:
             print line
         else:
             (sline,) = match.groups()
-            F = open(tmp,"r")
+            if self.is_remote():
+                self._get_tmpfile()
+            F = open(self._local_tmpfile(),"r")
             if pager:
                 page(F.read(), start = int(sline)-1)
             else:
@@ -334,6 +347,7 @@ class Gap(Expect):
         Get the string representation of the variable var.
         """
         if use_file:
+            tmp = self._local_tmpfile()
             if os.path.exists(tmp):
                 os.unlink(tmp)
             self.eval('PrintTo("%s", %s);'%(tmp,var), strip=False)
@@ -428,7 +442,7 @@ class Gap(Expect):
         os.killpg(self._expect.pid, 2)
         raise KeyboardInterrupt, "Ctrl-c pressed while running %s"%self
 
-    def _eval_line_using_file(self, line, tmp):
+    def _eval_line_using_file(self, line):
         i = line.find(':=')
         if i != -1:
             j = line.find('"')
@@ -437,12 +451,12 @@ class Gap(Expect):
         if i == -1:
             line0 = 'Print( %s );'%line.rstrip().rstrip(';')
             try:  # this is necessary, since Print requires something as input, and some functions (e.g., Read) return nothing.
-                return Expect._eval_line_using_file(self, line0, tmp)
+                return Expect._eval_line_using_file(self, line0)
             except RuntimeError, msg:
                 #if not ("Function call: <func> must return a value" in msg):
                 #    raise RuntimeError, msg
                 return ''
-        return Expect._eval_line_using_file(self, line, tmp)
+        return Expect._eval_line_using_file(self, line)
 
     def _eval_line(self, line, allow_use_file=True, wait_for_prompt=True):
         #if line.find('\n') != -1:
@@ -453,7 +467,7 @@ class Gap(Expect):
             E = self._expect
             #import pdb; pdb.set_trace()
             if allow_use_file and len(line) > self._eval_using_file_cutoff:
-                return self._eval_line_using_file(line, tmp)
+                return self._eval_line_using_file(line)
             try:
                 (normal, error) = self._execute_line(line, wait_for_prompt=wait_for_prompt,
                                                  expect_eof= (self._quit_string() in line))
