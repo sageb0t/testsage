@@ -565,20 +565,10 @@ cdef class gen(sage.structure.element.RingElement):
 
     ###########################################
     # comparisons
-    # I had to put the call to gcmp in another
-    # function since otherwise I can't trap
-    # the PariError it will sometimes raise.
-    # (This might be a bug/shortcoming to SageX.)
-    # Annoyingly the _cmp method always has
-    # to be not cdef'd.
+    # I had to rewrite PARI's compare, since
+    # otherwise trapping signals and other horrible,
+    # memory-leaking and slow stuff occurs.
     ###########################################
-
-    def _cmp(gen self, gen other):
-        cdef int result
-        _sig_on
-        result = gcmp(self.g, other.g)
-        _sig_off
-        return result
 
     def __richcmp__(left, right, int op):
         return (<Element>left)._richcmp(right, op)
@@ -620,11 +610,7 @@ cdef class gen(sage.structure.element.RingElement):
             sage: pari(I) == pari(I)
             True
         """
-        try:
-            return left._cmp(right)
-        except PariError:
-            pass
-        return cmp(str(left),str(right))
+        return gcmp_sage(left.g, (<gen>right).g)
 
     def copy(gen self):
         return P.new_gen(forcecopy(self.g))
@@ -889,11 +875,20 @@ cdef class gen(sage.structure.element.RingElement):
         _sig_off
         return d
 
-    def __bool__(gen self):
-        _sig_on
-        t = bool(self.g != stoi(0))
-        _sig_off
-        return t
+    def __nonzero__(self):
+        """
+        EXAMPLES:
+            sage: pari('1').__nonzero__()
+            True
+            sage: pari('x').__nonzero__()
+            True
+            sage: bool(pari(0))
+            False
+            sage: a = pari('Mod(0,3)')
+            sage: a.__nonzero__()
+            False
+        """
+        return not gcmp0(self.g)
 
     ###########################################
     # arith1.c
@@ -5323,6 +5318,10 @@ cdef class PariInstance(sage.structure.parent_base.ParentWithBase):
         self.ZERO = self(0)    # todo: gen_0
         self.ONE = self(1)
         self.TWO = self(2)
+
+    def __dealloc__(self):
+        # TODO -- add pari free here
+        pass
 
     def __repr__(self):
         return "Interface to the PARI C library"

@@ -351,6 +351,7 @@ from pexpect import EOF
 import random
 
 import sage.rings.all
+import sage.rings.complex_number
 
 from sage.misc.misc import verbose, DOT_SAGE, SAGE_ROOT
 
@@ -1208,7 +1209,7 @@ class MaximaElement(ExpectElement):
             sage: ComplexField(10)(maxima('2342.23482943872+234*%i'))
              2300 + 230*I
         """
-        return sage.rings.all.ComplexNumber( CC, self.real(), self.imag() )
+        return sage.rings.complex_number.ComplexNumber( CC, self.real(), self.imag() )
 
     def str(self):
         P = self._check_valid()
@@ -1374,6 +1375,17 @@ class MaximaElement(ExpectElement):
     integrate = integral
 
     def __float__(self):
+        """
+        Return floating point version of this maxima element.
+
+        EXAMPLES:
+            sage: float(maxima("3.14"))
+            3.1400000000000001
+            sage: float(maxima("1.7e+17"))
+            1.7e+17
+            sage: float(maxima("1.7e-17"))
+            1.6999999999999999e-17
+        """
         try:
             return float(repr(self.numer()))
         except ValueError:
