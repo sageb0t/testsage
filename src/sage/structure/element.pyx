@@ -994,9 +994,6 @@ cdef class MonoidElement(Element):
     Generic element of a monoid.
     """
 
-    def __nonzero__(self):
-        return True
-
     #############################################################
     # Multiplication
     #############################################################
