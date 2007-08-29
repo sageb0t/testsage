@@ -1,5 +1,22 @@
+#*****************************************************************************
+#      Copyright (C) 2007 Robert Bradshaw <robertwb@math.washington.edu>
+#
+#  Distributed under the terms of the GNU General Public License (GPL)
+#
+#    This code is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#    General Public License for more details.
+#
+#  The full text of the GPL is available at:
+#
+#                  http://www.gnu.org/licenses/
+#*****************************************************************************
+
+# Utility functions for operating on the point_c struct.
+
 cdef extern from "math.h":
-    double sqrt(double)
+    double stdmath_sqrt "sqrt" (double)
 
 cdef inline bint point_c_set(point_c* res, P) except -2:
     res.x, res.y, res.z = P[0], P[1], P[2]
@@ -26,7 +43,7 @@ cdef inline double point_c_dot(point_c P, point_c Q):
     return P.x*Q.x + P.y*Q.y + P.z*Q.z
 
 cdef inline double point_c_len(point_c P):
-    return sqrt(point_c_dot(P, P))
+    return stdmath_sqrt(point_c_dot(P, P))
 
 cdef inline void point_c_transform(point_c* res, double* M, point_c P):
     """
