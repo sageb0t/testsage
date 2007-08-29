@@ -624,6 +624,22 @@ ext_modules = [ \
               ['sage/graphs/bruhat_sn.pyx']
               ), \
 
+    Extension('sage.plot.plot3d.base',
+              ['sage/plot/plot3d/base.pyx']
+              ), \
+    Extension('sage.plot.plot3d.transform',
+              ['sage/plot/plot3d/transform.pyx']
+              ), \
+    Extension('sage.plot.plot3d.index_face_set',
+              ['sage/plot/plot3d/index_face_set.pyx']
+              ), \
+    Extension('sage.plot.plot3d.parametric_surface',
+              ['sage/plot/plot3d/parametric_surface.pyx']
+              ), \
+    Extension('sage.plot.plot3d.shapes',
+              ['sage/plot/plot3d/shapes.pyx']
+              ), \
+
     ]
 
 #mpc = Extension('sage.rings.mpc',
@@ -878,6 +894,7 @@ setup(name        = 'sage',
 
                      'sage.plot',
                      'sage.plot.mpl3d',
+                     'sage.plot.plot3d',
 
                      'sage.probability',
 
