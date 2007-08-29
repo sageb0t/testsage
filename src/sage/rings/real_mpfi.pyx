@@ -1318,7 +1318,7 @@ cdef class RealIntervalFieldElement(sage.structure.element.RingElement):
 
     def __lshift__(x, y):
         """
-        Returns x * 2^y, for y an integer.  Much faster than an ordinary
+        Returns $x * 2^y$, for $y$ an integer.  Much faster than an ordinary
         multiplication.
 
         EXAMPLES:
@@ -1339,7 +1339,7 @@ cdef class RealIntervalFieldElement(sage.structure.element.RingElement):
 
     def __rshift__(x, y):
         """
-        Returns x / 2^y, for y an integer.  Much faster than an ordinary
+        Returns $x / 2^y$, for $y$ an integer.  Much faster than an ordinary
         division.
 
         EXAMPLES:
