@@ -1039,8 +1039,16 @@ cdef class MonoidElement(Element):
         """
         Return the (integral) power of self.
         """
-
+        if n < 0:
+            raise ValueError, "Exponent must be non-negative."
         return generic_power_c(self,n,None)
+
+    def __nonzero__(self):
+        return True
+    def nonzero(self):
+        return True
+    def is_zero(self):
+        return False
 
 def is_AdditiveGroupElement(x):
     """
@@ -2684,7 +2692,7 @@ cdef generic_power_c(a, nn, one):
     if not a:
         # a is zero, return it, or raise an exception if n is zero
         if not n:
-            raise ArithmeticError, "0^0 is not defined."
+            raise ArithmeticError, "0^0 is undefined."
         else:
             return a
     elif not n:
@@ -2693,7 +2701,10 @@ cdef generic_power_c(a, nn, one):
             if PY_TYPE_CHECK(a, Element):
                 return (<Element>a)._parent(1)
             try:
-                return type(a)(1)
+                try:
+                    return a.parent()(1)
+                except AttributeError:
+                    return type(a)(1)
             except:
                 return 1 #oops, the one sucks
         else:
