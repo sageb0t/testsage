@@ -17,6 +17,11 @@ cdef class FaceIter:
     cdef Py_ssize_t i
     cdef IndexFaceSet set
 
+cdef class EdgeIter:
+    cdef Py_ssize_t i, j
+    cdef object seen
+    cdef IndexFaceSet set
+
 cdef class VertexIter:
     cdef Py_ssize_t i
     cdef IndexFaceSet set
