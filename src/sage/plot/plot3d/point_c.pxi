@@ -14,6 +14,7 @@
 #*****************************************************************************
 
 # Utility functions for operating on the point_c struct.
+# These would be macros, but inline functions should do the same job.
 
 cdef extern from "math.h":
     double stdmath_sqrt "sqrt" (double)
@@ -44,6 +45,16 @@ cdef inline int point_c_cmp(point_c P, point_c Q):
         return -1
     else:
         return 1
+
+cdef inline void point_c_lower_bound(point_c* res, point_c P, point_c Q):
+    res.x = P.x if P.x < Q.x else Q.x
+    res.y = P.y if P.y < Q.y else Q.y
+    res.z = P.z if P.z < Q.z else Q.z
+
+cdef inline void point_c_upper_bound(point_c* res, point_c P, point_c Q):
+    res.x = P.x if P.x > Q.x else Q.x
+    res.y = P.y if P.y > Q.y else Q.y
+    res.z = P.z if P.z > Q.z else Q.z
 
 cdef inline void point_c_add(point_c* res, point_c P, point_c Q):
     res.x = P.x + Q.x
