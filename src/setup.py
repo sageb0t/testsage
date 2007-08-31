@@ -931,6 +931,8 @@ setup(name        = 'sage',
                      'sage.libs.pari',
                      'sage.libs.singular',
 
+                     'sage.logic',
+
                      'sage.matrix',
 #                     'sage.matrix.padics',
                      'sage.media',
