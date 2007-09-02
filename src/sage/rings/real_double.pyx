@@ -1547,7 +1547,7 @@ cdef void fast_tp_dealloc(PyObject* o):
 
 hook_fast_tp_functions()
 
-def hook_fast_tp_functions():
+cdef hook_fast_tp_functions():
     """
     """
     global global_dummy_element
