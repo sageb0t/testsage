@@ -73,6 +73,8 @@ import sage.modules.free_module as free_module
 import sage.modules.free_module_element as free_module_element
 import sage.rings.all as rings
 
+from sage.structure.sequence import Sequence
+
 from sage.misc.all import latex
 
 import cuspidal_submodule
@@ -92,7 +94,7 @@ class ModularFormsAmbient(space.ModularFormsSpace,
         Create an ambient space of modular forms.
 
         EXAMPLES:
-            sage: ModularForms(Gamma1(20),20)
+            sage: m = ModularForms(Gamma1(20),20); m
             Modular Forms space of dimension 238 for Congruence Subgroup Gamma1(20) of weight 20 over Rational Field
             sage: m.is_ambient()
             True
@@ -377,7 +379,7 @@ class ModularFormsAmbient(space.ModularFormsSpace,
             sage: m = ModularForms(Gamma0(33),2); m
             Modular Forms space of dimension 6 for Congruence Subgroup Gamma0(33) of weight 2 over Rational Field
             sage: m.new_submodule()
-            Modular Forms subspace of dimension 2 of Modular Forms space of dimension 6 for Congruence Subgroup Gamma0(33) of weight 2 over Rational Field
+            Modular Forms subspace of dimension 1 of Modular Forms space of dimension 6 for Congruence Subgroup Gamma0(33) of weight 2 over Rational Field
 
         Unfortunaely (TODO) -- $p$-new submodules aren't yet implemented:
             sage: m.new_submodule(3)
@@ -417,7 +419,7 @@ class ModularFormsAmbient(space.ModularFormsSpace,
             sage: m = ModularForms(Gamma0(54),2); m
             Modular Forms space of dimension 15 for Congruence Subgroup Gamma0(54) of weight 2 over Rational Field
             sage: m._full_new_submodule()
-            Modular Forms subspace of dimension 4 of Modular Forms space of dimension 15 for Congruence Subgroup Gamma0(54) of weight 2 over Rational Field
+            Modular Forms subspace of dimension 2 of Modular Forms space of dimension 15 for Congruence Subgroup Gamma0(54) of weight 2 over Rational Field
         """
         s = self._dim_new_cuspidal()
         e = self._dim_new_eisenstein()
@@ -514,9 +516,11 @@ class ModularFormsAmbient(space.ModularFormsSpace,
 
     def _dim_new_cuspidal(self):
         """
+        Return the dimension of the new cuspidal subspace, computed using dimension formulas.
+
         EXAMPLES:
             sage: m = ModularForms(GammaH(11,[2]), 2); m._dim_new_cuspidal()
-
+            1
         """
         try:
             return self.__the_dim_new_cuspidal
@@ -526,6 +530,17 @@ class ModularFormsAmbient(space.ModularFormsSpace,
         return self.__the_dim_new_cuspidal
 
     def _dim_new_eisenstein(self):
+        """
+        Compute the dimension of the Eisenstein submodule.
+
+        EXAMPLES:
+            sage: m = ModularForms(Gamma0(11), 4)
+            sage: m._dim_new_eisenstein()
+            0
+            sage: m = ModularForms(Gamma0(11), 2)
+            sage: m._dim_new_eisenstein()
+            1
+        """
         try:
             return self.__the_dim_new_eisenstein
         except AttributeError:
@@ -545,6 +560,19 @@ class ModularFormsAmbient(space.ModularFormsSpace,
     ####################################################################
 
     def eisenstein_params(self):
+        """
+        Return parameters that define all Eisenstein series in self.
+
+        OUTPUT:
+            -- an immutable Sequenc
+
+        EXAMPLES:
+            sage: m = ModularForms(Gamma0(22), 2)
+            sage: v = m.eisenstein_params(); v
+            [([1, 1], [1, 1], 2), ([1, 1], [1, 1], 11), ([1, 1], [1, 1], 22)]
+            sage: type(v)
+            <class 'sage.structure.sequence.Sequence'>
+        """
         try:
             return self.__eisenstein_params
         except AttributeError:
@@ -555,7 +583,7 @@ class ModularFormsAmbient(space.ModularFormsSpace,
                 else:
                     raise NotImplementedError
             params = eis_series.compute_eisenstein_params(eps, self.weight())
-            self.__eisenstein_params = params
+            self.__eisenstein_params = Sequence(params, immutable=True)
         return self.__eisenstein_params
 
     def eisenstein_series(self):
