@@ -473,8 +473,7 @@ ext_modules = [ \
               libraries = ['mpfi', 'mpfr', 'gmp']), \
 
     Extension('sage.rings.integer',
-              sources = ['sage/ext/arith.pyx', 'sage/rings/integer.pyx', \
-                          'sage/ext/mpn_pylong.c', 'sage/ext/mpz_pylong.c'],
+              sources = ['sage/ext/arith.pyx', 'sage/rings/integer.pyx'],
               libraries=['ntl', 'gmp']), \
 
     Extension('sage.rings.integer_ring',
@@ -540,8 +539,7 @@ ext_modules = [ \
     Extension('sage.rings.rational',
               sources = ['sage/rings/rational.pyx',
                          'sage/ext/arith.pyx', \
-                         'sage/rings/integer.pyx', \
-                          'sage/ext/mpn_pylong.c', 'sage/ext/mpz_pylong.c'],
+                         'sage/rings/integer.pyx'],
               libraries=['ntl', 'gmp']), \
 
     Extension('sage.rings.sparse_poly',
@@ -885,6 +883,8 @@ setup(name        = 'sage',
                      'sage.libs.ntl',
                      'sage.libs.pari',
                      'sage.libs.singular',
+
+                     'sage.logic',
 
                      'sage.matrix',
 #                     'sage.matrix.padics',
