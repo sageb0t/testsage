@@ -36,6 +36,7 @@ import time
 # worse than pexpect 2.0 for everything SAGE does.
 ########################################################
 import pexpect
+from pexpect import ExceptionPexpect
 
 from sage.structure.sage_object import SageObject
 from sage.structure.parent_base import ParentWithBase
@@ -381,7 +382,7 @@ If this all works, you can then make calls like:
             if self._do_cleaner():
                 cleaner.cleaner(self._expect.pid, cmd)
 
-        except (pexpect.ExceptionPexpect, pexpect.EOF, IndexError):
+        except (ExceptionPexpect, pexpect.EOF, IndexError):
             self._expect = None
             self._session_number = BAD_SESSION
             failed_to_start.append(self.__name)
@@ -595,7 +596,7 @@ If this all works, you can then make calls like:
         if self._restart_on_ctrlc:
             try:
                 self._expect.close(force=1)
-            except pexpect.ExceptionPexpect:
+            except ExceptionPexpect:
                 print "WARNING: -- unable to kill %s. You may have to do so manually."%self
                 pass
             self._start()
@@ -989,7 +990,7 @@ class ExpectElement(RingElement):
                 if not (P is None):
                     P.clear(self._name)
 
-        except (RuntimeError, pexpect.ExceptionPexpect), msg:    # needed to avoid infinite loops in some rare cases
+        except (RuntimeError, ExceptionPexpect), msg:    # needed to avoid infinite loops in some rare cases
             #print msg
             pass
 
