@@ -498,6 +498,19 @@ class Magma(Expect):
             self.__trait_names = N
             return N
 
+    def ideal(self, L):
+        """
+        """
+        P = iter(L).next().parent()
+        Pn = P._magma_().name()
+        k = P.base_ring()
+        if k.degree() > 1:
+            i = str(k.gen())
+            o = self("BaseRing(%s).1"%Pn).name()
+            self.eval("%s := %s"%(i,o))
+        mlist = self(L)
+        return self("ideal<%s|%s>"%(Pn,mlist.name()))
+
 class MagmaFunctionElement(FunctionElement):
     def __call__(self, *args, **kwds):
         nvals = 1
