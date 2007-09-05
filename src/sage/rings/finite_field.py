@@ -165,7 +165,7 @@ def FiniteField(order, name=None, modulus=None, names=None,
     if elem_cache is None:
         elem_cache = order < 500
 
-    key = (order, name, modulus)
+    key = (order, name, modulus, args, list(kwds))
     if cache.has_key(key):
         K = cache[key]()
         if not K is None:
