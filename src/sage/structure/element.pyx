@@ -678,7 +678,7 @@ cdef class ModuleElement(Element):
                 return _add_c(<ModuleElement>left, <ModuleElement>right)
 
         global coercion_model
-        return coercion_model.bin_op_c(left, right, operator.add)
+        return coercion_model.bin_op_c(left, right, add)
 
     cdef ModuleElement _add_c(left, ModuleElement right):
         """
@@ -707,7 +707,7 @@ cdef class ModuleElement(Element):
         DO NOT CALL THIS FUNCTION DIRECTLY.
         See extensive documentation at the top of element.pyx.
         """
-        raise TypeError, arith_error_message(left, right, operator.add)
+        raise TypeError, arith_error_message(left, right, add)
 
     def _add_(ModuleElement left, ModuleElement right):
         """
@@ -725,7 +725,7 @@ cdef class ModuleElement(Element):
                 return _add_c(<ModuleElement>self, <ModuleElement>right)
         else:
             global coercion_model
-            return coercion_model.bin_op_c(self, right, operator.iadd)
+            return coercion_model.bin_op_c(self, right, iadd)
 
     def _iadd_(self, right):
         return self._iadd_c_impl(right)
@@ -748,7 +748,7 @@ cdef class ModuleElement(Element):
             else:
                 return _sub_c(<ModuleElement>left, <ModuleElement>right)
         global coercion_model
-        return coercion_model.bin_op_c(left, right, operator.sub)
+        return coercion_model.bin_op_c(left, right, sub)
 
     cdef ModuleElement _sub_c(left, ModuleElement right):
         """
@@ -793,7 +793,7 @@ cdef class ModuleElement(Element):
                 return _sub_c(<ModuleElement>self, <ModuleElement>right)
         else:
             global coercion_model
-            return coercion_model.bin_op_c(self, right, operator.isub)
+            return coercion_model.bin_op_c(self, right, isub)
 
     def _isub_(self, right):
         return self._isub_c_impl(right)
@@ -834,7 +834,7 @@ cdef class ModuleElement(Element):
         """
         # default implementation is to try multiplying by -1.
         global coercion_model
-        return coercion_model.bin_op_c(self._parent._base(-1), self, operator.mul)
+        return coercion_model.bin_op_c(self._parent._base(-1), self, mul)
 
     def _neg_(ModuleElement self):
         """
@@ -852,7 +852,7 @@ cdef class ModuleElement(Element):
 
     def __imul__(left, right):
         global coercion_model
-        return coercion_model.bin_op_c(left, right, operator.imul)
+        return coercion_model.bin_op_c(left, right, imul)
 
     cdef ModuleElement _multiply_by_scalar(self, right):
         # self * right,  where right need not be a ring element in the base ring
@@ -1091,7 +1091,7 @@ cdef class MonoidElement(Element):
         if have_same_parent(left, right):
             return (<MonoidElement>left)._mul_c(<MonoidElement>right)
         try:
-            return coercion_model.bin_op_c(left, right, operator.mul)
+            return coercion_model.bin_op_c(left, right, mul)
         except TypeError, msg:
             if isinstance(left, (int, long)) and left==1:
                 return right
@@ -1229,7 +1229,7 @@ cdef class MultiplicativeGroupElement(MonoidElement):
         if have_same_parent(left, right):
             return left._div_(right)
         global coercion_model
-        return coercion_model.bin_op_c(left, right, operator.div)
+        return coercion_model.bin_op_c(left, right, div)
 
     cdef MultiplicativeGroupElement _div_c(self, MultiplicativeGroupElement right):
         """
@@ -1404,7 +1404,7 @@ cdef class RingElement(ModuleElement):
 
         # Always do this
         global coercion_model
-        return coercion_model.bin_op_c(self, right, operator.mul)
+        return coercion_model.bin_op_c(self, right, mul)
 
         # Now we can assume both self and right are of a class that derives
         # from Element (so they have a parent).  If one is a ModuleElement,
@@ -1448,7 +1448,7 @@ cdef class RingElement(ModuleElement):
                 return (<Matrix>right)._rmultiply_by_scalar(self)
 
         # General case.
-        return coercion_model.bin_op_c(self, right, operator.mul)
+        return coercion_model.bin_op_c(self, right, mul)
 
     cdef RingElement _mul_c(self, RingElement right):
         """
@@ -1467,7 +1467,7 @@ cdef class RingElement(ModuleElement):
         DO NOT CALL THIS FUNCTION DIRECTLY.
         See extensive documentation at the top of element.pyx.
         """
-        raise TypeError, arith_error_message(self, right, operator.mul)
+        raise TypeError, arith_error_message(self, right, mul)
 
     def _mul_(RingElement self, RingElement right):
         """
@@ -1484,7 +1484,7 @@ cdef class RingElement(ModuleElement):
                 return _mul_c(<RingElement>left, <RingElement>right)
 
         global coercion_model
-        return coercion_model.bin_op_c(left, right, operator.imul)
+        return coercion_model.bin_op_c(left, right, imul)
 
     def _imul_(self, right):
         return self._imul_c_impl(right)
@@ -1535,7 +1535,7 @@ cdef class RingElement(ModuleElement):
     def __truediv__(self, right):
         # in sage all divs are true
         if not PY_TYPE_CHECK(self, Element):
-            return coercion_model.bin_op_c(self, right, operator.div)
+            return coercion_model.bin_op_c(self, right, div)
         return self.__div__(right)
 
     def __div__(self, right):
@@ -1549,7 +1549,7 @@ cdef class RingElement(ModuleElement):
             else:
                 return _div_c(<RingElement>self, <RingElement>right)
         global coercion_model
-        return coercion_model.bin_op_c(self, right, operator.div)
+        return coercion_model.bin_op_c(self, right, div)
 
     cdef RingElement _div_c(self, RingElement right):
         """
@@ -1574,7 +1574,7 @@ cdef class RingElement(ModuleElement):
             if not right:
                 raise ZeroDivisionError, "Cannot divide by zero"
             else:
-                raise TypeError, arith_error_message(self, right, operator.div)
+                raise TypeError, arith_error_message(self, right, div)
 
     def _div_(RingElement self, RingElement right):
         """
@@ -1593,7 +1593,7 @@ cdef class RingElement(ModuleElement):
             else:
                 return _div_c(<RingElement>self, <RingElement>right)
         global coercion_model
-        return coercion_model.bin_op_c(self, right, operator.idiv)
+        return coercion_model.bin_op_c(self, right, idiv)
 
     def _idiv_(self, right):
         return self._idiv_c_impl(right)
@@ -1942,7 +1942,7 @@ cdef class Vector(ModuleElement):
         else:
             return left._vector_times_vector_c_impl(right)
     cdef Vector _vector_times_vector_c_impl(Vector left, Vector right):
-        raise TypeError,arith_error_message(left, right, operator.mul)
+        raise TypeError,arith_error_message(left, right, mul)
 
     def  _vector_times_vector(left, right):
         return left.vector_time_vector_c_impl(right)
@@ -1962,7 +1962,7 @@ cdef class Vector(ModuleElement):
                     raise ZeroDivisionError, "division by zero vector"
                 else:
                     raise ArithmeticError, "vector is not in free module"
-        raise TypeError, arith_error_message(self, right, operator.div)
+        raise TypeError, arith_error_message(self, right, div)
 
 #cdef have_same_base(Element x, Element y):
 #    return x._parent._base is y._parent._base
@@ -2646,9 +2646,9 @@ cdef bin_op_c(x, y, op):
         return op(x1,y1)
     except TypeError, msg:
         #print msg  # this can be useful for debugging.
-        if op is operator.add or op is operator.sub:
+        if op is add or op is sub:
             return addsub_op_c(x, y, op)
-        if op is operator.mul or op is operator.div:
+        if op is mul or op is div:
             return muldiv_op_c(x, y, op)
         raise TypeError, arith_error_message(x,y,op)
 
@@ -2680,7 +2680,7 @@ cdef muldiv_op_c(x, y, op):
     # If the op is multiplication, then some other algebra multiplications
     # may be defined
 
-    if op is operator.div and PY_TYPE_CHECK(y, RingElement):
+    if op is div and PY_TYPE_CHECK(y, RingElement):
         y = y.__invert__()
 
     # 2. Try scalar multiplication.
@@ -2719,7 +2719,7 @@ cdef muldiv_op_c(x, y, op):
         # Try base extending the right object by the parent of the left
 
         try:
-            return addsub_op_c(x, y, operator.mul)
+            return addsub_op_c(x, y, mul)
         except TypeError:
             pass
 
