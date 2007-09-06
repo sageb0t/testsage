@@ -7,10 +7,14 @@ AUTHORS:
    -- William Stein (2007-09-04): major rewrite and documentation
 
 NOTE:
-    Just like in PARI/GP, class group computations by default assume
-    the Generalized Riemann Hypothesis.  To do class groups
-    computations provably correctly you must often pass the flag
-    proof=True to functions.
+
+    Unlike in PARI/GP, class group computations do not by default
+    assume the Generalized Riemann Hypothesis.  To do class groups
+    computations not provably correctly you must often pass the flag
+    proof=False to functions or call the function
+    \code{number_field_proof(False)}.  Note that many class group
+    functions won't work for any reasonable cases without
+    \code{proof=False}.
 
 This example follows one in the Magma reference manual:
     sage: K.<y> = NumberField(x^4 - 420*x^2 + 40000)
@@ -61,6 +65,46 @@ from galois_group import GaloisGroup
 from sage.structure.element import is_Element
 
 import sage.structure.parent_gens
+
+nfproof = True
+
+def number_field_proof(t=None):
+    """
+    Set or get the global number field proof option.
+
+    EXAMPLES:
+        sage: number_field_proof()
+        True
+        sage: number_field_proof(False)
+        sage: number_field_proof()
+        False
+        sage: number_field_proof(True)
+        sage: number_field_proof()
+        True
+    """
+    global nfproof
+    if t is None:
+        return nfproof
+    nfproof = bool(t)
+
+def proof_flag(t):
+    """
+    Used for easily determining the correct proof flag to use.
+
+    EXAMPLES:
+        sage: from sage.rings.number_field.number_field import proof_flag
+        sage: proof_flag(None)
+        True
+        sage: proof_flag(False)
+        False
+        sage: proof_flag(True)
+        True
+    """
+    global nfproof
+    if t is None:
+        return nfproof
+    else:
+        return t
 
 _gp = None
 def gp():
@@ -1032,13 +1076,14 @@ class NumberField_generic(number_field_base.NumberField):
         """
         return 0
 
-    def class_group(self, proof=False, names='c'):
+    def class_group(self, proof=None, names='c'):
         r"""
         Return the class group of this field.
 
         INPUT:
-            proof -- if True (*not* the default), then compute
-                       the classgroup provably correctly.
+            proof -- if True then compute the classgroup provably correctly.
+                     Default is True.  Call number_field_proof to change
+                     this default globally.
             names -- names of the generators of this class group.
 
         OUTPUT:
@@ -1053,7 +1098,7 @@ class NumberField_generic(number_field_base.NumberField):
             Number Field in a with defining polynomial x^2 + 23
             sage: G is k.class_group()
             True
-            sage: G is k.class_group(proof=True)
+            sage: G is k.class_group(proof=False)
             False
             sage: G.gens()
             (c,)
@@ -1084,6 +1129,7 @@ class NumberField_generic(number_field_base.NumberField):
             1
             1
         """
+        proof = proof_flag(proof)
         try:
             return self.__class_group[proof, names]
         except KeyError:
@@ -1098,12 +1144,12 @@ class NumberField_generic(number_field_base.NumberField):
         self.__class_group[proof,names] = G
         return G
 
-    def class_number(self, proof=False):
+    def class_number(self, proof=None):
         """
         Return the class number of this number field, as an integer.
 
         INPUT:
-            proof -- bool (default: False)
+            proof -- bool (default: True unless you called number_field_proof)
 
         EXAMPLES:
             sage: NumberField(x^2 + 23, 'a').class_number()
@@ -1113,6 +1159,7 @@ class NumberField_generic(number_field_base.NumberField):
             sage: NumberField(x^3 + x^2 + 997*x + 1, 'a').class_number(proof=False)
             1539
         """
+        proof = proof_flag(proof)
         return self.class_group(proof).order()
 
     def composite_fields(self, other, names):
@@ -1238,10 +1285,14 @@ class NumberField_generic(number_field_base.NumberField):
         """
         return self.discriminant(v=v)
 
-    def elements_of_norm(self, n, proof=False):
+    def elements_of_norm(self, n, proof=None):
         r"""
         Return a list of solutions modulo units of positive norm to
         $Norm(a) = n$, where a can be any integer in this number field.
+
+        INPUT:
+            proof -- default: True, unless you called number_field_proof and
+            set it otherwise.
 
         EXAMPLES:
             sage: K.<a> = NumberField(x^2+1)
@@ -1251,6 +1302,7 @@ class NumberField_generic(number_field_base.NumberField):
             [7*a - 1, -5*a + 5, a - 7]           # 32-bit
             [7*a - 1, -5*a + 5, -7*a - 1]        # 64-bit
         """
+        proof = proof_flag(proof)
         B = self.pari_bnf(proof).bnfisintnorm(n)
         R = self.polynomial().parent()
         return [self(QQ['x'](R(g))) for g in B]
@@ -1439,17 +1491,19 @@ class NumberField_generic(number_field_base.NumberField):
             self.__integral_basis = [self(R(g).list()) for g in B]
         return self.__integral_basis
 
-    def narrow_class_group(self, proof=False):
+    def narrow_class_group(self, proof=None):
         r"""
         Return the narrow class group of this field.
 
         INPUT:
-            proof -- default: False
+            proof -- default: True, unless you called number_field_proof and
+            set it to False.
 
         EXAMPLES:
             sage: NumberField(x^3+x+9, 'a').narrow_class_group()
             Multiplicative Abelian Group isomorphic to C2
         """
+        proof = proof_flag(proof)
         try:
             return self.__narrow_class_group
         except AttributeError:
@@ -1576,12 +1630,15 @@ class NumberField_generic(number_field_base.NumberField):
         """
         return self.polynomial_ring().quotient(self.polynomial(), self.variable_name())
 
-    def regulator(self, proof=False):
+    def regulator(self, proof=None):
         """
         Return the regulator of this number field.
 
         Note that PARI computes the regulator to higher precision than
         the SAGE default.
+
+        INPUT:
+            proof -- default: True, unless you set it otherwise.
 
         EXAMPLES:
             sage: NumberField(x^2-2, 'a').regulator()
@@ -1589,6 +1646,7 @@ class NumberField_generic(number_field_base.NumberField):
             sage: NumberField(x^4+x^3+x^2+x+1, 'a').regulator()
             0.96242365011920694
         """
+        proof = proof_flag(proof)
         try:
             return self.__regulator
         except AttributeError:
@@ -1633,11 +1691,14 @@ class NumberField_generic(number_field_base.NumberField):
                 A[j,i] = t
         return A
 
-    def units(self, proof=False):
+    def units(self, proof=None):
         """
         Return generators for the unit group modulo torsion.
 
         ALGORITHM: Uses PARI's bnfunit command.
+
+        INPUTS:
+            proof -- default: True
 
         EXAMPLES:
             sage: x = QQ['x'].0
@@ -1646,6 +1707,7 @@ class NumberField_generic(number_field_base.NumberField):
             sage: K.units()
             [8/275*a^3 - 12/55*a^2 + 15/11*a - 2]
         """
+        proof = proof_flag(proof)
         try:
             return self.__units
         except AttributeError:
@@ -1983,13 +2045,13 @@ class NumberField_extension(NumberField_generic):
         """
         return sage.rings.number_field.number_field_ideal_rel.NumberFieldIdeal_rel
 
-    def _pari_base_bnf(self, proof=False):
+    def _pari_base_bnf(self, proof=None):
         """
         Return the PARI bnf (big number field) representation of the
         base field.
 
         INPUT:
-            proof -- bool (default: False) if True, certify correctness
+            proof -- bool (default: True) if True, certify correctness
                      of calculations (not assuming GRH).
 
         EXAMPLES:
@@ -1997,6 +2059,7 @@ class NumberField_extension(NumberField_generic):
             sage: k._pari_base_bnf()
             [[;], matrix(0,9), [;], ... 0]
         """
+        proof = proof_flag(proof)
         # No need to certify the same field twice, so we'll just check
         # that the base field is certified.
         if proof:
@@ -2203,7 +2266,7 @@ class NumberField_extension(NumberField_generic):
         """
         return self.base_field()
 
-    def discriminant(self, proof=False):
+    def discriminant(self, proof=None):
         r"""
         Return the relative discriminant of this extension $L/K$ as
         an ideal of $K$.  If you want the (rational) discriminant of
@@ -2226,6 +2289,8 @@ class NumberField_extension(NumberField_generic):
             sage: L.discriminant()
             Fractional ideal (256) of Number Field in i with defining polynomial x^2 + 1
         """
+        proof = proof_flag(proof)
+
         bnf = self._pari_base_bnf(proof)
         K = self.base_field()
         R = K.polynomial().parent()
@@ -2282,13 +2347,13 @@ class NumberField_extension(NumberField_generic):
         self.__galois_group[pari_group, use_kash] = H
         return H
 
-    def is_free(self, proof=False):
+    def is_free(self, proof=None):
         r"""
         Determine whether or not $L/K$ is free (i.e. if $\mathcal{O}_L$ is
         a free $\mathcal{O}_K$-module).
 
         INPUT:
-            proof -- default: False
+            proof -- default: True
 
         EXAMPLES:
             sage: x = QQ['x'].0
@@ -2297,6 +2362,7 @@ class NumberField_extension(NumberField_generic):
             sage: L.is_free()
             False
         """
+        proof = proof_flag(proof)
         base_bnf = self._pari_base_bnf(proof)
         if base_bnf.rnfisfree(self.pari_relative_polynomial()) == 1:
             return True
@@ -2948,11 +3014,11 @@ class NumberField_quadratic(NumberField_generic):
         """
         return True
 
-    def class_number(self, proof=False):
+    def class_number(self, proof=None):
         r"""
         Return the size of the class group of self.
 
-        If proof = False (the default!) and the discriminant of the
+        If proof = False (*not* the default!) and the discriminant of the
         field is negative, then the following warning from the PARI
         manual applies: IMPORTANT WARNING: For $D<0$, this function
         may give incorrect results when the class group has a low
@@ -2969,10 +3035,11 @@ class NumberField_quadratic(NumberField_generic):
 
         It is an open problem to \emph{prove} that there are infinity
         many positive square-free $d$ such that $\QQ(\sqrt{d})$ has
-        class number $1$:
+        class number $1$:n
             sage: len([d for d in range(2,200) if not is_square(d) and QuadraticField(d,'a').class_number() == 1])
             121
         """
+        proof = proof_flag(proof)
         try:
             return self.__class_number
         except AttributeError:
