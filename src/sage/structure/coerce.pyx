@@ -21,6 +21,21 @@ import time
 import sage.categories.morphism
 from sage.categories.action import InverseAction
 
+from element import py_scalar_to_element
+
+def py_scalar_parent(py_type):
+    if py_type is int or py_type is long:
+        import sage.rings.integer_ring
+        return sage.rings.integer_ring.ZZ
+    elif py_type is float:
+        import sage.rings.real_double
+        return sage.rings.real_double.RDF
+    elif py_type is complex:
+        import sage.rings.complex_double
+        return sage.rings.complex_double.CDF
+    else:
+        return None
+
 cdef class CoercionModel_original(CoercionModel):
     """
     This is the original coercion model, as of SAGE 2.6 (2007-06-02)
@@ -402,6 +417,20 @@ Original elements %r (parent %s) and %r (parent %s) and morphisms
                         except TypeError:
                             pass
 
+        if PY_TYPE(R) == <void *>type:
+            sageR = py_scalar_parent(R)
+            if sageR is not None:
+                action = self.discover_action_c(sageR, S, op)
+                if action:
+                    return PyScalarAction(action)
+
+        if PY_TYPE(S) == <void *>type:
+            sageS = py_scalar_parent(S)
+            if sageS is not None:
+                action = self.discover_action_c(R, sageS, op)
+                if action:
+                    return PyScalarAction(action)
+
         if op.__name__[0] == 'i':
             try:
                 a = self.discover_action_c(R, S, no_inplace_op(op))
@@ -415,7 +444,9 @@ Original elements %r (parent %s) and %r (parent %s) and morphisms
                     if is_inverse: a = ~a
                 return a
             except KeyError:
-                return None
+                pass
+
+        return None
 
 cdef class CoercionModel_profile(CoercionModel_cache_maps):
     """
@@ -782,3 +813,18 @@ cdef class RightModuleAction(Action):
         if self.extended_base is not None:
             return self.extended_base
         return self.S
+
+cdef class PyScalarAction(Action):
+
+    def __init__(self, Action action):
+        Action.__init__(self, action.G, action.S, action._is_left, action.op)
+        self._action = action
+
+    cdef Element _call_c(self, a, b):
+        # Override this (BAD) because signature of _call_c_impl requires elements
+        if self._is_left:
+            a = self.G(a)
+            return self._action._call_c(a,b)
+        else:
+            b = self.G(b)
+            return self._action._call_c(a,b)
