@@ -662,7 +662,6 @@ cdef class ModuleElement(Element):
 
         See extensive documentation at the top of element.pyx.
         """
-
         # Try fast pathway if they are both ModuleElements and the parents
         # match.
 
@@ -677,6 +676,7 @@ cdef class ModuleElement(Element):
                 return _iadd_c(<ModuleElement>left, <ModuleElement>right)
             else:
                 return _add_c(<ModuleElement>left, <ModuleElement>right)
+
         global coercion_model
         return coercion_model.bin_op_c(left, right, operator.add)
 
@@ -849,6 +849,10 @@ cdef class ModuleElement(Element):
     ##################################################
     def __mul__(left, right):
         return module_element_generic_multiply_c(left, right)
+
+    def __imul__(left, right):
+        global coercion_model
+        return coercion_model.bin_op_c(left, right, operator.imul)
 
     cdef ModuleElement _multiply_by_scalar(self, right):
         # self * right,  where right need not be a ring element in the base ring
@@ -1472,7 +1476,7 @@ cdef class RingElement(ModuleElement):
         """
         return self._mul_c_impl(right)
 
-    def __imul__x(left, right):
+    def __imul__(left, right):
         if have_same_parent(left, right):
             if  (<RefPyObject *>left).ob_refcnt <= inplace_threshold:
                 return _imul_c(<RingElement>left, <RingElement>right)
@@ -1972,6 +1976,9 @@ cdef class Matrix(AlgebraElement):
 
     cdef bint is_dense_c(self):
         raise NotImplementedError
+
+    def __imul__(left, right):
+        return left * right
 
     def __mul__(left, right):
         """
