@@ -121,6 +121,8 @@ qd = Extension('sage.rings.real_rqdf',
 
 matrix = Extension('sage.matrix.matrix', ['sage/matrix/matrix.pyx'])
 
+matrix_action = Extension('sage.matrix.action', ['sage/matrix/action.pyx'])
+
 matrix_misc = Extension('sage.matrix.misc', ['sage/matrix/misc.pyx'],
                         libraries=['gmp'])
 
@@ -323,6 +325,7 @@ ext_modules = [ \
 
     matrix,
 
+    matrix_action,
     matrix_misc,
 
     matrix_dense,
