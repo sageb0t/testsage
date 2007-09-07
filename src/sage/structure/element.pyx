@@ -1056,6 +1056,8 @@ cdef class MonoidElement(Element):
         """
         Return the (integral) power of self.
         """
+        if dummy is not None:
+            raise RuntimeError, "__pow__ dummy argument not used"
         return generic_power_c(self,n,None)
 
     def __nonzero__(self):
@@ -1426,7 +1428,8 @@ cdef class RingElement(ModuleElement):
             1
 
         """
-
+        if dummy is not None:
+            raise RuntimeError, "__pow__ dummy argument not used"
         return generic_power_c(self,n,None)
 
     ##################################
@@ -2754,8 +2757,9 @@ def generic_power(a, n, one=None):
     return generic_power_c(a,n,one)
 
 cdef generic_power_c(a, nn, one):
-    n = int(nn)
-    if n != nn:
+    try:
+        n = PyNumber_Index(nn)
+    except TypeError:
         raise NotImplementedError, "non-integral exponents not supported"
 
     if not a:
