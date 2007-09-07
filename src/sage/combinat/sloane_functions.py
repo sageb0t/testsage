@@ -986,7 +986,10 @@ class A000312(SloaneSequence):
         return "Number of labeled mappings from n points to themselves (endofunctions): n^n."
 
     def _eval(self, n):
-        return Integer(n**n)
+        if n == 0:
+            return Integer(1)
+        else:
+            return Integer(n**n)
 
 class A001477(SloaneSequence):
     r"""
