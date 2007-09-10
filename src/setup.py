@@ -658,6 +658,12 @@ ext_modules = [ \
               ['sage/plot/plot3d/shapes.pyx']
               ), \
 
+    Extension('sage.rings.polynomial.polybori',
+              sources = ['sage/rings/polynomial/polybori.pyx'],
+              libraries=['polybori','pboriCudd'],
+              include_dirs=[SAGE_ROOT+'/local/include/cudd'],
+              language = 'c++'), \
+
     ]
 
 #mpc = Extension('sage.rings.mpc',
