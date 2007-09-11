@@ -962,7 +962,7 @@ cdef class FreeModuleElement_generic_dense(FreeModuleElement):
             v = [x * right for x in self._entries]
         return self._new_c(v)
 
-    cdef Element _vector_times_vector_c_impl(left, element_Vector right):
+    cdef Element _dot_product_c_impl(left, element_Vector right):
         """
         Return the dot product of left and right.
 
@@ -1196,7 +1196,7 @@ cdef class FreeModuleElement_generic_sparse(FreeModuleElement):
             v[i] = left._mul_c(a)
         return self._new_c(v)
 
-    cdef Element _vector_times_vector_c_impl(left, element_Vector right):
+    cdef Element _dot_product_c_impl(left, element_Vector right):
         """
         Return the dot product of left and right.
 
