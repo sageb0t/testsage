@@ -285,6 +285,7 @@ cdef class ntl_GF2E(ntl_GF2X):
         cdef ntl_GF2E r = ntl_GF2E()
         _sig_on
         r.gf2e_x = self.gf2e_x
+        r.gf2x_x = self.gf2x_x
         _sig_off
         return r
 
@@ -295,6 +296,7 @@ cdef class ntl_GF2E(ntl_GF2X):
         cdef ntl_GF2E r = ntl_GF2E()
         _sig_on
         r.gf2e_x = self.gf2e_x
+        r.gf2x_x = self.gf2x_x
         _sig_off
         return r
 
