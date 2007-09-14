@@ -1851,7 +1851,7 @@ class NumberField_absolute(NumberField_generic):
         """
         return NumberField_absolute_v1, (self.polynomial(), self.variable_name(), self.latex_variable_name())
 
-    def maximal_order(self):
+    def _maximal_order(self):
         try:
             return self.__maximal_order
         except AttributeError:
@@ -1860,7 +1860,7 @@ class NumberField_absolute(NumberField_generic):
             self.__maxima_order = O
             return O
 
-    def order(self, *gens, **kwds):
+    def _order_ring(self, *gens, **kwds):
         if len(gens) == 0:
             return self.maximal_order()
         if len(gens) == 1 and isinstance(gens, (list, tuple)):
