@@ -156,6 +156,8 @@ def each_is_integral(v):
             return False
     return True
 
+from sage.rings.monomials import monomials
+
 def absolute_order_from_ring_generators(gens, check=True):
     """
     INPUT:
@@ -169,7 +171,7 @@ def absolute_order_from_ring_generators(gens, check=True):
     K = gens.universe()
     n = K.degree()
 
-    module_gens = []
+    module_gens = monomials(gens, n)
 
 def absolute_order_from_module_generators(gens, check=True):
     """
