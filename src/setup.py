@@ -97,6 +97,13 @@ ntl = Extension('sage.libs.ntl.ntl',
                  libraries = ["csage", "ntl", "gmp", "gmpxx", "m", "stdc++"]
                  )
 
+fmpz_poly = Extension('sage.libs.flint.fmpz_poly',
+                 sources = ["sage/libs/flint/fmpz_poly.pyx"],
+                 libraries = ["csage", "flint", "gmp", "gmpxx", "m", "stdc++"],
+                 include_dirs=[SAGE_ROOT+'/local/include/FLINT/'],
+                 extra_compile_args=["-std=c99"]
+                 )
+
 mwrank =  Extension("sage.libs.mwrank.mwrank",
                     sources = ["sage/libs/mwrank/mwrank.pyx",
                          "sage/libs/mwrank/wrap.cc"],
@@ -320,6 +327,8 @@ ext_modules = [ \
     mwrank,
 
     ntl,
+
+    fmpz_poly,
 
     matrix,
 
@@ -887,6 +896,7 @@ setup(name        = 'sage',
                      'sage.libs.linbox',
                      'sage.libs.mwrank',
                      'sage.libs.ntl',
+                     'sage.libs.flint',
                      'sage.libs.pari',
                      'sage.libs.singular',
 
