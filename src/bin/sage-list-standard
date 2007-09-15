@@ -1,0 +1,2 @@
+#!/bin/sh
+sage-list-packages standard
