@@ -2622,6 +2622,7 @@ class NumberField_cyclotomic(NumberField_absolute):
                                      name= names,
                                      latex_name=latex_name,
                                      check=False)
+#        self._element_class = NumberFieldElement_cyclotomic
         n = integer.Integer(n)
         zeta = self.gen()
         zeta._set_multiplicative_order(n)
