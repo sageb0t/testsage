@@ -15,10 +15,15 @@ cdef extern from "pb_wrap.h":
         void (*setRingVariableName)(int idx, char *varname)
         void (*activate)()
 
-    ctypedef struct PBPoly "struct BoolePolynomial":
+    ctypedef struct PBMonom "struct BooleMonomial":
         pass
 
-    # Some boiler-plate
+    ctypedef struct PBPoly "struct BoolePolynomial":
+        int (* deg)()
+        bint (* isZero)()
+        bint (* isOne)()
+        bint (* isConstant)()
+        PBMonom (* lead)()
 
     # allocating versions
     PBRing* PBRing_new "New<BoolePolyRing>"()
@@ -37,6 +42,7 @@ cdef extern from "pb_wrap.h":
     PBPoly* PBPoly_construct "Construct<BoolePolynomial>"(void *mem)
     PBPoly PBPoly_construct_dd (void *mem, PBDD d)
     PBPoly PBPoly_construct_pbpoly (void *mem, PBPoly d)
+    PBPoly PBPoly_construct_pbmonom (void *mem, PBMonom d)
     PBPoly PBPoly_construct_int (void *mem, int d)
     void PBPoly_destruct "Destruct<BoolePolynomial>"(PBPoly *mem)
 
@@ -55,5 +61,6 @@ cdef extern from "pb_wrap.h":
         void (* symmGB_F2)()
         PBPoly_vector (* minimalize)()
 
+    # non-allocating versions
     GBStrategy* GBStrategy_construct "Construct<GroebnerStrategy>"(void *mem)
     void GBStrategy_destruct "Destruct<GroebnerStrategy>"(GBStrategy *mem)
