@@ -264,7 +264,7 @@ def matrix_integer_sparse_rational_reconstruction(Matrix_integer_sparse A, Integ
 ##             mpq_rational_reconstruction(R._matrix[i][j], A._matrix[i][j], N.value)
 ##     return R
 
-def matrix_rational_echelon_form_multimodular(Matrix self, height_guess=None, proof=True):
+def matrix_rational_echelon_form_multimodular(Matrix self, height_guess=None, proof=None):
     """
     Returns reduced row-echelon form using a multi-modular
     algorithm.  Does not change self.
@@ -273,7 +273,9 @@ def matrix_rational_echelon_form_multimodular(Matrix self, height_guess=None, pr
 
     INPUT:
         height_guess -- integer or None
-        proof -- boolean (default: True)
+        proof -- boolean or None (default: None, see proof.linear_algebra or
+                               sage.structure.proof).
+                        Note that the global Sage default is proof=True
 
     ALGORITHM:
     The following is a modular algorithm for computing the echelon
@@ -312,6 +314,10 @@ def matrix_rational_echelon_form_multimodular(Matrix self, height_guess=None, pr
         where H denotes the height.   If this fails, do step 4 with
         a few more primes.
     """
+
+    if proof is None:
+        from sage.structure.proof.proof import get_flag
+        proof = get_flag(proof, "linear_algebra")
 
     verbose("Multimodular echelon algorithm on %s x %s matrix"%(self._nrows, self._ncols), caller_name="multimod echelon")
     cdef Matrix E
