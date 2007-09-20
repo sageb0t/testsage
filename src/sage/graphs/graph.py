@@ -469,6 +469,32 @@ class GenericGraph(SageObject):
         n = (n**2 - n)/2
         return Rational(self.size())/Rational(n)
 
+    def to_simple(self):
+        """
+        Returns a simple version of itself (i.e., undirected and loops
+        and multiple edges are removed).
+
+        EXAMPLE:
+            sage: G = DiGraph(loops=True,multiedges=True)
+            sage: G.add_arcs( [ (0,0), (1,1), (2,2), (2,3), (2,3), (3,2) ] )
+            sage: G.arcs(labels=False)
+            [(0, 0), (1, 1), (2, 2), (2, 3), (2, 3), (3,2)]
+            sage: H=G.to_simple()
+            sage: H.edges(labels=False)
+            [(2, 3)]
+            sage: H.is_undirected()
+            True
+            sage: H.loops()
+            False
+            sage: H.multiple_edges()
+            False
+
+        """
+        g=self.to_undirected()
+        g.loops(False)
+        g.multiple_edges(False)
+        return g
+
     def order(self):
         """
         Returns the number of vertices.
@@ -2572,10 +2598,10 @@ class Graph(GenericGraph):
                     format = 'incidence_matrix'
             elif isinstance(data, Graph):
                 self._nxg = data.networkx_graph()
-            elif isinstance(data, networkx.Graph):
-                self._nxg = networkx.XGraph(data, selfloops=loops, **kwds)
             elif isinstance(data, networkx.XGraph):
                 self._nxg = data
+            elif isinstance(data, networkx.Graph):
+                self._nxg = networkx.XGraph(data, selfloops=loops, **kwds)
             else:
                 self._nxg = networkx.XGraph(data, selfloops=loops, **kwds)
         if format == 'graph6':
@@ -2736,8 +2762,13 @@ class Graph(GenericGraph):
         """
         Creates a copy of the graph.
 
+        EXAMPLE:
+            sage: g=Graph({0:[0,1,1,2]},loops=True,multiedges=True)
+            sage: g==g.copy()
+            True
+
         """
-        G = Graph(self._nxg, name=self._nxg.name, pos=self._pos, loops=self.loops(), boundary=self._boundary)
+        G = Graph(self._nxg, name=self._nxg.name, pos=self._pos, boundary=self._boundary)
         return G
 
     def to_directed(self):
@@ -2750,8 +2781,7 @@ class Graph(GenericGraph):
             Digraph on 10 vertices
 
         """
-        return DiGraph(self._nxg.to_directed(), pos=self._pos)
-
+        return DiGraph(self._nxg.to_directed(), name=self._nxg.name, pos=self._pos, boundary=self._boundary)
     def to_undirected(self):
         """
         Since the graph is already undirected, simply returns a copy of itself.
@@ -4477,10 +4507,10 @@ class DiGraph(GenericGraph):
                     format = 'incidence_matrix'
             elif isinstance(data, DiGraph):
                 self._nxg = data.networkx_graph()
-            elif isinstance(data, networkx.DiGraph):
-                self._nxg = networkx.XDiGraph(data, selfloops=loops, **kwds)
             elif isinstance(data, networkx.XDiGraph):
                 self._nxg = data
+            elif isinstance(data, networkx.DiGraph):
+                self._nxg = networkx.XDiGraph(data, selfloops=loops, **kwds)
             elif isinstance(data, str):
                 format = 'dig6'
             else:
@@ -4581,8 +4611,13 @@ class DiGraph(GenericGraph):
         """
         Creates a copy of the graph.
 
+        EXAMPLE:
+            sage: g=DiGraph({0:[0,1,1,2],1:[0,1]},loops=True,multiedges=True)
+            sage: g==g.copy()
+            True
+
         """
-        G = DiGraph(self._nxg, name=self._nxg.name, pos=self._pos, loops=self.loops(), boundary=self._boundary)
+        G = DiGraph(self._nxg, name=self._nxg.name, pos=self._pos, boundary=self._boundary)
         return G
 
     def to_directed(self):
@@ -4609,7 +4644,7 @@ class DiGraph(GenericGraph):
             [(0, 1), (0, 2)]
 
         """
-        return Graph(self._nxg.to_undirected(), pos=self._pos)
+        return Graph(self._nxg.to_undirected(), name=self._nxg.name, pos=self._pos, boundary=self._boundary)
 
     ### General Properties
 
