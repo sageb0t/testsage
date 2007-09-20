@@ -660,7 +660,8 @@ class AlgebraicGenerator(SageObject):
         # print op
         # print self._field.polynomial()
         # print self._field.polynomial().degree()
-        pari_nf = self._field.pari_nf()
+        # pari_nf = self._field.pari_nf()
+        pari_nf = pari_nf_hack(self._field)
         # print pari_nf[0]
         factors = list(pari_nf.nffactor(op).lift())[0]
         # print factors
@@ -2038,7 +2039,8 @@ class AlgebraicRealNumberRoot(AlgebraicRealNumberDescr):
 
             den, my_factor = clear_denominators(my_factor)
 
-            pari_nf = gen.field().pari_nf()
+            pari_nf = pari_nf_hack(gen.field())
+
             # print pari_nf[0]
             x, y = QQxy.gens()
             my_factor = QQxy['z']([c.polynomial()(y) for c in my_factor])(x)
@@ -2204,3 +2206,7 @@ ax = AAPoly.gen()
 #     print (cx-1).sign()
 #     return x, y
 # # heptadecagon2()
+
+def pari_nf_hack(k):
+    f = k.pari_polynomial().subst('x','y')
+    return f.nfinit(1)
