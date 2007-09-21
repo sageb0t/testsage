@@ -2334,7 +2334,7 @@ class StandardPermutations_recoilsfiner(CombinatorialClass):
         pos = 1
         for part in recoils:
             for i in range(part-1):
-                dag.add_arc(pos, pos+1)
+                dag.add_edge(pos, pos+1)
                 pos += 1
             pos += 1
 
@@ -2394,7 +2394,7 @@ class StandardPermutations_recoilsfatter(CombinatorialClass):
         pos = 0
         for i in range(len(recoils)-1):
             pos += recoils[i]
-            dag.add_arc(pos+1, pos)
+            dag.add_edge(pos+1, pos)
 
         rcf = []
         for le in dag.topological_sort_generator():
@@ -2442,7 +2442,7 @@ class StandardPermutations_recoils(CombinatorialClass):
         pos = 1
         for part in recoils:
             for i in range(part-1):
-                dag.add_arc(pos, pos+1)
+                dag.add_edge(pos, pos+1)
                 pos += 1
             pos += 1
 
@@ -2450,7 +2450,7 @@ class StandardPermutations_recoils(CombinatorialClass):
         pos = 0
         for i in range(len(recoils)-1):
             pos += recoils[i]
-            dag.add_arc(pos+1, pos)
+            dag.add_edge(pos+1, pos)
 
         rcf = []
         for le in dag.topological_sort_generator():
