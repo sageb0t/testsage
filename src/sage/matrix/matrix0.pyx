@@ -827,8 +827,8 @@ cdef class Matrix(sage.structure.element.Matrix):
             sage: b = a*a
             sage: latex(b)
             \left(\begin{array}{rr}
-            z_{0}^{2} + z_{1}z_{2}&z_{0}z_{1} + z_{1}z_{3}\\
-            z_{0}z_{2} + z_{2}z_{3}&z_{1}z_{2} + z_{3}^{2}
+            z_{0}^{2} + z_{1}z_{2} & z_{0}z_{1} + z_{1}z_{3} \\
+            z_{0}z_{2} + z_{2}z_{3} & z_{1}z_{2} + z_{3}^{2}
             \end{array}\right)
         """
         cdef Py_ssize_t nr, nc, r, c
@@ -853,7 +853,7 @@ cdef class Matrix(sage.structure.element.Matrix):
                 if c == nc-1:
                     sep=""
                 else:
-                    sep="&"
+                    sep=" & "
                 entry = latex(S[r*nc+c])
                 if c == 0:
                     m = max(m, len(entry))
@@ -866,7 +866,7 @@ cdef class Matrix(sage.structure.element.Matrix):
         tmp = []
         for row in rows:
             tmp.append(str(row))
-        s = "\\\\\n".join(tmp)
+        s = " \\\\\n".join(tmp)
 
         tmp = ['r'*(b-a) for a,b in zip([0] + col_divs, col_divs + [nc])]
         format = '|'.join(tmp)
