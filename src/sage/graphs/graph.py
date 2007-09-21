@@ -62,7 +62,7 @@ AUTHOR:
 
                   \item NetworkX dictionary format:
 
-                sage: d = {0: [1,4,5], 1: [2,6], 2: [3,7], 3: [4,8], 4: [9],
+                sage: d = {0: [1,4,5], 1: [2,6], 2: [3,7], 3: [4,8], 4: [9], \
                       5: [7, 8], 6: [8,9], 7: [9]}
                 sage: G = Graph(d); G
                 Graph on 10 vertices
@@ -85,9 +85,9 @@ AUTHOR:
                 \item adjacency matrix In an adjacency matrix, each column and each row represent
                 a vertex. If a 1 shows up in row i, column j, there is an edge (i,j).
 
-                sage: M = Matrix([(0,1,0,0,1,1,0,0,0,0),(1,0,1,0,0,0,1,0,0,0),
-                (0,1,0,1,0,0,0,1,0,0), (0,0,1,0,1,0,0,0,1,0),(1,0,0,1,0,0,0,0,0,1),
-                (1,0,0,0,0,0,0,1,1,0), (0,1,0,0,0,0,0,0,1,1),(0,0,1,0,0,1,0,0,0,1),
+                sage: M = Matrix([(0,1,0,0,1,1,0,0,0,0),(1,0,1,0,0,0,1,0,0,0), \
+                (0,1,0,1,0,0,0,1,0,0), (0,0,1,0,1,0,0,0,1,0),(1,0,0,1,0,0,0,0,0,1), \
+                (1,0,0,0,0,0,0,1,1,0), (0,1,0,0,0,0,0,0,1,1),(0,0,1,0,0,1,0,0,0,1), \
                 (0,0,0,1,0,1,1,0,0,0), (0,0,0,0,1,0,1,1,0,0)])
                 sage: M
                 [0 1 0 0 1 1 0 0 0 0]
@@ -107,11 +107,11 @@ AUTHOR:
                 \item incidence matrix: In an incidence matrix, each row represents a vertex
                 and each column reprensents an edge.
 
-                sage: M = Matrix([(-1,0,0,0,1,0,0,0,0,0,-1,0,0,0,0),
-                (1,-1,0,0,0,0,0,0,0,0,0,-1,0,0,0),(0,1,-1,0,0,0,0,0,0,0,0,0,-1,0,0),
-                (0,0,1,-1,0,0,0,0,0,0,0,0,0,-1,0),(0,0,0,1,-1,0,0,0,0,0,0,0,0,0,-1),
-                (0,0,0,0,0,-1,0,0,0,1,1,0,0,0,0),(0,0,0,0,0,0,0,1,-1,0,0,1,0,0,0),
-                (0,0,0,0,0,1,-1,0,0,0,0,0,1,0,0),(0,0,0,0,0,0,0,0,1,-1,0,0,0,1,0),
+                sage: M = Matrix([(-1,0,0,0,1,0,0,0,0,0,-1,0,0,0,0), \
+                (1,-1,0,0,0,0,0,0,0,0,0,-1,0,0,0),(0,1,-1,0,0,0,0,0,0,0,0,0,-1,0,0), \
+                (0,0,1,-1,0,0,0,0,0,0,0,0,0,-1,0),(0,0,0,1,-1,0,0,0,0,0,0,0,0,0,-1), \
+                (0,0,0,0,0,-1,0,0,0,1,1,0,0,0,0),(0,0,0,0,0,0,0,1,-1,0,0,1,0,0,0), \
+                (0,0,0,0,0,1,-1,0,0,0,0,0,1,0,0),(0,0,0,0,0,0,0,0,1,-1,0,0,0,1,0), \
                 (0,0,0,0,0,0,1,-1,0,0,0,0,0,0,1)])
                 sage: M
                 [-1  0  0  0  1  0  0  0  0  0 -1  0  0  0  0]
@@ -168,7 +168,7 @@ AUTHOR:
 
         Each vertex can have any hashable object as a label. These are things like
         strings, numbers, and tuples. Each edge is given a default label of \var{None}, but
-        if specified, edges can have any label at all. Edges between nodes $u$ and $v$ are
+        if specified, edges can have any label at all. Edges between vertices $u$ and $v$ are
         represented typically as \verb|(u, v, l)|, where \var{l} is the label for the edge.
 
         Note that vertex labels themselves cannot be mutable items:
@@ -182,7 +182,7 @@ AUTHOR:
         However, if one wants to define a dictionary, with the same keys and arbitrary objects
         for entries, one can make that association:
 
-            sage: d = {0 : graphs.DodecahedralGraph(), 1 : graphs.FlowerSnark(),
+            sage: d = {0 : graphs.DodecahedralGraph(), 1 : graphs.FlowerSnark(), \
                   2 : graphs.MoebiusKantorGraph(), 3 : graphs.PetersenGraph() }
             sage: d[2]
             Moebius-Kantor Graph: Graph on 16 vertices
@@ -332,7 +332,7 @@ class GenericGraph(SageObject):
 
     def __iter__(self):
         """
-        Return an iterator over the vertices. Allows 'for v in G'.
+        Return an iterator over the vertices which allows \code{for v in G} syntax.
 
         """
         return self.vertex_iterator()
@@ -347,11 +347,11 @@ class GenericGraph(SageObject):
     def __str__(self):
         """
         str(G) returns the name of the graph, unless it doesn't have one, in
-        which case it returns the default refresentation.
+        which case it returns the default representation.
 
         """
         name = self._nxg.name
-        if name != "No Name" and (not name is None):
+        if name is not None and name != "No Name":
             return self._nxg.name
         else:
             return repr(self)
@@ -366,6 +366,9 @@ class GenericGraph(SageObject):
 
     def _matrix_(self, R=None):
         """
+
+        Returns the adjacency matrix of the graph over the specified ring.
+
         EXAMPLES:
             sage: G = graphs.CompleteBipartiteGraph(2,3)
             sage: m = matrix(G); m.parent()
@@ -387,7 +390,7 @@ class GenericGraph(SageObject):
 
     def networkx_graph(self):
         """
-        Creates a NetworkX graph from the SAGE graph.
+        Creates a new NetworkX graph from the SAGE graph.
 
         EXAMPLE:
             sage: G = graphs.TetrahedralGraph()
@@ -395,28 +398,28 @@ class GenericGraph(SageObject):
             sage: type(N)
             <class 'networkx.xgraph.XGraph'>
 
-        Note that this returns a copy of the actual internal object,
-        not the actual internal networkX object.
-
-            sage: G = graphs.TetrahedralGraph()
-            sage: N = G.networkx_graph()
-            sage: G._nxg is N
-            False
-
         """
         return self._nxg.copy()
 
     def networkx_info(self, vertex=None):
         """
-        Returns NetworkX information about the graph or the given node.
+        Returns NetworkX information about the graph or the given vertex.
 
         """
         self._nxg.info(vertex)
 
     def __get_pos__(self):
+        """
+        Returns the position dictionary, a dictionary specifying the coordinates
+        of each vertex.
+        """
         return self._pos
 
     def __set_pos__(self, pos):
+        """
+        Sets the position dictionary, a dictionary specifying the
+        coordinates of each vertex.
+        """
         self._pos = pos
 
     ### General properties
@@ -440,7 +443,7 @@ class GenericGraph(SageObject):
             Graph on 10 vertices
 
         """
-        if not new is None:
+        if new is not None:
             if not isinstance(new, str):
                 raise TypeError, "New name must be a string."
             self._nxg.name = new
@@ -958,7 +961,7 @@ class GenericGraph(SageObject):
 
     def cliques_get_max_clique_graph(self, **kwds):
         """
-        Returns a graph constructed with maximal cliques as nodes,
+        Returns a graph constructed with maximal cliques as vertices,
         and edges between maximal cliques with common members in
         the original graph.
 
@@ -991,9 +994,9 @@ class GenericGraph(SageObject):
     def cliques_get_clique_bipartite(self, **kwds):
         """
         Returns a bipartite graph constructed such that cliques are the
-        top nodes and the bottom nodes are retained from the given graph.
-        Top and bottom nodes are connected if the bottom node belongs to
-        the clique represented by a top node.
+        top vertices and the bottom vertices are retained from the given graph.
+        Top and bottom vertices are connected if the bottom vertex belongs to
+        the clique represented by a top vertex.
 
         Currently only implemented for undirected graphs.  Use to_undirected
         to convert a digraph to an undirected graph.  (See examples below).
@@ -1058,63 +1061,63 @@ class GenericGraph(SageObject):
             import networkx.cliques
             return networkx.cliques.graph_clique_number(self._nxg, cliques)
 
-    def cliques_node_clique_number(self, nodes=None, with_labels=False, cliques=None):
+    def cliques_vertex_clique_number(self, vertices=None, with_labels=False, cliques=None):
         r"""
         Returns a list of sizes of the largest maximal cliques containing
-        each node.  (Returns a single value if only one input node).
+        each vertex.  (Returns a single value if only one input vertex).
 
         Currently only implemented for undirected graphs.  Use to_undirected
         to convert a digraph to an undirected graph.  (See examples below).
 
         INPUT:
-            -- nodes - the nodes to inspect (default is entire graph)
+            -- vertices - the vertices to inspect (default is entire graph)
             -- with_labels - (boolean) default False returns list as above
-                             True returns a dictionary keyed by node labels
+                             True returns a dictionary keyed by vertex labels
             -- cliques - list of cliques (if already computed)
 
         EXAMPLES:
             sage: C = Graph('DJ{')
-            sage: C.cliques_node_clique_number()
+            sage: C.cliques_vertex_clique_number()
             [2, 4, 4, 4, 4]
             sage: E = C.cliques()
             sage: E
             [[4, 1, 2, 3], [4, 0]]
-            sage: C.cliques_node_clique_number(cliques=E)
+            sage: C.cliques_vertex_clique_number(cliques=E)
             [2, 4, 4, 4, 4]
             sage: F = graphs.Grid2dGraph(2,3)
-            sage: F.cliques_node_clique_number(with_labels=True)
+            sage: F.cliques_vertex_clique_number(with_labels=True)
             {(0, 1): 2, (1, 2): 2, (0, 0): 2, (1, 1): 2, (1, 0): 2, (0, 2): 2}
-            sage: F.cliques_node_clique_number(nodes=[(0, 1), (1, 2)])
+            sage: F.cliques_vertex_clique_number(vertices=[(0, 1), (1, 2)])
             [2, 2]
             sage: D = DiGraph({0:[1,2,3], 1:[2], 3:[0,1]})
             sage.: D.show(figsize=[2,2])
-            sage: D.cliques_node_clique_number()
+            sage: D.cliques_vertex_clique_number()
             Traceback (most recent call last):
             ...
             TypeError: Function defined for undirected graphs only.  See documentation.
             sage: D = D.to_undirected()
             sage.: D.show(figsize=[2,2])
-            sage: D.cliques_node_clique_number()
+            sage: D.cliques_vertex_clique_number()
             [3, 3, 3, 3]
         """
         if (self.is_directed()):
             raise TypeError('Function defined for undirected graphs only.  See documentation.')
         else:
             import networkx.cliques
-            return networkx.cliques.node_clique_number(self._nxg, nodes, with_labels, cliques)
+            return networkx.cliques.node_clique_number(self._nxg, vertices, with_labels, cliques)
 
-    def cliques_number_of(self, nodes=None, cliques=None, with_labels=False):
+    def cliques_number_of(self, vertices=None, cliques=None, with_labels=False):
         """
         Returns a list of the number of maximal cliques containing
-        each node.  (Returns a single value if only one input node).
+        each vertex.  (Returns a single value if only one input vertex).
 
         Currently only implemented for undirected graphs.  Use to_undirected
         to convert a digraph to an undirected graph.  (See examples below).
 
         INPUT:
-            -- nodes - the nodes to inspect (default is entire graph)
+            -- vertices - the vertices to inspect (default is entire graph)
             -- with_labels - (boolean) default False returns list as above
-                             True returns a dictionary keyed by node labels
+                             True returns a dictionary keyed by vertex labels
             -- cliques - list of cliques (if already computed)
 
         EXAMPLES:
@@ -1129,7 +1132,7 @@ class GenericGraph(SageObject):
             sage: F = graphs.Grid2dGraph(2,3)
             sage: F.cliques_number_of(with_labels=True)
             {(0, 1): 3, (1, 2): 2, (0, 0): 2, (1, 1): 3, (1, 0): 2, (0, 2): 2}
-            sage: F.cliques_number_of(nodes=[(0, 1), (1, 2)])
+            sage: F.cliques_number_of(vertices=[(0, 1), (1, 2)])
             [3, 2]
             sage: D = DiGraph({0:[1,2,3], 1:[2], 3:[0,1]})
             sage.: D.show(figsize=[2,2])
@@ -1146,73 +1149,73 @@ class GenericGraph(SageObject):
             raise TypeError('Function defined for undirected graphs only.  See documentation.')
         else:
             import networkx.cliques
-            return networkx.cliques.number_of_cliques(self._nxg, nodes, cliques, with_labels)
+            return networkx.cliques.number_of_cliques(self._nxg, vertices, cliques, with_labels)
 
-    def cliques_containing_node(self, nodes=None, cliques=None, with_labels=False):
+    def cliques_containing_vertex(self, vertices=None, cliques=None, with_labels=False):
         """
-        Returns the cliques containing each node, represented as a list of
-        lists.  (Returns a single list if only one input node).
+        Returns the cliques containing each vertex, represented as a list of
+        lists.  (Returns a single list if only one input vertex).
 
         Currently only implemented for undirected graphs.  Use to_undirected
         to convert a digraph to an undirected graph.  (See examples below).
 
         INPUT:
-            -- nodes - the nodes to inspect (default is entire graph)
+            -- vertices - the vertices to inspect (default is entire graph)
             -- with_labels - (boolean) default False returns list as above
-                             True returns a dictionary keyed by node labels
+                             True returns a dictionary keyed by vertex labels
             -- cliques - list of cliques (if already computed)
 
         EXAMPLES:
             sage: C = Graph('DJ{')
-            sage: C.cliques_containing_node()
+            sage: C.cliques_containing_vertex()
             [[[4, 0]], [[4, 1, 2, 3]], [[4, 1, 2, 3]], [[4, 1, 2, 3]], [[4, 1, 2, 3], [4, 0]]]
             sage: E = C.cliques()
             sage: E
             [[4, 1, 2, 3], [4, 0]]
-            sage: C.cliques_containing_node(cliques=E)
+            sage: C.cliques_containing_vertex(cliques=E)
             [[[4, 0]], [[4, 1, 2, 3]], [[4, 1, 2, 3]], [[4, 1, 2, 3]], [[4, 1, 2, 3], [4, 0]]]
             sage: F = graphs.Grid2dGraph(2,3)
-            sage: F.cliques_containing_node(with_labels=True)
+            sage: F.cliques_containing_vertex(with_labels=True)
             {(0, 1): [[(0, 1), (0, 0)], [(0, 1), (0, 2)], [(0, 1), (1, 1)]], (1, 2): [[(1, 2), (0, 2)], [(1, 2), (1, 1)]], (0, 0): [[(0, 1), (0, 0)], [(1, 0), (0, 0)]], (1, 1): [[(0, 1), (1, 1)], [(1, 2), (1, 1)], [(1, 0), (1, 1)]], (1, 0): [[(1, 0), (0, 0)], [(1, 0), (1, 1)]], (0, 2): [[(0, 1), (0, 2)], [(1, 2), (0, 2)]]}
-            sage: F.cliques_containing_node(nodes=[(0, 1), (1, 2)])
+            sage: F.cliques_containing_vertex(vertices=[(0, 1), (1, 2)])
             [[[(0, 1), (0, 0)], [(0, 1), (0, 2)], [(0, 1), (1, 1)]], [[(1, 2), (0, 2)], [(1, 2), (1, 1)]]]
             sage: D = DiGraph({0:[1,2,3], 1:[2], 3:[0,1]})
             sage.: D.show(figsize=[2,2])
-            sage: D.cliques_containing_node()
+            sage: D.cliques_containing_vertex()
             Traceback (most recent call last):
             ...
             TypeError: Function defined for undirected graphs only.  See documentation.
             sage: D = D.to_undirected()
             sage.: D.show(figsize=[2,2])
-            sage: D.cliques_containing_node()
+            sage: D.cliques_containing_vertex()
             [[[0, 1, 2], [0, 1, 3]], [[0, 1, 2], [0, 1, 3]], [[0, 1, 2]], [[0, 1, 3]]]
         """
         if (self.is_directed()):
             raise TypeError('Function defined for undirected graphs only.  See documentation.')
         else:
             import networkx.cliques
-            return networkx.cliques.cliques_containing_node(self._nxg, nodes, cliques, with_labels)
+            return networkx.cliques.cliques_containing_node(self._nxg, vertices, cliques, with_labels)
 
     ### Cluster
 
     def cluster_triangles(self, nbunch=None, with_labels=False):
         r"""
-        Returns the number of triangles for nbunch of nodes as an
+        Returns the number of triangles for nbunch of vertices as an
         ordered list.
 
         The clustering coefficient of a graph is the fraction of
         possible triangles that are triangles,
         c_i = triangles_i / (k_i*(k_i-1)/2)
-        where k_i is the degree of node i, [1].  A coefficient for
+        where k_i is the degree of vertex i, [1].  A coefficient for
         the whole graph is the average of the c_i.  Transitivity is
         the fraction of all possible triangles which are triangles,
         T = 3*triangles/triads, [1].
 
         INPUT:
-            -- nbunch - The nodes to inspect.  If nbunch=None, returns
-                data for all nodes in the graph
+            -- nbunch - The vertices to inspect.  If nbunch=None, returns
+                data for all vertices in the graph
             -- with_labels - (boolean) default False returns list as above
-                             True returns dict keyed by node labels.
+                             True returns dict keyed by vertex labels.
 
         REFERENCE:
             [1] Aric Hagberg, Dan Schult and Pieter Swart. NetworkX
@@ -1237,7 +1240,7 @@ class GenericGraph(SageObject):
         The clustering coefficient of a graph is the fraction of
         possible triangles that are triangles,
         c_i = triangles_i / (k_i*(k_i-1)/2)
-        where k_i is the degree of node i, [1].  A coefficient for
+        where k_i is the degree of vertex i, [1].  A coefficient for
         the whole graph is the average of the c_i.  Transitivity is
         the fraction of all possible triangles which are triangles,
         T = 3*triangles/triads, [1].
@@ -1256,27 +1259,27 @@ class GenericGraph(SageObject):
 
     def clustering_coeff(self, nbunch=None, with_labels=False, weights=False):
         r"""
-        Returns the clustering coefficient for each node in nbunch
+        Returns the clustering coefficient for each vertex in nbunch
         as an ordered list.
 
         The clustering coefficient of a graph is the fraction of
         possible triangles that are triangles,
         c_i = triangles_i / (k_i*(k_i-1)/2)
-        where k_i is the degree of node i, [1].  A coefficient for
+        where k_i is the degree of vertex i, [1].  A coefficient for
         the whole graph is the average of the c_i.  Transitivity is
         the fraction of all possible triangles which are triangles,
         T = 3*triangles/triads, [1].
 
         INPUT:
-            -- nbunch - the nodes to inspect (default None returns
-                        data on all nodes in graph)
+            -- nbunch - the vertices to inspect (default None returns
+                        data on all vertices in graph)
             -- with_labels - (boolean) default False returns list as above
-                             True returns dict keyed by node labels.
+                             True returns dict keyed by vertex labels.
             -- weights - default is False.  If both with_labels and weights
                         are True, then returns a clustering coefficient dict
                         and a dict of weights based on degree.  Weights are
                         the fraction of connected triples in the graph that
-                        include the keyed node.
+                        include the keyed vertex.
 
         REFERENCE:
             [1] Aric Hagberg, Dan Schult and Pieter Swart. NetworkX
@@ -1306,7 +1309,7 @@ class GenericGraph(SageObject):
         The clustering coefficient of a graph is the fraction of
         possible triangles that are triangles,
         c_i = triangles_i / (k_i*(k_i-1)/2)
-        where k_i is the degree of node i, [1].  A coefficient for
+        where k_i is the degree of vertex i, [1].  A coefficient for
         the whole graph is the average of the c_i.  Transitivity is
         the fraction of all possible triangles which are triangles,
         T = 3*triangles/triads, [1].
@@ -1345,7 +1348,7 @@ class GenericGraph(SageObject):
 
         INPUT:
             -- with_labels - default False returns list as described above.
-                             True returns dict keyed by node labels.
+                             True returns dict keyed by vertex labels.
 
         REFERENCE:
             [1] K-core. Wikipedia. (2007). [Online] Available:
@@ -2203,9 +2206,9 @@ class GenericGraph(SageObject):
                 matplotlib, and each entry is a list of edges.
             partition -- a partition of the vertex set. if specified, plot will show each cell in a different
                 color. vertex_colors takes precedence.
-            scaling_term -- default is 0.05. if nodes are getting chopped off, increase; if graph
+            scaling_term -- default is 0.05. if vertices are getting chopped off, increase; if graph
                 is too small, decrease. should be positive, but values much bigger than
-                1/8 won't be useful unless the nodes are huge
+                1/8 won't be useful unless the vertices are huge
             iterations -- how many iterations of the spring layout algorithm to
                 go through, if applicable
             color_by_label -- if True, color edges by their labels
@@ -2348,10 +2351,10 @@ class GenericGraph(SageObject):
                 matplotlib, and each entry is a list of edges.
             partition -- a partition of the vertex set. if specified, plot will show each cell in a different
                 color. vertex_colors takes precedence.
-            scaling_term -- default is 0.05. if nodes are getting chopped off, increase; if graph
+            scaling_term -- default is 0.05. if vertices are getting chopped off, increase; if graph
                 is too small, decrease. should be positive, but values much bigger than
-                1/8 won't be useful unless the nodes are huge
-            talk -- if true, prints large nodes with white backgrounds so that labels are legible on slies
+                1/8 won't be useful unless the vertices are huge
+            talk -- if true, prints large vertices with white backgrounds so that labels are legible on slies
             iterations -- how many iterations of the spring layout algorithm to
                 go through, if applicable
             color_by_label -- if True, color edges by their labels
@@ -3257,14 +3260,14 @@ class Graph(GenericGraph):
     def centrality_betweenness(self, normalized=True):
         r"""
         Returns the betweenness centrality (fraction of number of shortest
-        paths that go through each node) as a dictionary keyed by vertices.
+        paths that go through each vertex) as a dictionary keyed by vertices.
         The betweenness is normalized by default to be in range (0,1).  This
         wraps Networkx's implementation of the algorithm described in [1].
 
         Measures of the centrality of a vertex within a graph determine the
-        relative importance of that node to its graph.  Vertices that occur
-        on more shortest paths between other nodes have higher betweenness
-        than nodes that occur on less.
+        relative importance of that vertex to its graph.  Vertices that occur
+        on more shortest paths between other vertices have higher betweenness
+        than vertices that occur on less.
 
         INPUT:
             normalized -- boolean (default True) - if set to False, result
@@ -3293,16 +3296,16 @@ class Graph(GenericGraph):
 
     def centrality_degree(self, v=False):
         r"""
-        Returns the degree centrality (fraction of nodes connected to) as
-        a dictionary of values keyed by node.  The degree centrality is
+        Returns the degree centrality (fraction of vertices connected to) as
+        a dictionary of values keyed by vertex.  The degree centrality is
         normalized to be in range (0,1).
 
         Measures of the centrality of a vertex within a graph determine the
-        relative importance of that node to its graph.  Degree centrality
-        measures the number of links incident upon a node.
+        relative importance of that vertex to its graph.  Degree centrality
+        measures the number of links incident upon a vertex.
 
         INPUT:
-            v -- a vertex label (to find degree centrality of only one node)
+            v -- a vertex label (to find degree centrality of only one vertex)
 
         EXAMPLES:
             sage: (graphs.ChvatalGraph()).centrality_degree()
@@ -3321,19 +3324,19 @@ class Graph(GenericGraph):
 
     def centrality_closeness(self, v=False):
         r"""
-        Returns the closeness centrality (1/average distance to all nodes) as
-        a dictionary of values keyed by node.  The degree centrality is
+        Returns the closeness centrality (1/average distance to all vertices) as
+        a dictionary of values keyed by vertex.  The degree centrality is
         normalized to be in range (0,1).
 
         Measures of the centrality of a vertex within a graph determine the
-        relative importance of that node to its graph.  'Closeness centrality
-        may be defined as the total graph-theoretic distance of a given node
-        from all other nodes... Closeness is an inverse measure of centrality
+        relative importance of that vertex to its graph.  'Closeness centrality
+        may be defined as the total graph-theoretic distance of a given vertex
+        from all other vertices... Closeness is an inverse measure of centrality
         in that a larger value indicates a less central actor while a smaller
         value indicates a more central actor,' [1].
 
         INPUT:
-            v -- a vertex label (to find degree centrality of only one node)
+            v -- a vertex label (to find degree centrality of only one vertex)
 
         REFERENCE:
             [1] Stephen P Borgatti. (1995). Centrality and AIDS. [Online]
@@ -3548,9 +3551,9 @@ class Graph(GenericGraph):
         """
         Returns True if a graph with boundary is circular planar, and
         False otherwise.  A graph (with nonempty boundary) is circular
-        planar if it has a planar embedding in which all boundary nodes
+        planar if it has a planar embedding in which all boundary vertices
         can be drawn in order on a disc boundary, with all the interior
-        nodes drawn inside the disc.
+        vertices drawn inside the disc.
 
         Note -- This function assumes that the graph has nonempty
                 boundary.  (Circular Planarity has no definition for
@@ -3602,17 +3605,17 @@ class Graph(GenericGraph):
             extra=extra+1
         graph.add_vertex(extra)
 
-        for node in boundary:
-            graph.add_edge(node,extra)
+        for vertex in boundary:
+            graph.add_edge(vertex,extra)
 
         verts = len(graph.vertices())
         edges = len(graph.edges())
 
         # Construct a list of all rotation systems for graph
         part = []
-        for node in graph.vertices():
-            if node != extra:
-                part.append(graph.neighbors(node))
+        for vertex in graph.vertices():
+            if vertex != extra:
+                part.append(graph.neighbors(vertex))
         if not ordered:
             part.append(graph.neighbors(extra))
 
@@ -3666,8 +3669,8 @@ class Graph(GenericGraph):
 
         # Construct a list of all rotation systems for graph
         part = []
-        for node in graph.vertices():
-            part.append(graph.neighbors(node))
+        for vertex in graph.vertices():
+            part.append(graph.neighbors(vertex))
 
         all_perms = []
         for p in CyclicPermutationsOfPartition(part):
@@ -3684,11 +3687,11 @@ class Graph(GenericGraph):
     def interior_paths(self, start, end):
         """
         Returns an exhaustive list of paths (also lists) through
-        only interior nodes from vertex start to vertex end in the
+        only interior vertices from vertex start to vertex end in the
         graph.
 
         Note -- start and end do not necessarily have to be boundary
-                nodes.
+                vertices.
 
         INPUT:
             start -- the vertex of the graph to search for paths from
@@ -3742,9 +3745,9 @@ class Graph(GenericGraph):
             [[1, 6, 8, 5, 7, 9, 4], [1, 6, 9, 4]]
         """
         H = self.copy()
-        for node in self.get_boundary():
-            if (node != start and node != end):
-                H.delete_vertex(node)
+        for vertex in self.get_boundary():
+            if (vertex != start and vertex != end):
+                H.delete_vertex(vertex)
         return H.all_paths(start, end)
 
     def all_paths(self, start, end):
@@ -6021,12 +6024,12 @@ def paths_helper(start, end, G, all_paths, p=None):
     """
     The recursive helper for path finding calls.  (i.e.: all_paths
     and interior_paths).  Spawns potential path for each unvisited
-    neighbor of current node and appends all succesful paths to
+    neighbor of current vertex and appends all succesful paths to
     one list.  (Note that paths themselves are lists of vertices).
 
     INPUT:
-        start -- the node to start path search at
-        end -- the node to find a path to
+        start -- the vertex to start path search at
+        end -- the vertex to find a path to
         all_paths -- the list (should initially be empty) to append
                      all successful paths to
         p -- the current path to update (via appending a vertex)
@@ -6037,7 +6040,7 @@ def paths_helper(start, end, G, all_paths, p=None):
         p = [start]
 
     plist = []
-    # At each node, fill list of spawning paths (i.e. all neighbors)
+    # At each vertex, fill list of spawning paths (i.e. all neighbors)
     for i in range(len(G[p[-1]])):
         if G[p[-1]][i] not in p:
             plist.append(p + [G[p[-1]][i]])
