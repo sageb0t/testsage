@@ -243,14 +243,14 @@ class SkewTableau_class(CombinatorialObject):
         #Check to make sure it is increasing along the rows
         for row in t:
             for i in range(1, len(row)):
-                if row[i] != None and row[i] <= row[i-1]:
+                if row[i-1] is not None and row[i] <= row[i-1]:
                     return False
 
         #Check to make sure it is increasing along the columns
         conj = t.conjugate()
         for row in conj:
             for i in range(1, len(row)):
-                if row[i] != None and row[i] <= row[i-1]:
+                if row[i-1] is not None and row[i] <= row[i-1]:
                     return False
 
         return True
