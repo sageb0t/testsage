@@ -291,7 +291,7 @@ class GenericGraph(SageObject):
             return 1
 
         # If the vertices have different labels, the graphs are not equal.
-        if self.vertices() != other.vertices():
+        if sorted(self.vertices()) != sorted(other.vertices()):
             return 1
 
         # Check that the edges are the same.
@@ -802,12 +802,17 @@ class GenericGraph(SageObject):
         """
         return self._nxg.prepare_nbunch(vertices)
 
-    def vertices(self):
+    def vertices(self, boundary_first=False):
         """
-        Return a list of the vertex keys. If the graph is a graph with
-        boundary, boundary vertices are listed first.
+        Return a list of the vertices.
+
+        INPUT:
+            boundary_first -- Return the boundary vertices first.
 
         """
+        if not boundary_first:
+            return list(self.vertex_iterator())
+
         bdy_verts = []
         int_verts = []
         for v in self.vertex_iterator():
@@ -815,7 +820,7 @@ class GenericGraph(SageObject):
                 bdy_verts.append(v)
             else:
                 int_verts.append(v)
-        return bdy_verts + sorted(int_verts)
+        return sorted(bdy_verts) + sorted(int_verts)
 
     def relabel(self, perm, quick=False):
         r"""
@@ -2330,7 +2335,7 @@ class GenericGraph(SageObject):
         elif layout == 'circular':
             from math import sin, cos, pi
             n = self.order()
-            verts = self.vertices()
+            verts = sorted(self.vertices())
             pos = {}
             for i in range(n):
                 x = float(cos((pi/2) + ((2*pi)/n)*i))
@@ -3462,7 +3467,7 @@ class Graph(GenericGraph):
 
         """
         n = len(self._nxg.adj)
-        verts = self.vertices()
+        verts = sorted(self.vertices())
         D = {}
         for e in self.edge_iterator():
             i,j,l = e
@@ -3505,7 +3510,7 @@ class Graph(GenericGraph):
         from sage.matrix.constructor import matrix
         from copy import copy
         n = len(self._nxg.adj)
-        verts = self.vertices()
+        verts = sorted(self.vertices())
         d = [0]*n
         cols = []
         for i, j, l in self.edge_iterator():
@@ -3540,7 +3545,7 @@ class Graph(GenericGraph):
             raise NotImplementedError, "Don't know how to represent weights for a multigraph."
 
         n = len(self._nxg.adj)
-        verts = self.vertices()
+        verts = sorted(self.vertices())
         D = {}
         for e in self.edge_iterator():
             i,j,l = e
@@ -3897,7 +3902,7 @@ class Graph(GenericGraph):
         if n > 262143:
             raise ValueError, 'sparse6 format supports graphs on 0 to 262143 vertices only.'
         else:
-            vertices = self.vertices()
+            vertices = sorted(self.vertices())
             n = len(vertices)
             edges = self.edges(labels=False)
             for i in range(len(edges)): # replace edge labels with natural numbers (by index in vertices)
@@ -4331,7 +4336,7 @@ class Graph(GenericGraph):
             from sage.graphs.graph_isom import search_tree, perm_group_elt
             from sage.groups.perm_gps.permgroup import PermutationGroup
             if partition is None:
-                partition = [self.vertices()]
+                partition = [sort(self.vertices())]
             if translation:
                 a,b = search_tree(self, partition, dict=True, lab=False, dig=self.loops(), verbosity=verbosity)
             else:
@@ -5383,7 +5388,7 @@ class DiGraph(GenericGraph):
 
         """
         n = len(self._nxg.adj)
-        verts = self.vertices()
+        verts = sorted(self.vertices())
         D = {}
         for i,j,l in self.edge_iterator():
             i = verts.index(i)
@@ -5413,7 +5418,7 @@ class DiGraph(GenericGraph):
         from sage.matrix.constructor import matrix
         from copy import copy
         n = len(self._nxg.adj)
-        verts = self.vertices()
+        verts = sorted(self.vertices())
         d = [0]*n
         cols = []
         for i, j, l in self.edge_iterator():
@@ -5700,7 +5705,7 @@ class DiGraph(GenericGraph):
             from sage.graphs.graph_isom import search_tree, perm_group_elt
             from sage.groups.perm_gps.permgroup import PermutationGroup
             if partition is None:
-                partition = [self.vertices()]
+                partition = [sorted(self.vertices())]
             if translation:
                 a,b = search_tree(self, partition, dict=True, lab=False, dig=True, verbosity=verbosity)
             else:
