@@ -755,6 +755,10 @@ function history_window() {
 
 }
 
+function upload_worksheet_button() {
+    window.location.replace("/upload");
+}
+
 function copy_worksheet() {
     window.location.replace(worksheet_command("copy"));
 }
