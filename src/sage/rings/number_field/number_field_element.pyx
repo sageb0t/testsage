@@ -1287,6 +1287,7 @@ cdef class NumberFieldElement(FieldElement):
             sage: a.norm()
             132/7
             sage: factor(a.norm())
+            2^2 * 3 * 7^-1 * 11
             sage: K(0).norm()
             0
 
