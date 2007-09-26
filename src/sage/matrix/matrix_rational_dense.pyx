@@ -70,7 +70,7 @@ from sage.rings.rational_field import QQ
 from sage.rings.arith import gcd
 
 import sage.ext.multi_modular
-from matrix2 import cmp_pivots
+from matrix2 import cmp_pivots, decomp_seq
 
 from sage.misc.misc import verbose, get_verbose, prod
 
@@ -1296,7 +1296,7 @@ cdef class Matrix_rational_dense(matrix_dense.Matrix_dense):
                 # end if
             #end while
         #end for
-        return E
+        return decomp_seq(E)
 
 ##     def simple_decomposition(self, echelon_algorithm='default', **kwds):
 ##         """
@@ -1648,6 +1648,3 @@ cdef class Matrix_rational_dense(matrix_dense.Matrix_dense):
             l += 1
 
         mpq_clear(minus_one)
-
-cdef decomp_seq(v):
-    return Sequence(v, universe=tuple, check=False, cr=True)
