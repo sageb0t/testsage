@@ -582,10 +582,10 @@ class GenericGraph(SageObject):
         potentially be slow.
 
         EXAMPLES:
-            sage: G = Graph(); G.add_vertex(); G
+            sage: G = Graph(); G.add_vertex()
             Graph on 1 vertex
 
-            sage: D = DiGraph(); D.add_vertex(); D
+            sage: D = DiGraph(); D.add_vertex()
             Digraph on 1 vertex
 
         """
@@ -596,6 +596,7 @@ class GenericGraph(SageObject):
             self._nxg.add_node(i)
         else:
             self._nxg.add_node(name)
+        return self
 
     def add_vertices(self, vertices):
         """
@@ -606,14 +607,17 @@ class GenericGraph(SageObject):
             sage: d = {0: [1,4,5], 1: [2,6], 2: [3,7], 3: [4,8], 4: [9], 5: [7,8], 6: [8,9], 7: [9]}
             sage: G = Graph(d)
             sage: G.add_vertices([10,11,12])
+            Graph on 13 vertices
             sage: G.vertices()
             [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
             sage: G.add_vertices(graphs.CycleGraph(25).vertices())
+            Graph on 25 vertices
             sage: G.vertices()
             [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
 
         """
         self._nxg.add_nodes_from(vertices)
+        return self
 
     def delete_vertex(self, vertex):
         """
@@ -1548,6 +1552,7 @@ class GenericGraph(SageObject):
             sage: G.center()
             []
             sage: G.add_vertex()
+            Graph on 1 vertex
             sage: G.center()
             [0]
 
@@ -1608,6 +1613,7 @@ class GenericGraph(SageObject):
             sage: G.periphery()
             []
             sage: G.add_vertex()
+            Graph on 1 vertex
             sage: G.periphery()
             [0]
 
@@ -2534,6 +2540,20 @@ class GenericGraph(SageObject):
             if (e[1],e[0]) in gpaths:
                 return False
         return True
+
+    def independent_set(self, vertices=None):
+        r"""
+        Returns True if the set of vertices defines an independent set and False otherwise.  If no vertices are passed, then we assume the whole graph.
+
+        EXAMPLE:
+            sage: graphs.EmptyGraph().add_vertices([0..10]).independent_set()
+            True
+            sage: graphs.PathGraph(3).independent_set([0,2])
+            True
+            sage: graphs.PathGraph(3).independent_set([0,1])
+            False
+        """
+        return self.subgraph(vertices).to_simple().size()==0
 
 class Graph(GenericGraph):
     r"""
@@ -4045,7 +4065,8 @@ class Graph(GenericGraph):
 
         EXAMPLES:
         sage: G = Graph()
-        sage: for i in range(10): G.add_vertex(name=i)
+        sage: G.add_vertices(range(10))
+        Graph on 10 vertices
         sage.: show(G)
         sage: G.add_cycle(range(20)[10:20])
         sage.: show(G)
@@ -4066,7 +4087,8 @@ class Graph(GenericGraph):
 
         EXAMPLES:
         sage: G = Graph()
-        sage: for i in range(10): G.add_vertex(name=i)
+        sage: G.add_vertices(range(10))
+        Graph on 10 vertices
         sage.: show(G)
         sage: G.add_path(range(20)[10:20])
         sage.: show(G)
@@ -4076,7 +4098,7 @@ class Graph(GenericGraph):
         """
         self._nxg.add_path(vertices)
 
-    def subgraph(self, vertices, inplace=False, create_using=None):
+    def subgraph(self, vertices=None, inplace=False, create_using=None):
         """
         Returns the subgraph induced by the given vertices.
 
@@ -4085,7 +4107,7 @@ class Graph(GenericGraph):
         and edges from the current graph. This will modify the graph, and re-
         turn itself.
         vertices -- Vertices can be a single vertex or an iterable container
-        of vertices, e.g. a list, set, graph, file or numeric array.
+        of vertices, e.g. a list, set, graph, file or numeric array.  If not passed, defaults to the entire graph.
         create_using -- Can be an existing graph object or a call to a graph
         object, such as create_using=DiGraph(). Must be a NetworkX object.
 
@@ -4100,6 +4122,8 @@ class Graph(GenericGraph):
             sage: G
             Subgraph of (Complete graph): Graph on 3 vertices
             sage: G is K
+            True
+            sage: G.subgraph()==G
             True
 
         """
@@ -5520,7 +5544,7 @@ class DiGraph(GenericGraph):
         G = DiGraph(NXG)
         return G
 
-    def subgraph(self, vertices, inplace=False, create_using=None):
+    def subgraph(self, vertices=None, inplace=False, create_using=None):
         """
         Returns the subgraph induced by the given vertices.
 
@@ -5529,7 +5553,7 @@ class DiGraph(GenericGraph):
         and edges from the current graph. This will modify the graph, and re-
         turn itself.
         vertices -- Vertices can be a single vertex or an iterable container
-        of vertices, e.g. a list, set, graph, file or numeric array.
+        of vertices, e.g. a list, set, graph, file or numeric array.  If not passed, defaults to the entire graph.
         create_using -- Can be an existing graph object or a call to a graph
         object, such as create_using=DiGraph().
 
