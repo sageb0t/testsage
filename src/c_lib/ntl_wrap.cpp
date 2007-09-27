@@ -1590,3 +1590,18 @@ void ZZ_pContext_restore(ZZ_pContext *ctx)
 {
 	ctx->restore();
 }
+
+zz_pContext* zz_pContext_new(long p)
+{
+	return new zz_pContext(p);
+}
+
+zz_pContext* zz_pContext_construct(void *mem, long p)
+{
+	return new(mem) zz_pContext(p);
+}
+
+void zz_pContext_restore(zz_pContext *ctx)
+{
+	ctx->restore();
+}
