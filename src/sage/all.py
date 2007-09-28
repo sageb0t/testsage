@@ -82,6 +82,7 @@ from sage.dsage.all      import *
 import sage.tests.all as tests
 
 from sage.crypto.all     import *
+import sage.crypto.mq as mq
 
 from sage.plot.all       import *
 from sage.coding.all     import *
@@ -269,6 +270,10 @@ def quit_sage(verbose=True):
     except ImportError:
        pass
 
+    import sage.rings.integer
+    sage.rings.integer.free_integer_pool()
+    sage.rings.integer.clear_mpz_globals()
+
 def _quit_sage_(self):
     import sage.misc.preparser_ipython
     if sage.misc.preparser_ipython.interface != None:
@@ -285,6 +290,7 @@ def _quit_sage_(self):
     if self.exit_now:
         quit_sage()
         self.exit_now = True
+
     return self.exit_now
 
 from IPython.iplib import InteractiveShell

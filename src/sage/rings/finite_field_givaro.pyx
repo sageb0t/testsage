@@ -1471,7 +1471,7 @@ cdef class FiniteField_givaroElement(FiniteFieldElement):
 
         ALGORITHM:
             Givaro objects are stored as integers $i$ such that $self=a^i$, where
-            $a$ is a generator of $K$ (though necissarily the one returned by K.gens()).
+            $a$ is a generator of $K$ (though not necessarily the one returned by K.gens()).
             Now it is trivial to compute $(a^i)^exp = a^(i*exp)$, and reducing the exponent
             mod the multiplicative order of $K$.
 
@@ -1497,6 +1497,8 @@ cdef class FiniteField_givaroElement(FiniteFieldElement):
             return make_FiniteField_givaroElement(field, field.objectptr.one)
 
         elif (field.objectptr).isZero(self.element):
+            if exp < 0:
+                raise ZeroDivisionError
             return make_FiniteField_givaroElement(field, field.objectptr.zero)
 
         order = (field.order_c()-1)
@@ -1947,9 +1949,14 @@ cdef class FiniteField_givaroElement(FiniteFieldElement):
         """
         return hash(self.log_to_int())
 
-    def vector(FiniteField_givaroElement self):
+    def vector(FiniteField_givaroElement self, reverse=False):
         """
-        Return a vector in self.parent().vector_space() matching self.
+        Return a vector in self.parent().vector_space() matching
+        self. The most significant bit is to the right.
+
+        INPUT:
+            reverse -- reverse the order of the bits
+                       from little endian to big endian.
 
         EXAMPLES:
             sage: k.<a> = GF(2^4)
@@ -1968,6 +1975,9 @@ cdef class FiniteField_givaroElement(FiniteFieldElement):
             sage: k(v)
             2*a^2 + 1
 
+        You can also compute the vector in the other order:
+            sage: e.vector(reverse=True)
+            (0, 2, 0, 1)
         """
         cdef FiniteField_givaro k = <FiniteField_givaro>self._parent
 
@@ -1979,6 +1989,8 @@ cdef class FiniteField_givaroElement(FiniteFieldElement):
             coeff = quo%b
             ret.append(coeff)
             quo = quo/b
+        if reverse:
+            ret = list(reversed(ret))
         return k.vector_space()(ret)
 
     def __reduce__(FiniteField_givaroElement self):

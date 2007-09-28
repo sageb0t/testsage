@@ -358,13 +358,13 @@ class ModularSymbolsAmbient(space.ModularSymbolsSpace, hecke.AmbientHeckeModule)
             sage: set_modsym_print_mode('modular')
             sage: M = ModularSymbols(11)
             sage: M.modular_symbol([2/11, oo])
-            -{-1/9,0}
+            -{8/9,1}
             sage: M.1
-            {-1/8,0}
+            {7/8,1}
             sage: M.modular_symbol([-1/8, 0])
-            {-1/8,0}
+            {7/8,1}
             sage: M.modular_symbol([0, -1/8, 0])
-            {-1/8,0}
+            {7/8,1}
             sage: M.modular_symbol([10, -1/8, 0])
             Traceback (most recent call last):
             ...
@@ -375,7 +375,7 @@ class ModularSymbolsAmbient(space.ModularSymbolsSpace, hecke.AmbientHeckeModule)
         and whose second and third entries are cusps:
 
             sage: M.modular_symbol([0, Cusp(2/11), Cusp(oo)], check=False)
-            -{-1/9,0}
+            -{8/9,1}
 
             sage: set_modsym_print_mode()   # return to default.
         """
