@@ -534,7 +534,7 @@ cdef class Polynomial_dense_modn_ntl_zz(Polynomial_dense_mod_n):
         cdef Polynomial_dense_modn_ntl_zz r = self._new()
         self.c.restore_c()
         if zz_pX_IsX(self.x):
-            zz_pX_lshift(r.x, self.x, e)
+            zz_pX_lshift(r.x, self.x, e-1)
         else:
             do_sig = zz_pX_deg(self.x) *e > 1000
             if do_sig: _sig_on
@@ -605,11 +605,11 @@ cdef class Polynomial_dense_modn_ntl_zz(Polynomial_dense_mod_n):
         """
         EXAMPLES:
             sage: R.<x> = Integers(81)[]
-            sage: f = x^7 + x + 1; g = x^3 - 1
+            sage: f = x^7 + x + 1; g = x^3
             sage: r = f % g; r
-            x^4 + x
-            sage: g * x^4 + r
-            x^7 + x
+            2*x + 1
+            sage: g * (x^4+x) + r
+            x^7 + x + 1
         """
         if PY_TYPE(self) != PY_TYPE(right) or (<Element>self)._parent is not (<Element>right)._parent:
             self, right = canonical_coercion(self, right)
@@ -620,7 +620,7 @@ cdef class Polynomial_dense_modn_ntl_zz(Polynomial_dense_mod_n):
         cdef bint do_sig = zz_pX_deg(numer.x) + zz_pX_deg(denom.x) > 1000
         if do_sig: _sig_on
         numer.c.restore_c()
-        zz_pX_div(r.x, numer.x, denom.x)
+        zz_pX_mod(r.x, numer.x, denom.x)
         if do_sig: _sig_off
         return r
 
@@ -826,7 +826,7 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
 #            sage: f.int_list()
 #            [5, 0, 0, 1]
 #            sage: [type(a) for a in f.int_list()]
-#            [<type 'int'>, <type 'int'>, <type 'int'>, <type 'int'>]
+#            [<type 'long'>, <type 'long'>, <type 'long'>, <type 'long'>]
 #        """
 #        cdef long i
 #        return [ zz_p_rep(zz_pX_GetCoeff(self.x, i)) for i from 0 <= i <= zz_pX_deg(self.x) ]
@@ -834,10 +834,10 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
     def __getitem__(self, n):
         """
         EXAMPLES:
-            sage: R.<x> = Integers(100)[]
+            sage: R.<x> = Integers(10^30)[]
             sage: f = (x+2)^7
             sage: f[3]
-            60
+            560
         """
         R = self._parent._base
         if n < 0 or n > ZZ_pX_deg(self.x):
@@ -864,10 +864,10 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
         Returns the monomials of self of degree i <= n < j.
 
         EXAMPLES:
-            sage: R.<x> = Integers(100)[]
+            sage: R.<x> = Integers(10^30)[]
             sage: f = (x+2)^7
             sage: f[3:6]
-            84*x^5 + 80*x^4 + 60*x^3
+            84*x^5 + 280*x^4 + 560*x^3
             sage: f[-5:50] == f
             True
             sage: f[6:]
@@ -884,9 +884,9 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
     cdef ModuleElement _add_c_impl(self, ModuleElement _right):
         """
         TESTS:
-            sage: R.<x> = Integers(100)[]
+            sage: R.<x> = Integers(10^30)[]
             sage: (x+5) + (x^2 - 6)
-            x^2 + x + 99
+            x^2 + x + 999999999999999999999999999999
         """
         cdef Polynomial_dense_modn_ntl_ZZ right = <Polynomial_dense_modn_ntl_ZZ>_right
         cdef Polynomial_dense_modn_ntl_ZZ r = self._new()
@@ -900,9 +900,9 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
     cdef ModuleElement _sub_c_impl(self, ModuleElement _right):
         """
         TESTS:
-            sage: R.<x> = Integers(100)[]
+            sage: R.<x> = Integers(10^30)[]
             sage: (x+5) - (x^2 - 6)
-            99*x^2 + x + 11
+            999999999999999999999999999999*x^2 + x + 11
         """
         cdef Polynomial_dense_modn_ntl_ZZ right = <Polynomial_dense_modn_ntl_ZZ>_right
         cdef Polynomial_dense_modn_ntl_ZZ r = self._new()
@@ -916,9 +916,9 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
     cdef RingElement _mul_c_impl(self, RingElement _right):
         """
         TESTS:
-            sage: R.<x> = Integers(100)[]
+            sage: R.<x> = Integers(10^30)[]
             sage: (x+5) * (x^2 - 1)
-            x^3 + 5*x^2 + 99*x + 95
+            x^3 + 5*x^2 + 999999999999999999999999999999*x + 999999999999999999999999999995
         """
         cdef Polynomial_dense_modn_ntl_ZZ right = <Polynomial_dense_modn_ntl_ZZ>_right
         cdef Polynomial_dense_modn_ntl_ZZ r = self._new()
@@ -935,7 +935,7 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
     cdef ModuleElement _rmul_c_impl(self, RingElement c):
         """
         TESTS:
-            sage: R.<x> = Integers(100)[]
+            sage: R.<x> = Integers(10^30)[]
             sage: (x+5) * 3
             3*x + 15
         """
@@ -951,7 +951,7 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
     cdef ModuleElement _lmul_c_impl(self, RingElement c):
         """
         TESTS:
-            sage: R.<x> = Integers(100)[]
+            sage: R.<x> = Integers(10^30)[]
             sage: 3 * (x+5)
             3*x + 15
         """
@@ -960,13 +960,9 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
     def __pow__(Polynomial_dense_modn_ntl_ZZ self, ee, dummy):
         """
         TESTS:
-            sage: R.<x> = Integers(100)[]
-            sage: (x-1)^5
-            x^5 + 95*x^4 + 10*x^3 + 90*x^2 + 5*x + 99
-
-            sage: R.<x> = Integers(101)[]
-            sage: (x-1)^(-5)
-            1/(x^5 + 96*x^4 + 10*x^3 + 91*x^2 + 5*x + 100)
+            sage: R.<x> = Integers(10^30)[]
+            sage: (x+1)^5
+            x^5 + 5*x^4 + 10*x^3 + 10*x^2 + 5*x + 1
         """
         cdef bint recip = 0, do_sig
         cdef long e = ee
@@ -981,7 +977,7 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
         cdef Polynomial_dense_modn_ntl_ZZ r = self._new()
         self.c.restore_c()
         if ZZ_pX_IsX(self.x):
-            ZZ_pX_lshift(r.x, self.x, e)
+            ZZ_pX_lshift(r.x, self.x, e - 1)
         else:
             do_sig = ZZ_pX_deg(self.x) * e * self.c.p_bits > 1e5
             if do_sig: _sig_on
@@ -998,11 +994,11 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
         such that $q * right + r = self$.
 
         EXAMPLES:
-            sage: R.<x> = Integers(125)[]
+            sage: R.<x> = Integers(10^30)[]
             sage: f = x^5+1; g = (x+1)^2
             sage: q, r = f.quo_rem(g)
             sage: q
-            x^3 + 123*x^2 + 3*x + 121
+            x^3 + 999999999999999999999999999998*x^2 + 3*x + 999999999999999999999999999996
             sage: r
             5*x + 5
             sage: q*g + r
@@ -1028,7 +1024,7 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
         For q = n // d, we have deg(n - q*d) < deg(d)
 
         EXAMPLES:
-            sage: R.<x> = Integers(25)[]
+            sage: R.<x> = Integers(10^30)[]
             sage: f = x^7 + 1; g = x^2 - 1
             sage: q = f // g; q
             x^5 + x^3 + x
@@ -1051,12 +1047,12 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
     def __mod__(self, right):
         """
         EXAMPLES:
-            sage: R.<x> = Integers(81)[]
+            sage: R.<x> = Integers(9^30)[]
             sage: f = x^7 + x + 1; g = x^3 - 1
             sage: r = f % g; r
-            x^4 + x
-            sage: g * x^4 + r
-            x^7 + x
+            2*x + 1
+            sage: g * (x^4 + x) + r
+            x^7 + x + 1
         """
         if PY_TYPE(self) != PY_TYPE(right) or (<Element>self)._parent is not (<Element>right)._parent:
             self, right = canonical_coercion(self, right)
@@ -1067,7 +1063,7 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
         cdef bint do_sig = (ZZ_pX_deg(numer.x) + ZZ_pX_deg(denom.x)) * self.c.p_bits > 1e4
         if do_sig: _sig_on
         numer.c.restore_c()
-        ZZ_pX_div(r.x, numer.x, denom.x)
+        ZZ_pX_mod(r.x, numer.x, denom.x)
         if do_sig: _sig_off
         return r
 
@@ -1077,7 +1073,7 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
         truncating if $n$ is negative.
 
         EXAMPLES:
-            sage: R.<x> = Integers(77)[]
+            sage: R.<x> = Integers(12^30)[]
             sage: f = x^7 + x + 1
             sage: f.shift(1)
             x^8 + x^2 + x
@@ -1091,7 +1087,7 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
     def __lshift__(Polynomial_dense_modn_ntl_ZZ self, long n):
         """
         TEST:
-            sage: R.<x> = Integers(77)[]
+            sage: R.<x> = Integers(14^30)[]
             sage: f = x^5 + 2*x + 1
             sage: f << 3
             x^8 + 2*x^4 + x^3
@@ -1103,7 +1099,7 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
     def __rshift__(Polynomial_dense_modn_ntl_ZZ self, long n):
         """
         TEST:
-            sage: R.<x> = Integers(77)[]
+            sage: R.<x> = Integers(15^30)[]
             sage: f = x^5 + 2*x + 1
             sage: f >> 3
             x^2
@@ -1117,10 +1113,10 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
         Returns the formal derivative of self.
 
         EXAMPLES:
-            sage: R.<x> = Integers(77)[]
-            sage: f = x^4 - x - 1
+            sage: R.<x> = Integers(12^29)[]
+            sage: f = x^4 + x + 5
             sage: f.derivative()
-            4*x^3 + 76
+            4*x^3 + 1
         """
         cdef Polynomial_dense_modn_ntl_ZZ r = self._new()
         ZZ_pX_diff(r.x, self.x)
@@ -1133,13 +1129,13 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
         The degree will go down if the constant term is zero.
 
         EXAMPLES:
-            sage: R.<x> = Integers(77)[]
-            sage: f = x^4 - x - 1
+            sage: R.<x> = Integers(12^29)[]
+            sage: f = x^4 + 2*x + 5
             sage: f.reverse()
-            76*x^4 + 76*x^3 + 1
-            sage: f = x^3 - x
+            5*x^4 + 2*x^3 + 1
+            sage: f = x^3 + x
             sage: f.reverse()
-            76*x^2 + 1
+            x^2 + 1
         """
         cdef Polynomial_dense_modn_ntl_ZZ r = self._new()
         ZZ_pX_reverse_v(r.x, self.x)
@@ -1151,8 +1147,8 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
     def __nonzero__(self):
         """
         TESTS:
-            sage: R.<x> = Integers(77)[]
-            sage: f = x^4 - x - 1
+            sage: R.<x> = Integers(12^29)[]
+            sage: f = x^4 + 1
             sage: not f
             False
             sage: not (x-x)
@@ -1163,11 +1159,11 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
     def degree(self):
         """
         EXAMPLES:
-            sage: R.<x> = Integers(77)[]
+            sage: R.<x> = Integers(14^34)[]
             sage: f = x^4 - x - 1
             sage: f.degree()
             4
-            sage: f = 77*x + 1
+            sage: f = 14^43*x + 1
             sage: f.degree()
             0
         """
@@ -1178,7 +1174,7 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
         Returns this polynomial mod $x^n$.
 
         EXAMPLES:
-            sage: R.<x> = Integers(77)[]
+            sage: R.<x> = Integers(15^30)[]
             sage: f = sum(x^n for n in range(10)); f
             x^9 + x^8 + x^7 + x^6 + x^5 + x^4 + x^3 + x^2 + x + 1
             sage: f.truncate(6)
@@ -1195,14 +1191,14 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
         the generic Polynomial call code is used.
 
         EXAMPLES:
-            sage: R.<x> = Integers(100)[]
+            sage: R.<x> = Integers(10^30)[]
             sage: f = x^3+7
             sage: f(5)
-            32
+            132
             sage: f(5r)
-            32
-            sage: f(mod(5, 1000))
-            32
+            132
+            sage: f(mod(5, 10^50))
+            132
             sage: f(x)
             x^3 + 7
             sage: S.<y> = Integers(5)[]
