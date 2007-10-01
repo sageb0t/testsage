@@ -6,10 +6,6 @@ AUTHORS:
     -- David Harvey: rewrote to talk to NTL directly, instead of via ntl.pyx (2007-09);
                a lot of this was based on Joel Mohler's recent rewrite of the NTL wrapper
 
-TODO:
-    -- the (<IntegerRing_class>ZZ_sage)._coerce_ZZ calls everywhere are
-    ugly. Need to make a neater way of doing this.
-
 """
 
 ################################################################################
@@ -156,6 +152,7 @@ cdef class Polynomial_integer_dense_ntl(Polynomial):
         elif isinstance(x, FractionFieldElement) and \
                  isinstance(x.numerator(), Polynomial_integer_dense_ntl):
             if x.denominator() == 1:
+                # fraction of the form f(x)/1
                 self.__poly = (<Polynomial_integer_dense_ntl>x.numerator()).__poly
                 return
 
@@ -169,7 +166,7 @@ cdef class Polynomial_integer_dense_ntl(Polynomial):
         cdef ZZ_c y
 
         for i from 0 <= i < len(x):
-            (<Integer>(x[i]))._to_ZZ(&y)
+            mpz_to_ZZ(&y, &(<Integer>x[i]).value)
             ZZX_SetCoeff(self.__poly, i, y)
 
     def content(self):
@@ -192,8 +189,10 @@ cdef class Polynomial_integer_dense_ntl(Polynomial):
             0
         """
         cdef ZZ_c y
+        cdef Integer z = PY_NEW(Integer)
         content(y, self.__poly)
-        return (<IntegerRing_class>ZZ_sage)._coerce_ZZ(&y)
+        ZZ_to_mpz(&z.value, &y)
+        return z
 
     def __reduce__(self):
         r"""
@@ -232,7 +231,9 @@ cdef class Polynomial_integer_dense_ntl(Polynomial):
         # a function that returns a (const!) pointer to the coefficient
         # of the NTL polynomial.
         cdef ZZ_c temp = ZZX_coeff(self.__poly, n)
-        return (<IntegerRing_class>ZZ_sage)._coerce_ZZ(&temp)
+        cdef Integer z = PY_NEW(Integer)
+        ZZ_to_mpz(&z.value, &temp)
+        return z
 
     def __getslice__(self, long i, long j):
         r"""
@@ -425,7 +426,8 @@ cdef class Polynomial_integer_dense_ntl(Polynomial):
         cdef ZZ_c *r
 
         ZZX_xgcd(&self.__poly, &(<Polynomial_integer_dense_ntl>right).__poly, &r, &s, &t, 1)    # proof = 1
-        cdef Integer rr = (<IntegerRing_class>ZZ_sage)._coerce_ZZ(r)
+        cdef Integer rr = PY_NEW(Integer)
+        ZZ_to_mpz(&rr.value, r)
         cdef Polynomial_integer_dense_ntl ss = self._new()
         cdef Polynomial_integer_dense_ntl tt = self._new()
         ss.__poly = s[0]
@@ -472,7 +474,7 @@ cdef class Polynomial_integer_dense_ntl(Polynomial):
         cdef Polynomial_integer_dense_ntl x = self._new()
         cdef ZZ_c _right
 
-        (<Integer>right)._to_ZZ(&_right)
+        mpz_to_ZZ(&_right, &(<Integer>right).value)
         mul_ZZX_ZZ(x.__poly, self.__poly, _right)
         return x
 
@@ -490,7 +492,7 @@ cdef class Polynomial_integer_dense_ntl(Polynomial):
         cdef Polynomial_integer_dense_ntl x = self._new()
         cdef ZZ_c _right
 
-        (<Integer>right)._to_ZZ(&_right)
+        mpz_to_ZZ(&_right, &(<Integer>right).value)
         mul_ZZX_ZZ(x.__poly, self.__poly, _right)
         return x
 
@@ -526,7 +528,7 @@ cdef class Polynomial_integer_dense_ntl(Polynomial):
             raise IndexError, "n must be >= 0"
         value = Integer(value)
         cdef ZZ_c y
-        (<Integer>value)._to_ZZ(&y)
+        mpz_to_ZZ(&y, &(<Integer>value).value)
         ZZX_SetCoeff(self.__poly, n, y)
 
     def complex_roots(self, flag=0):
@@ -595,7 +597,8 @@ cdef class Polynomial_integer_dense_ntl(Polynomial):
             -339
         """
         cdef ZZ_c* temp = ZZX_discriminant(&self.__poly, proof)
-        cdef Integer x = (<IntegerRing_class>ZZ_sage)._coerce_ZZ(temp)
+        cdef Integer x = PY_NEW(Integer)
+        ZZ_to_mpz(&x.value, temp)
         ZZ_delete(temp)
         return x
 
@@ -752,6 +755,7 @@ cdef class Polynomial_integer_dense_ntl(Polynomial):
         """
         cdef Polynomial_integer_dense_ntl _other = <Polynomial_integer_dense_ntl>(self.parent()._coerce_(other))
         cdef ZZ_c* temp = ZZX_resultant(&self.__poly, &_other.__poly, proof)
-        cdef Integer x = (<IntegerRing_class>ZZ_sage)._coerce_ZZ(temp)
+        cdef Integer x = PY_NEW(Integer)
+        ZZ_to_mpz(&x.value, temp)
         ZZ_delete(temp)
         return x
