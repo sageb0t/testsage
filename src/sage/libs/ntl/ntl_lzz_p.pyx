@@ -87,7 +87,7 @@ cdef class ntl_zz_p:
             raise ValueError, "You must specify a modulus."
         else:
             try:
-                modulus = long(modulus)
+                modulus = int(modulus)
             except:
                 raise ValueError, "%s is not a valid modulus."%modulus
             self.c = <ntl_zz_pContext_class>ntl_zz_pContext(modulus)
@@ -317,6 +317,9 @@ cdef class ntl_zz_p:
         else:
             return -1
 
+    def __int__(self):
+        return zz_p_rep(self.x)
+
     def square(self):
         """
         Return f*f.
@@ -345,7 +348,7 @@ cdef class ntl_zz_p:
             False
         """
         self.c.restore_c()
-        return zz_p_rep(self.x) == long(0)
+        return zz_p_rep(self.x) == 0
 
     def is_one(self):
         """
@@ -360,7 +363,7 @@ cdef class ntl_zz_p:
             False
         """
         self.c.restore_c()
-        return zz_p_rep(self.x) == long(1)
+        return zz_p_rep(self.x) == 1
 
     def clear(self):
         """
