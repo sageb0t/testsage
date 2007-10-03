@@ -118,8 +118,7 @@ cdef class ntl_GF2X:
         return unpickle_class_value, (ntl_GF2X, self.hex())
 
     def __repr__(self):
-        _sig_on
-        return string_delete(GF2X_to_str(&self.gf2x_x))
+        return GF2X_to_PyString(&self.gf2x_x)
 
     def __mul__(ntl_GF2X self, other):
         cdef ntl_GF2X y
@@ -176,7 +175,7 @@ cdef class ntl_GF2X:
     def __cmp__(ntl_GF2X self, ntl_GF2X other):
         cdef int t
         _sig_on
-        t = GF2X_eq(&self.gf2x_x, &other.gf2x_x)
+        t = GF2X_equal(self.gf2x_x, other.gf2x_x)
         _sig_off
         if t:
             return 0
@@ -186,7 +185,7 @@ cdef class ntl_GF2X:
         """
         Returns the degree of this polynomial
         """
-        return GF2X_deg(&self.gf2x_x)
+        return GF2X_deg(self.gf2x_x)
 
     def list(ntl_GF2X self):
         """
@@ -205,8 +204,8 @@ cdef class ntl_GF2X:
              polynomial representation
         """
         #yields e.g. "[1 1 0 0 1 1 0 1]"
-        _sig_on
-        s = string(GF2X_to_bin(&self.gf2x_x))
+        #_sig_on
+        s = GF2X_to_bin(&self.gf2x_x)
 
         #yields e.g. [1,1,0,0,1,1,0,1]
         return map(int,list(s[1:][:len(s)-2].replace(" ","")))
@@ -226,10 +225,8 @@ cdef class ntl_GF2X:
 
         OUTPUT:
             string representing this element in binary digits
-
         """
-        _sig_on
-        return string(GF2X_to_bin(&self.gf2x_x))
+        return GF2X_to_bin(&self.gf2x_x)
 
     def hex(ntl_GF2X self):
         """
@@ -248,8 +245,7 @@ cdef class ntl_GF2X:
             string representing this element in hexadecimal
 
         """
-        _sig_on
-        return string(GF2X_to_hex(&self.gf2x_x))
+        return GF2X_to_hex(&self.gf2x_x)
 
     def _sage_(ntl_GF2X self,R=None,cache=None):
         """
