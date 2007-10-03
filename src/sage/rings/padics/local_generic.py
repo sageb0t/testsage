@@ -67,10 +67,24 @@ class LocalGeneric(sage.rings.ring.CommutativeRing):
 
         EXAMPLES:
             sage: R = Zp(3, 10,'fixed-mod'); R.precision_cap()
-                10
+            10
+	    sage: R = Zp(3, 10,'capped-rel'); R.precision_cap()
+	    10
+	    sage: R = Zp(3, 10,'capped-abs'); R.precision_cap()
+	    10
+	    sage: R = Zp(3, 10, 'lazy'); R.precision_cap()
+	    10
 
         NOTES:
-            This will have different meanings depending on the type of local ring.  For fixed modulus rings, all elements are considered modulo self.prime()^self.precision_cap().  For rings with an absolute cap (i.e. the class pAdicRingCappedAbsolute), each element has a precision that is tracked and is bounded above by self.precision_cap().  That element self.prime()^precision.  Rings with relative caps (i.e. the class pAdicRingCappedRelative) are the same except that the precision is the precision of the unit part of each element.  For lazy rings, this gives the initial precision to which elements are computed.
+            This will have different meanings depending on the type of local ring.
+            For fixed modulus rings, all elements are considered modulo
+            self.prime()^self.precision_cap().  For rings with an absolute cap (i.e. the
+            class pAdicRingCappedAbsolute), each element has a precision that is tracked
+            and is bounded above by self.precision_cap().  That element
+            self.prime()^precision.  Rings with relative caps (i.e. the class
+            pAdicRingCappedRelative) are the same except that the precision is the
+            precision of the unit part of each element.  For lazy rings, this gives the
+            initial precision to which elements are computed.
         """
         return self._prec
 
@@ -88,6 +102,10 @@ class LocalGeneric(sage.rings.ring.CommutativeRing):
         OUTPUT:
             boolean -- whether self's representation is atomic, i.e., False
 
+	EXAMPLES:
+	    sage: R = Zp(5, 5, 'fixed-mod'); R.is_atomic_repr()
+            False
+
         """
         return False
 
@@ -100,18 +118,38 @@ class LocalGeneric(sage.rings.ring.CommutativeRing):
 
         OUTPUT:
             boolean -- whether self is exact, i.e. False.
+
+	EXAMPLES:
+	    sage: R = Zp(5, 3, 'lazy'); R.is_exact()
+	    False
+            sage: R = Zp(5, 3, 'fixed-mod'); R.is_exact()
+            False
         """
         return False
 
     def residue_characteristic(self):
+	r"""
+	Returns the characteristic of self's residue field.
+
+	INPUT:
+	    self -- a p-adic ring.
+
+	OUTPUT:
+	    integer -- the characteristic of the residue field.
+
+	EXAMPLES:
+	    sage: R = Zp(3, 5, 'capped-rel'); R.residue_characteristic()
+	    3
+	"""
         return self.residue_class_field().characteristic()
 
     def residue_class_field(self):
+	#ASK: Is this function implemented by subclasses? It seems to work for any specific p-adic ring.
         raise NotImplementedError
 
     def defining_polynomial(self, var = 'x'):
         r"""
-        Returns the defining polynomial of this local ring
+        Returns the defining polynomial of this local ring, i.e. just x.
 
         INPUT:
             self -- a local ring
@@ -119,10 +157,12 @@ class LocalGeneric(sage.rings.ring.CommutativeRing):
 
         OUTPUT:
             polynomial -- the defining polynomial of this ring as an extension over its ground ring
+	EXAMPLES:
+	    sage: R = Zp(3, 3, 'fixed-mod'); R.defining_polynomial('foo')
+	    (1 + O(3^3))*foo
         """
         from sage.rings.polynomial.polynomial_ring import PolynomialRing
-        x = PolynomialRing(self, var).gen()
-        return x - 1
+        return PolynomialRing(self, var).gen()
 
     def ground_ring(self):
         r"""
@@ -135,6 +175,14 @@ class LocalGeneric(sage.rings.ring.CommutativeRing):
 
         OUTPUT:
             the ground ring of self, i.e., itself
+
+	EXAMPLES:
+	    sage: R = Zp(3, 5, 'fixed-mod')
+	    sage: S = Zp(3, 4, 'fixed-mod')
+	    sage: R.ground_ring() is R
+	    True
+	    sage: S.ground_ring() is R
+	    False
         """
         return self
 
@@ -142,7 +190,7 @@ class LocalGeneric(sage.rings.ring.CommutativeRing):
         r"""
         Returns self.
 
-        Well be overridden by extensions.
+        Will be overridden by extensions.
 
         INPUT:
             self -- a p-adic ring
@@ -161,6 +209,10 @@ class LocalGeneric(sage.rings.ring.CommutativeRing):
 
         OUTPUT:
             integer -- the degree of this ring, i.e., 1
+
+	EXAMPLES:
+	    sage: R = Zp(3, 10, 'capped-rel'); R.degree()
+            1
         """
         return 1
 
@@ -173,6 +225,10 @@ class LocalGeneric(sage.rings.ring.CommutativeRing):
 
         OUTPUT:
             integer -- the ramification index of this ring, i.e., 1
+
+	EXAMPLES:
+	    sage: R = Zp(3, 5, 'capped-rel'); R.ramification_index()
+	    1
         """
         return 1
 
@@ -185,6 +241,10 @@ class LocalGeneric(sage.rings.ring.CommutativeRing):
 
         OUTPUT:
             integer -- the ramification index of this ring, i.e., 1
+
+        EXAMPLES:
+	    sage: R = Zp(3, 5, 'capped-rel'); R.e()
+	    1
         """
         return self.ramification_index()
 
@@ -197,6 +257,10 @@ class LocalGeneric(sage.rings.ring.CommutativeRing):
 
         OUTPUT:
             integer -- the inertia degree of this ring, i.e., 1
+
+        EXAMPLES:
+	    sage: R = Zp(3, 5, 'capped-rel'); R.inertia_degree()
+	    1
         """
         return 1
 
@@ -209,6 +273,10 @@ class LocalGeneric(sage.rings.ring.CommutativeRing):
 
         OUTPUT:
             integer -- the inertia degree of this ring, i.e., 1
+
+        EXAMPLES:
+	    sage: R = Zp(3, 5, 'capped-rel'); R.f()
+            1
         """
         return self.inertia_degree()
 
