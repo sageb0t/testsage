@@ -26,6 +26,7 @@ import __builtin__
 from sage.algebras.algebra import Algebra
 from sage.algebras.algebra_element import AlgebraElement
 import sage.structure.parent_base
+import sage.combinat.partition
 
 class CombinatorialAlgebraElement(AlgebraElement):
     def __init__(self, A, x):
@@ -61,6 +62,12 @@ class CombinatorialAlgebraElement(AlgebraElement):
         else:
             return x
 
+    def _eq_(self, right):
+        for b in self.parent()._combinatorial_class:
+            if self.coefficient(b) != right.coefficient(b):
+                return False
+        return True
+
     def __cmp__(left, right):
         """
         The ordering is the one on the underlying sorted list of (monomial,coefficients) pairs.
@@ -73,6 +80,7 @@ class CombinatorialAlgebraElement(AlgebraElement):
 
     def _add_(self, y):
         A = self.parent()
+        BR = A.base_ring()
         z_elt = dict(self._monomial_coefficients)
         for m, c in y._monomial_coefficients.iteritems():
             if z_elt.has_key(m):
@@ -83,6 +91,16 @@ class CombinatorialAlgebraElement(AlgebraElement):
                     z_elt[m] = cm
             else:
                 z_elt[m] = c
+
+        #Remove all entries that are equal to 0
+        del_list = []
+        zero = BR(0)
+        for m, c in z_elt.iteritems():
+            if c == zero:
+                del_list.append(m)
+        for m in del_list:
+            del z_elt[m]
+
         z = A(Integer(0))
         z._monomial_coefficients = z_elt
         return z
@@ -97,6 +115,7 @@ class CombinatorialAlgebraElement(AlgebraElement):
 
     def _sub_(self, y):
         A = self.parent()
+        BR = A.base_ring()
         z_elt = dict(self._monomial_coefficients)
         for m, c in y._monomial_coefficients.iteritems():
             if z_elt.has_key(m):
@@ -107,6 +126,16 @@ class CombinatorialAlgebraElement(AlgebraElement):
                     z_elt[m] = cm
             else:
                 z_elt[m] = -c
+
+        #Remove all entries that are equal to 0
+        zero = BR(0)
+        del_list = []
+        for m, c in z_elt.iteritems():
+            if c == zero:
+                del_list.append(m)
+        for m in del_list:
+            del z_elt[m]
+
         z = A(Integer(0))
         z._monomial_coefficients = z_elt
         return z
@@ -126,16 +155,25 @@ class CombinatorialAlgebraElement(AlgebraElement):
             z *= self
         return z
 
+    def _coefficient_fast(self, m, default):
+        return self._monomial_coefficients.get(m, default)
+
     def coefficient(self, m):
         """
 
         """
-        if isinstance(m, partition.Partition_class):
-            return self._monomial_coefficients.get(m, self.parent().base_ring()(0))
-        elif m in partition.Partitions():
-            return self._monomial_coefficients[partition.Partition(m)]
+        p = self.parent()
+        if m in p._combinatorial_class:
+            return self._monomial_coefficients.get(p._combinatorial_class.object_class(m), p.base_ring()(0))
         else:
-            raise TypeError, "you must specify an element of %s"%self.parent()._combinatorial_class
+            raise TypeError, "you must specify an element of %s"%p._combinatorial_class
+
+    def is_zero(self):
+        BR = self.parent().base_ring()
+        for v in self._monomial_coefficients.values():
+            if v != BR(0):
+                return False
+        return True
 
     def __len__(self):
         return self.length()
@@ -235,10 +273,17 @@ class CombinatorialAlgebra(Algebra):
             return eclass(self, {self._combinatorial_class.object_class(x):R(1)})
         #Coerce elements of the base ring
         elif x.parent() is R:
-            return eclass(self, {self._combinatorial_class.object_class(self._one):x})
+            if x == R(0):
+                return eclass(self, {})
+            else:
+                return eclass(self, {self._combinatorial_class.object_class(self._one):x})
         #Coerce things that coerce into the base ring
         elif R.has_coerce_map_from(x.parent()):
-            return eclass(self, {self._combinatorial_class.object_class(self._one):R(x)})
+            rx = R(x)
+            if rx == R(0):
+                return eclass(self, {})
+            else:
+                return eclass(self, {self._combinatorial_class.object_class(self._one):R(x)})
         else:
             if hasattr(self, '_coerce_end'):
                 try:
@@ -275,7 +320,7 @@ class CombinatorialAlgebra(Algebra):
 
     def multiply(self,left,right):
         A = left.parent()
-        R = A.base_ring()
+        BR = A.base_ring()
         z_elt = {}
 
         #Do the case where the user specifies how to multiply basis
@@ -307,18 +352,27 @@ class CombinatorialAlgebra(Algebra):
         else:
             z_elt = self._multiply(left, right)
 
+        #Remove all entries that are equal to 0
+        BR = self.base_ring()
+        zero = BR(0)
+        del_list = []
+        for m, c in z_elt.iteritems():
+            if c == zero:
+                del_list.append(m)
+        for m in del_list:
+            del z_elt[m]
+
         z = A(Integer(0))
         z._monomial_coefficients = z_elt
         return z
 
-import partition
-class TestCA(CombinatorialAlgebra):
-    _combinatorial_class = partition.Partitions()
-    _name = "Test Combinatorial Algebra"
-    _one = partition.Partition([])
-    def _multiply_basis(self, left_basis, right_basis):
-        #Append the two lists
-        m = list(left_basis) + list(right_basis)
-        #Sort the new lists
-        m.sort(reverse=True)
-        return partition.Partition(m)
+#class TestCA(CombinatorialAlgebra):
+#    _combinatorial_class = partition.Partitions()
+#    _name = "Test Combinatorial Algebra"
+#    _one = partition.Partition([])
+#    def _multiply_basis(self, left_basis, right_basis):
+#        #Append the two lists
+#        m = list(left_basis) + list(right_basis)
+#        #Sort the new lists
+#        m.sort(reverse=True)
+#        return partition.Partition(m)
