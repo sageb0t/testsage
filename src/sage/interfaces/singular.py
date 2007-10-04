@@ -256,6 +256,8 @@ import re
 
 from expect import Expect, ExpectElement, FunctionElement, ExpectFunction
 
+from sage.structure.sequence import Sequence
+
 from sage.structure.element import RingElement
 
 import sage.misc.misc as misc
@@ -432,7 +434,7 @@ class Singular(Expect):
             return getattr(x, '_singular_')(self)
 
         # some convenient conversions
-        if type in ("module","list") and isinstance(x,(list,tuple)):
+        if type in ("module","list") and isinstance(x,(list,tuple,Sequence)):
             x = str(x)[1:-1]
 
         return SingularElement(self, type, x, False)
