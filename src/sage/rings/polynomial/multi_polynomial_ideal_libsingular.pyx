@@ -181,11 +181,15 @@ def interred_libsingular(I):
     cdef number *n
     cdef poly *p
     cdef int j
+    cdef int bck
 
     i = sage_ideal_to_singular_ideal(I)
     r = currRing
 
+    bck = singular_options[0]
+    singular_options[0] = singular_options[0] | Sy_bit(OPT_REDTAIL)|Sy_bit(OPT_REDSB)
     result = kInterRed(i,NULL)
+    singular_options[0] = bck
 
     # divide head by coefficents
     for j from 0 <= j < IDELEMS(result):
