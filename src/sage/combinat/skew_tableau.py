@@ -243,14 +243,14 @@ class SkewTableau_class(CombinatorialObject):
         #Check to make sure it is increasing along the rows
         for row in t:
             for i in range(1, len(row)):
-                if row[i] != None and row[i] <= row[i-1]:
+                if row[i-1] is not None and row[i] <= row[i-1]:
                     return False
 
         #Check to make sure it is increasing along the columns
         conj = t.conjugate()
         for row in conj:
             for i in range(1, len(row)):
-                if row[i] != None and row[i] <= row[i-1]:
+                if row[i-1] is not None and row[i] <= row[i-1]:
                     return False
 
         return True
@@ -286,7 +286,7 @@ class SkewTableau_class(CombinatorialObject):
         if not self.is_standard():
             raise ValueError, "the skew tableau must be standard to perform the restriction"
 
-        return SkewTableau( filter(lambda z: z != [], map(lambda x: filter(lambda y: y <= n, x), t)) )
+        return SkewTableau( filter(lambda z: z != [], map(lambda x: filter(lambda y: y is None or y <= n, x), t)) )
 
     def to_chain(self):
         """
