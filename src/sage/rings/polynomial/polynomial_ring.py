@@ -121,7 +121,7 @@ def is_PolynomialRing(x):
         sage: is_PolynomialRing(PolynomialRing(ZZ,1,'w'))
         False
         sage: R = PolynomialRing(ZZ,1,'w'); R
-        Polynomial Ring in w over Integer Ring
+        Multivariate Polynomial Ring in w over Integer Ring
         sage: is_PolynomialRing(R)
         False
         sage: type(R)
@@ -464,9 +464,9 @@ class PolynomialRing_general(sage.algebras.algebra.Algebra):
         sage: R.<x> = ZZ[]; R
         Univariate Polynomial Ring in x over Integer Ring
         sage: R.extend_variables('y, z')
-        Polynomial Ring in x, y, z over Integer Ring
+        Multivariate Polynomial Ring in x, y, z over Integer Ring
         sage: R.extend_variables(('y', 'z'))
-        Polynomial Ring in x, y, z over Integer Ring
+        Multivariate Polynomial Ring in x, y, z over Integer Ring
         """
         if isinstance(added_names, str):
             added_names = added_names.split(',')
@@ -1054,7 +1054,7 @@ def polygens(base_ring, names="x"):
         sage: (x+y+z)^2
         x^2 + 2*x*y + y^2 + 2*x*z + 2*y*z + z^2
         sage: parent(x)
-        Polynomial Ring in x, y, z over Rational Field
+        Multivariate Polynomial Ring in x, y, z over Rational Field
         sage: t = polygens(QQ,['x','yz','abc'])
         sage: t
         (x, yz, abc)
