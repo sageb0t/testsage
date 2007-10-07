@@ -833,7 +833,7 @@ div.worksheet {
   overflow:auto;
   background-color: white;
   border:1px solid #aaa;
-    top: 12em;
+    top: 8em;
     bottom: 0ex;
     right: 0ex;
     left:1ex;
