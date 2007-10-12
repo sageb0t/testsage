@@ -61,6 +61,7 @@ from sage.rings.integer_ring cimport IntegerRing_class
 
 from sage.libs.all import pari_gen
 from sage.libs.pari.gen import PariError
+from sage.structure.element cimport Element
 
 QQ = sage.rings.rational_field.QQ
 ZZ = sage.rings.integer_ring.ZZ
@@ -189,9 +190,23 @@ cdef class NumberFieldElement(FieldElement):
         if isinstance(parent, number_field.NumberField_relative):
             ppr = parent.base_field().polynomial_ring()
 
+        cdef long i
         if isinstance(f, pari_gen):
-            f = f.lift()
-            f = ppr(f)
+            if f.type() == "t_COL":
+                newf = ppr(0)
+                Zbasis = self.parent().pari_nf().getattr('zk')
+                # Note that this integral basis is not the same as that returned by parent.integral_basis() !
+                for i from 0 <= i < parent.degree():
+                    if f[i] != 0:
+                        newf += QQ(f[i]) * ppr(Zbasis[i])
+                f = newf
+            else:
+                if f.type() == "t_POLMOD":
+                    f = f.lift()
+                if f.type() in ["t_INT", "t_FRAC", "t_POL"]:
+                    f = ppr(f)
+                else:
+                    raise TypeError, "Unsupported Pari type"
         if not isinstance(f, sage.rings.polynomial.polynomial_element.Polynomial):
             f = ppr(f)
         if f.degree() >= parent.absolute_degree():
@@ -206,7 +221,6 @@ cdef class NumberFieldElement(FieldElement):
         den = f.denominator()
         (<Integer>ZZ(den))._to_ZZ(&self.__denominator)
 
-        cdef long i
         num = f * den
         for i from 0 <= i <= num.degree():
             (<Integer>ZZ(num[i]))._to_ZZ(&coeff)
@@ -1345,7 +1359,7 @@ cdef class NumberFieldElement(FieldElement):
         of this number field.
 
         EXAMPLES:
-            sage: K.<a> = NumberField(x^2 + 23, 'a')
+            sage: K.<a> = NumberField(x^2 + 23)
             sage: a.is_integral()
             True
             sage: t = (1+a)/2
@@ -1358,8 +1372,15 @@ cdef class NumberFieldElement(FieldElement):
             False
             sage: t.minpoly()
             x^2 + 23/4
+
+        An example in a relative extension:
+            sage: K.<a,b> = NumberField([x^2+1, x^2+3])
+            sage: (a+b).is_integral()
+            True
+            sage: ((a-b)/2).is_integral()
+            False
         """
-        return all([a in ZZ for a in self.minpoly()])
+        return all([a in ZZ for a in self.absolute_minpoly()])
 
     def matrix(self, base=None):
         r"""
@@ -1457,6 +1478,32 @@ cdef class NumberFieldElement(FieldElement):
             M = sage.matrix.matrix_space.MatrixSpace(k, d)
             self.__matrix = M(v)
         return self.__matrix
+
+    def valuation(self, P):
+        """
+        Returns the valuation of self at a given prime ideal P.
+
+        INPUT:
+           P -- a prime ideal of the parent of self
+
+        EXAMPLES:
+        sage: R.<x> = QQ[]
+        sage: K.<a> = NumberField(x^4+3*x^2-17)
+        sage: P = K.ideal(61).factor()[0][0]
+        sage: b = a^2 + 30
+        sage: b.valuation(P)
+        1
+        """
+        from number_field_ideal import is_NumberFieldIdeal
+        if not is_NumberFieldIdeal(P):
+            if is_NumberFieldElement(P):
+                P = self.parent().ideal(P)
+            else:
+                raise TypeError, "P must be an ideal"
+        if not P.is_prime():
+            # We always check this because it caches the pari prime representation of this ideal.
+            raise ValueError, "P must be prime"
+        return self.parent()._pari_().elementval(self._pari_(), P._pari_prime)
 
     def _matrix_over_base(self, L):
         K = self.parent()
@@ -1767,6 +1814,7 @@ cdef class OrderElement_absolute(NumberFieldElement_absolute):
         K = order.number_field()
         NumberFieldElement_absolute.__init__(self, K, f)
         self._order = order
+        (<Element>self)._parent = order
 
 cdef class OrderElement_relative(NumberFieldElement_relative):
     """
@@ -1776,6 +1824,7 @@ cdef class OrderElement_relative(NumberFieldElement_relative):
         K = order.number_field()
         NumberFieldElement_relative.__init__(self, K, f)
         self._order = order
+        (<Element>self)._parent = order
 
 class CoordinateFunction:
     def __init__(self, alpha, W, to_V):
