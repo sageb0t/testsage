@@ -88,7 +88,7 @@ AUTHORS:
 from expect import Expect, ExpectElement, ExpectFunction, FunctionElement
 from sage.misc.misc import verbose
 from sage.libs.pari.all import pari
-import sage.rings.all
+## import sage.rings.all
 import sage.rings.complex_number
 
 class Gp(Expect):
