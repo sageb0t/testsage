@@ -496,6 +496,32 @@ function toggle_menu(name) {
   }
 }
 
+function toggle_top() {
+  toggle('topbar')
+}
+
+function toggle(el) {
+  var el = get_element(el)
+  if ( el.style.display != 'none' ) {
+    el.style.display = 'none';
+  } else {
+    el.style.display = '';
+  }
+}
+
+function toggle_top() {
+  toggle('topbar')
+}
+
+function toggle(el) {
+  var el = get_element(el)
+  if ( el.style.display != 'none' ) {
+    el.style.display = 'none';
+  } else {
+    el.style.display = '';
+  }
+}
+
 function toggle_left_pane() {
   if(get_class('left_pane') == "hidden") {
     set_class('left_pane', 'pane');
