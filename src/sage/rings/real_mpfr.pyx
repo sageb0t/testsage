@@ -973,11 +973,11 @@ cdef class RealNumber(sage.structure.element.RingElement):
             sage: ZZ(0.0/0.0)
             Traceback (most recent call last):
             ...
-            ValueError: Attempt to coerce non-integral RealNumber to Integer
+            TypeError: Attempt to coerce non-integral RealNumber to Integer
             sage: ZZ(1.0/0.0)
             Traceback (most recent call last):
             ...
-            ValueError: Attempt to coerce non-integral RealNumber to Integer
+            TypeError: Attempt to coerce non-integral RealNumber to Integer
             sage: ZZ(-123456789.0)
             -123456789
             sage: ZZ(RealField(300)(2.0)^290)
@@ -985,7 +985,7 @@ cdef class RealNumber(sage.structure.element.RingElement):
             sage: ZZ(-2345.67)
             Traceback (most recent call last):
             ...
-            ValueError: Attempt to coerce non-integral RealNumber to Integer
+            TypeError: Attempt to coerce non-integral RealNumber to Integer
         """
         cdef Integer n
 
@@ -994,7 +994,7 @@ cdef class RealNumber(sage.structure.element.RingElement):
             mpfr_get_z(n.value, self.value, GMP_RNDN)
             return n
 
-        raise ValueError, "Attempt to coerce non-integral RealNumber to Integer"
+        raise TypeError, "Attempt to coerce non-integral RealNumber to Integer"
 
     def integer_part(self):
         """
@@ -1141,7 +1141,7 @@ cdef class RealNumber(sage.structure.element.RingElement):
             sage: 1.5 << 2.5
             Traceback (most recent call last):
             ...
-            ValueError: Attempt to coerce non-integral RealNumber to Integer
+            TypeError: unsupported operands for <<
         """
         if not PY_TYPE_CHECK(x, RealNumber):
             raise TypeError, "unsupported operands for <<"
@@ -1166,7 +1166,7 @@ cdef class RealNumber(sage.structure.element.RingElement):
             sage: 1.5 >> 2.5
             Traceback (most recent call last):
             ...
-            ValueError: Attempt to coerce non-integral RealNumber to Integer
+            TypeError: unsupported operands for >>
         """
         if not PY_TYPE_CHECK(x, RealNumber):
             raise TypeError, "unsupported operands for >>"
