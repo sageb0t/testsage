@@ -101,6 +101,7 @@ include "../ext/stdsage.pxi"
 include "../ext/python_list.pxi"
 include "../ext/python_number.pxi"
 include "../ext/python_int.pxi"
+include "../libs/pari/decl.pxi"
 
 cdef extern from "mpz_pylong.h":
     cdef mpz_get_pylong(mpz_t src)
@@ -108,7 +109,11 @@ cdef extern from "mpz_pylong.h":
     cdef int mpz_set_pylong(mpz_t dst, src) except -1
     cdef long mpz_pythonhash(mpz_t src)
 
-from sage.libs.pari.gen cimport gen as pari_gen
+cdef extern from "convert.h":
+    cdef void t_INT_to_ZZ( mpz_t value, long *g )
+    cdef void ZZ_to_t_INT( long **g, mpz_t value )
+
+from sage.libs.pari.gen cimport gen as pari_gen, PariInstance
 
 cdef class Integer(sage.structure.element.EuclideanDomainElement)
 
@@ -228,6 +233,8 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
             -901824309821093821093812093810928309183091832091
             sage: ZZ(QQ(-901824309821093821093812093810928309183091832091))
             -901824309821093821093812093810928309183091832091
+            sage: ZZ(RR(2.0)^80)
+            1208925819614629174706176
             sage: ZZ(pari('Mod(-3,7)'))
             4
             sage: ZZ('sage')
@@ -275,25 +282,30 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
             elif PyLong_CheckExact(x):
                 mpz_set_pylong(self.value, x)
 
+            elif PY_TYPE_CHECK(x, pari_gen):
+
+                if x.type() == 't_INT':
+                    t_INT_to_ZZ(self.value, (<pari_gen>x).g)
+
+                else:
+                    if x.type() == 't_INTMOD':
+                        x = x.lift()
+                    # TODO: figure out how to convert to pari integer in base 16 ?
+
+                    # todo: having this "s" variable around here is causing
+                    # pyrex to play games with refcount for the None object, which
+                    # seems really stupid.
+
+                    s = hex(x)
+                    if mpz_set_str(self.value, s, 16) != 0:
+                        raise TypeError, "Unable to coerce PARI %s to an Integer."%x
+
             elif PyString_Check(x):
                 if base < 0 or base > 36:
                     raise ValueError, "base (=%s) must be between 2 and 36"%base
                 if mpz_set_str(self.value, x, base) != 0:
                     raise TypeError, "unable to convert x (=%s) to an integer"%x
 
-            # Similarly for "sage.libs.pari.all.pari_gen"
-            elif PY_TYPE_CHECK(x, pari_gen):
-                if x.type() == 't_INTMOD':
-                    x = x.lift()
-                # TODO: figure out how to convert to pari integer in base 16 ?
-
-                # todo: having this "s" variable around here is causing
-                # pyrex to play games with refcount for the None object, which
-                # seems really stupid.
-
-                s = hex(x)
-                if mpz_set_str(self.value, s, 16) != 0:
-                    raise TypeError, "Unable to coerce PARI %s to an Integer."%x
             elif PyObject_HasAttrString(x, "_integer_"):
                 # todo: Note that PyObject_GetAttrString returns NULL if
                 # the attribute was not found. If we could test for this,
@@ -576,6 +588,20 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
         """
         return self.str(2)
 
+    def bits(self, int base=2):
+        """
+        Return the number of bits in self.
+
+        EXAMPLES:
+            sage: 500.bits()
+            9
+            sage: 5.bits()
+            3
+            sage: 12345.bits() == len(12345.binary())
+            True
+        """
+        return int(mpz_sizeinbase(self.value, 2))
+
     def digits(self, int base=2, digits=None):
         """
         Return a list of digits for self in the given base in little
@@ -595,7 +621,7 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
 
         """
         if base < 2:
-            raise TypeError, "base must be >= 2"
+            raise ValueError, "base must be >= 2"
 
         cdef mpz_t mpz_value
         cdef mpz_t mpz_base
@@ -2341,7 +2367,25 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
             # TODO: (I could just think carefully about raw bytes and make this all much faster...)
             #self._pari = sage.libs.pari.all.pari(str(self))
         #return self._pari
-        return sage.libs.pari.all.pari(str(self))
+##        return sage.libs.pari.all.pari(str(self))
+
+        return self._pari_c()
+
+    cdef _pari_c(self):
+
+        cdef GEN z
+        cdef pari_sp sp
+        global avma
+        cdef PariInstance P
+
+        sp = avma
+        P = sage.libs.pari.gen.pari
+
+        ZZ_to_t_INT(&z, self.value)
+        x = P.new_gen_noclear(z)
+        avma = sp
+
+        return x
 
     def _interface_init_(self):
         """
@@ -2542,7 +2586,7 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
             sage: 1 >> 2.5
             Traceback (most recent call last):
             ...
-            TypeError: unsupported operands for >>
+            ValueError: Attempt to coerce non-integral RealNumber to Integer
         """
         try:
             if not PY_TYPE_CHECK(x, Integer):
@@ -2580,7 +2624,7 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
             sage: 1<< 2.5
             Traceback (most recent call last):
             ...
-            TypeError: unsupported operands for <<
+            ValueError: Attempt to coerce non-integral RealNumber to Integer
         """
         try:
             if not PY_TYPE_CHECK(x, Integer):
