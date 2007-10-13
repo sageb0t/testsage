@@ -689,7 +689,7 @@ div.worksheet_title_under {
    padding-top: 3px;
    padding-left: 1em;
    background-color: <color1>;
-   width: 100%;
+   /*width: 100%;*/
    font-family:arial;
    font-size: 22px;
    font-weight:bold;
@@ -829,14 +829,9 @@ span.control:hover a.cs, span.control a:hover.cs {
 /************ WORKSHEET **************************/
 
 div.worksheet {
-  position:fixed;
   overflow:auto;
   background-color: white;
   border:1px solid #aaa;
-    top: 10em;
-    bottom: 0ex;
-    right: 0ex;
-    left:1ex;
 }
 
 div.banner{
@@ -928,7 +923,7 @@ td.cell_number_running:hover {
 }
 
 td.output_cell {
-   width:100%;
+   /* width: 100% */
    height:3px;
 }
 
@@ -952,7 +947,7 @@ textarea.cell_input {
   padding-left:5px;
   padding-top:3px;
   padding-bottom:0px;
-                /*  width: 100%;  */
+  width: 95%;
   margin-bottom:0px;
   margin-top:0px;
   line-height:1.2em;
@@ -970,7 +965,7 @@ pre.cell_input {
   padding-left:5px;
   padding-top:3px;
   padding-bottom:0px;
-/*  width: 100%;  */
+  width: 95%;
   margin-bottom:0px;
   margin-top:0px;
 
@@ -988,7 +983,7 @@ textarea.cell_input_hide {
   padding-left:3px;
   padding-top:0px;
   padding-bottom:0px;
-  width: 100%;
+  /* width: 100%; */
   height:0.5em;
   margin:0px;
 }
@@ -1002,7 +997,7 @@ pre.cell_input_hide {
   padding-left:3px;
   padding-top:0px;
   padding-bottom:0px;
-  width: 100%;
+  /* width: 100%; */
   height:1em;
   margin:0px;
 }
@@ -1026,7 +1021,7 @@ textarea.cell_input_active {
   margin-top:0px;
   margin-bottom:0px;
   line-height:1.2em;
-/*  width: 100%;  */
+  width: 95%;
 }
 
 textarea.cell_input:hover{
@@ -1044,7 +1039,7 @@ span.cell_evaluate {
 div.cell_div_output {
   font-family: monospace;
   font-size:12pt;
-  width: 95%;
+  /*width: 95%;*/
   margin-top:-5px;
   margin-bottom:5px;
   padding-bottom:5px;
@@ -1122,7 +1117,7 @@ div.cell_output_html_hidden {
 div.cell_div_output_running {
   font-family: monospace;
   font-size:12pt;
-  width: 100%;
+  /* width: 100%; */
   margin:0px;
   background-color:#ffffff;
   padding:0px;
@@ -1133,7 +1128,7 @@ div.cell_div_output_running:hover {
 }
 
 div.cell_div_output_hidden {
-  width: 100%;
+  */ width: 100%;*/
   height: 3px;
   margin:0px;
   border-left: 4em solid #aaaaaa;
@@ -1164,7 +1159,7 @@ a.file_link {
 
 div.insert_new_cell {
   height:6px;
-  width:100%;
+  /* width:100%; /*
   /* border-top: 4px solid white; */
   display:block;
   margin:3px;
@@ -1186,7 +1181,7 @@ div.debug_window_active {
   padding-left:3px;
   padding-top:0px;
   padding-bottom:0px;
-  width: 100%;
+  /* width: 100%; */
 }
 div.debug_window_inactive {
   background-color: white;
@@ -1195,7 +1190,7 @@ div.debug_window_inactive {
   padding-left:0px;
   padding-top:0px;
   padding-bottom:0px;
-  width: 100%;
+  /* width: 100%; */
 }
 
 div.debug_output {
@@ -1208,7 +1203,7 @@ div.debug_output {
   padding-top:0px;
   padding-bottom:0px;
   height: 10em;
-  width: 100%;
+  /* width: 100%; */
 }
 
 textarea.debug_input {
@@ -1220,7 +1215,7 @@ textarea.debug_input {
   padding-left:3px;
   padding-top:0px;
   padding-bottom:0px;
-  width: 100%;
+  /* width: 100%; */
 }
 
 span.red{
@@ -1350,7 +1345,8 @@ textarea.edit {
     color: black;
     background-color: white;
     padding: 3px;
-    width: 100%;
+    overflow:auto;
+    /* width: 100%; */
     margin-top: 0.5em;
 }
 
@@ -1364,7 +1360,7 @@ a.listcontrol {
 
 hr.usercontrol {
    border: 0;
-   width: 100%;
+   width: 99%;
    color: #c9d7f1;
    background-color: #c9d7f1;
    height: 1px;
@@ -1372,7 +1368,7 @@ hr.usercontrol {
 
 hr.greybar hr.negative_greybar {
    border: 0;
-   width: 100%;
+   width: 99%;
    color: #aaa;
    background-color: #aaa;
    height: 1px;
@@ -1417,7 +1413,7 @@ td.entry {
 
 div.thinspace {
    border: 0;
-   width: 100%;
+   /*width: 100%;*/
    height: 2px;
 }
 
@@ -1427,7 +1423,7 @@ tr.thingreybox {
 
 div.ultrathinspace {
    border: 0;
-   width: 100%;
+   /*width: 100%;*/
    height: 0px;
 }
 
@@ -1518,38 +1514,23 @@ span.addtext {
 }
 
 textarea.plaintextedit {
-    position:fixed;
     font-family: courier, monospace;
     font-size:10pt;
     border: 1px solid #8cacbb;
     color: black;
     background-color: white;
-    padding: 3px;
-    top: 12em;
-    bottom: 0ex;
-    right: 0ex;
-    left:1ex;
-    height: 65%;
+    overflow: auto;
     width: 99%;
-/*    margin-bottom:0ex;
-    margin-top: 0ex;
-    margin-right: 0ex;
-    margin-left: 1ex;     */
+    height: 60%;
 }
 
 pre.plaintext {
     overflow:auto;
-    position:fixed;
     font-family: courier, monospace;
     font-size:10pt;
     border: 1px solid #8cacbb;
     color: black;
     background-color: white;
-    padding: 3px;
-    top: 12em;
-    bottom: 0ex;
-    right: 0ex;
-    left:1ex;
     margin-top: 0.5em;
 }
 
