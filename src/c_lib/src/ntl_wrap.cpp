@@ -727,6 +727,14 @@ void ZZ_pX_linear_roots(struct ZZ_p*** v, long* n, struct ZZ_pX* f)
   }
 }
 
+/////////// ZZ_pE //////////////
+
+struct ZZ_pX ZZ_pE_to_ZZ_pX(struct ZZ_pE x)
+{
+  ZZ_pX *ans = new ZZ_pX(rep(x));
+  return *ans;
+}
+
 //////// mat_ZZ //////////
 
 void mat_ZZ_SetDims(struct mat_ZZ* mZZ, long nrows, long ncols){
@@ -987,6 +995,21 @@ ZZ_pContext* ZZ_pContext_construct(void *mem, ZZ *p)
 }
 
 void ZZ_pContext_restore(ZZ_pContext *ctx)
+{
+	ctx->restore();
+}
+
+ZZ_pEContext* ZZ_pEContext_new(ZZ_pX *f)
+{
+	return new ZZ_pEContext(*f);
+}
+
+ZZ_pEContext* ZZ_pEContext_construct(void *mem, ZZ_pX *f)
+{
+	return new(mem) ZZ_pEContext(*f);
+}
+
+void ZZ_pEContext_restore(ZZ_pEContext *ctx)
 {
 	ctx->restore();
 }
