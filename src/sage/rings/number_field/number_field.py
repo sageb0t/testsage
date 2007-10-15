@@ -2396,7 +2396,7 @@ class NumberField_absolute(NumberField_generic):
         return self._subfields_helper(degree=degree,name=name,
                                       both_maps=both_maps,optimize=True)
 
-    def change_name(self, names):
+    def change_names(self, names):
         r"""
         Return number field isomorphic to self but with the given
         generator name.
@@ -2411,7 +2411,7 @@ class NumberField_absolute(NumberField_generic):
         EXAMPLES:
             sage: K.<z> = NumberField(x^2 + 3); K
             Number Field in z with defining polynomial x^2 + 3
-            sage: L.<ww> = K.change_name()
+            sage: L.<ww> = K.change_names()
             sage: L
             Number Field in ww with defining polynomial x^2 + 3
             sage: L.structure()[0]
@@ -2906,7 +2906,7 @@ class NumberField_relative(NumberField_generic):
         v = [self(x) for x in v]
         self.__gens = tuple(v)
 
-    def change_name(self, names):
+    def change_names(self, names):
         r"""
         Return relative number field isomorphic to self but with the
         given generator names.
@@ -2923,7 +2923,7 @@ class NumberField_relative(NumberField_generic):
         EXAMPLES:
             sage: K.<a,b> = NumberField([x^4 + 3, x^2 + 2]); K
             Number Field in a with defining polynomial x^4 + 3 over its base field
-            sage: L.<c,d> = K.change_name()
+            sage: L.<c,d> = K.change_names()
             sage: L
             Number Field in c with defining polynomial x^4 + 3 over its base field
             sage: L.base_field()
@@ -2932,7 +2932,7 @@ class NumberField_relative(NumberField_generic):
         An example with a 3-level tower:
             sage: K.<a,b,c> = NumberField([x^2 + 17, x^2 + x + 1, x^3 - 2]); K
             Number Field in a with defining polynomial x^2 + 17 over its base field
-            sage: L.<m,n,r> = K.change_name()
+            sage: L.<m,n,r> = K.change_names()
             sage: L
             Number Field in m with defining polynomial x^2 + 17 over its base field
             sage: L.base_field()
@@ -2945,7 +2945,7 @@ class NumberField_relative(NumberField_generic):
             names = self.variable_names()
         elif isinstance(names, str):
             names = names.split(',')
-        K = self.base_field().change_name(tuple(names[1:]))
+        K = self.base_field().change_names(tuple(names[1:]))
         L = K.extension(self.defining_polynomial(), names=names[0])
         return L
 
