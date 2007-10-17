@@ -11,3 +11,5 @@
 #from twist import notebook_twisted as notebook
 
 from notebook_object import notebook
+
+from sagetex import sagetex
