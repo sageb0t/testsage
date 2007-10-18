@@ -61,6 +61,10 @@ EXAMPLES:
     [          a^3 + a               a^2               a^2                 1]
     [                1               a^3             a + 1             a + 1]
 
+TESTS:
+    sage: sr == loads(dumps(sr))
+    True
+
 REFERENCES:
    C. Cid , S. Murphy, and M.J.B. Robshaw; Small Scale Variants of the
    AES; in Proceedings of Fast Software Encryption 2005, LNCS 3557;
@@ -85,6 +89,8 @@ from sage.modules.vector_modn_dense import Vector_modn_dense
 
 from mpolynomialsystem import MPolynomialSystem, MPolynomialRoundSystem
 from mpolynomialsystemgenerator import MPolynomialSystemGenerator
+
+from sage.rings.polynomial.term_order import TermOrder
 
 def SR(n=1,r=1,c=1,e=4, star=False, **kwargs):
     """
@@ -272,6 +278,12 @@ class SR_generic(MPolynomialSystemGenerator):
             self._base = GF(2**8,'a',modulus=(1,1,0,1,1,0,0,0,1))
 
         return self._base
+
+    def __cmp__(self, other):
+        """
+        The internal state dictionaries are compared.
+        """
+        return cmp(self.__dict__,other.__dict__)
 
     def sub_bytes(self, d):
         """
