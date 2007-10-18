@@ -266,7 +266,7 @@ cdef class Polynomial_integer_dense_ntl(Polynomial):
             -3*x^2 + 2*x + 7
         """
         cdef Polynomial_integer_dense_ntl x = self._new()
-        add_ZZX(x.__poly, self.__poly,
+        ZZX_add(x.__poly, self.__poly,
                 (<Polynomial_integer_dense_ntl>right).__poly)
         return x
 
@@ -282,7 +282,7 @@ cdef class Polynomial_integer_dense_ntl(Polynomial):
             3*x^2 + 2*x - 5
         """
         cdef Polynomial_integer_dense_ntl x = self._new()
-        sub_ZZX(x.__poly, self.__poly,
+        ZZX_sub(x.__poly, self.__poly,
                 (<Polynomial_integer_dense_ntl>right).__poly)
         return x
 
@@ -297,7 +297,7 @@ cdef class Polynomial_integer_dense_ntl(Polynomial):
             -2*x + 1
         """
         cdef Polynomial_integer_dense_ntl x = self._new()
-        neg_ZZX(x.__poly, self.__poly)
+        ZZX_negate(x.__poly, self.__poly)
         return x
 
     def quo_rem(self, right):
@@ -445,7 +445,7 @@ cdef class Polynomial_integer_dense_ntl(Polynomial):
             x^3 - 10*x^2 + 32*x - 32
         """
         cdef Polynomial_integer_dense_ntl x = self._new()
-        mul_ZZX(x.__poly, self.__poly,
+        ZZX_mul(x.__poly, self.__poly,
                 (<Polynomial_integer_dense_ntl>right).__poly)
         return x
 
@@ -464,7 +464,7 @@ cdef class Polynomial_integer_dense_ntl(Polynomial):
         cdef ZZ_c _right
 
         mpz_to_ZZ(&_right, &(<Integer>right).value)
-        mul_ZZX_ZZ(x.__poly, self.__poly, _right)
+        ZZX_mul_ZZ(x.__poly, self.__poly, _right)
         return x
 
     cdef ModuleElement _rmul_c_impl(self, RingElement right):
@@ -482,7 +482,7 @@ cdef class Polynomial_integer_dense_ntl(Polynomial):
         cdef ZZ_c _right
 
         mpz_to_ZZ(&_right, &(<Integer>right).value)
-        mul_ZZX_ZZ(x.__poly, self.__poly, _right)
+        ZZX_mul_ZZ(x.__poly, self.__poly, _right)
         return x
 
     def __floordiv__(self, right):
