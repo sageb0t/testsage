@@ -115,15 +115,27 @@ cdef class Ring(ParentWithGens):
                 # how to pass in names?
                 # TODO: set up embeddings
                 name_chr = 97 # a
-                for poly, var in zip(minpolys, v):
-                    name = repr(var)
-                    m = re.match('^sqrt\((\d+)\)$', name)
-                    if m:
-                        name = "sqrt%s" % m.groups()[0]
-                    elif not re.match('^[a-zA-Z0-9]$', name):
-                        name = chr(name_chr)
-                        name_chr += 1
-                    R = R.extension(poly, name)
+
+                if len(minpolys) > 1:
+                    w = []
+                    names = []
+                    for poly, var in zip(minpolys, v):
+                        w.append(poly)
+                        n, name_chr = gen_name(repr(var), name_chr)
+                        names.append(n)
+                else:
+                    w = minpolys
+                    names, name_chr = gen_name(repr(v[0]), name_chr)
+
+                names = tuple(names)
+                if len(w) > 1:
+                    try:
+                        # Doing the extension all at once is best, if possible.
+                        return R.extension(w, names)
+                    except (TypeError, ValueError):
+                        pass
+                for poly, var in zip(w, names):
+                    R = R.extension(poly, var)
                 return R
 
         if not isinstance(x, list):
@@ -1576,3 +1588,13 @@ def is_Ring(x):
         True
     """
     return isinstance(x, Ring)
+
+def gen_name(x, name_chr):
+    name = repr(x)
+    m = re.match('^sqrt\((\d+)\)$', name)
+    if m:
+        name = "sqrt%s" % m.groups()[0]
+    elif not re.match('^[a-zA-Z0-9]$', name):
+        name = chr(name_chr)
+        name_chr += 1
+    return name, name_chr
