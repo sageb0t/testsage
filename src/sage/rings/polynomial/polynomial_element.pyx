@@ -838,8 +838,8 @@ cdef class Polynomial(CommutativeAlgebraElement):
                 else:
                     var = ""
                 s += "%s%s"%(x,var)
-        if atomic_repr:
-            s = s.replace(" + -", " - ")
+        #if atomic_repr:
+        s = s.replace(" + -", " - ")
         s = s.replace(" 1*"," ")
         s = s.replace(" -1*", " -")
         if s==" ":
@@ -902,8 +902,8 @@ cdef class Polynomial(CommutativeAlgebraElement):
                 else:
                     var = ""
                 s += "%s%s"%(x,var)
-        if atomic_repr:
-            s = s.replace(" + -", " - ")
+        #if atomic_repr:
+        s = s.replace(" + -", " - ")
         s = s.replace(" 1|"," ")
         s = s.replace(" -1|", " -")
         s = s.replace("|","")
