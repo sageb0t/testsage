@@ -2844,6 +2844,39 @@ cdef class Matrix(matrix1.Matrix):
                     k+=1
         return QQ(k)/QQ(nr*nc)
 
+    def inverse(self):
+        """
+        Returns the inverse of self, without changing self.
+
+        Note that one can use the Python inverse operator ~
+        to obtain the inverse as well.
+
+        EXAMPLES:
+            sage: m = matrix([[1,2],[3,4]])
+            sage: m^(-1)
+            [  -2    1]
+            [ 3/2 -1/2]
+            sage: m.inverse()
+            [  -2    1]
+            [ 3/2 -1/2]
+            sage: ~m
+            [  -2    1]
+            [ 3/2 -1/2]
+
+            sage: m = matrix([[1,2],[3,4]], sparse=True)
+            sage: m^(-1)
+            [  -2    1]
+            [ 3/2 -1/2]
+            sage: m.inverse()
+            [  -2    1]
+            [ 3/2 -1/2]
+            sage: ~m
+            [  -2    1]
+            [ 3/2 -1/2]
+
+        """
+        return self.__invert__()
+
 def _dim_cmp(x,y):
     return cmp(x[0].dimension(), y[0].dimension())
 
