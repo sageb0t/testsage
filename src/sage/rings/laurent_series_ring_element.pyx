@@ -210,8 +210,7 @@ cdef class LaurentSeries(AlgebraElement):
                     var = "*%s^%s"%(X,e)
                 s += "%s%s"%(x,var)
                 first = False
-        if atomic_repr:
-            s = s.replace(" + -", " - ")
+        s = s.replace(" + -", " - ")
         s = s.replace(" 1*"," ")
         s = s.replace(" -1*", " -")
         if self.prec() == 0:
@@ -269,8 +268,7 @@ cdef class LaurentSeries(AlgebraElement):
                     else:
                         s += "\\frac{%s}{%s^{%s}}"%(x, X,-e)
                 first = False
-        if atomic_repr:
-            s = s.replace(" + -", " - ")
+        s = s.replace(" + -", " - ")
         s = s.replace(" 1|"," ")
         s = s.replace(" -1|", " -")
         s = s.replace("|","")
