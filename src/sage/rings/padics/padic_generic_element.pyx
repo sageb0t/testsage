@@ -30,6 +30,7 @@ from sage.structure.element cimport Element
 cimport pow_computer
 from sage.rings.integer cimport Integer
 import sage.rings.rational_field
+from sage.rings.padics.pow_computer cimport PowComputer_base
 
 Rational = sage.rings.rational.Rational
 infinity = sage.rings.infinity.infinity
@@ -929,7 +930,7 @@ cdef class pAdicGenericElement(LocalGenericElement):
         cdef int neg, curpower
         cdef Integer list_elt
         cdef unsigned long preccap
-        preccap = self.prime_pow._cache_limit
+        preccap = self.prime_pow._prec_cap()
         ans = PyList_New(0)
         mpz_init_set(tmp, value)
         if lift_mode == 'simple':
