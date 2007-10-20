@@ -155,7 +155,7 @@ cdef class ntl_ZZ:
             self = ntl_ZZ(self)
         if not PY_TYPE_CHECK(other, ntl_ZZ):
             other = ntl_ZZ(other)
-        mul_ZZ(r.x, (<ntl_ZZ>self).x, (<ntl_ZZ>other).x)
+        ZZ_mul(r.x, (<ntl_ZZ>self).x, (<ntl_ZZ>other).x)
         return r
 
     def __sub__(self, other):
@@ -171,7 +171,7 @@ cdef class ntl_ZZ:
             self = ntl_ZZ(self)
         if not PY_TYPE_CHECK(other, ntl_ZZ):
             other = ntl_ZZ(other)
-        sub_ZZ(r.x, (<ntl_ZZ>self).x, (<ntl_ZZ>other).x)
+        ZZ_sub(r.x, (<ntl_ZZ>self).x, (<ntl_ZZ>other).x)
         return r
 
     def __add__(self, other):
@@ -187,7 +187,7 @@ cdef class ntl_ZZ:
             self = ntl_ZZ(self)
         if not PY_TYPE_CHECK(other, ntl_ZZ):
             other = ntl_ZZ(other)
-        add_ZZ(r.x, (<ntl_ZZ>self).x, (<ntl_ZZ>other).x)
+        ZZ_add(r.x, (<ntl_ZZ>self).x, (<ntl_ZZ>other).x)
         return r
 
     def __neg__(ntl_ZZ self):
@@ -208,7 +208,7 @@ cdef class ntl_ZZ:
             122008981252869411022491112993141891091036959856659100591281395343249
         """
         cdef ntl_ZZ r = ntl_ZZ()
-        power_ZZ(r.x, self.x, e)
+        ZZ_power(r.x, self.x, e)
         return r
 
     def __int__(self):
@@ -354,7 +354,7 @@ def ntl_setSeed(x=None):
     else:
         seed = ntl_ZZ(str(x))
     _sig_on
-    setSeed(&seed.x)
+    ZZ_SetSeed(seed.x)
     _sig_off
 
 ntl_setSeed()
@@ -375,8 +375,12 @@ def randomBnd(q):
     if not PY_TYPE_CHECK(q, ntl_ZZ):
         q = ntl_ZZ(str(q))
     w = q
+    cdef ntl_ZZ ans
+    ans = PY_NEW(ntl_ZZ)
     _sig_on
-    return  make_ZZ(ZZ_randomBnd(&w.x))
+    ZZ_RandomBnd(ans.x, w.x)
+    _sig_off
+    return ans
 
 def randomBits(long n):
     r"""
@@ -389,5 +393,9 @@ def randomBits(long n):
     AUTHOR:
         -- Didier Deshommes <dfdeshom@gmail.com>
     """
+    cdef ntl_ZZ ans
+    ans = PY_NEW(ntl_ZZ)
     _sig_on
-    return make_ZZ(ZZ_randomBits(n))
+    ZZ_RandomBits(ans.x, n)
+    _sig_off
+    return ans
