@@ -1921,7 +1921,7 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
             ...    if not already:
             ...        LL.append(G)
             ...
-            sage.: graphs_list.show_graphs(LL)
+            sage: graphs_list.show_graphs(LL)
 
             sage: E = EllipticCurve('195a')
             sage: G = E.isogeny_graph()
