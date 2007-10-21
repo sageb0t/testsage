@@ -326,7 +326,8 @@ fi
 if [ $1 = '-M2'  -o $1 = '--M2' ]; then
     cd "$CUR"
     shift
-    M2 "$@"
+    # It is critical to use an exact path for any optional packages.
+    "$SAGE_LOCAL"/bin/M2 "$@"
     exit $?
 fi
 
@@ -561,7 +562,14 @@ install() {
    for PKG in "$@"
    do
        echo "Calling sage-spkg on $PKG"
-       sage-spkg $OPT "$CUR/$PKG" 2>&1 | tee -a ../install.log
+       case $PKG in
+	   /*)
+	       sage-spkg $OPT "$PKG" 2>&1 | tee -a ../install.log
+	   ;;
+	   *)
+	       sage-spkg $OPT "$CUR/$PKG" 2>&1 | tee -a ../install.log
+	   ;;
+       esac
 
        if [ $? -ne 0 ]; then
           exit 1
