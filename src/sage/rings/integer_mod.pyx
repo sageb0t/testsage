@@ -1080,6 +1080,18 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
             mpz_sub(x.value, x.value, self.__modulus.sageInteger.value)
         return x;
 
+    cdef ModuleElement _iadd_c_impl(self, ModuleElement right):
+        """
+        EXAMPLES:
+            sage: R = Integers(10^10)
+            sage: R(7) + R(8)
+            15
+        """
+        mpz_add(self.value, self.value, (<IntegerMod_gmp>right).value)
+        if mpz_cmp(self.value, self.__modulus.sageInteger.value)  >= 0:
+            mpz_sub(self.value, self.value, self.__modulus.sageInteger.value)
+        return self
+
     cdef ModuleElement _sub_c_impl(self, ModuleElement right):
         """
         EXAMPLES:
@@ -1093,6 +1105,18 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
         if mpz_sgn(x.value) == -1:
             mpz_add(x.value, x.value, self.__modulus.sageInteger.value)
         return x;
+
+    cdef ModuleElement _isub_c_impl(self, ModuleElement right):
+        """
+        EXAMPLES:
+            sage: R = Integers(10^10)
+            sage: R(7) - R(8)
+            9999999999
+        """
+        mpz_sub(self.value, self.value, (<IntegerMod_gmp>right).value)
+        if mpz_sgn(self.value) == -1:
+            mpz_add(self.value, self.value, self.__modulus.sageInteger.value)
+        return self
 
     cdef ModuleElement _neg_c_impl(self):
         """
@@ -1121,6 +1145,17 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
         mpz_mul(x.value, self.value,  (<IntegerMod_gmp>right).value)
         mpz_fdiv_r(x.value, x.value, self.__modulus.sageInteger.value)
         return x
+
+    cdef RingElement _imul_c_impl(self, RingElement right):
+        """
+        EXAMPLES:
+            sage: R = Integers(10^11)
+            sage: R(700000) * R(800000)
+            60000000000
+        """
+        mpz_mul(self.value, self.value,  (<IntegerMod_gmp>right).value)
+        mpz_fdiv_r(self.value, self.value, self.__modulus.sageInteger.value)
+        return self
 
     cdef RingElement _div_c_impl(self, RingElement right):
         """
@@ -1422,6 +1457,20 @@ cdef class IntegerMod_int(IntegerMod_abstract):
             x = x - self.__modulus.int32
         return self._new_c(x)
 
+    cdef ModuleElement _iadd_c_impl(self, ModuleElement right):
+        """
+        EXAMPLES:
+            sage: R = Integers(10)
+            sage: R(7) + R(8)
+            5
+        """
+        cdef int_fast32_t x
+        x = self.ivalue + (<IntegerMod_int>right).ivalue
+        if x >= self.__modulus.int32:
+            x = x - self.__modulus.int32
+        self.ivalue = x
+        return self
+
     cdef ModuleElement _sub_c_impl(self, ModuleElement right):
         """
         EXAMPLES:
@@ -1434,6 +1483,20 @@ cdef class IntegerMod_int(IntegerMod_abstract):
         if x < 0:
             x = x + self.__modulus.int32
         return self._new_c(x)
+
+    cdef ModuleElement _isub_c_impl(self, ModuleElement right):
+        """
+        EXAMPLES:
+            sage: R = Integers(10)
+            sage: R(7) - R(8)
+            9
+        """
+        cdef int_fast32_t x
+        x = self.ivalue - (<IntegerMod_int>right).ivalue
+        if x < 0:
+            x = x + self.__modulus.int32
+        self.ivalue = x
+        return self
 
     cdef ModuleElement _neg_c_impl(self):
         """
@@ -1455,6 +1518,16 @@ cdef class IntegerMod_int(IntegerMod_abstract):
             6
         """
         return self._new_c((self.ivalue * right.ivalue) % self.__modulus.int32)
+
+    cdef RingElement _imul_c_impl(self, RingElement right):
+        """
+        EXAMPLES:
+            sage: R = Integers(10)
+            sage: R(7) * R(8)
+            6
+        """
+        self.ivalue = (self.ivalue * right.ivalue) % self.__modulus.int32
+        return self
 
     cdef RingElement _div_c_impl(self, RingElement right):
         """
@@ -1970,6 +2043,20 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
             x = x - self.__modulus.int64
         return self._new_c(x)
 
+    cdef ModuleElement _iadd_c_impl(self, ModuleElement right):
+        """
+        EXAMPLES:
+            sage: R = Integers(10^5)
+            sage: R(7) + R(8)
+            15
+        """
+        cdef int_fast64_t x
+        x = self.ivalue + (<IntegerMod_int64>right).ivalue
+        if x >= self.__modulus.int64:
+            x = x - self.__modulus.int64
+        self.ivalue = x
+        return self
+
     cdef ModuleElement _sub_c_impl(self, ModuleElement right):
         """
         EXAMPLES:
@@ -1982,6 +2069,20 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
         if x < 0:
             x = x + self.__modulus.int64
         return self._new_c(x)
+
+    cdef ModuleElement _isub_c_impl(self, ModuleElement right):
+        """
+        EXAMPLES:
+            sage: R = Integers(10^5)
+            sage: R(7) - R(8)
+            99999
+        """
+        cdef int_fast64_t x
+        x = self.ivalue - (<IntegerMod_int64>right).ivalue
+        if x < 0:
+            x = x + self.__modulus.int64
+        self.ivalue = x
+        return self
 
     cdef ModuleElement _neg_c_impl(self):
         """
@@ -2003,6 +2104,16 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
             60000
         """
         return self._new_c((self.ivalue * (<IntegerMod_int64>right).ivalue) % self.__modulus.int64)
+
+    cdef RingElement _imul_c_impl(self, RingElement right):
+        """
+        EXAMPLES:
+            sage: R = Integers(10^5)
+            sage: R(700) * R(800)
+            60000
+        """
+        self.ivalue = (self.ivalue * (<IntegerMod_int64>right).ivalue) % self.__modulus.int64
+        return self
 
     cdef RingElement _div_c_impl(self, RingElement right):
         """
