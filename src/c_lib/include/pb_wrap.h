@@ -1,5 +1,6 @@
 #include "polybori.h"
 #include "groebner_alg.h"
+#include "nf.h"
 #include "ccobject.h"
 #include <sstream>
 
@@ -19,7 +20,15 @@ BooleSet* PBSet_construct_dd(void* mem, const BooleSet::dd_type &d) {
     return new(mem) BooleSet(d);
 }
 
+BooleSet* PBSet_construct_pbnav(void* mem, const CCuddNavigator &d) {
+    return new(mem) BooleSet(d);
+}
+
 BoolePolynomial* PBPoly_construct_dd(void* mem, const BoolePolyRing::dd_type &d) {
+    return new(mem) BoolePolynomial(d);
+}
+
+BoolePolynomial* PBPoly_construct_pbset(void* mem, const BooleSet &d) {
     return new(mem) BoolePolynomial(d);
 }
 
@@ -35,6 +44,14 @@ BoolePolynomial* PBPoly_construct_int(void *mem, const int d) {
     return new(mem) BoolePolynomial(d);
 }
 
+BooleMonomial* PBMonom_construct_pbmonom(void *mem, const BooleMonomial &d) {
+    return new(mem) BooleMonomial(d);
+}
+
+BoolePolynomial* PBMonom_construct_dd(void* mem, const BooleMonomial::dd_type &d) {
+    return new(mem) BoolePolynomial(d);
+}
+
 template<class T>
 char* to_str(const T* x)
 {
@@ -44,14 +61,4 @@ char* to_str(const T* x)
     char* buf = (char*)malloc(n+1);
     strcpy(buf, instore.str().data());
     return buf;
-}
-
-inline BoolePolynomial PBPoly_add(BoolePolynomial rval, BoolePolynomial lval)
-{
-    return BoolePolynomial(rval + lval);
-}
-
-inline BoolePolynomial PBPoly_mul(BoolePolynomial rval, BoolePolynomial lval)
-{
-    return BoolePolynomial(rval * lval);
 }
