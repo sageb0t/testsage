@@ -1,6 +1,7 @@
 include "../../libs/singular/singular-cdefs.pxi"
 
-cimport sage.rings.polynomial.multi_polynomial
+#cimport sage.rings.polynomial.multi_polynomial
+cimport multi_polynomial
 from sage.rings.polynomial.multi_polynomial_ring_generic cimport MPolynomialRing_generic
 from sage.structure.parent cimport Parent
 
