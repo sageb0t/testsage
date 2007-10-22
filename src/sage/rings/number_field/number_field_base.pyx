@@ -37,7 +37,7 @@ cdef class NumberField(Field):
         EXAMPLES:
             sage: K.<a> = NumberField(x^2 + 1)
             sage: K.ring_of_integers()
-            Order with module basis 1, a in Number Field in a with defining polynomial x^2 + 1
+            Maximal Order in Number Field in a with defining polynomial x^2 + 1
         """
         return self.maximal_order()
 
@@ -47,7 +47,7 @@ cdef class NumberField(Field):
 
         EXAMPLES:
             sage: NumberField(x^3 - 2,'a').OK()
-            Order with module basis 1, a, a^2 in Number Field in a with defining polynomial x^3 - 2
+            Maximal Order in Number Field in a with defining polynomial x^3 - 2
         """
         return self.maximal_order(*args, **kwds)
 
@@ -58,7 +58,7 @@ cdef class NumberField(Field):
 
         EXAMPLES:
             sage: NumberField(x^3 - 2,'b').maximal_order()
-            Order with module basis 1, b, b^2 in Number Field in b with defining polynomial x^3 - 2
+            Maximal Order in Number Field in b with defining polynomial x^3 - 2
         """
         raise NotImplementedError
 
