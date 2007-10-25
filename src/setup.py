@@ -202,11 +202,15 @@ pari = Extension('sage.libs.pari.gen',
                  sources = ["sage/libs/pari/gen.pyx"],
                  libraries = ['pari', 'gmp'])
 
-givaro_gfq = Extension('sage.rings.finite_field_givaro',
+finite_field_givaro = Extension('sage.rings.finite_field_givaro',
                        sources = ["sage/rings/finite_field_givaro.pyx"],
                        libraries = ['givaro', 'gmpxx', 'gmp', 'm', 'stdc++', ],   # this order is needed to compile under windows.
                        language='c++'
                        )
+finite_field_ntl_gf2e = Extension('sage.rings.finite_field_ntl_gf2e',
+			 sources = ['sage/rings/finite_field_ntl_gf2e.pyx'],
+			 libraries = ['ntl', 'gmp'],
+			 language = 'c++')
 
 qd = Extension('sage.rings.real_rqdf',
                        sources = ["sage/rings/real_rqdf.pyx"],
@@ -485,7 +489,8 @@ ext_modules = [ \
      matrix_mod2_dense,
      matrix_mpolynomial_dense, \
 
-     givaro_gfq, \
+     finite_field_givaro, \
+     finite_field_ntl_gf2e, \
 
      libsingular, \
 
