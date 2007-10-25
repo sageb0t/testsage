@@ -271,7 +271,7 @@ cdef class Matrix(matrix1.Matrix):
 
         from sage.rings.arith import binomial
         for r from 1 <= r < m+1:
-            lst = combinations_iterator(range(n), r)
+            lst = _choose(n, r)
             tmp = []
             for cols in lst:
                 tmp.append(self.prod_of_row_sums(cols))
@@ -358,8 +358,8 @@ cdef class Matrix(matrix1.Matrix):
 
         k = int(k)
         pm = 0
-        for cols in combinations_iterator(range(n),k):
-            for rows in combinations_iterator(range(m),k):
+        for cols in _choose(n,k):
+            for rows in _choose(m,k):
                 pm = pm + self.matrix_from_rows_and_columns(rows, cols).permanent()
         return pm
 
@@ -2903,3 +2903,29 @@ def cmp_pivots(x,y):
         return 0
     else:
         return -1
+
+def _choose(int n, int t):
+    """
+    Returns all possible sublists of length t from range(n)
+
+    Based on algoritm L from Knuth's taocp part 4: 7.2.1.3 p.4
+
+    AUTHOR:
+        -- Jaap Spies (2007-10-22)
+    """
+
+    x = []
+    c = range(t)
+    c.append(n)
+    c.append(0)
+    j = 0
+
+    while j < t:
+        x.append(c[:t])
+        j = 0
+        while c[j]+1 == c[j+1]:
+           c[j] = j
+           j = j+1
+        c[j] = c[j]+1
+
+    return x
