@@ -16,7 +16,8 @@ For design documentation see matrix/docs.py.
 include "../ext/stdsage.pxi"
 include "../ext/python.pxi"
 
-from sage.structure.sequence import _combinations, Sequence
+from sage.structure.sequence import Sequence
+from sage.combinat.combinat import combinations_iterator
 from sage.structure.element import is_Vector
 from sage.misc.misc import verbose, get_verbose, graphics_filename
 from sage.rings.number_field.all import is_NumberField
@@ -270,7 +271,7 @@ cdef class Matrix(matrix1.Matrix):
 
         from sage.rings.arith import binomial
         for r from 1 <= r < m+1:
-            lst = _combinations(range(n), r)
+            lst = combinations_iterator(range(n), r)
             tmp = []
             for cols in lst:
                 tmp.append(self.prod_of_row_sums(cols))
@@ -357,8 +358,8 @@ cdef class Matrix(matrix1.Matrix):
 
         k = int(k)
         pm = 0
-        for cols in _combinations(range(n),k):
-            for rows in _combinations(range(m),k):
+        for cols in combinations_iterator(range(n),k):
+            for rows in combinations_iterator(range(m),k):
                 pm = pm + self.matrix_from_rows_and_columns(rows, cols).permanent()
         return pm
 
@@ -2842,6 +2843,39 @@ cdef class Matrix(matrix1.Matrix):
                 if not self.get_unsafe(x,y).is_zero():
                     k+=1
         return QQ(k)/QQ(nr*nc)
+
+    def inverse(self):
+        """
+        Returns the inverse of self, without changing self.
+
+        Note that one can use the Python inverse operator ~
+        to obtain the inverse as well.
+
+        EXAMPLES:
+            sage: m = matrix([[1,2],[3,4]])
+            sage: m^(-1)
+            [  -2    1]
+            [ 3/2 -1/2]
+            sage: m.inverse()
+            [  -2    1]
+            [ 3/2 -1/2]
+            sage: ~m
+            [  -2    1]
+            [ 3/2 -1/2]
+
+            sage: m = matrix([[1,2],[3,4]], sparse=True)
+            sage: m^(-1)
+            [  -2    1]
+            [ 3/2 -1/2]
+            sage: m.inverse()
+            [  -2    1]
+            [ 3/2 -1/2]
+            sage: ~m
+            [  -2    1]
+            [ 3/2 -1/2]
+
+        """
+        return self.__invert__()
 
 def _dim_cmp(x,y):
     return cmp(x[0].dimension(), y[0].dimension())
