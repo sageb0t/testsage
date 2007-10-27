@@ -2369,8 +2369,8 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
         TESTS:
             sage: n = 10^10000000
             sage: m = n._pari_() ## crash from trac 875
-            sage: len(m)
-            1038103
+            sage: m % 1234567
+            1041334
         """
         return self._pari_c()
 
@@ -3085,7 +3085,8 @@ global_dummy_Integer = Integer()
 #
 # Eventually this may be rendered obsolete by a change in SageX allowing
 # non-reference counted extension types.
-cdef public long mpz_t_offset
+cdef long mpz_t_offset
+mpz_t_offset_python = None
 
 # stores the GMP alloc function
 cdef void * (* mpz_alloc)(size_t)
@@ -3273,6 +3274,8 @@ cdef hook_fast_tp_functions():
     # Eventually this may be rendered obsolete by a change in SageX allowing
     # non-reference counted extension types.
     mpz_t_offset = <char *>(&global_dummy_Integer.value) - <char *>o
+    global mpz_t_offset_python
+    mpz_t_offset_python = mpz_t_offset
 
     # store how much memory needs to be allocated for an Integer.
     sizeof_Integer = o.ob_type.tp_basicsize
