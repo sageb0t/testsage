@@ -885,6 +885,12 @@ class MagmaElement(ExpectElement):
             Y = [x for x in X if tt in x]
         return Y
 
+    def __nonzero__(self):
+        try:
+            return not self.parent()("%s eq 0"%self.name()).bool()
+        except TypeError:
+            return self.bool()
+
 magma = Magma()
 
 def reduce_load_Magma():
