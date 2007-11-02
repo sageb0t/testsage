@@ -309,6 +309,8 @@ class Magma(Expect):
             Variables: x, y, z
         """
         if gens is None:
+            if isinstance(x, bool):
+                return Expect.__call__(self, str(x).lower())
             return Expect.__call__(self, x)
         return self.objgens(x, gens)
 
@@ -391,7 +393,7 @@ class Magma(Expect):
         if len(params) == 0:
             par = ''
         else:
-            par = ' : ' + ','.join(['%s:=%s'%(a,b) for a,b in params.items()])
+            par = ' : ' + ','.join(['%s:=%s'%(a,self(b)) for a,b in params.items()])
 
         fun = "%s(%s%s)"%(function, ",".join([s.name() for s in args]), par)
         if nvals <= 0:
@@ -884,6 +886,12 @@ class MagmaElement(ExpectElement):
         else:
             Y = [x for x in X if tt in x]
         return Y
+
+    def __nonzero__(self):
+        try:
+            return not self.parent()("%s eq 0"%self.name()).bool()
+        except TypeError:
+            return self.bool()
 
 magma = Magma()
 
