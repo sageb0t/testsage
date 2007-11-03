@@ -1,3 +1,6 @@
+r"""
+Schubert Polynomials
+"""
 #*****************************************************************************
 #       Copyright (C) 2007 Mike Hansen <mhansen@gmail.com>,
 #
