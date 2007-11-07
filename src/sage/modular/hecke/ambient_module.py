@@ -92,7 +92,7 @@ class AmbientHeckeModule(module.HeckeModule_free_module):
         """
         Return the largest Hecke-stable complement of this space.
         """
-        return self.zero_subspace()
+        return self.zero_submodule()
 
     def decomposition_matrix(self):
         r"""
