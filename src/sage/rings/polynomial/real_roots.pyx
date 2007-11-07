@@ -3862,6 +3862,9 @@ def real_roots(p, bounds=None, seed=None, skip_squarefree=False, do_logging=Fals
     else:
         factors = p.squarefree_decomposition()
 
+    if max_diameter is not None:
+        max_diameter = QQ(max_diameter)
+
     ctx = context(do_logging, seed, wordsize)
 
     extra_roots = []
@@ -3894,11 +3897,11 @@ def real_roots(p, bounds=None, seed=None, skip_squarefree=False, do_logging=Fals
             oceans.append((oc, factor, exp))
         else:
             if bounds is None:
-                bounds = rational_root_bounds(factor)
-                if bounds is None:
+                fac_bounds = rational_root_bounds(factor)
+                if fac_bounds is None:
                     continue
                 else:
-                    (left, right) = bounds
+                    (left, right) = fac_bounds
             else:
                 (left, right) = bounds
                 # Bad things happen if the bounds are roots themselves.
@@ -3972,7 +3975,7 @@ def real_roots(p, bounds=None, seed=None, skip_squarefree=False, do_logging=Fals
                 root = all_roots[i][0]
                 oc = all_roots[i][3]
                 target_region = (root[0], root[0] + target_widths[i])
-                if target_region[0] <= 0 and  target_region[1] >= 0:
+                if target_region[0] <= 0 and target_region[1] >= 0:
                     target_region = (root[1] - target_widths[i], root[1])
 
                 ocean_target = oc.mapping.to_ocean(target_region)
