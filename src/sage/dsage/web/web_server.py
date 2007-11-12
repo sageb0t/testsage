@@ -26,6 +26,7 @@ from twisted.web2 import http, resource
 from twisted.web2 import static, http_headers, responsecode
 
 from sage.dsage.misc.constants import TMP_WORKER_FILES
+from sage.dsage.server.stats import XMLStats
 
 SAGE_ROOT  = os.environ['SAGE_ROOT']
 DSAGE_LOCAL = SAGE_ROOT + '/local/dsage'
@@ -292,8 +293,8 @@ class GetServerDetails(resource.PostableResource):
 
         """
 
-        stats_xml = self.dsage_server.generate_xml_stats()
+        stats_xml = XMLStats(self.dsage_server).gen_xml()
 
-        html = self.gen_html(stats_xml)
+        # html = self.gen_html(stats_xml)
 
-        return http.Response(stream=html)
+        return http.Response(stream=stats_xml)
