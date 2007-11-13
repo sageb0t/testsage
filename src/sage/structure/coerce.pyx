@@ -321,6 +321,14 @@ cdef class CoercionModel_cache_maps(CoercionModel_original):
                 return x, y
             return _verify_canonical_coercion_c(x,y)
 
+        try:
+            if PY_TYPE_CHECK(xp, type) or PY_TYPE_CHECK(yp, type):
+                x = x._sage_()
+                y = y._sage_()
+                return self.canonical_coercion_c(x, y)
+        except AttributeError:
+            pass
+
         raise TypeError, "no common canonical parent for objects with parents: '%s' and '%s'"%(xp, yp)
 
     def _coercion_error(self, x, x_map, x_elt, y, y_map, y_elt):
