@@ -39,3 +39,7 @@ static std::vector<BoolePolynomial> someNextDegreeSpolys(GroebnerStrategy& strat
     }
     return res;
 }
+
+static void implications(GroebnerStrategy& strat, int i){
+    strat.addNonTrivialImplicationsDelayed(strat.generators[i]);
+}
