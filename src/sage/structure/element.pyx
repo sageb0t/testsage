@@ -10,7 +10,7 @@ AUTHORS:
    -- Gonzalo Tornaria (2007-06): recursive base extend for coercion -- lots of tests
 
 \subsection{The Abstract Element Class Hierarchy}
-This is the abstract class hierchary, i.e., these are all
+This is the abstract class hierarchy, i.e., these are all
 abstract base classes.
 \begin{verbatim}
 SageObject
