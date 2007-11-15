@@ -1,3 +1,7 @@
+* 2007-11-15: (Michael Abshoff)
+ - patched sources in place to 2.3.0-p4
+   (see http://www.mpfr.org/mpfr-current/patches)
+
 * 2007-09-14: (Michael Abshoff)
  - upgrade to mpfr 2.3.0 release
  - add spkg-check
