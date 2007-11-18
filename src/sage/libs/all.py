@@ -13,3 +13,5 @@ from sage.libs.mwrank.all  import (mwrank_EllipticCurve, mwrank_MordellWeil,
                                    set_precision as mwrank_set_precision)
 
 import symmetrica.all as symmetrica
+
+from cremona.all import CremonaModularSymbols
