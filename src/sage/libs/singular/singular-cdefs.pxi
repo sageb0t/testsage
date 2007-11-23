@@ -499,6 +499,10 @@ cdef extern from "libsingular.h":
 
     number *nlInit2(int i, int j)
 
+    # copy a number
+
+    number *nlCopy(number *)
+
     # get numerator
 
     number *nlGetNom(number *n, ring *r)
