@@ -1409,6 +1409,20 @@ cdef class RealNumber(sage.structure.element.RingElement):
     def __float__(self):
         return mpfr_get_d(self.value, (<RealField>self._parent).rnd)
 
+    def _rpy_(self):
+        """
+        Returns self.__float__() for rpy to convert into the
+        appropriate R object.
+
+        EXAMPLES:
+            sage: n = RealNumber(2.0)
+            sage: n._rpy_()
+            2.0
+            sage: type(n._rpy_())
+            <type 'float'>
+        """
+        return self.__float__()
+
     def __int__(self):
         """
         Returns integer truncation of this real number.
@@ -2458,6 +2472,14 @@ cdef class RealNumber(sage.structure.element.RingElement):
         """
         return 1/self.tanh()
 
+    def cot(self):
+        """
+        EXAMPLES:
+            sage: RealField(100)(2).cot()
+            -0.45765755436028576375027741043
+        """
+        return 1/self.tan()
+
     def csch(self):
         """
         EXAMPLES:
@@ -2466,6 +2488,14 @@ cdef class RealNumber(sage.structure.element.RingElement):
         """
         return 1/self.sinh()
 
+    def csc(self):
+        """
+        EXAMPLES:
+            sage: RealField(100)(2).csc()
+            1.0997501702946164667566973970
+        """
+        return 1/self.sin()
+
     def sech(self):
         """
         EXAMPLES:
@@ -2473,6 +2503,14 @@ cdef class RealNumber(sage.structure.element.RingElement):
             0.26580222883407969212086273982
         """
         return 1/self.cosh()
+
+    def sec(self):
+        """
+        EXAMPLES:
+            sage: RealField(100)(2).sec()
+            -2.4029979617223809897546004014
+        """
+        return 1/self.cos()
 
     def acosh(self):
         """
