@@ -2628,8 +2628,13 @@ class GenericGraph(SageObject):
             ...            edge_colors[R[i]].append((u,v,l))
             sage: C.plot(vertex_labels=False, vertex_size=0, edge_colors=edge_colors).show()
 
+            sage: D = graphs.DodecahedralGraph()
+            sage: Pi = [[6,5,15,14,7],[16,13,8,2,4],[12,17,9,3,1],[0,19,18,10,11]]
+            sage: D.show(partition=Pi)
+
         """
         from sage.plot.plot import networkx_plot
+        from sage.plot.plot import rainbow
         import networkx
         if vertex_colors is None:
             if partition is not None:
@@ -2773,6 +2778,10 @@ class GenericGraph(SageObject):
             ...        if u[i] != v[i]:
             ...            edge_colors[R[i]].append((u,v,l))
             sage: C.plot(vertex_labels=False, vertex_size=0, edge_colors=edge_colors).show()
+
+            sage: D = graphs.DodecahedralGraph()
+            sage: Pi = [[6,5,15,14,7],[16,13,8,2,4],[12,17,9,3,1],[0,19,18,10,11]]
+            sage: D.show(partition=Pi)
 
         """
         if talk:
