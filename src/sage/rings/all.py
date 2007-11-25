@@ -101,6 +101,8 @@ from real_mpfi import (RealIntervalField, is_RealIntervalField,
 from complex_field import ComplexField, is_ComplexField
 from complex_number import (is_ComplexNumber, create_ComplexNumber as ComplexNumber)
 Complexes = ComplexField
+from complex_interval_field import ComplexIntervalField, is_ComplexIntervalField
+from complex_interval import (is_ComplexIntervalFieldElement, create_ComplexIntervalFieldElement as ComplexIntervalFieldElement)
 
 from complex_double import ComplexDoubleField, ComplexDoubleElement, CDF, is_ComplexDoubleElement
 
@@ -144,4 +146,5 @@ from monomials import monomials
 #from fast_polynomial.compiled_polynomial import compiled_polynomial
 
 CC = ComplexField()
+CIF = ComplexIntervalField()
 I = CC.gen()
