@@ -196,7 +196,9 @@ cdef class MPolynomialRing_libsingular(MPolynomialRing_generic):
 
         self._has_singular = True
 
-        _names = <char**>omAlloc0(sizeof(char*)*(len(self._names)+1))
+        assert(n == len(self._names))
+
+        _names = <char**>omAlloc0(sizeof(char*)*(len(self._names)))
 
         for i from 0 <= i < n:
             _name = self._names[i]
@@ -285,8 +287,13 @@ cdef class MPolynomialRing_libsingular(MPolynomialRing_generic):
     def __dealloc__(self):
         """
         """
-        rChangeCurrRing(self._ring)
+        cdef ring *oldRing = NULL
+        if currRing != self._ring:
+            oldRing = currRing
+            rChangeCurrRing(self._ring)
         rDelete(self._ring)
+        if oldRing != NULL:
+            rChangeCurrRing(oldRing)
 
     cdef _coerce_c_impl(self, element):
         """
@@ -543,6 +550,7 @@ cdef class MPolynomialRing_libsingular(MPolynomialRing_generic):
                         p_SetExp(mon, pos+1, m[pos], _ring)
                 p_Setm(mon, _ring)
                 _p = p_Add_q(_p, mon, _ring)
+
             return co.new_MP(self, _p)
 
         if hasattr(element,'_polynomial_'):
@@ -656,6 +664,7 @@ cdef class MPolynomialRing_libsingular(MPolynomialRing_generic):
             Ideal (x + 2*y + 2*z - 1, 2*x*y + 2*y*z - y, x^2 + 2*y^2 + 2*z^2 - x) of Multivariate Polynomial Ring in x, y, z over Rational Field
 
         """
+        coerce = kwds.get('coerce', True)
         if len(gens) == 1:
             gens = gens[0]
         if is_SingularElement(gens):
@@ -786,8 +795,9 @@ cdef class MPolynomialRing_libsingular(MPolynomialRing_generic):
                 return R
             if self.base_ring().is_finite():
                 R.set_ring() #sorry for that, but needed for minpoly
-                if  singular.eval('minpoly') != self.__minpoly:
+                if  singular.eval('minpoly') != "(" + self.__minpoly + ")":
                     singular.eval("minpoly=%s"%(self.__minpoly))
+                    self.__minpoly = singular.eval('minpoly')[1:-1] # store in correct format
             return R
         except (AttributeError, ValueError):
             return self._singular_init_(singular)
@@ -853,9 +863,10 @@ cdef class MPolynomialRing_libsingular(MPolynomialRing_generic):
         elif self.base_ring().is_finite(): #must be extension field
             gen = str(self.base_ring().gen())
             r = singular.ring( "(%s,%s)"%(self.characteristic(),gen), _vars, order=order)
-            self.__minpoly = "("+(str(self.base_ring().modulus()).replace("x",gen)).replace(" ","")+")"
-            singular.eval("minpoly=%s"%(self.__minpoly) )
-
+            self.__minpoly = (str(self.base_ring().modulus()).replace("x",gen)).replace(" ","")
+            if  singular.eval('minpoly') != "(" + self.__minpoly + ")":
+                singular.eval("minpoly=%s"%(self.__minpoly) )
+                self.__minpoly = singular.eval('minpoly')[1:-1]
             self.__singular = r
         else:
             raise TypeError, "no conversion to a Singular ring defined"
@@ -1522,8 +1533,6 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
 
         _p= p_Add_q(_l, _r, _ring)
 
-        p_Normalize(_p,_ring)
-
         return co.new_MP((<MPolynomialRing_libsingular>left._parent),_p)
 
     cdef ModuleElement _iadd_c_impl( left, ModuleElement right):
@@ -1550,7 +1559,6 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
 
         _p= p_Add_q(_l, _r, _ring)
 
-        p_Normalize(_p,_ring)
         left._poly = _p
         return left
 
@@ -1601,7 +1609,6 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
 
         if(_ring != currRing): rChangeCurrRing(_ring)
         _p= p_Add_q(_l, p_Neg(_r, _ring), _ring)
-        p_Normalize(_p,_ring)
         left._poly = _p
         return left
 
@@ -1752,9 +1759,7 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
             raise TypeError,  "exponent is too large, max. is 65535"
 
         if(_ring != currRing): rChangeCurrRing(_ring)
-
         _p = pPower( p_Copy(self._poly,_ring),_exp)
-
         return co.new_MP((<MPolynomialRing_libsingular>self._parent),_p)
 
     def __neg__(self):
@@ -2285,25 +2290,26 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
             sage: parent(R(x*y+5).coefficient(R(1)))
             Multivariate Polynomial Ring in x, y over Finite Field of size 389
         """
+        cdef ring *r = (<MPolynomialRing_libsingular>self._parent)._ring
+        if r != currRing: rChangeCurrRing(r)
+
         cdef poly *p = self._poly
         cdef poly *m = mon._poly
-        cdef ring *r = (<MPolynomialRing_libsingular>self._parent)._ring
-        cdef poly *res = p_ISet(0,r)
         cdef poly *t
         cdef int exactly_divisible, i
-        if(r != currRing): rChangeCurrRing(r)
+        cdef poly *res = p_ISet(0,r)
 
         if not mon._parent is self._parent:
             raise TypeError, "mon must have same parent as self"
 
-        while(p):
+        while p:
             exactly_divisible = 1
             for i from 1 <= i <= r.N:
                 if (p_GetExp(m,i,r) != 0) and (p_GetExp(p,i,r) != p_GetExp(m,i,r)):
                     exactly_divisible = 0
                     break
             if exactly_divisible:
-                t = pDivide(p,m)
+                t = pDivide(p, m)
                 p_SetCoeff(t, n_Div( p_GetCoeff(p, r) , p_GetCoeff(m, r), r), r)
                 res = p_Add_q(res, t , r )
             p = pNext(p)
@@ -2988,7 +2994,9 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
         # I make a temporary copy of the poly in self because singclap_factorize appears to modify it's parameter
         ptemp = p_Copy(self._poly,_ring)
         iv = NULL
+        _sig_on
         I = singclap_factorize ( ptemp, &iv , int(param)) #delete iv at some point
+        _sig_off
 
         if param==1:
             v = [(co.new_MP(parent, p_Copy(I.m[i],_ring)) , 1)   for i in range(I.ncols)]
