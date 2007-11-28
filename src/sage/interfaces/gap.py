@@ -359,7 +359,7 @@ class Gap(Expect):
             os.unlink(tmp)
             return r
         else:
-            return self.eval('%s;'%var, newlines=False)
+            return self.eval('Print(%s);'%var, newlines=False)
 
     def __getattr__(self, attrname):
         if attrname[:1] == "_":
