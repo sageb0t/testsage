@@ -80,7 +80,7 @@ class DSage(object):
         self.privkey_file = privkey_file
         self.remoteobj = None
         self.result = None
-
+        self.info_str = 'Connected to: %s:%s'
         # public key authentication information
         self.pubkey_str = keys.getPublicKeyString(filename=self.pubkey_file)
         # try getting the private key object without a passphrase first
@@ -112,8 +112,7 @@ class DSage(object):
 
     def __str__(self):
         self.check_connected()
-        self.info_str = 'Connected to: %s:%s' % (self.server, self.port)
-        return self.info_str + '\r'
+        return self.info_str % (self.server, self.port)
 
     def __call__(self, cmd, globals_=None, job_name=None):
         cmd = ['ans = %s\n' % (cmd),
@@ -176,7 +175,7 @@ class DSage(object):
         from sage.dsage.twisted.pb import PBClientFactory
         factory = PBClientFactory()
 
-        if self.SSL == 1:
+        if self.ssl == 1:
             # Old, uses OpenSSL, SAGE uses GNUTLS now
             # from twisted.internet import ssl
             # contextFactory = ssl.ClientContextFactory()
@@ -275,16 +274,16 @@ class DSage(object):
 
         return JobWrapper(self.remoteobj, job)
 
-    def eval_dir(self, dir, job_name):
+    def eval_dir(self, dir_, job_name):
         from twisted.internet import defer
         self.check_connected()
-        os.chdir(dir)
+        os.chdir(dir_)
         files = glob.glob('*.spyx')
         deferreds = []
-        for file in files:
-            sage_cmd = open(file).readlines()
+        for file_ in files:
+            sage_cmd = open(file_).readlines()
             d = self.remoteobj.callRemote('get_next_job_id')
-            d.addCallback(self._got_id, sage_cmd, job_name, file=True,
+            d.addCallback(self._got_job_id, sage_cmd, job_name, file=True,
                           type_='spyx')
             d.addErrback(self._catch_failure)
             deferreds.append(d)
@@ -740,12 +739,12 @@ class JobWrapper(object):
     def sync_job(self):
         from twisted.spread import pb
         if self.remoteobj == None:
-            if self.LOG_LEVEL > 2:
-                print 'self.remoteobj is None'
+            # if self.LOG_LEVEL > 2:
+            #     print 'self.remoteobj is None'
             return
         if self.status == 'completed':
-            if self.LOG_LEVEL > 2:
-                print 'Stopping sync_job'
+            # if self.LOG_LEVEL > 2:
+            #     print 'Stopping sync_job'
             if self.sync_job_task:
                 if self.sync_job_task.running:
                     self.sync_job_task.stop()
@@ -827,7 +826,7 @@ class BlockingJobWrapper(JobWrapper):
         from sage.dsage.errors.exceptions import NotConnectedException
 
         if self.remoteobj == None:
-           raise NotConnectedException
+            raise NotConnectedException
         if self.status == 'completed':
             return
 
