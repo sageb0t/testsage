@@ -1623,9 +1623,15 @@ cdef class Polynomial(CommutativeAlgebraElement):
             G = list(f.factor())
 
         elif is_NumberField(R):
-            if (R.defining_polynomial().denominator() == 1) and \
-                   (self.denominator() == 1):
-                v = [ x._pari_("a") for x in self.list() ]
+            if (R.defining_polynomial().denominator() == 1):
+
+                if (self.leading_coefficient() == 1):
+                    unit = None
+                    v = [ x._pari_("a") for x in self.list() ]
+                else:
+                    unit = self.leading_coefficient()
+                    temp_f = self * 1/unit
+                    v = [ x._pari_("a") for x in temp_f.list() ]
                 f = pari(v).Polrev()
                 Rpari = R.pari_nf()
                 if (Rpari.variable() != "a"):
@@ -1633,6 +1639,7 @@ cdef class Polynomial(CommutativeAlgebraElement):
                     Rpari[0] = Rpari[0]("a")
                     Rpari[6] = [ x("a") for x in Rpari[6] ]
                 G = list(Rpari.nffactor(f))
+                return self._factor_pari_helper(G, unit=unit)
 
             else:
 
