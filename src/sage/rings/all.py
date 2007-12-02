@@ -149,3 +149,5 @@ from monomials import monomials
 CC = ComplexField()
 CIF = ComplexIntervalField()
 I = CC.gen()
+
+from residue_field import ResidueField
