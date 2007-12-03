@@ -310,7 +310,7 @@ class GenericGraph(SageObject):
         weighted = ( self._weighted and other._weighted )
         # inputs must be (di)graphs:
         if not isinstance(other, GenericGraph):
-            raise TypeError("Input (%s) must be a graph."%str(other))
+            raise TypeError("Cannot compare graph to non-graph (%s)."%str(other))
         # DiGraphs are "larger" than Graphs:
         g1_is_graph = isinstance(self, Graph)
         g2_is_graph = isinstance(other, Graph)
@@ -4915,6 +4915,8 @@ class Graph(GenericGraph):
             True
 
         """
+        if self.order() == 0:
+            return True
         import networkx
         return networkx.component.is_connected(self._nxg)
 
@@ -6595,6 +6597,8 @@ class DiGraph(GenericGraph):
             True
 
         """
+        if self.order() == 0:
+            return True
         import networkx
         return networkx.component.is_connected(self._nxg.to_undirected())
 
