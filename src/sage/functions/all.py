@@ -1,6 +1,4 @@
-from piecewise import Piecewise
-
-piecewise = Piecewise
+from piecewise import piecewise, Piecewise
 
 from transcendental import (exponential_integral_1,
                             gamma, gamma_inc, incomplete_gamma,
