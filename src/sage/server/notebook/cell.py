@@ -414,7 +414,14 @@ class Cell(Cell_generic):
         self.__type = 'wrap'
         dir = self.directory()
         for D in os.listdir(dir):
-            os.unlink(dir + '/' + D)
+            F = dir + '/' + D
+            try:
+                os.unlink(F)
+            except OSError:
+                try:
+                    shutil.rmtree(F)
+                except:
+                    pass
 
     def version(self):
         try:
