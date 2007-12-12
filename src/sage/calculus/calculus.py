@@ -757,7 +757,7 @@ class SymbolicExpression(RingElement):
 
         EXAMPLES:
             sage: gap(e+pi^2 + x^3)
-            "x^3 + pi^2 + e"
+            x^3 + pi^2 + e
         """
         return '"%s"'%repr(self)
 
