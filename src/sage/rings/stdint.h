@@ -1,6 +1,6 @@
 #if defined(__sun)
 typedef int int_fast32_t;
-typedef long int_fast64_t;
+typedef long long int_fast64_t;
 #else
 #include <stdint.h>
 #endif
