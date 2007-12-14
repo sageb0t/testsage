@@ -191,8 +191,9 @@ class FreeModule_ambient_field_quotient(FreeModule_ambient_field):
             (1, 2)
         """
         try:
-            return self._coerce_impl(x)
-        except TypeError:
+            if x.parent() is self:
+                return x
+        except AttributeError:
             pass
         try:
             return FreeModule_ambient_field.__call__(self, x)
