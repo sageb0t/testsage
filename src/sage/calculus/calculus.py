@@ -8,7 +8,6 @@ The \sage calculus module is loosely based on the \sage Enhahcement Proposal
 found at: http://www.sagemath.org:9001/CalculusSEP.
 
 EXAMPLES:
-
     The basic units of the calculus package are symbolic expressions
     which are elements of the symbolic expression ring (SR). There are
     many subclasses of SymbolicExpression. The most basic of these is
@@ -142,6 +141,12 @@ EXAMPLES:
         sage: float(z)
         4.6467837624329356
 
+    We test pickling:
+        sage: x, y = var('x,y')
+        sage: f = -sqrt(pi)*(x^3 + sin(x/cos(y)))
+        sage: bool(loads(dumps(f)) == f)
+        True
+
 COERCION EXAMPLES:
 
 We coerce various symbolic expressions into the complex numbers:
@@ -184,10 +189,6 @@ We can, of course, substitute:
            n8    n6    n6    n5    n4    n3    n2
 
 TESTS:
-We test pickling:
-    sage: f = -sqrt(pi)*(x^3 + sin(x/cos(y)))
-    sage: bool(loads(dumps(f)) == f)
-    True
 
 Substitution:
     sage: f = x
@@ -202,7 +203,7 @@ Simplifying expressions involving scientific notation:
     sage: sqrt(c)
     sqrt(2.000000000000000e-6*k + 12)
     sage: sqrt(c^3)
-    (2.000000000000000e-6*k + 12)^(3/2)
+    sqrt((2.000000000000000e-6*k + 12)^3)
 
 The symbolic Calculus package uses its own copy of Maxima for
 simplification, etc., which is separate from the default system-wide
@@ -260,7 +261,7 @@ import sage.numerical.optimize
 
 # The calculus package uses its own copy of maxima, which is
 # separate from the default system-wide version.
-maxima = Maxima()
+maxima = Maxima(init_code = ['display2d:false; domain: complex;'])
 
 from sage.misc.sage_eval import sage_eval
 
