@@ -579,7 +579,7 @@ cdef class PartitionStack:
                         s += 1
                     r = j
                     while True:
-                        if r == 0 or self.levels[r-1] == k:
+                        if r == j or self.levels[r-1] == k:
                             if r != t:
                                 alpha[s] = r
                                 s += 1
@@ -623,7 +623,7 @@ cdef class PartitionStack:
                         s += 1
                     r = j
                     while True:
-                        if r == 0 or self.levels[r-1] == k:
+                        if r == j or self.levels[r-1] == k:
                             if r != t:
                                 alpha[s] = r
                                 s += 1
