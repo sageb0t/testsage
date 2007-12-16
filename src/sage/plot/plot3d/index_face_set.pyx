@@ -44,6 +44,7 @@ include "../../ext/python_string.pxi"
 include "point_c.pxi"
 
 from math import sin, cos, sqrt
+from random import randint
 
 from sage.rings.real_double import RDF
 
@@ -522,6 +523,8 @@ cdef class IndexFaceSet(PrimativeObject):
             f.write(line)
             f.write('\n')
         f.close()
+        if render_params.force_reload:
+            filename += "?%s" % randint(1,1000000)
         return ['pmesh %s "%s"\n%s' % (name, filename, self.texture.jmol_str("pmesh"))]
 
     def dual(self, **kwds):
