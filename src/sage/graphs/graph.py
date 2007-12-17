@@ -3087,6 +3087,19 @@ class Graph(GenericGraph):
         sage: G._nxg is H._nxg
         False
 
+    def characteristic_polynomial(self, var='x'):
+        """
+        Returns the characteristic polynomial of the adjacency matrix
+        of the (di)graph.
+
+        EXAMPLE:
+            sage: P = graphs.PetersenGraph()
+            sage: P.characteristic_polynomial()
+            x^10 + x^8 + x^6 + x^4
+
+        """
+        return self.am().charpoly(var=var)
+
     3. A dictionary of dictionaries:
         sage: g = Graph({0:{1:'x',2:'z',3:'a'}, 2:{5:'out'}}); g
         Graph on 5 vertices
