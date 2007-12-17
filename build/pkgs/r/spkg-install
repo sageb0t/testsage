@@ -70,4 +70,10 @@ echo "Now install rpy"
 
 cd "$CUR"
 
-sage -f rpy-1.0.1.spkg
+RPY_VER=rpy-1.0.1.p0
+
+sage -f "$RPY_VER".spkg
+if [ ! -f "$SAGE_ROOT"/spkg/installed/"$RPY_VER" ]; then
+    echo "Error installing rpy."
+    exit 1
+fi
