@@ -1276,6 +1276,24 @@ cdef class FreeModuleElement_generic_dense(FreeModuleElement):
         """
         return cmp(left._entries, (<FreeModuleElement_generic_dense>right)._entries)
 
+    def n(self, *args, **kwargs):
+        """
+        Returns a numerical approximation of self by calling the n()
+        method on all of its entries.
+
+        EXAMPLES:
+            sage: v = vector(RQDF, [1,2,3])
+            sage: v.n()
+            (1.00000000000000, 2.00000000000000, 3.00000000000000)
+            sage: _.parent()
+            Vector space of dimension 3 over Real Field with 53 bits of precision
+            sage: v.n(prec=75)
+            (1.000000000000000000000, 2.000000000000000000000, 3.000000000000000000000)
+            sage: _.parent()
+            Vector space of dimension 3 over Real Field with 75 bits of precision
+        """
+        return vector([e.n(*args, **kwargs) for e in self])
+
 #############################################
 # Generic sparse element
 #############################################
@@ -1535,3 +1553,21 @@ cdef class FreeModuleElement_generic_sparse(FreeModuleElement):
         K = self._entries.keys()
         K.sort()
         return K
+
+    def n(self, *args, **kwargs):
+        """
+        Returns a numerical approximation of self by calling the n()
+        method on all of its entries.
+
+        EXAMPLES:
+            sage: v = vector(RQDF, [1,2,3], sparse=True)
+            sage: v.n()
+            (1.00000000000000, 2.00000000000000, 3.00000000000000)
+            sage: _.parent()
+            Sparse vector space of dimension 3 over Real Field with 53 bits of precision
+            sage: v.n(prec=75)
+            (1.000000000000000000000, 2.000000000000000000000, 3.000000000000000000000)
+            sage: _.parent()
+            Sparse vector space of dimension 3 over Real Field with 75 bits of precision
+        """
+        return vector(dict([(e[0],e[1].n(*args, **kwargs)) for e in self._entries.iteritems()]), sparse=True)
