@@ -133,7 +133,7 @@ cdef inline format_pmesh_face(face_c face):
     # PyString_FromFormat is almost twice as slow
     return PyString_FromStringAndSize(ss, r)
 
-cdef class IndexFaceSet(PrimativeObject):
+cdef class IndexFaceSet(PrimitiveObject):
 
     """
     Graphics3D object that consists of a list of polygons, also used for
@@ -173,7 +173,7 @@ cdef class IndexFaceSet(PrimativeObject):
         self._faces = <face_c *>NULL
 
     def __init__(self, faces, point_list=None, enclosed=False, **kwds):
-        PrimativeObject.__init__(self, **kwds)
+        PrimitiveObject.__init__(self, **kwds)
 
         self.enclosed = enclosed
 

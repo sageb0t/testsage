@@ -388,7 +388,7 @@ class Viewpoint(Graphics3d):
     def x3d_str(self):
         return "<Viewpoint position='%s %s %s'/>"%self.pos
 
-cdef class PrimativeObject(Graphics3d):
+cdef class PrimitiveObject(Graphics3d):
     def __init__(self, **kwds):
         try:
             self.texture = kwds['texture']

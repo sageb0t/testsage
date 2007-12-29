@@ -337,9 +337,9 @@ cdef class Torus(ParametricSurface):
         res.y = (self.R+self.r*sin(v))*cos(u)
         res.z = self.r*cos(v)
 
-class Text(PrimativeObject):
+class Text(PrimitiveObject):
     def __init__(self, string, **kwds):
-        PrimativeObject.__init__(self, **kwds)
+        PrimitiveObject.__init__(self, **kwds)
         self.string = string
     def x3d_geometry(self):
         return "<Text string='%s' solid='true'/>"%self.string
