@@ -14,3 +14,5 @@ Jmol todo:
  * names should make sense (basically like in mathematica) and be lower case
  * Dynamic resizing in the notebook
  * Javascript controls in the notebook
+
+Tachyon bugs:
