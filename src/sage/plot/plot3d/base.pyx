@@ -447,6 +447,7 @@ class RenderParams(SageObject):
         self.transform_list = []
         self.transform = None
         self.ds = 1
+        self.crease_threshold = .8
         self.__dict__.update(kwds)
 
     def push_transform(self, T):
