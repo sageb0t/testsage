@@ -19,7 +19,8 @@ colors = {
     "purple": (.5,0,1),
     "white" : (1,1,1),
     "black" : (0,0,0),
-    "grey"  : (.5,.5,.5)
+    "grey"  : (.5,.5,.5),
+    "lightblue" : (0.4,0.4,1)
 }
 
 def is_Texture(x):
@@ -32,7 +33,8 @@ def Texture(id=None, **kwds):
         kwds = id
         id = None
     elif isinstance(id, str) and colors.has_key(id):
-        kwds = {"color": id}
+        kwds['color'] = id
+        #kwds = {"color": id}
         id = None
     elif isinstance(id, tuple):
         kwds['color'] = id
@@ -107,4 +109,7 @@ class Texture_class(SageObject):
                    "d %s" % self.opacity, ])
 
     def jmol_str(self, obj):
-        return "color %s [%s,%s,%s]" % (obj, int(255*self.color[0]), int(255*self.color[1]), int(255*self.color[2]))
+        # With jmol translucent is any opacity < 1.
+        translucent = "translucent" if self.opacity < 1 else ""
+        return "color %s %s [%s,%s,%s]" % (obj, translucent,
+                int(255*self.color[0]), int(255*self.color[1]), int(255*self.color[2]))
