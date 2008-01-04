@@ -32,7 +32,7 @@ from ribbon import Ribbon, StandardRibbonTableaux
 import ribbon
 
 #Words
-from word import Words
+from word import Words, ShuffleProduct
 import word
 from subword import Subwords
 import subword
@@ -73,15 +73,13 @@ from dyck_word import DyckWords, DyckWord
 
 from sloane_functions import sloane
 
-from sfa import SymmetricFunctionAlgebra, SFAPower, SFASchur, SFAHomogeneous, SFAElementary, SFAMonomial
+from sf.all import *
 
 #import lrcalc
 
 import integer_list
 from integer_vector import IntegerVectors
 from integer_vector_weighted import WeightedIntegerVectors
-
-from kfpoly import KostkaFoulkesPolynomial
 
 from finite_class import FiniteCombinatorialClass
 
