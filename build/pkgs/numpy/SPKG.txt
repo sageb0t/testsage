@@ -54,7 +54,13 @@ Special Update/Build Instructions:
     Whenever numpy is updated it is necessary to make sure that scipy still builds ok.
 
 Changelog:
-  === numpy-20080104-1.0.4.p0 (Michael Abshoff) ====
+
+=== numpy-20080104-1.0.4.p1 (Josh Kantor & Michael Abshoff) ====
+ * update SPK.txt (Josh Kantor)
+ * remove *~
+ * update .hgignore
+
+=== numpy-20080104-1.0.4.p0 (Michael Abshoff) ====
  * add SPKG.txt
  * create hg repo
 
