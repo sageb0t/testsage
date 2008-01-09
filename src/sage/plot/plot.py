@@ -2414,7 +2414,7 @@ class PlotFactory(GraphicPrimitiveFactory):
         dd = delta
 
         exceptions = 0; msg=''
-        for i in range(plot_points):
+        for i in range(plot_points+1):
             xi = xmin + i*delta
             if i < plot_points:
                 xi += delta*random.random()
@@ -2432,7 +2432,6 @@ class PlotFactory(GraphicPrimitiveFactory):
 
         # adaptive refinement
         i, j = 0, 0
-        print data
         max_bend = float(options['max_bend'])
         del options['max_bend']
         plot_division = int(options['plot_division'])
