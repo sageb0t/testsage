@@ -65,6 +65,35 @@ class PasswordChecker(object):
         else:
             return defer.succeed(FailedLogin(username,failure_type='password'))
 
+class ITokenCredentials(credentials.ICredentials):
+    def checkToken(token):
+        pass
+
+class TokenCred(object):
+    implements(ITokenCredentials)
+
+    def __init__(self, token=None):
+        self.token = token
+
+    def checkToken(self, token):
+        return token == self.token
+
+class OneTimeTokenChecker(object):
+    implements(checkers.ICredentialsChecker)
+    credentialInterfaces = (ITokenCredentials,)
+
+    is_startup = True
+
+    def requestAvatarId(self, credentials):
+        from twisted.python import log
+        if self.token and credentials.checkToken(self.token):
+            if self.is_startup:
+                self.is_startup = False
+                self.token = credentials.token = randint(0, 2**128)
+            return defer.succeed('admin')
+        else:
+            return defer.fail("Bad token")
+
 class LoginSystem(object):
     implements(portal.IRealm)
 
