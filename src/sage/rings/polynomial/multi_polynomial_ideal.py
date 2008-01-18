@@ -844,10 +844,12 @@ class MPolynomialIdeal_singular_repr:
         return ret
 
     def basis_is_groebner(self):
-        """
-        Returns true if self.gens() form a Groebner Basis. This is done by
-        trying to lift Syz(LM(self)) to Syz(self) as self is a Groebner
-        Basis if and only if for every element S in Syz(LM(self)):
+        r"""
+        Returns true if the generators of self (\code{self.gens()})
+        form a Groebner basis. Let $I$ be the set of generators of
+        this ideal. The check is performed by trying to lift
+        $Syz(LM(I))$ to $Syz(I)$ as $I$ forms a Groebner basis if and
+        only if for every element $S$ in $Syz(LM(I)):
         $$S \cdot G = \sum_{i=0}^{m} h_ig_i \rightarrow_G 0.$$.
 
         ALGORITHM: Uses Singular
@@ -861,13 +863,13 @@ class MPolynomialIdeal_singular_repr:
             sage: I2.basis_is_groebner()
             True
 
-        \note{From the Singular Manualf for the reduce function we use in
+        \note{From the Singular Manual for the reduce function we use in
         this method: 'The result may have no meaning if the second
         argument (self, malb) is not a standard basis'. I (malb) believe
         this refers to the mathematical fact that the results may have no
         meaning if self is no standard basis, i.e., Singular doesn't 'add'
         any additional 'nonsense' to the result. So we may acutally use
-        reduce to determine if self is a Groebner Basis.}
+        reduce to determine if self is a Groebner basis.}
         """
         from sage.matrix.constructor import matrix
         singular = self._singular_().parent()
