@@ -1,24 +1,31 @@
-"""
+r"""
 Run difficult calculations that test the modular forms
 functionality.
-"""
+
+There's currently no good system for timing these doctests across
+all platforms, so I'm turning these all into comments (so that they
+aren't counted against are doctest coverage), noting that we should
+use these when (if?) we one day have a good regression testing
+system in place. All the functions below have just had the "def"
+removed from the beginning of their declaration.
+-Craig Citro
 
 from sage.all import *
 
 m=0; t=0; tw=0
 
-def pre():
+pre():
     global m, t, tw
     m = get_memory_usage()
     t = cputime()
     tw = walltime()
 
-def post():
+post():
     global m,t
     print "total time: %s (wall: %.2f); memory usage diff: %sMB"%(cputime(t),
                  walltime(tw), get_memory_usage() - m)
 
-def test1():
+test1():
     pre()
     for N in range(1,75):
         M = ModularForms(N,2)
@@ -26,7 +33,7 @@ def test1():
         print M.basis()
     post()
 
-def test2():
+test2():
     pre()
     for N in range(1,30):
         M = ModularForms(Gamma1(N),2)
@@ -34,7 +41,7 @@ def test2():
         print M.basis()
     post()
 
-def test3():
+test3():
     pre()
     for k in range(2,100):
         M = ModularForms(1,k)
@@ -42,7 +49,7 @@ def test3():
         print M.basis()
     post()
 
-def test4():
+test4():
     pre()
     for N in range(1,30):
         M = ModularForms(N,4, prec=20)
@@ -50,7 +57,7 @@ def test4():
         print M.basis()
     post()
 
-def test5():
+test5():
     pre()
     for N in range(1,50):
         M = ModularForms(N,2, prec=30)
@@ -58,7 +65,7 @@ def test5():
         print M.basis()
     post()
 
-def test6():
+test6():
     pre()
     for N in range(225,230):
         M = ModularForms(N,2,prec=40)
@@ -66,7 +73,7 @@ def test6():
         print M.basis()
     post()
 
-def test7():
+test7():
     pre()
     for k in range(2,30):
         M = ModularForms(2,k)
@@ -74,7 +81,7 @@ def test7():
         print M.basis()
     post()
 
-def test8():
+test8():
     pre()
     for k in range(2,20):
         M = ModularForms(Gamma1(3),k)
@@ -82,7 +89,7 @@ def test8():
         print M.basis()
     post()
 
-def test9():
+test9():
     pre()
     for k in range(2,11):
         M = ModularForms(Gamma1(8),k)
@@ -91,7 +98,7 @@ def test9():
         print M.basis()
     post()
 
-def test10():
+test10():
     pre()
     for k in range(2,11):
         M = ModularForms(k,k)
@@ -100,7 +107,7 @@ def test10():
         print M.basis()
     post()
 
-def test11():
+test11():
     pre()
     for i in range(100):
         M = ModularForms(randint(1,100),randint(2,6))
@@ -108,8 +115,10 @@ def test11():
         print M.basis()
     post()
 
-def test12():
+test12():
     S = CuspForms(23,2)
     print S
     print S.hecke_operator(2)
     print S.hecke_operator(2).matrix()
+
+"""
