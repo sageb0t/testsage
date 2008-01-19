@@ -142,6 +142,12 @@ cdef extern from "gmp.h":
     bint mpz_fits_slong_p(mpz_t op)
     bint mpz_fits_ulong_p(mpz_t op)
 
+    void mpz_setbit (mpz_t rop, unsigned long int bit_index)
+    void mpz_clrbit (mpz_t rop, unsigned long int bit_index)
+    void mpz_com (mpz_t rop, mpz_t op)
+    void mpz_combit (mpz_t rop, unsigned long int bit_index)
+    unsigned long int mpz_hamdist (mpz_t op1, mpz_t op2)
+
     # The mpq type
     void mpq_abs (mpq_t rop, mpq_t op)
     void mpq_add(mpq_t sum, mpq_t addend1, mpq_t addend2)
