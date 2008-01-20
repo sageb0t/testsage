@@ -120,6 +120,8 @@ cdef init_singular():
 
     dlclose(handle)
 
+    singular_options[0] = singular_options[0] | Sy_bit(OPT_REDSB)
+
  # call it
 init_singular()
 
