@@ -101,6 +101,7 @@ include "../ext/stdsage.pxi"
 include "../ext/python_list.pxi"
 include "../ext/python_number.pxi"
 include "../ext/python_int.pxi"
+include "../structure/coerce.pxi"   # for parent_c
 include "../libs/pari/decl.pxi"
 
 cdef extern from "mpz_pylong.h":
@@ -920,6 +921,8 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
             2^x
             sage: 2^1.5              # real number
             2.82842712474619
+            sage: 2^float(1.5)       # python float
+            2.8284271247461903
             sage: 2^I                # complex number
             2^I
             sage: f = 2^(sin(x)-cos(x)); f
@@ -945,9 +948,6 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
             from sage.rings.integer_mod import Mod
             return Mod(self, modulus) ** n
 
-        cdef long nn
-        cdef _n
-        cdef unsigned int _nval
         if not PY_TYPE_CHECK(self, Integer):
             if isinstance(self, str):
                 return self * n
@@ -955,12 +955,13 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
                 return self ** int(n)
 
         cdef Integer _self = <Integer>self
+        cdef long nn
 
         try:
             nn = PyNumber_Index(n)
         except TypeError:
             try:
-                s = n.parent()(self)
+                s = parent_c(n)(self)
                 return s**n
             except AttributeError:
                 raise TypeError, "exponent (=%s) must be an integer.\nCoerce your numbers to real or complex numbers first."%n
