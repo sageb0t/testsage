@@ -2152,6 +2152,11 @@ cdef class PrincipalIdealDomainElement(DedekindDomainElement):
             return coercion_model.bin_op_c(self, right, xgcd)
         return self._xgcd(right)
 
+# This is pretty nasty low level stuff. The idea is to speed up construction
+# of EuclideanDomainElements (in particular Integers) by skipping some tp_new
+# calls up the inheritance tree.
+PY_SET_TP_NEW(EuclideanDomainElement, Element)
+
 def is_EuclideanDomainElement(x):
     """
     Return True if x is of type EuclideanDomainElement.
