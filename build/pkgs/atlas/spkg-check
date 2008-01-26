@@ -16,4 +16,8 @@ check()
 
 CUR=`pwd`
 
+if [ `uname` = "Darwin" ]; then
+    exit 0
+fi
+
 check
