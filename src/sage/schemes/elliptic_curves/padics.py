@@ -128,7 +128,7 @@ def padic_regulator(self, p, prec=20, height=None, check_hypotheses=True):
 
     INPUT:
         p -- prime >= 5
-        prec -- answer will be returned modulo p^prec
+        prec -- answer will be returned modulo $p^{\var{prec}}$
         height -- precomputed height function. If not supplied, this
              function will call padic_height to compute it.
         check_hypotheses -- boolean, whether to check that this is a
@@ -207,7 +207,7 @@ def padic_height_pairing_matrix(self, p, prec=20, height=None, check_hypotheses=
 
     INPUT:
         p -- prime >= 5
-        prec -- answer will be returned modulo p^prec
+        prec -- answer will be returned modulo $p^{\var{prec}}$
         height -- precomputed height function. If not supplied, this
              function will call padic_height to compute it.
         check_hypotheses -- boolean, whether to check that this is a
