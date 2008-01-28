@@ -44,6 +44,7 @@ class Notebook(SageObject):
     def __init__(self,
                  dir,
                  system=None,
+                 prettyprint=False,
                  show_debug = False,
                  log_server=False,
                  address='localhost',
@@ -56,6 +57,7 @@ class Notebook(SageObject):
 
         self.__server_pool = server_pool
         self.set_system(system)
+        self.set_prettyprint(prettyprint)
         self.__worksheets = {}
         self.__filename      = '%s/nb.sobj'%dir
         self.__worksheet_dir = '%s/worksheets'%dir
@@ -1799,6 +1801,17 @@ function save_worksheet_and_close() {
         s = """<select  onchange="go_system_select(this, %s);" class="worksheet">
             %s
             </select>"""%(i, options)
+        return s
+
+    def html_prettyprint_check_form_element(self, ws):
+        prettyprint = ws.prettyprint()
+        if prettyprint:
+            check='checked="checked"'
+        else:
+            check=''
+        s = """<input type="checkbox" title="Enable/disable prettyprinting"
+        onchange="go_prettyprint_check(this);"
+        class="worksheet" value="prettyprint" %s> Typeset output"""%(check)
         return s
 
     def html_worksheet_settings(self, ws, username):

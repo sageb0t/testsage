@@ -530,6 +530,11 @@ class Worksheet_system(WorksheetResource, resource.Resource):
         self.worksheet.set_system(system)
         return TrivialResource()
 
+class Worksheet_prettyprint(WorksheetResource, resource.Resource):
+    def childFactory(self, request, enable):
+        self.worksheet.set_prettyprint(enable)
+        return TrivialResource()
+
 ########################################################
 # Cell introspection
 ########################################################
