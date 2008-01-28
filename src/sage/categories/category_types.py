@@ -283,7 +283,7 @@ class SetsWithPartialMaps(Category_uniq):
 
     EXAMPLES:
         sage: SetsWithPartialMaps()
-        Category of Sets with
+        Category with objects Sets and morphisms partially defined maps
     """
     def __call__(self, X, pt):
         import sage.sets.all
@@ -350,7 +350,7 @@ class SetsWithPartialMaps(Category_uniq):
 
     EXAMPLES:
         sage: SetsWithPartialMaps()
-        Category of Sets with
+        Category with objects Sets and morphisms partially defined maps
     """
     def __call__(self, X, pt):
         import sage.sets.all
@@ -373,7 +373,7 @@ class GSets(uniq1, Category):
     EXAMPLES:
         sage: S = SymmetricGroup(3)
         sage: GSets(S)
-        Category of G-sets for Symmetric group of order 3! as a permutation group
+        Category of G-sets for SymmetricGroup(3)
     """
     def __init__(self, G):
         Category.__init__(self, "G-sets")
