@@ -1066,7 +1066,7 @@ void ZZ_pX_InvMod_newton_unram(struct ZZ_pX &x, const struct ZZ_pX &a, const str
     ZZ_pX *minusa = new ZZ_pX();
     ZZ_pX *xn = new ZZ_pX();
     ZZ_pX_conv_modulus(*xn, *xmodp, cpn);
-    negate(*minusa, a);
+    NTL::negate(*minusa, a);
     while (1 > 0)
     {
         // x_n = 2*x_{n-1} - a*x_{n-1}^2 = (2 - a*x_{n-1})*x_{n-1}
@@ -1093,7 +1093,7 @@ void ZZ_pX_InvMod_newton_ram(struct ZZ_pX &x, const struct ZZ_pX &a, const struc
     ZZ_pX *minusa = new ZZ_pX();
     ZZ_pX *xn = new ZZ_pX();
     SetCoeff(*xn, 0, inv(ConstTerm(a)));
-    negate(*minusa, a);
+    NTL::negate(*minusa, a);
     while (1 > 0)
     {
         // x_n = 2*x_{n-1} - a*x_{n-1}^2 = (2 - a*x_{n-1})*x_{n-1}
