@@ -793,7 +793,7 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
     def _r_action(self, s):
         """
         EXAMPLES:
-            sage: 8 * [0]
+            sage: 8 * [0] #indirect doctest
             [0, 0, 0, 0, 0, 0, 0, 0]
             sage: 8 * 'hi'
             'hihihihihihihihi'
@@ -805,7 +805,7 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
     def _l_action(self, s):
         """
         EXAMPLES:
-            sage: [0] * 8
+            sage: [0] * 8 #indirect doctest
             [0, 0, 0, 0, 0, 0, 0, 0]
             sage: 'hi' * 8
             'hihihihihihihihi'
