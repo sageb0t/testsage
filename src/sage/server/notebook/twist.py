@@ -1566,10 +1566,7 @@ class Toplevel(resource.PostableResource):
         return http.Response(stream =  login_page_template(notebook.get_accounts()))
 
     def userchildFactory(self, request, name):
-        try:
-            return UserToplevel.__dict__['userchild_%s'%name](username = self.username)
-        except KeyError:
-            pass
+        return InvalidPage(msg = "unauthorized request", username = self.username)
 
     def childFactory(self, request, name):
         return self.userchildFactory(request, name)
@@ -1600,7 +1597,14 @@ class AnonymousToplevel(Toplevel):
     child_javascript = Javascript()
     child_java = Java()
 
-    userchild_home = PublicWorksheetsHome
+    def userchildFactory(self, request, name):
+        # This is called from Toplevel above
+        try:
+            return AnonymousToplevel.__dict__['userchild_%s'%name](username = self.username)
+        except KeyError:
+            pass
+
+    userchild_home = Worksheets
     userchild_pub = PublicWorksheets
     userchild_src = SourceBrowser
 
@@ -1645,6 +1649,12 @@ class UserToplevel(Toplevel):
     #      a class rather than an object.
     # NOTE: If you overload childFactory in any derived class, you
     # better call userchildFactory it in the base class (Toplevel)!
+    def userchildFactory(self, request, name):
+        try:
+            return UserToplevel.__dict__['userchild_%s'%name](username = self.username)
+        except KeyError:
+            pass
+
     userchild_doc = Doc
     userchild_sagetex = SageTex
     userchild_help = Help
