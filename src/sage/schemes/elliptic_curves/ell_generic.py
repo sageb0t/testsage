@@ -1425,7 +1425,6 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
         EXAMPLES:
             sage: E = EllipticCurve([0,-1])
             sage: plot(E, rgbcolor=hue(0.7))
-            Graphics object consisting of 1 graphics primitive
         """
         RR = rings.RealField()
         K = self.base_ring()
