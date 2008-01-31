@@ -383,7 +383,7 @@ cdef class ParametricSurface(IndexFaceSet):
             for uu in urange:
                 for vv in vrange:
                     res = &self.vs[ix]
-                    res.x, res.y, res.z = self.f(u, v)
+                    res.x, res.y, res.z = self.f(uu, vv)
                     ix += 1
 
     cdef int eval_c(self, point_c *res, double u, double v) except -1:
