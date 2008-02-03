@@ -1,5 +1,5 @@
 """
-SAGE Notebook (Twisted Version)
+\sage Notebook (Twisted Version)
 """
 
 #############################################################################
@@ -117,7 +117,7 @@ def message(msg, cont=None):
         <html>
         <head>
            <link rel=stylesheet href="/css/main.css">
-           <title>The SAGE Notebook</title>
+           <title>The Sage Notebook</title>
         </head>
         <body>
         %s
@@ -125,7 +125,7 @@ def message(msg, cont=None):
     """%s
 
 ############################
-# Create a SAGE worksheet from a latex2html'd file
+# Create a Sage worksheet from a latex2html'd file
 ############################
 from docHTMLProcessor import DocHTMLProcessor
 
@@ -151,7 +151,7 @@ class WorksheetFile(resource.Resource):
         self.username = username
 
     def render(self, ctx=None):
-        # Create a live SAGE worksheet out of self.path and render it.
+        # Create a live Sage worksheet out of self.path and render it.
         doc_page_html = open(self.docpath).read()
         directory = os.path.split(self.docpath)[0]
         doc_page, css_href = DocHTMLProcessor().process_doc_html(DOC,
@@ -528,6 +528,11 @@ class TrivialResource(resource.Resource):
 class Worksheet_system(WorksheetResource, resource.Resource):
     def childFactory(self, request, system):
         self.worksheet.set_system(system)
+        return TrivialResource()
+
+class Worksheet_pretty_print(WorksheetResource, resource.Resource):
+    def childFactory(self, request, enable):
+        self.worksheet.set_pretty_print(enable)
         return TrivialResource()
 
 ########################################################
@@ -915,7 +920,7 @@ class Worksheet_eval(WorksheetResource, resource.PostableResource):
     """
     Evaluate a worksheet cell.
 
-    If the request is not authorized, (the requester did not enter the
+    If the request is not authorized (the requester did not enter the
     correct password for the given worksheet), then the request to
     evaluate or introspect the cell is ignored.
 
@@ -1367,7 +1372,7 @@ class Logout(resource.Resource):
     def render(self, ctx):
         # TODO -- actually log out.
         notebook.save()
-        s = message("<br>Thank you for using SAGE.<br><br><a href='/'>Please login and use SAGE again soon.</a><br>")
+        s = message("<br>Thank you for using Sage.<br><br><a href='/'>Please login and use Sage again soon.</a><br>")
         return http.Response(stream=s)
 
 ############################
@@ -1412,8 +1417,8 @@ server. Please <a href="%s://%s:%s/register">register</a> with the server.</p>
 import re
 re_valid_username = re.compile('[a-z|A-Z|0-9|_|\-|.]*')
 def is_valid_username(username):
-    """
-    Return True if and only if x is a valid username, i.e., contains
+    r"""
+    Return True if and only if \var{username} is valid, i.e., contains
     only alphabetic characters, numbers, and underscores.
 
     EXAMPLES:
@@ -1468,7 +1473,7 @@ class RegistrationPage(resource.PostableResource):
 
                 # Send a confirmation message to the user.
                 try:
-                    send_mail(self, fromaddr, destaddr, "SAGE Notebook Registration",body)
+                    send_mail(self, fromaddr, destaddr, "Sage Notebook Registration",body)
                 except ValueError:
                     # the email address is invalid
                     s = message("Registration failed -- the email address '%s' is invalid."%destaddr,
@@ -1476,7 +1481,7 @@ class RegistrationPage(resource.PostableResource):
                     return http.Response(stream=s)
 
                 # Store in memory that we are waiting for the user to respond
-                # to their invitation to join the SAGE notebook.
+                # to their invitation to join the Sage notebook.
                 waiting[key] = username
 
             # Add the user to passwords.txt
@@ -1486,7 +1491,7 @@ class RegistrationPage(resource.PostableResource):
                 s = """
                 <html>
                 <h1>Registration information received</h1>
-                <p>Thank you for registering with the SAGE notebook. A
+                <p>Thank you for registering with the Sage notebook. A
                 confirmation message will be sent to %s.</p>
                 <br>
                 <p><a href="/">Click here to login with your new account.</a></p>
@@ -1500,7 +1505,7 @@ class RegistrationPage(resource.PostableResource):
                 """
         else:
             url_prefix = "https" if notebook.secure else "http"
-            s = """<html><h1 align=center>Sign up for the SAGE Notebook.</h1>
+            s = """<html><h1 align=center>Sign up for the Sage Notebook.</h1>
             <br>
             <hr>
             <br>
@@ -1561,10 +1566,7 @@ class Toplevel(resource.PostableResource):
         return http.Response(stream =  login_page_template(notebook.get_accounts()))
 
     def userchildFactory(self, request, name):
-        try:
-            return UserToplevel.__dict__['userchild_%s'%name](username = self.username)
-        except KeyError:
-            pass
+        return InvalidPage(msg = "unauthorized request", username = self.username)
 
     def childFactory(self, request, name):
         return self.userchildFactory(request, name)
@@ -1595,7 +1597,14 @@ class AnonymousToplevel(Toplevel):
     child_javascript = Javascript()
     child_java = Java()
 
-    userchild_home = PublicWorksheetsHome
+    def userchildFactory(self, request, name):
+        # This is called from Toplevel above
+        try:
+            return AnonymousToplevel.__dict__['userchild_%s'%name](username = self.username)
+        except KeyError:
+            pass
+
+    userchild_home = Worksheets
     userchild_pub = PublicWorksheets
     userchild_src = SourceBrowser
 
@@ -1640,6 +1649,12 @@ class UserToplevel(Toplevel):
     #      a class rather than an object.
     # NOTE: If you overload childFactory in any derived class, you
     # better call userchildFactory it in the base class (Toplevel)!
+    def userchildFactory(self, request, name):
+        try:
+            return UserToplevel.__dict__['userchild_%s'%name](username = self.username)
+        except KeyError:
+            pass
+
     userchild_doc = Doc
     userchild_sagetex = SageTex
     userchild_help = Help

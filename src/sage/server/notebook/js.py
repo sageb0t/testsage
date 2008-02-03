@@ -1,5 +1,5 @@
 r"""nodoctest
-Javascript (AJAX) Component of SAGE Notebook
+Javascript (AJAX) Component of \sage Notebook
 
 AUTHORS:
     -- William Stein
@@ -54,7 +54,7 @@ def async_lib():
     s = r"""
 ///////////////////////////////////////////////////////////////////
 // An AJAX framework for connections back to the
-// SAGE server (written by Tom Boothby and William Stein).
+// Sage server (written by Tom Boothby and William Stein).
 ///////////////////////////////////////////////////////////////////
 
 //globals
@@ -907,6 +907,16 @@ function go_system_select(theform, original_system) {
 
 function system_select(s) {
     async_request(worksheet_command('system/'+s), null, null);
+}
+
+function go_pretty_print_check(theform) {
+   with(theform) {
+          pretty_print_check(checked);
+   }
+}
+
+function pretty_print_check(s) {
+    async_request(worksheet_command('pretty_print/'+s), null, null);
 }
 
 function go_data(theform) {

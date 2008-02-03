@@ -183,8 +183,8 @@ cdef class FP_LLL:
         ret = w.LLL()
         _sig_off
         wrapper_delete(w)
-        if ret < 0:
-            raise RuntimeError, "fpLLL returned %d < 0"%ret
+        if ret != 0:
+            raise RuntimeError, "fpLLL returned %d != 0"%ret
 
     def proved(self, int precision=0, float eta=0.51, float delta=0.99, implementation=None):
         """
@@ -265,8 +265,8 @@ cdef class FP_LLL:
            _sig_off
            proved_mpfr_delete(pmpfr)
 
-        if ret < 0:
-            raise RuntimeError, "fpLLL returned %d < 0"%ret
+        if ret != 0:
+            raise RuntimeError, "fpLLL returned %d != 0"%ret
 
     def fast(self, int precision=0, float eta=0.51, float delta=0.99, implementation=None):
         """
@@ -324,9 +324,6 @@ cdef class FP_LLL:
         ret = pdouble.LLL()
         _sig_off
         fast_double_delete(pdouble)
-
-        if ret < 0:
-            raise RuntimeError, "fpLLL returned %d < 0"%ret
 
     def fast_early_red(self, int precision=0, float eta=0.51, float delta=0.99, implementation=None):
         """
@@ -391,9 +388,6 @@ cdef class FP_LLL:
         ret = pdouble.LLL()
         _sig_off
         fast_early_red_double_delete(pdouble)
-
-        if ret < 0:
-            raise RuntimeError, "fpLLL returned %d < 0"%ret
 
     def heuristic(self, int precision=0, float eta=0.51, float delta=0.99, implementation=None):
         """
@@ -469,9 +463,6 @@ cdef class FP_LLL:
             ret = pmpfr.LLL()
             _sig_off
             heuristic_mpfr_delete(pmpfr)
-
-        if ret < 0:
-            raise RuntimeError, "fpLLL returned %d < 0"%ret
 
     def heuristic_early_red(self, int precision=0, float eta=0.51, float delta=0.99, implementation=None):
         """
@@ -554,9 +545,6 @@ cdef class FP_LLL:
            ret = pmpfr.LLL()
            _sig_off
            heuristic_early_red_mpfr_delete(pmpfr)
-
-        if ret < 0:
-            raise RuntimeError, "fpLLL returned %d < 0"%ret
 
 def gen_intrel(int d, int b):
     """
