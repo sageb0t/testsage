@@ -16,7 +16,7 @@ Schubert Polynomials
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
 
-from combinatorial_algebra import CombinatorialAlgebra, CombinatorialAlgebraElement
+import combinatorial_algebra
 from sage.rings.all import Integer, is_MPolynomial, MPolynomialRing
 import permutation
 import sage.libs.symmetrica.all as symmetrica
@@ -60,7 +60,7 @@ def is_SchubertPolynomial(x):
     """
     return isinstance(x, SchubertPolynomial_class)
 
-class SchubertPolynomial_class(CombinatorialAlgebraElement):
+class SchubertPolynomial_class(combinatorial_algebra.CombinatorialAlgebraElement):
     def expand(self):
         """
         EXAMPLES:
@@ -152,12 +152,14 @@ class SchubertPolynomial_class(CombinatorialAlgebraElement):
         else:
             raise TypeError, "i must be an integer"
 
-class SchubertPolynomialRing_xbasis(CombinatorialAlgebra):
-    _name = "Schubert polynomial ring with X basis"
-    _prefix = "X"
-    _combinatorial_class = permutation.Permutations()
-    _one = permutation.Permutation([1])
-    _element_class = SchubertPolynomial_class
+class SchubertPolynomialRing_xbasis(combinatorial_algebra.CombinatorialAlgebra):
+    def __init__(self, R):
+        self._name = "Schubert polynomial ring with X basis"
+        self._prefix = "X"
+        self._combinatorial_class = permutation.Permutations()
+        self._one = permutation.Permutation([1])
+        self._element_class = SchubertPolynomial_class
+        combinatorial_algebra.CombinatorialAlgebra.__init__(self, R)
 
     def _coerce_start(self, x):
         if isinstance(x, list):
@@ -175,6 +177,3 @@ class SchubertPolynomialRing_xbasis(CombinatorialAlgebra):
 
     def _multiply_basis(self, left, right):
         return symmetrica.mult_schubert_schubert(left, right).monomial_coefficients()
-
-    def is_commutative(self):
-        return self.base_ring().is_commutative()
