@@ -326,11 +326,11 @@ class uniq(object):
         global cache
         if cache.has_key(cls):
             return cache[cls]
-        O = object.__new__(cls)
+        O = CommutativeRing.__new__(cls)
         cache[cls] = O
         return O
 
-class SymbolicExpressionRing_class(CommutativeRing):
+class SymbolicExpressionRing_class(uniq, CommutativeRing):
     """
     The ring of all formal symbolic expressions.
 
@@ -636,7 +636,7 @@ class SymbolicExpression(RingElement):
         """
         RingElement.__init__(self, SR)
         if is_simplified:
-            self._simp = self
+            self._simp = None
 
     def __hash__(self):
         """
@@ -812,7 +812,7 @@ class SymbolicExpression(RingElement):
             sage: f._operands
             [x + 1, x]
         """
-        return hasattr(self, '_simp') and self._simp is self
+        return hasattr(self, '_simp') and self._simp is None
 
     def _declare_simplified(self):
         """
@@ -837,7 +837,7 @@ class SymbolicExpression(RingElement):
             sage: f + 2
             3
         """
-        self._simp = self
+        self._simp = None
 
     def plot(self, *args, **kwds):
         """
@@ -3005,10 +3005,12 @@ class SymbolicExpression(RingElement):
     ###################################################################
     def simplify(self):
         try:
+            if self._simp is None:
+                return self
             return self._simp
         except AttributeError:
             S = evaled_symbolic_expression_from_maxima_string(self._maxima_init_())
-            S._simp = S
+            S._simp = None
             self._simp = S
             return S
 
@@ -4601,6 +4603,8 @@ class SymbolicArithmetic(SymbolicOperation):
         """
         if simplify:
             if hasattr(self, '_simp'):
+                if self._simp is None:
+                    return self._repr_(simplify=False)
                 return self._simp._repr_(simplify=False)
             else:
                 return self.simplify()._repr_(simplify=False)
@@ -5527,6 +5531,8 @@ class SymbolicComposition(SymbolicOperation):
     def _repr_(self, simplify=True):
         if simplify:
             if hasattr(self, '_simp'):
+                if self._simp is None:
+                    return self._repr_(simplify=False)
                 return self._simp._repr_(simplify=False)
             else:
                 return self.simplify()._repr_(simplify=False)
@@ -7512,7 +7518,6 @@ def symbolic_expression_from_maxima_element(x):
 
     EXAMPLES:
         sage: a = sage.calculus.calculus.maxima('x^(sqrt(y)+%pi) + sin(%e + %pi)')
-        sage: sage.calculus.calculus.symbolic_exp
         sage: sage.calculus.calculus.symbolic_expression_from_maxima_element(a)
         x^(sqrt(y) + pi) - sin(e)
     """
@@ -7538,6 +7543,8 @@ def first_var(expr):
     in expression.
 
     EXAMPLES:
+        sage: var('a,x,y')
+        (a, x, y)
         sage: sage.calculus.calculus.first_var(a + y^x)
         a
         sage: sage.calculus.calculus.first_var(y^x - x^3)
