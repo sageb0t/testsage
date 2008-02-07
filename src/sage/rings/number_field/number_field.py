@@ -1929,7 +1929,7 @@ class NumberField_generic(number_field_base.NumberField):
         automorphisms of the Galois closure of a field.
 
             sage: K.<a> = NumberField(x^3 - 2)
-            sage: L.<b> = K.galois_closure(); L
+            sage: L.<b1> = K.galois_closure(); L
             Number Field in b1 with defining polynomial x^6 + 40*x^3 + 1372
             sage: G = End(L); G
             Automorphism group of Number Field in b1 with defining polynomial x^6 + 40*x^3 + 1372
@@ -1941,7 +1941,7 @@ class NumberField_generic(number_field_base.NumberField):
             Ring endomorphism of Number Field in b1 with defining polynomial x^6 + 40*x^3 + 1372
               Defn: b1 |--> -2/63*b1^4 - 31/63*b1
             ]
-            sage: G[1](b)
+            sage: G[1](b1)
             1/36*b1^4 + 1/18*b1
         """
         try:
@@ -2835,7 +2835,9 @@ class NumberField_absolute(NumberField_generic):
 
         EXAMPLES:
             sage: K.<a> = NumberField(x^4 - 2)
-            sage: L = K.galois_closure(); L
+            sage: M = K.galois_closure('b'); M
+            Number Field in b with defining polynomial x^8 + 28*x^4 + 2500
+            sage: L.<a2> = K.galois_closure(); L
             Number Field in a2 with defining polynomial x^8 + 28*x^4 + 2500
             sage: K.galois_group().order()
             8
@@ -2847,14 +2849,14 @@ class NumberField_absolute(NumberField_generic):
             x^4 - 2
         """
         try:
-            return self.__galois_closure
+            return self.__galois_closure.change_names(names)
         except AttributeError:
             pass
         G = self.galois_group()
         K = self
         while K.degree() < G.order():
             K = K.composite_fields(self, names=names)[-1]
-        self.__galois_closure = K
+        self.__galois_closure = K.change_names(names)
         return self.__galois_closure
 
     def embeddings(self, K):
@@ -2872,7 +2874,7 @@ class NumberField_absolute(NumberField_generic):
 
         EXAMPLES:
             sage: K.<a> = NumberField(x^3 - 2)
-            sage: L = K.galois_closure(); L
+            sage: L.<a1> = K.galois_closure(); L
             Number Field in a1 with defining polynomial x^6 + 40*x^3 + 1372
             sage: K.embeddings(L)[0]
             Ring morphism:
@@ -3154,7 +3156,6 @@ class NumberField_relative(NumberField_generic):
             Number Field in n with defining polynomial x^2 + x + 1 over its base field
             sage: L.base_field().base_field()
             Number Field in r with defining polynomial x^3 - 2
-
         """
         if len(names) == 0:
             names = self.variable_names()
@@ -3194,10 +3195,7 @@ class NumberField_relative(NumberField_generic):
 
         EXAMPLES:
         """
-        K = self.absolute_field('a').galois_closure(names=names)
-        if K.degree() == self.absolute_degree():
-            return self
-        return K
+        return self.absolute_field('a').galois_closure(names=names)
 
     def absolute_degree(self):
         """
