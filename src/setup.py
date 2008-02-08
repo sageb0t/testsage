@@ -933,8 +933,6 @@ def need_to_cython(deps, filename, outfile):
 
     base =  os.path.splitext(filename)[0]
     pxd = base+'.pxd'
-    if 'real_mpfi' in base: print base
-
     if need_to_build(deps, filename, outfile):
         return True
     elif os.path.exists(pxd) and need_to_build(deps, pxd, outfile):
@@ -1015,9 +1013,6 @@ def search_all_includes(filename):
     S = open(filename).readlines()
     # Take the lines that begin with cimport (it won't hurt to
     # have extra lines)
-    if 'real_mpfi' in filename:
-        import pdb
-        pdb.set_trace()
     C = [x.strip() for x in S if 'cimport' in x]
     this_deps = []
     for A in C:
@@ -1134,7 +1129,6 @@ def create_deps(ext_modules):
 
 if not sdist and do_cython:
     deps = create_deps(ext_modules)
-    print deps['sage/rings/real_mpfi.pyx']
     cython(deps, ext_modules)
     pass
 
