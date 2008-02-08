@@ -143,19 +143,10 @@ cdef void late_import():
     import sage.modules.free_module_element
     FreeModuleElement = sage.modules.free_module_element.FreeModuleElement
 
-def get_mpol():
-    return MPolynomial
-
 cdef FiniteField_givaro parent_object(Element o):
     return <FiniteField_givaro>(o._parent)
 
 cdef class FiniteField_givaro(FiniteField):
-    """
-    Fnite Field. These are implemented using Zech logs and the
-    cardinality must be < 2^16. See FiniteField_ext_pari for larger
-    cardinalities.
-    """
-
     def __init__(FiniteField_givaro self, q, name="a",  modulus=None, repr="poly", cache=False):
         """
         Finite Field. These are implemented using Zech logs and the
@@ -222,7 +213,7 @@ cdef class FiniteField_givaro(FiniteField):
         """
 
         # we are calling late_import here because this constructor is
-        # called at least once before any arithmetic is perfored.
+        # called at least once before any arithmetic is performed.
         late_import()
 
         cdef intvec cPoly
@@ -364,16 +355,6 @@ cdef class FiniteField_givaro(FiniteField):
             return False
         else:
             return True
-
-    def is_prime(FiniteField_givaro self):
-        """
-        Return True if self has prime cardinality.
-
-        EXAMPLES:
-            sage: GF(3, 'a').is_prime()
-            True
-        """
-        return self.degree()==1
 
     def random_element(FiniteField_givaro self):
         """
@@ -775,6 +756,17 @@ cdef class FiniteField_givaro(FiniteField):
                                                           self.variable_name(), f)
 
     def _finite_field_ext_pari_modulus_as_str(self):  # todo -- cache
+        """
+        Return a string representing the modulus as a PARI string,
+        this is mainly of internal interest and might go away
+        eventually.
+
+        EXAMPLE:
+            sage: GF(3^4,'z')._finite_field_ext_pari_modulus_as_str()
+            'Mod(1, 3)*z^4 + Mod(2, 3)*z^3 + Mod(2, 3)'
+            sage: pari('Mod(1, 3)*z^4 + Mod(2, 3)*z^3 + Mod(2, 3)')
+            Mod(1, 3)*z^4 + Mod(2, 3)*z^3 + Mod(2, 3)
+        """
         return self._finite_field_ext_pari_().modulus()._pari_init_()
 
     def __iter__(FiniteField_givaro self):
@@ -788,6 +780,18 @@ cdef class FiniteField_givaro(FiniteField):
         return FiniteField_givaro_iterator(self)
 
     def __richcmp__(left, right, int op):
+        r"""
+        Compare \code{self} with \code{right}.
+
+        EXAMPLE:
+            sage: k.<a> = GF(2^3)
+            sage: j.<b> = GF(3^4)
+            sage: k == j
+            False
+
+            sage: GF(2^3,'a') == copy(GF(2^3,'a'))
+            True
+        """
         return (<Parent>left)._richcmp(right, op)
 
     def __hash__(FiniteField_givaro self):
@@ -983,6 +987,12 @@ cdef class FiniteField_givaro(FiniteField):
                 map(int,list(self.modulus())),int(self.repr),int(self._array is not None))
 
 def unpickle_FiniteField_givaro(order,variable_name,modulus,rep,cache):
+    """
+    EXAMPLE:
+       sage: k = GF(3**7, 'a')
+       sage: loads(dumps(k)) == k # indirect doctest
+       True
+    """
     from sage.rings.arith import is_prime
 
     if rep == 0:
@@ -1039,6 +1049,13 @@ cdef class FiniteField_givaro_iterator:
         return make_FiniteField_givaroElement(self._parent,self.iterator)
 
     def __repr__(self):
+        """
+        EXAMPLE:
+            sage: k.<a> = GF(3^4)
+            sage: i = iter(k)
+            sage: i # indirect doctest
+            Iterator over Finite Field in a of size 3^4
+        """
         return "Iterator over %s"%self._parent
 
 cdef FiniteField_givaro_copy(FiniteField_givaro orig):
@@ -1089,7 +1106,21 @@ cdef class FiniteField_givaroElement(FiniteFieldElement):
     def __dealloc__(FiniteField_givaroElement self):
         pass
 
-    def __repr__(FiniteField_givaroElement self):
+    def _repr_(FiniteField_givaroElement self):
+        """
+        EXAMPLE:
+            sage: k.<FOOBAR> = GF(2^4)
+            sage: FOOBAR #indirect doctest
+            FOOBAR
+
+            sage: k.<FOOBAR> = GF(2^4,repr='log')
+            sage: FOOBAR
+            1
+
+            sage: k.<FOOBAR> = GF(2^4,repr='int')
+            sage: FOOBAR
+            2
+        """
         return (<FiniteField_givaro>self._parent)._element_repr(self)
 
     def parent(self):
@@ -1519,6 +1550,15 @@ cdef class FiniteField_givaroElement(FiniteFieldElement):
         return make_FiniteField_givaroElement(field, r)
 
     def __richcmp__(left, right, int op):
+        """
+        EXAMPLE:
+            sage: k.<a> = GF(9); k
+            Finite Field in a of size 3^2
+            sage: a == k('a') # indirect doctest
+            True
+            sage: a == a + 1
+            False
+        """
         return (<Element>left)._richcmp(right, op)
 
     cdef int _cmp_c_impl(left, Element right) except -2:
@@ -1734,6 +1774,20 @@ cdef class FiniteField_givaroElement(FiniteFieldElement):
         return k(ret)
 
     def _pari_(FiniteField_givaroElement self, var=None):
+        """
+        Return PARI representation of this finite field element
+
+        INPUT:
+            var -- optional variable string (default: none)
+
+        EXAMPLES:
+            sage: k.<a> = GF(5^3)
+            sage: a._pari_()
+            Mod(a, Mod(1, 5)*a^3 + Mod(3, 5)*a + Mod(3, 5))
+
+            sage: a._pari_('b')
+            Mod(b, Mod(1, 5)*b^3 + Mod(3, 5)*b + Mod(3, 5))
+        """
         return pari(self._pari_init_(var))
 
     def _magma_init_(self):
@@ -1904,6 +1958,13 @@ cdef class FiniteField_givaroElement(FiniteFieldElement):
         return unpickle_FiniteField_givaroElement,(parent_object(self),self.element)
 
 def unpickle_FiniteField_givaroElement(FiniteField_givaro parent, int x):
+    """
+    EXAMPLE:
+        sage: k = GF(3**4, 'a')
+        sage: e = k.random_element()
+        sage: loads(dumps(e)) == e # indirect doctest
+        True
+    """
     return make_FiniteField_givaroElement(parent, x)
 
 cdef inline FiniteField_givaroElement make_FiniteField_givaroElement(FiniteField_givaro parent, int x):

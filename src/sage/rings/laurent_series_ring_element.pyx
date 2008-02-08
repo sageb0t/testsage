@@ -77,6 +77,22 @@ cdef class LaurentSeries(AlgebraElement):
 
         OUTPUT:
             a Laurent series
+
+        EXAMPLES:
+            sage: R.<q> = LaurentSeriesRing(ZZ)
+            sage: R([1,2,3])
+            1 + 2*q + 3*q^2
+            sage: R([1,2,3],-5)
+            q^-5 + 2*q^-4 + 3*q^-3
+
+            sage: S.<s> = LaurentSeriesRing(GF(5))
+            sage: T.<t> = PowerSeriesRing(pAdicRing(5))
+            sage: S(t)
+            s
+            sage: parent(S(t))
+            Laurent Series Ring in s over Finite Field of size 5
+            sage: parent(S(t)[1])
+            Finite Field of size 5
         """
         AlgebraElement.__init__(self, parent)
 
@@ -87,6 +103,11 @@ cdef class LaurentSeries(AlgebraElement):
             else:
                 f = parent.power_series_ring()((<LaurentSeries>f).__u)
         elif not PY_TYPE_CHECK(f, PowerSeries):
+            f = parent.power_series_ring()(f)
+        ## now this is a power series, over a different ring ...
+        ## requires that power series rings with same vars over the
+        ## same parent are unique.
+        elif parent is not f.parent():
             f = parent.power_series_ring()(f)
 
         # self is that t^n * u:

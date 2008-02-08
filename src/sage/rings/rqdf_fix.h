@@ -9,4 +9,6 @@
 
 #define roundf(a) ((fmod(a,1)<0.5)?floor(a):ceil(a))
 
+int isinf(double x) { return !finite(x) && x==x; }
+
 #endif
