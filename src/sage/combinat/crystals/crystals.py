@@ -115,6 +115,8 @@ class Crystal(CombinatorialClass, Parent):
             for x in rec(generator):
                 yield x;
 
+    iterator = __iter__
+
 class CrystalElement(Element):
     r"""
     The abstract class of crystal elements
