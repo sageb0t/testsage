@@ -1118,6 +1118,8 @@ code = setup(name        = 'sage',
 
                      'sage.combinat',
 
+                     'sage.combinat.crystals',
+
                      'sage.combinat.sf',
 
                      'sage.crypto',
