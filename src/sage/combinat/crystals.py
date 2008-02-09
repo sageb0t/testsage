@@ -395,6 +395,15 @@ class TensorProductOfCrystals(Crystal):
 	True
 	sage: T(C(1),C(2)).f(1) == T(C(2),C(2))
 	True
+
+	sage: T(C(2),C(1)).positionsOfUnmatchedMinus(1) == []
+	True
+	sage: T(C(2),C(1)).positionsOfUnmatchedPlus(1) == []
+	True
+	sage: T(C(1),C(2)).positionsOfUnmatchedMinus(1) == [0]
+	True
+	sage: T(C(1),C(2)).positionsOfUnmatchedPlus(1) == [1]
+	True
     """
     def __init__(self, *crystals):
         crystals = [ crystal for crystal in crystals]
@@ -419,8 +428,9 @@ class TensorProductOfCrystalsElement(ImmutableListWithParent, CrystalElement):
 	if position == []:
 	    return None
 	k = position[0]
-	self[k] = self[k].e(i)
-	return self
+	return self.set_index(k, self[k].e(i))
+#	self[k] = self[k].e(i)
+#       return self
 
     def f(self, i):
 	assert i in self.index_set()
@@ -428,7 +438,8 @@ class TensorProductOfCrystalsElement(ImmutableListWithParent, CrystalElement):
 	if position == []:
 	    return None
 	k = position[len(position)-1]
-	self[k] = self[k].e(i)
+	self = self.set_index(k, self[k].f(i))
+#	self[k] = self[k].f(i)
 	return self
 
     def phi(self, i):
@@ -454,22 +465,22 @@ class TensorProductOfCrystalsElement(ImmutableListWithParent, CrystalElement):
 		height = height - minus + plus
 	return height
 
-    def positionsOfUnmatchedPlus(self, i, dual=False, reverse=False):
+    def positionsOfUnmatchedMinus(self, i, dual=False, reverse=False):
 	unmatchedPlus = []
 	height = 0
 	if reverse == True:
 	    self = self.reverse()
 	if dual == False:
-	    for j in range(1,len(self)+1):
-		plus = self[j].phi(i)
-		minus = self[j].epsilon(i)
-		if height-plus < 0:
+	    for j in range(len(self)):
+		minus = self[j].phi(i)
+		plus = self[j].epsilon(i)
+		if height-minus < 0:
 		    unmatchedPlus.append(j)
-		    height = minus
+		    height = plus
 		else:
-		    height = height - plus + minus
+		    height = height - minus + plus
 	else:
-	    for j in range(1,len(self)+1):
+	    for j in range(len(self)):
 		plus = self[j].epsilon(i)
 		minus = self[j].phi(i)
 		if height-plus < 0:
@@ -479,7 +490,7 @@ class TensorProductOfCrystalsElement(ImmutableListWithParent, CrystalElement):
 		    height = height - plus + minus
 	return unmatchedPlus
 
-    def positionsOfUnmatchedMinus(self, i):
-	l = len(self)
-	[self.positionsOfUnmatchedPlus(i, dual=True, reverse=True)[l-1-j]
-	 for j in range(l)]
+    def positionsOfUnmatchedPlus(self, i):
+	list = self.positionsOfUnmatchedMinus(i, dual=True, reverse=True)
+	list.reverse()
+	return [len(self)-1-list[j] for j in range(len(list))]
