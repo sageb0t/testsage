@@ -16,7 +16,7 @@ cdef class RingHomomorphism(RingMap):
     cdef _update_slots(self, _slots)
     cdef _extra_slots(self, _slots)
 
-cdef class RingHomomorphism_coerce(RingHomomorphism):
+cdef class RingHomomorphism_coercion(RingHomomorphism):
     cdef Element _call_c_impl(self, Element x)
 
 cdef class RingHomomorphism_im_gens(RingHomomorphism):
