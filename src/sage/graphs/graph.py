@@ -3391,7 +3391,7 @@ class GenericGraph(SageObject):
         if partition is None:
             partition = [self.vertices()]
         if edge_labels:
-            G, partition = happy_non_edge_labeled_graph(self, partition)
+            G, partition = graph_isom_equivalent_non_edge_labeled_graph(self, partition)
             a,b = search_tree(G, partition, lab=False, dict=True, dig=dig, verbosity=verbosity)
             # b is a translation of the labelings
             acting_vertices = {}
@@ -3423,7 +3423,7 @@ class GenericGraph(SageObject):
             else:
                 return a
         if self.multiple_edges():
-            G, partition = happy_non_multi_graph(self, partition)
+            G, partition = graph_isom_equivalent_non_multi_graph(self, partition)
             a,b = search_tree(G, partition, lab=False, dict=True, dig=dig, verbosity=verbosity)
             # b is a translation of the labelings
             acting_vertices = {}
@@ -3637,7 +3637,7 @@ class GenericGraph(SageObject):
         if partition is None:
             partition = [self.vertices()]
         if edge_labels:
-            G, partition = happy_non_edge_labeled_graph(self, partition)
+            G, partition = graph_isom_equivalent_non_edge_labeled_graph(self, partition)
             a,b,c = search_tree(G, partition, certify=True, dig=dig, verbosity=verbosity)
             # c is a permutation to the canonical label of G, which depends only on isomorphism class of self.
             H = self.copy()
@@ -3650,7 +3650,7 @@ class GenericGraph(SageObject):
             else:
                 return H
         if self.multiple_edges():
-            G, partition = happy_non_multi_graph(self, partition)
+            G, partition = graph_isom_equivalent_non_multi_graph(self, partition)
             a,b,c = search_tree(G, partition, certify=True, dig=dig, verbosity=verbosity)
             # c is a permutation to the canonical label of G, which depends only on isomorphism class of self.
             H = self.copy()
@@ -7371,7 +7371,7 @@ def paths_helper(start, end, G, all_paths, p=None):
     for p in plist:
         paths_helper(start, end, G, all_paths, p)
 
-def happy_non_multi_graph(g, partition):
+def graph_isom_equivalent_non_multi_graph(g, partition):
     r"""
     Helper function for canonical labeling of multi-(di)graphs.
 
@@ -7392,12 +7392,12 @@ def happy_non_multi_graph(g, partition):
     about the additional vertices.
 
     EXAMPLE:
-        sage: from sage.graphs.graph import happy_non_multi_graph
+        sage: from sage.graphs.graph import graph_isom_equivalent_non_multi_graph
         sage: G = Graph(multiedges=True)
         sage: G.add_edge((0,1))
         sage: G.add_edge((0,1))
         sage: G.add_edge((0,1))
-        sage: happy_non_multi_graph(G, [[0,1]])
+        sage: graph_isom_equivalent_non_multi_graph(G, [[0,1]])
         (Graph on 5 vertices, [[('o', 0), ('o', 1)], [('x', 0), ('x', 1), ('x', 2)]])
 
     """
@@ -7424,7 +7424,7 @@ def happy_non_multi_graph(g, partition):
     new_partition = [[('o',v) for v in cell] for cell in partition] + [[('x',i) for i in xrange(index)]]
     return G, new_partition
 
-def happy_non_edge_labeled_graph(g, partition):
+def graph_isom_equivalent_non_edge_labeled_graph(g, partition):
     """
     Helper function for canonical labeling of edge labeled (di)graphs.
 
@@ -7438,8 +7438,8 @@ def happy_non_edge_labeled_graph(g, partition):
         sage: G.add_edges([(0,1,i) for i in range(10)])
         sage: G.add_edge(1,2,'string')
         sage: G.add_edge(2,3)
-        sage: from sage.graphs.graph import happy_non_edge_labeled_graph
-        sage: happy_non_edge_labeled_graph(G, [G.vertices()])
+        sage: from sage.graphs.graph import graph_isom_equivalent_non_edge_labeled_graph
+        sage: graph_isom_equivalent_non_edge_labeled_graph(G, [G.vertices()])
         (Graph on 7 vertices,
          [[('o', 0), ('o', 1), ('o', 2), ('o', 3)], [('x', 0)], [('x', 1)], [('x', 2)]])
 
