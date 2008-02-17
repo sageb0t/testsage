@@ -2751,7 +2751,6 @@ cdef class Matrix_integer_dense(matrix_dense.Matrix_dense):   # dense or sparse
         t = verbose('hermite mod %s'%D, caller_name='matrix_integer_dense')
         cdef Matrix_integer_dense res = self._new_uninitialized_matrix(self._nrows, self._ncols)
         self._hnf_modn(res, D)
-        res._initialized = True
         verbose('finished hnf mod', t, caller_name='matrix_integer_dense')
         return res
 
@@ -2768,6 +2767,7 @@ cdef class Matrix_integer_dense(matrix_dense.Matrix_dense):   # dense or sparse
             for j from 0 <= j < self._ncols:
                 mpz_init_set_si(res._matrix[i][j], res_l[k])
                 k += 1
+        res._initialized = True
         sage_free(res_l)
 
     cdef long long* _hnf_modn_impl(Matrix_integer_dense self, mod_int det,
@@ -2882,6 +2882,8 @@ cdef class Matrix_integer_dense(matrix_dense.Matrix_dense):   # dense or sparse
 
         sage_free(B)
         sage_free(res_rows)
+        sage_free(T_ent)
+        sage_free(T_rows)
         return res
 
     #####################################################################################
