@@ -663,6 +663,9 @@ cdef class FiniteField_ntl_gf2eElement(FiniteFieldElement):
             sage: k.<a> = GF(2^16)
             sage: str(a^16) # indirect doctest
             'a^5 + a^3 + a^2 + 1'
+            sage: k.<u> = GF(2^16)
+            sage: u
+            u
         """
         (<FiniteField_ntl_gf2e>self._parent).F.restore()
         cdef GF2X_c rep = GF2E_rep(self.x)
@@ -681,7 +684,7 @@ cdef class FiniteField_ntl_gf2eElement(FiniteFieldElement):
 
         c = GF2X_coeff(rep, 1)
         if not GF2_IsZero(c):
-            _repr.append("a")
+            _repr.append(name)
 
         for i from 1 < i <= GF2X_deg(rep):
             c = GF2X_coeff(rep, i)
