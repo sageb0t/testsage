@@ -1485,7 +1485,7 @@ cdef class RingElement(ModuleElement):
 
     def __idiv__(self, right):
         """
-        Top-level multiplication operator for ring elements.
+        Top-level division operator for ring elements.
         See extensive documentation at the top of element.pyx.
         """
         if have_same_parent(self, right):
@@ -2863,6 +2863,18 @@ cdef CoercionModel coercion_model = coerce.CoercionModel_cache_maps()
 # for now while I'm merging in base extension code
 cdef canonical_coercion_c(x, y):
     return coercion_model.canonical_coercion_c(x,y)
+
+def get_coercion_model():
+    """
+    Return the global coercion model.
+
+    EXAMPLES:
+       sage: import sage.structure.element as e
+       sage: cm = e.get_coercion_model()
+       sage: cm
+       <sage.structure.coerce.CoercionModel_cache_maps object at ...>
+    """
+    return coercion_model
 
 def set_coercion_model(cm):
     global coercion_model
