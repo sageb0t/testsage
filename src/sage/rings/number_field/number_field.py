@@ -162,10 +162,8 @@ import sage.rings.complex_interval_field
 from sage.structure.parent_gens import ParentWithGens
 import number_field_element
 import number_field_element_quadratic
-from number_field_ideal import convert_from_zk_basis, is_NumberFieldIdeal, NumberFieldFractionalIdeal, is_NumberFieldFractionalIdeal
-
-import sage.rings.number_field.number_field_ideal_rel
-
+from number_field_ideal import convert_from_zk_basis, NumberFieldIdeal, is_NumberFieldIdeal, NumberFieldFractionalIdeal
+from sage.rings.number_field.number_field_ideal_rel import NumberFieldFractionalIdeal_rel
 from sage.libs.all import pari, pari_gen
 
 QQ = rational_field.RationalField()
@@ -750,6 +748,14 @@ class NumberField_generic(number_field_base.NumberField):
               To:   Number Field in a with defining polynomial x^4 - 3
               Defn: b |--> a^2
 
+            sage: K.<z>=CyclotomicField(5)
+            sage: K.subfield(z-z^2-z^3+z^4)
+            (Number Field in z0 with defining polynomial x^2 - 5,
+            Ring morphism:
+            From: Number Field in z0 with defining polynomial x^2 - 5
+            To:   Cyclotomic Field of order 5 and degree 4
+            Defn: z0 |--> -2*z^3 - 2*z^2 - 1)
+
         You can also view a number field as having a different
         generator by just chosing the input to generate the
         whole field; for that it is better to use
@@ -1241,16 +1247,35 @@ class NumberField_generic(number_field_base.NumberField):
 
     def _ideal_class_(self):
         """
-        Return the Python class used in defining ideals of the ring of
-        integers of this number field.
+        Return the Python class used in defining the zero ideal of the
+        ring of integers of this number field.
 
         This function is required by the general ring/ideal machinery.
+        The value defined here is the default value for all number
+        fields.
 
         EXAMPLES:
             sage: NumberField(x^2 + 2, 'c')._ideal_class_()
             <class 'sage.rings.number_field.number_field_ideal.NumberFieldIdeal'>
         """
         return sage.rings.number_field.number_field_ideal.NumberFieldIdeal
+
+    def _fractional_ideal_class_(self):
+        """
+        Return the Python class used in defining fractional ideals of
+        the ring of integers of this number field.
+
+        This function is required by the general ring/ideal machinery.
+        The value defined here is the default value for all number
+        fields *except* relative number fields; this function is
+        overridden by one of the same name on class
+        NumberField_relative.
+
+        EXAMPLES:
+            sage: NumberField(x^2 + 2, 'c')._fractional_ideal_class_()
+            <class 'sage.rings.number_field.number_field_ideal.NumberFieldFractionalIdeal'>
+        """
+        return sage.rings.number_field.number_field_ideal.NumberFieldFractionalIdeal
 
     def ideal(self, *gens, **kwds):
         """
@@ -1287,10 +1312,10 @@ class NumberField_generic(number_field_base.NumberField):
             Fractional ideal (1/2*a^2)
 
         One can also input in a number field ideal itself.
-            sage: K.fractional_ideal(K.fractional_ideal(a))
+            sage: K.fractional_ideal(K.ideal(a))
             Fractional ideal (a)
 
-        The zero ideal is not a facrtional ideal!
+        The zero ideal is not a fractional ideal!
             sage: K.fractional_ideal(0)
             Traceback (most recent call last):
             ...
@@ -1299,13 +1324,13 @@ class NumberField_generic(number_field_base.NumberField):
         """
         if len(gens) == 1 and isinstance(gens[0], (list, tuple)):
             gens = gens[0]
-        if len(gens) == 1 and is_NumberFieldFractionalIdeal(gens[0]):
+        if len(gens) == 1 and isinstance(gens[0],self._fractional_ideal_class_()):
             I = gens[0]
             if I.number_field() is self:
                 return I
             else:
                 gens = I.gens()
-        return NumberFieldFractionalIdeal(self, gens, **kwds)
+        return self._fractional_ideal_class_()(self, gens, **kwds)
 
     def ideals_of_bdd_norm(self, bound):
         """
@@ -2516,7 +2541,7 @@ class NumberField_generic(number_field_base.NumberField):
 
     def uniformizer(self, P, others = "positive"):
         """
-        Returns an element of self with valuation 1 at P.
+        Returns an element of self with valuation 1 at the prime ideal P.
 
         INPUT:
         self -- a number field
@@ -2525,11 +2550,41 @@ class NumberField_generic(number_field_base.NumberField):
                   non-negative valuation at all other primes of self,
                   or "negative", in which case the element will have non-positive
                   valuation at all other primes of self.
+
+        When P is principal (e.g. always when self has class number
+        one) the result may or may not be a generator of P!
+
+        EXAMPLES:
+
+        sage: K.<a> = NumberField(x^2 + 5); K
+        Number Field in a with defining polynomial x^2 + 5
+        sage: P,Q = K.ideal(3).prime_factors()
+        sage: P
+        Fractional ideal (3, a + 1)
+        sage: pi=K.uniformizer(P); pi
+        a + 1
+        sage: K.ideal(pi).factor()
+        (Fractional ideal (2, a + 1)) * (Fractional ideal (3, a + 1))
+        sage: pi=K.uniformizer(P,'negative'); pi
+        1/2*a + 1/2
+        sage: K.ideal(pi).factor()
+        (Fractional ideal (2, a + 1))^-1 * (Fractional ideal (3, a + 1))
+
+        sage: K=CyclotomicField(9)
+        sage: Plist=K.ideal(17).prime_factors()
+        sage: pilist = [K.uniformizer(P) for P in Plist]
+        sage: [pi.is_integral() for pi in pilist]
+        [True, True, True]
+        sage: [pi.valuation(P) for pi,P in zip(pilist,Plist)]
+        [1, 1, 1]
+        sage: [Plist[i]==K.ideal(pilist[i]) for i in range(len(Plist))]
+        [True, False, False]
+
         """
         if not is_NumberFieldIdeal(P):
             P = self.ideal(P)
-        if not P.is_prime():
-            raise ValueError, "P must be prime"
+        if not P.is_maximal():
+            raise ValueError, "P must be a nonzero prime"
         if others == "negative":
             P = ~P
         elif others != "positive":
@@ -2567,16 +2622,15 @@ class NumberField_generic(number_field_base.NumberField):
 
     def zeta(self, n=2, all=False):
         """
-        Return an n-th root of unity in this field.  If all is True,
-        return all of them.
+        If all is False, return a primitive n-th root of unity in this
+        field, or rais an ArithmeticError exception if there are none.
+
+        If all is True, return a list of all primitive n-th root of
+        unity in this field (possibly empty).
 
         INPUT:
             n -- positive integer
-            all -- bool, default: False.  If True, return a list
-                   of all n-th roots of 1)
-
-        If there are no n-th roots of unity in self (and all is
-        False), this function raises an ArithmeticError exception.
+            all -- bool, default: False.
 
         EXAMPLES:
             sage: K.<z> = NumberField(x^2 + 3)
@@ -2699,10 +2753,20 @@ class NumberField_absolute(NumberField_generic):
         self._element_class = number_field_element.NumberFieldElement_absolute
 
     def base_field(self):
+        """
+        Returns the base field of self, which is always QQ
+
+        EXAMPLES:
+            sage: K = CyclotomicField(5)
+            sage: K.base_field()
+            Rational Field
+        """
         return QQ
 
     def is_absolute(self):
         """
+        Returns True since self _is_ absolute
+
         EXAMPLES:
             sage: K = CyclotomicField(5)
             sage: K.is_absolute()
@@ -3515,6 +3579,7 @@ class NumberField_relative(NumberField_generic):
         # the generator of the base field.
         # NOTE: This should be rewritten if there is a way to extend
         #       homomorphisms K -> K' to homomorphisms K[x] -> K'[x].
+
         base_field_y = NumberField(abs_base.polynomial(), 'y')
         Kx = base_field_y['x']
         i = abs_base.hom([base_field_y.gen()]) # inclusion K -> K' with a -> y
@@ -3710,7 +3775,7 @@ class NumberField_relative(NumberField_generic):
         The cat option is currently ignored.   The result is not cached.
 
         EXAMPLES:
-        This function is implicitly caled by the Hom method or function.
+        This function is implicitly called by the Hom method or function.
             sage: K.<a,b> = NumberField([x^3 - 2, x^2+1])
             sage: K.Hom(K)
             Automorphism group of Number Field in a with defining polynomial x^3 - 2 over its base field
@@ -3845,17 +3910,17 @@ class NumberField_relative(NumberField_generic):
         R = self.polynomial_ring()
         return self(R(expr_x))
 
-    def _ideal_class_(self):
+    def _fractional_ideal_class_(self):
         """
         Return the Python class used to represent ideals of a relative
         number field.
 
         EXAMPLES:
             sage: k.<a> = NumberField([x^5 + 2, x^7 + 3])
-            sage: k._ideal_class_ ()
-            <class 'sage.rings.number_field.number_field_ideal_rel.NumberFieldIdeal_rel'>
+            sage: k._fractional_ideal_class_ ()
+            <class 'sage.rings.number_field.number_field_ideal_rel.NumberFieldFractionalIdeal_rel'>
         """
-        return sage.rings.number_field.number_field_ideal_rel.NumberFieldIdeal_rel
+        return sage.rings.number_field.number_field_ideal_rel.NumberFieldFractionalIdeal_rel
 
     def _pari_base_bnf(self, proof=None):
         """
@@ -4498,8 +4563,8 @@ class NumberField_cyclotomic(NumberField_absolute):
     """
     Create a cyclotomic extension of the rational field.
 
-    The command CyclotomicField(n) creates the n-th cyclotomic
-    field, got by adjoing an n-th root of unity to the rational
+    The command CyclotomicField(n) creates the n-th cyclotomic field,
+    got by adjoining a primitive n-th root of unity to the rational
     field.
 
     EXAMPLES:
