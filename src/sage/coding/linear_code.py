@@ -176,7 +176,7 @@ import sage.modules.free_module as fm
 import sage.modules.module as module
 import sage.modules.free_module_element as fme
 from sage.interfaces.all import gap
-from sage.rings.finite_field import GF
+from sage.rings.finite_field import FiniteField as GF
 from sage.groups.perm_gps.permgroup import PermutationGroup
 from sage.matrix.matrix_space import MatrixSpace
 from sage.rings.arith import GCD, rising_factorial, binomial
@@ -259,7 +259,7 @@ def min_wt_vec(Gmat,F):
 
     AUTHOR: David Joyner (11-2005)
     """
-    from sage.rings.finite_field import gap_to_sage
+    from sage.interfaces.gap import gfq_gap_to_sage
     gap.eval("G:="+Gmat)
     k = int(gap.eval("Length(G)"))
     q = F.order()
@@ -267,7 +267,7 @@ def min_wt_vec(Gmat,F):
     C = gap(Gmat).GeneratorMatCode(F)
     n = int(C.WordLength())
     cg = C.MinimumDistanceCodeword()
-    c = [gap_to_sage(cg[j],F) for j in range(1,n+1)]
+    c = [gfq_gap_to_sage(cg[j],F) for j in range(1,n+1)]
     V = VectorSpace(F,n)
     return V(c)
     ## this older code returns more info but may be slower:
@@ -472,14 +472,14 @@ class LinearCode(module.Module):
             False
 
         """
-        from sage.rings.finite_field import gap_to_sage
+        from sage.interfaces.gap import gfq_gap_to_sage
         F = self.base_ring()
         q = F.order()
         G = self.gen_mat()
         n = len(G.columns())
         Cg = gap(G).GeneratorMatCode(F)
         c = Cg.Random()
-        ans = [gap_to_sage(c[i],F) for i in range(1,n+1)]
+        ans = [gfq_gap_to_sage(c[i],F) for i in range(1,n+1)]
         V = VectorSpace(F,n)
         return V(ans)
 
@@ -689,7 +689,7 @@ class LinearCode(module.Module):
 
         Does not work for very long codes since the syndrome table grows too large.
         """
-        from sage.rings.finite_field import gap_to_sage
+        from sage.interfaces.gap import gfq_gap_to_sage
         F = self.base_ring()
         q = F.order()
         G = self.gen_mat()
@@ -705,7 +705,7 @@ class LinearCode(module.Module):
             vstr = vstr[1:-1]     # added by William Stein so const.tex works 2006-10-01
         gap.eval("C:=GeneratorMatCode("+Gstr+",GF("+str(q)+"))")
         gap.eval("c:=VectorCodeword(Decodeword( C, Codeword( "+vstr+" )))") # v->vstr, 8-27-2006
-        ans = [gap_to_sage(gap.eval("c["+str(i)+"]"),F) for i in range(1,n+1)]
+        ans = [gfq_gap_to_sage(gap.eval("c["+str(i)+"]"),F) for i in range(1,n+1)]
         V = VectorSpace(F,n)
         return V(ans)
 

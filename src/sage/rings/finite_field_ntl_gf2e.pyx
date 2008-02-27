@@ -113,7 +113,7 @@ cdef void late_import():
     FreeModuleElement = sage.modules.free_module_element.FreeModuleElement
 
     import sage.rings.finite_field
-    GF = sage.rings.finite_field.GF
+    GF = sage.rings.finite_field.FiniteField
 
 cdef extern from "arpa/inet.h":
     unsigned int htonl(unsigned int)
@@ -362,8 +362,8 @@ cdef class FiniteField_ntl_gf2e(FiniteField):
             e = e._pari_()
 
         elif is_GapElement(e):
-            from finite_field import gap_to_sage
-            return gap_to_sage(e, self)
+            from sage.interfaces.gap import gfq_gap_to_sage
+            return gfq_gap_to_sage(e, self)
         else:
             raise TypeError, "unable to coerce"
 
