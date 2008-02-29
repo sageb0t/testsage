@@ -187,6 +187,9 @@ def is_Integer(x):
     """
     return PY_TYPE_CHECK(x, Integer)
 
+cdef class IntegerWrapper(Integer):
+    pass
+
 cdef class Integer(sage.structure.element.EuclideanDomainElement):
     r"""
     The \class{Integer} class represents arbitrary precision
