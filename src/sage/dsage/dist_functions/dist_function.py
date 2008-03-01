@@ -1,4 +1,4 @@
-############################################################################
+##############################################################################
 #
 #  DSAGE: Distributed SAGE
 #
@@ -15,15 +15,16 @@
 #
 #                  http://www.gnu.org/licenses/
 #
-############################################################################
-
+##############################################################################
+import time
 import datetime
 import cPickle
 import zlib
 
 from sage.dsage.database.job import Job
-from sage.dsage.interface.dsage_interface import JobWrapper, BlockingJobWrapper
-from sage.dsage.twisted.misc import blocking_call_from_thread
+from sage.dsage.interface.dsage_interface import (JobWrapper,
+                                                  BlockingJobWrapper)
+from sage.dsage.twisted.misc import blockingCallFromThread
 
 class DistributedFunction(object):
     """
@@ -35,7 +36,7 @@ class DistributedFunction(object):
     """
 
     def __init__(self, dsage):
-        self.DSage = dsage
+        self._dsage = dsage
         self.result = None
         self.outstanding_jobs = [] # unsubmitted jobs
         self.waiting_jobs = [] # unprocessed jobs
@@ -59,6 +60,7 @@ class DistributedFunction(object):
     def set_done(self, value):
         if value:
             self.end_time = datetime.datetime.now()
+            # self.stop()
         self._done = value
     done = property(fget=get_done, fset=set_done, fdel=None,
                     doc="Set the jobs status")
@@ -97,9 +99,7 @@ class DistributedFunction(object):
 
         for job in self.waiting_jobs:
             job.kill()
-
         self.done = True
-
         if verbose:
             print 'All waiting jobs have been killed. This job is no more.'
 
@@ -114,9 +114,9 @@ class DistributedFunction(object):
             # XXX This is a hack because dsage.remoteobj is not set yet
             reactor.callLater(0.5, self.restore, dsage)
             return
-        self.DSage = dsage
+        self._dsage = dsage
         for job in self.waiting_jobs:
-            job.remoteobj = self.DSage.remoteobj
+            job.remoteobj = self._dsage.remoteobj
         if not len(self.outstanding_jobs) == 0:
             self.submit_jobs(self.name)
 
@@ -129,20 +129,21 @@ class DistributedFunction(object):
 
         """
 
-        job.username = self.DSage.username
+        job.username = self._dsage.username
         if async:
             if isinstance(job, Job):
-                self.waiting_jobs.append(self.DSage.send_job(job, async=True))
+                self.waiting_jobs.append(self._dsage.send_job(job,
+                                         async=True))
             else:
-                self.waiting_jobs.append(self.DSage.eval(job,
+                self.waiting_jobs.append(self._dsage.eval(job,
                                                          job_name=job_name,
                                                          async=True))
         else:
             if isinstance(job, Job):
-                self.waiting_jobs.append(self.DSage.send_job(job,
+                self.waiting_jobs.append(self._dsage.send_job(job,
                                                              async=False))
             else:
-                self.waiting_jobs.append(self.DSage.eval(job,
+                self.waiting_jobs.append(self._dsage.eval(job,
                                                          job_name=job_name))
 
     def submit_jobs(self, job_name='job', async=True):
@@ -157,6 +158,25 @@ class DistributedFunction(object):
                self.submit_job(job, job_name, async)
         self.outstanding_jobs = []
 
+    def wait(self, timeout=None):
+        """
+        Blocks until the job is completed.
+
+        """
+
+        import signal
+        if timeout == None:
+            while not self.done:
+                    time.sleep(0.5)
+        else:
+            def handler(signum, frame):
+                raise RuntimeError('Maximum wait time exceeded.')
+            signal.signal(signal.SIGALRM, handler)
+            signal.alarm(timeout)
+            while not self.done:
+                time.sleep(0.5)
+            signal.alarm(0)
+
     def start(self):
         """
         Starts the Distributed Function. It will submit all jobs in the
@@ -166,12 +186,12 @@ class DistributedFunction(object):
         """
 
         from twisted.internet import reactor, task
-        if self.DSage is None:
+        if self._dsage is None:
             print 'Error: Not connected to a DSage server.'
             return
         self.start_time = datetime.datetime.now()
         reactor.callFromThread(self.submit_jobs, self.name, async=True)
-        self.checker_task = blocking_call_from_thread(task.LoopingCall,
+        self.checker_task = blockingCallFromThread(task.LoopingCall,
                                                       self.check_waiting_jobs)
         reactor.callFromThread(self.checker_task.start, 5.0, now=True)
 
@@ -226,8 +246,8 @@ class DistributedFunctionTest(DistributedFunction):
 
     """
 
-    def __init__(self, DSage, n, name='DistributedFunctionTest'):
-        DistributedFunction.__init__(self, DSage)
+    def __init__(self, dsage, n, name='DistributedFunctionTest'):
+        DistributedFunction.__init__(self, dsage)
         self.n = n
         self.name = name
         self.result = 0
@@ -235,6 +255,7 @@ class DistributedFunctionTest(DistributedFunction):
         self.code = """DSAGE_RESULT=%s"""
         self.outstanding_jobs = [Job(code=self.code % i, username='yqiang')
                                  for i in range(1, n+1)]
+        self.start()
 
     def process_result(self, job):
         self.done = len(self.waiting_jobs) == 0
