@@ -2447,6 +2447,16 @@ function show_help_window(worksheet) {
     "menubar=1,scrollbars=1,width=800,height=600,resizable=1, toolbar=1");
 }
 
+///////////////////////////////////////////////////////////////////
+// Dynamic / Manipulate
+///////////////////////////////////////////////////////////////////
+
+function dynamic(id, input) {
+    active_cell_list = active_cell_list.concat([id]);
+    async_request(worksheet_command('eval'), evaluate_cell_callback,
+            'newcell=0' + '&id=' + id + '&input='+escape0('%manipulate\n' + input));
+}
+
 /********************* js math ***************************/
 
 function jsmath_init() {
