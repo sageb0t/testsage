@@ -106,7 +106,7 @@ from sage.logic.all      import *
 
 from sage.numerical.all  import *
 
-from copy import copy
+from copy import copy, deepcopy
 
 ###########################################################
 #### WARNING:
