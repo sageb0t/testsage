@@ -132,7 +132,7 @@ class TorsionSubgroup(FiniteSubgroup):
             True
             sage: G > H
             False
-            sage: G < 5   # meaningless
+            sage: G < 5   # random (meaningless since it depends on memory layout)
             False
         """
         if isinstance(other, TorsionSubgroup):
