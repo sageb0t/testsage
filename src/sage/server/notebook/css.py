@@ -1144,7 +1144,6 @@ div.cell_div_output_hidden {
 }
 
 pre.shrunk {
-/*   height:0px; */
   font-size:12pt;
   margin:0px;
 }
