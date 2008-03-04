@@ -154,17 +154,6 @@ class ExtendedRationalField_class(_uniq0, RationalField):
             Natural morphism:
               From: Rational Field
               To:   Extended Rational Field
-            sage: E.coerce_map_from(ExtendedIntegerRing)
-            Coercion morphism:
-              From: Extended Integer Ring
-              To:   Extended Rational Field
-
-        TESTS:
-            sage: ExtendedRationalField(2)*ExtendedIntegerRing(2)
-            4
-            sage: type(_)
-            <class 'sage.rings.extended_rational_field.ExtendedRational'>
-
         """
         if S is QQ:
             return Q_to_ExtendedQ()
@@ -286,7 +275,7 @@ ExtendedRationalField = ExtendedRationalField_class()
 class ExtendedRational(Rational):
     def __init__(self, x = None, base = 0):
         """
-        Constructor for elements of the extended rational field.
+        The class of extended rational numbers.
 
         EXAMPLES:
             sage: E = ExtendedRationalField
@@ -766,10 +755,6 @@ class RationalPlusInfinity(_uniq1, PlusInfinityElement):
             +Infinity
             sage: E(oo)*E(-2)
             -Infinity
-            sage: E(oo)*E(oo)
-            +Infinity
-            sage: E(oo)*E(-oo)
-            -Infinity
             sage: E(oo)*E(0)
             Traceback (most recent call last):
             ...
@@ -1038,10 +1023,6 @@ class RationalMinusInfinity(_uniq2, MinusInfinityElement):
             -Infinity
             sage: E(-oo)*-2
             +Infinity
-            sage: E(-oo)*E(-oo)
-            +Infinity
-            sage: E(-oo)*E(oo)
-            -Infinity
             sage: E(-oo)*0
             Traceback (most recent call last):
             ...
