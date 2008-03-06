@@ -456,6 +456,8 @@ cdef class Matrix_rational_dense(matrix_dense.Matrix_dense):
                 M_row = M_row + 1
                 self_row = self_row + 1
         _sig_off
+        if self.subdivisions is not None:
+            M.subdivide(*self.get_subdivisions())
         return M
 
     # cdef _mul_c_impl(self, Matrix right):
