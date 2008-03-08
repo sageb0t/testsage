@@ -2578,9 +2578,9 @@ class GraphGenerators():
         error if the proposed degree sequence cannot be that of a graph.
 
         Graph returned is the one returned by the Havel-Hakimi algorithm,
-        which constructs a simple graph by connecting vertices of highest to
-        other vertices of highest degree, resorting the remaining vertices by
-        degree and repeating the process.  See Theorem 1.4 in [1].
+        which constructs a simple graph by connecting vertices of highest
+        degree to other vertices of highest degree, resorting the remaining
+        vertices by degree and repeating the process.  See Theorem 1.4 in [1].
 
         INPUT:
             deg_sequence -- a list of integers with each entry corresponding
@@ -2614,8 +2614,7 @@ class GraphGenerators():
         graph with multiple edges and loops.
 
         One requirement is that the sum of the degrees must be even, since
-        every edge must be incident with two vertices. (The notion of quantum
-        graphs allows for edges incident to only one vertex.)
+        every edge must be incident with two vertices.
 
         INPUT:
             deg_sequence -- a list of integers with each entry corresponding
@@ -2667,8 +2666,7 @@ class GraphGenerators():
         graph.
 
         One requirement is that the sum of the degrees must be even, since
-        every edge must be incident with two vertices. (The notion of quantum
-        graphs allows for edges incident to only one vertex.)
+        every edge must be incident with two vertices.
 
         INPUT:
             deg_sequence -- a list of integers with each entry corresponding
@@ -2686,7 +2684,7 @@ class GraphGenerators():
 
         """
         import networkx
-        return graph.Graph(networkx.expected_degree_graph([int(i) for i in deg_sequence]))
+        return graph.Graph(networkx.expected_degree_graph([int(i) for i in deg_sequence], seed))
 
 ################################################################################
 #   Graph Iterators
