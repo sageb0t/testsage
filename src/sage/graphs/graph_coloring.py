@@ -208,6 +208,11 @@ def chromatic_number(G):
         sage: G = Graph({0:[1,2,3],1:[2]})
         sage: chromatic_number(G)
         3
+
+        sage: G = graphs.PetersenGraph()
+        sage: G.chromatic_number()
+        3
+
     """
     o = G.order()
     if o == 0:
@@ -222,4 +227,4 @@ def chromatic_number(G):
         return m
     for n in range(m,o+1):
         for C in all_graph_colorings(G,n):
-            return i
+            return n
