@@ -282,11 +282,9 @@ var title_spinner_i = 0;
 //
 ///////////////////////////////////////////////////////////////////
 
-function initialize_the_notebook(){
-    try{
-        original_title = document.title;
-    } catch(e) {}
+original_title = document.title;
 
+function initialize_the_notebook(){
     try{
       [].indexOf || (Array.prototype.indexOf = function(v,n){
         n = (n==null)?0:n; m = this.length;
@@ -866,11 +864,11 @@ function close_callback(status, response_text) {
 }
 
 function save_worksheet_and_close() {
-    async_request(worksheet_command('save_snapshot'), close_callback, null);
+    async_request(worksheet_command('save_and_quit'), close_callback, null);
 }
 
 function worksheet_discard() {
-    async_request(worksheet_command('revert_to_last_saved_state'), close_callback, null);
+    async_request(worksheet_command('discard_and_quit'), close_callback, null);
 }
 
 function rename_worksheet() {
