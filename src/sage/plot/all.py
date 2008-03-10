@@ -11,3 +11,5 @@ from animate import Animation as animate
 from plot3dsoya_wrap import plot3dsoya
 
 from tachyon import Tachyon
+
+from misc import Color
