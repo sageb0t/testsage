@@ -317,8 +317,8 @@ cdef class MPolynomialRing_generic(sage.rings.ring.CommutativeRing):
             raise ValueError, "Generator not defined."
         return self._gens[int(n)]
 
-    def gens(self):
-        return self._gens
+    #def gens(self):
+        #return self._gens
 
     def variable_names_recursive(self, depth=sage.rings.infinity.infinity):
         r"""

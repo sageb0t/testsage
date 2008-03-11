@@ -259,6 +259,9 @@ cdef extern from "libsingular.h":
 
     poly *p_Init(ring *r)
 
+    # Returns new monomial with exp vector copied from Lm(p)
+    poly *p_LmInit(poly *p, ring *r)
+
     # return constant polynomial from int
 
     poly *p_ISet(int i, ring *r)
@@ -461,6 +464,9 @@ cdef extern from "libsingular.h":
     # general number destructor
 
     void n_Delete(number **n, ring *r)
+
+    # Copy this number
+    number *n_Copy(number *n, ring* r)
 
     # return int representation of number n
 
