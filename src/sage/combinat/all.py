@@ -1,6 +1,8 @@
 from combinat import *
 from expnums import expnums
 
+from sage.combinat.crystals.all import *
+
 #Combinatorial Algebra
 from combinatorial_algebra import CombinatorialAlgebra
 
@@ -98,6 +100,4 @@ from cartan_type import CartanType
 from dynkin_diagram import dynkin_diagram
 from cartan_matrix import cartan_matrix
 from coxeter_matrix import coxeter_matrix
-from root_system import RootSystem
-
-from dlx import AllExactCovers, OneExactCover, DLXMatrix
+from root_system import RootSystem, WeylDim
