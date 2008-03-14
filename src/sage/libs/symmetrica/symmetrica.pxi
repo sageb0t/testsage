@@ -353,7 +353,7 @@ cdef extern from 'symmetrica/def.h':
 ##########################################
 cdef object matrix_constructor
 cdef object Integer
-cdef object Tableau
+cdef object Tableau, Tableau_class, SkewTableau, SkewTableau_class
 cdef object SkewPartition, SkewPartition_class
 cdef object Partition, Partition_class
 cdef object Permutation_class
@@ -370,6 +370,9 @@ cdef void late_import():
     global matrix_constructor, \
            Integer, \
            Tableau, \
+           Tableau_class, \
+           SkewTableau, \
+           SkewTableau_class, \
            SkewPartition, \
            SkewPartition_class, \
            Partition, \
@@ -397,6 +400,11 @@ cdef void late_import():
 
     import sage.combinat.tableau
     Tableau = sage.combinat.tableau.Tableau
+    Tableau_class = sage.combinat.tableau.Tableau_class
+
+    import sage.combinat.skew_tableau
+    SkewTableau = sage.combinat.skew_tableau.SkewTableau
+    SkewTableau_class = sage.combinat.skew_tableau.SkewTableau_class
 
     import sage.combinat.skew_partition
     SkewPartition = sage.combinat.skew_partition.SkewPartition
@@ -1014,7 +1022,7 @@ cdef object _py_tableau(OP t):
 
     late_import()
 
-    cdef INT i,j,rows, cols
+    cdef INT i,j,rows, cols, added, is_skew = 0
     cdef OP a
     a = S_T_S(t)
     rows = S_M_HI(a)
@@ -1023,17 +1031,24 @@ cdef object _py_tableau(OP t):
     res = []
     for i from 0 <= i < rows:
         row = []
+        added = 0
         for j from 0 <= j < cols:
             if s_o_k(S_M_IJ(a,i,j)) == EMPTY:
-                break
+                if added:
+                    break
+                else:
+                    row.append( None )
+                    is_skew = 1
             else:
                 row.append( _py(S_M_IJ(a,i,j)) )
 
         res.append(row)
 
     #return res
-
-    return Tableau(res)
+    if is_skew:
+        return SkewTableau_class(res)
+    else:
+        return Tableau_class(res)
 
 def start():
     anfang()
