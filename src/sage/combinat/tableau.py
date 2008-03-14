@@ -39,6 +39,9 @@ def Tableau(t):
     """
     Returns the tableau object corresponding to t.
 
+    Note that Sage uses the English convention for
+    partitions and tableaux.
+
     EXAMPLES:
         sage: t = Tableau([[1,2,3],[4,5]]); t
         [[1, 2, 3], [4, 5]]
@@ -47,7 +50,9 @@ def Tableau(t):
         sage: t.is_standard()
         True
     """
-    if t in Tableaux():
+    if isinstance(t, Tableau_class):
+        return t
+    elif t in Tableaux_all():
         return Tableau_class(t)
     raise ValueError, "invalid tableau"
 
@@ -59,12 +64,6 @@ class Tableau_class(CombinatorialObject):
             sage: t == loads(dumps(t))
             True
         """
-        for row in t:
-            if not isinstance(row, list):
-                raise TypeError, "each element of the tableau must be a list"
-            if row == []:
-                raise TypeError, "a tableau cannot have an empty list for a row"
-
         CombinatorialObject.__init__(self,t)
 
     def __div__(self, t):
@@ -87,7 +86,7 @@ class Tableau_class(CombinatorialObject):
         if not self.shape().dominates(t):
             raise ValueError, "the partition must dominate t"
 
-        st = copy.deepcopy(self.list)
+        st = copy.deepcopy(self._list)
 
         for i in range(len(t)):
             for j in range(t[i]):
@@ -153,14 +152,14 @@ class Tableau_class(CombinatorialObject):
     def pp(self):
         """
         Returns a pretty print string of the tableau.
+
         EXAMPLES:
-            sage: t = Tableau([[1,2,3],[3,4],[5]])
-            sage: print t.pp()
+            sage: Tableau([[1,2,3],[3,4],[5]]).pp()
               1  2  3
               3  4
               5
         """
-        return '\n'.join([ "".join(map(lambda x: "%3s"%str(x) , row))  for row in self])
+        print '\n'.join([ "".join(map(lambda x: "%3s"%str(x) , row))  for row in self])
 
     def to_word_by_row(self):
         """
@@ -747,11 +746,7 @@ class Tableau_class(CombinatorialObject):
 
         EXAMPLES:
             sage: st = StandardTableaux([3,2])
-            sage: def f(bool):
-            ...       if bool is True:
-            ...           return 1
-            ...       else:
-            ...           return 0
+            sage: f = lambda b: 1 if b else 0
             sage: matrix( [ [ f(t1.last_letter_lequal(t2)) for t2 in st] for t1 in st] )
             [1 1 1 1 1]
             [0 1 1 1 1]
@@ -851,6 +846,9 @@ class Tableaux_all(CombinatorialClass):
         for row in x:
             if not isinstance(row, __builtin__.list):
                 return False
+
+        if map(len, x) not in partition.Partitions_all():
+            return False
 
         return True
 

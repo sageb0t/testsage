@@ -23,6 +23,8 @@ import sage.combinat.partition
 from sage.matrix.all import matrix, MatrixSpace
 from sage.rings.all import ZZ, QQ
 from sage.misc.misc import prod
+import weakref
+QQqt = QQ['q,t'].fraction_field()
 
 def MacdonaldPolynomialsP(R, q=None, t=None):
     """
@@ -43,6 +45,16 @@ def MacdonaldPolynomialsP(R, q=None, t=None):
         (q^3 - q^2 - q + 1)/(q*t^2 - q*t - t + 1)
         sage: P([1,1]).scalar_qt(P([1,1]))
         (q^2*t - q*t - q + 1)/(t^3 - t^2 - t + 1)
+
+      When q = 0, the Macdonald polynomials on the P basis are the same
+      as the Hall-Littlewood polynomials on the P basis.
+        sage: P = MacdonaldPolynomialsP(QQ,q=0)
+        sage: P([2])^2
+        (t+1)*McdP[2, 2] + (-t+1)*McdP[3, 1] + McdP[4]
+        sage: HLP = HallLittlewoodP(QQ)
+        sage: HLP([2])^2
+        (t+1)*P[2, 2] + (-t+1)*P[3, 1] + P[4]
+
     """
     return cache_p(R, q, t)
 
@@ -187,7 +199,7 @@ def c1(part, q, t):
 def c2(part, q, t):
     """
     This function returns the qt-Hall scalar product between
-    J(part) and P(part).
+    J(part) and Q(part).
 
     EXAMPLES:
         sage: from sage.combinat.sf.macdonald import c2
@@ -312,8 +324,9 @@ class MacdonaldPolynomials_p(MacdonaldPolynomials_generic):
         self._prefix = "McdP"
         self._element_class = MacdonaldPolynomial_p
         MacdonaldPolynomials_generic.__init__(self, R, q, t)
-
         self._J = MacdonaldPolynomialsJ(self.base_ring(), self.q, self.t)
+
+        _set_cache(cache_p, self)
 
     def _coerce_start(self, x):
         """
@@ -371,8 +384,10 @@ class MacdonaldPolynomials_p(MacdonaldPolynomials_generic):
 class MacdonaldPolynomial_p(MacdonaldPolynomial_generic):
     def scalar_qt(self, x):
         """
-        Returns the qt-Hall scalar product of self and x by converting
-        both to the power-sum basis.
+        Returns the qt-Hall scalar product of self and x.  If x is
+        in the Macdonald P or Q basis, then specialized code is used;
+        otherwise, both are converted to the power-sums and the scalar
+        product is carried out there.
 
         EXAMPLES:
             sage: Q = MacdonaldPolynomialsQ(QQ)
@@ -410,6 +425,8 @@ class MacdonaldPolynomials_q(MacdonaldPolynomials_generic):
 
         self._J = MacdonaldPolynomialsJ(self.base_ring(), self.q, self.t)
         self._P = MacdonaldPolynomialsP(self.base_ring(), self.q, self.t)
+
+        _set_cache(cache_q, self)
 
     def _coerce_start(self, x):
         """
@@ -463,8 +480,10 @@ class MacdonaldPolynomials_q(MacdonaldPolynomials_generic):
 class MacdonaldPolynomial_q(MacdonaldPolynomial_generic):
     def scalar_qt(self, x):
         """
-        Returns the qt-Hall scalar product of self and x by converting
-        both to the power-sum basis.
+        Returns the qt-Hall scalar product of self and x.  If x is
+        in the Macdonald P basis, then specialized code is used;
+        otherwise, both are converted to the power-sums and the scalar
+        product is carried out there.
 
         EXAMPLES:
             sage: Q = MacdonaldPolynomialsQ(QQ)
@@ -484,6 +503,9 @@ class MacdonaldPolynomial_q(MacdonaldPolynomial_generic):
             return MacdonaldPolynomial_generic.scalar_qt(self, x)
 
 #J basis
+j_to_s_cache = {}
+s_to_j_cache = {}
+
 class MacdonaldPolynomials_j(MacdonaldPolynomials_generic):
     def __init__(self, R, q=None, t=None):
         """
@@ -498,10 +520,12 @@ class MacdonaldPolynomials_j(MacdonaldPolynomials_generic):
         MacdonaldPolynomials_generic.__init__(self, R, q, t)
 
         self._s = sfa.SFASchur(self.base_ring())
-        self._j_to_s_cache = {}
-        self._s_to_j_cache = {}
+        self._j_to_s_cache = j_to_s_cache
+        self._s_to_j_cache = s_to_j_cache
 
-        self._S = MacdonaldPolynomialsS(self.base_ring(), q=self.q, t=self.t)
+        self._S = MacdonaldPolynomialsS(QQ)
+
+        _set_cache(cache_j, self)
 
     def _coerce_start(self, x):
         """
@@ -565,13 +589,13 @@ class MacdonaldPolynomials_j(MacdonaldPolynomials_generic):
              ([2], [([1, 1], -q*t + t^2 + q - t), ([2], q*t^2 - q*t - t + 1)])]
 
         """
-        self._invert_morphism(n, self.base_ring(), self._j_to_s_cache, \
+        self._invert_morphism(n, QQqt, self._j_to_s_cache, \
                               self._s_to_j_cache, to_other_function = self._to_s, \
                               upper_triangular=False)
 
     def _to_s(self, part):
         """
-        Returns a function which gives the coefficient of part2 in the Schur
+        Returns a function which gives the coefficient of a partition in the Schur
         expansion of self(part).
 
         EXAMPLES:
@@ -582,11 +606,12 @@ class MacdonaldPolynomials_j(MacdonaldPolynomials_generic):
              -q*t^4 + 2*q*t^3 - q*t^2 + t^2 - 2*t + 1,
              q*t^3 - t^4 - q*t^2 + t^3 - q*t + t^2 + q - t]
         """
+        q,t = QQqt.gens()
         res = self._S(1)
         for k in reversed(part):
             res = res.creation(k)
         res = res._omega_qt_in_schurs()
-        res = res.map_coefficients(lambda c: c(self.t,self.q))
+        res = res.map_coefficients(lambda c: c(t,q))
         f = lambda part2: res.coefficient(part2)
         return f
 
@@ -605,8 +630,10 @@ class MacdonaldPolynomials_j(MacdonaldPolynomials_generic):
 class MacdonaldPolynomial_j(MacdonaldPolynomial_generic):
     def scalar_qt(self, x):
         """
-        Returns the qt-Hall scalar product of self and x by converting
-        both to the power-sum basis.
+        Returns the qt-Hall scalar product of self and x.  If x is
+        in the Macdonald J basis, then specialized code is used;
+        otherwise, both are converted to the power-sums and the scalar
+        product is carried out there.
 
         EXAMPLES:
             sage: J = MacdonaldPolynomialsJ(QQ)
@@ -626,6 +653,8 @@ class MacdonaldPolynomial_j(MacdonaldPolynomial_generic):
             return MacdonaldPolynomial_generic.scalar_qt(self, x)
 
 #H basis
+h_to_s_cache = {}
+s_to_h_cache = {}
 class MacdonaldPolynomials_h(MacdonaldPolynomials_generic):
     def __init__(self, R, q=None, t=None):
         """
@@ -640,10 +669,12 @@ class MacdonaldPolynomials_h(MacdonaldPolynomials_generic):
         MacdonaldPolynomials_generic.__init__(self, R, q, t)
 
         self._s = sfa.SFASchur(self.base_ring())
-        self._self_to_s_cache = {}
-        self._s_to_self_cache = {}
+        self._self_to_s_cache = h_to_s_cache
+        self._s_to_self_cache = s_to_h_cache
 
-        self._Ht = MacdonaldPolynomialsHt(self.base_ring(), self.q, self.t)
+        self._Ht = MacdonaldPolynomialsHt(QQ)
+
+        _set_cache(cache_h, self)
 
     def _coerce_start(self, x):
         """
@@ -677,12 +708,12 @@ class MacdonaldPolynomials_h(MacdonaldPolynomials_generic):
             sage: l( H._self_to_s_cache[2] )
             [([1, 1], [([1, 1], 1), ([2], t)]), ([2], [([1, 1], q), ([2], 1)])]
         """
-        self._invert_morphism(n, self.base_ring(), self._self_to_s_cache, \
+        self._invert_morphism(n, QQqt, self._self_to_s_cache, \
                               self._s_to_self_cache, to_other_function = self._to_s)
 
     def _to_s(self, part):
         """
-        Returns a function which gives the coefficient of part2 in the Schur
+        Returns a function which gives the coefficient of a partition in the Schur
         expansion of self(part).
 
         EXAMPLES:
@@ -691,11 +722,11 @@ class MacdonaldPolynomials_h(MacdonaldPolynomials_generic):
             sage: [f21(part) for part in Partitions(3)]
             [t, q*t + 1, q]
         """
-        res = self._s(self._Ht(part)).map_coefficients(lambda c: c.subs(t=1/self.t))
-        res *= self.t**part.weighted_size()
-
+        q,t = QQqt.gens()
+        s = sfa.SFASchur(QQqt)
+        res = s(self._Ht(part)).map_coefficients(lambda c: c.subs(t=1/t))
+        res *= t**part.weighted_size()
         f = lambda part2: res.coefficient(part2)
-
         return f
 
     def _multiply(self, left, right):
@@ -711,6 +742,8 @@ class MacdonaldPolynomial_h(MacdonaldPolynomial_generic):
     pass
 
 #HTt basis
+ht_to_s_cache = {}
+s_to_ht_cache = {}
 class MacdonaldPolynomials_ht(MacdonaldPolynomials_generic):
     def __init__(self, R, q=None, t=None):
         """
@@ -725,10 +758,11 @@ class MacdonaldPolynomials_ht(MacdonaldPolynomials_generic):
         MacdonaldPolynomials_generic.__init__(self, R, q, t)
 
         self._s = sfa.SFASchur(self.base_ring())
-        self._self_to_s_cache = {}
-        self._s_to_self_cache = {}
-
+        self._self_to_s_cache = ht_to_s_cache
+        self._s_to_self_cache = s_to_ht_cache
         self._J = MacdonaldPolynomialsJ(self.base_ring(), self.q, self.t)
+
+        _set_cache(cache_ht, self)
 
     def _coerce_start(self, x):
         """
@@ -765,12 +799,12 @@ class MacdonaldPolynomials_ht(MacdonaldPolynomials_generic):
             sage: l( Ht._self_to_s_cache[2] )
             [([1, 1], [([1, 1], t), ([2], 1)]), ([2], [([1, 1], q), ([2], 1)])]
         """
-        self._invert_morphism(n, self.base_ring(), self._self_to_s_cache, \
+        self._invert_morphism(n, QQqt, self._self_to_s_cache, \
                               self._s_to_self_cache, to_other_function = self._to_s)
 
     def _to_s(self, part):
         """
-        Returns a function which gives the coefficient of part2 in the Schur
+        Returns a function which gives the coefficient of a partition in the Schur
         expansion of self(part).
 
         EXAMPLES:
@@ -783,14 +817,15 @@ class MacdonaldPolynomials_ht(MacdonaldPolynomials_generic):
             [1, q*t + q + t, q^2 + t^2, q^2*t + q*t^2 + q*t, q^2*t^2]
 
         """
+        q,t = QQqt.gens()
+        s = sfa.SFASchur(QQqt)
+        J = MacdonaldPolynomialsJ(QQ)
         res = 0
         for p in sage.combinat.partition.Partitions(sum(part)):
-            res += (self._J(part).scalar_t(self._s(p), self.t))*self._s(p)
-        res = res.map_coefficients(lambda c: c.subs(t=1/self.t))
-        res *= self.t**part.weighted_size()
-
+            res += (J(part).scalar_t(s(p), t))*s(p)
+        res = res.map_coefficients(lambda c: c.subs(t=1/t))
+        res *= t**part.weighted_size()
         f = lambda part2: res.coefficient(part2)
-
         return f
 
     def _multiply(self, left, right):
@@ -821,6 +856,8 @@ class MacdonaldPolynomial_ht(MacdonaldPolynomial_generic):
         return Ht._apply_module_morphism(self, f)
 
 #S basis
+S_to_s_cache = {}
+s_to_S_cache = {}
 class MacdonaldPolynomials_s(MacdonaldPolynomials_generic):
     def __init__(self, R, q=None, t=None):
         """
@@ -835,8 +872,10 @@ class MacdonaldPolynomials_s(MacdonaldPolynomials_generic):
         MacdonaldPolynomials_generic.__init__(self, R, q, t)
 
         self._s = sfa.SFASchur(self.base_ring())
-        self._self_to_s_cache = {}
-        self._s_to_self_cache = {}
+        self._self_to_s_cache = S_to_s_cache
+        self._s_to_self_cache = s_to_S_cache
+
+        _set_cache(cache_s, self)
 
     def _multiply(self, left, right):
         """
@@ -855,7 +894,7 @@ class MacdonaldPolynomials_s(MacdonaldPolynomials_generic):
 
     def _to_s(self, part):
         """
-        Returns a function which gives the coefficient of part2 in the Schur
+        Returns a function which gives the coefficient of a partition in the Schur
         expansion of self(part).
 
         EXAMPLES:
@@ -868,11 +907,12 @@ class MacdonaldPolynomials_s(MacdonaldPolynomials_generic):
 
         """
         #Covert to the power sum
-        p = sfa.SFAPower(self.base_ring())
-        p_x = p(self._s(part))
+        p = sfa.SFAPower(QQqt)
+        s = sfa.SFASchur(QQqt)
+        p_x = p(s(part))
         t = self.t
-        f = lambda m, c:  (m, c*prod([(1-t**k) for k in m]))
-        res = self._s(p_x.map_mc(f))
+        f = lambda m, c: (m, c*prod([(1-t**k) for k in m]))
+        res = s(p_x.map_mc(f))
         f = lambda part2: res.coefficient(part2)
         return f
 
@@ -891,7 +931,7 @@ class MacdonaldPolynomials_s(MacdonaldPolynomials_generic):
             [([1, 1], [([1, 1], -t + 1), ([2], t^2 - t)]), ([2], [([1, 1], t^2 - t), ([2], -t + 1)])]
 
         """
-        self._invert_morphism(n, self.base_ring(), self._self_to_s_cache, \
+        self._invert_morphism(n, QQqt, self._self_to_s_cache, \
                               self._s_to_self_cache, to_other_function = self._to_s)
 
     def _coerce_start(self, x):
@@ -954,7 +994,9 @@ class MacdonaldPolynomial_s(MacdonaldPolynomial_generic):
             for i in range(k):
                 row = [0]*max(0, (i+1)-2-part[i])
                 for j in range(max(0, (i+1)-2-part[i]),k):
-                    row.append( (1-q**(part[i]+j-i+1)*t**(k-(j+1)))*h([part[i]+j-i+1]) )
+                    value = part[i]+j-i+1
+                    p = [value] if value > 0 else []
+                    row.append( (1-q**(part[i]+j-i+1)*t**(k-(j+1)))*h(p) )
                 m.append(row)
             M = MS(m)
             res = M.det()
@@ -1049,6 +1091,28 @@ def qt_kostka(lam, mu):
             _qt_kostka_cache[(p1,p2)] = R(res.coefficient(p1).numerator())
 
     return _qt_kostka_cache[(lam,mu)]
+
+def _set_cache(c, self):
+    """
+    Since the Macdonald polynomials could be called many ways,
+    this is a utility routine that adds those other ways to
+    the cache.
+
+    EXAMPLES:
+        sage: S = MacdonaldPolynomialsS(QQ)
+        sage: R = QQ['q,t'].fraction_field()
+        sage: q,t = R.gens()
+        sage: S2 = MacdonaldPolynomialsS(R,q,t)
+        sage: S2 is S #indirect doctest
+        True
+
+    """
+    br = self.base_ring()
+    q,t = self.q, self.t
+    c[c.key(br, q=q, t=t)] = self
+    c[c.key(br, q, t)] = self
+    c[c.key(br, q, t)] = self
+    c[c.key(br, q, t=t)] = self
 
 #############
 #   Cache   #

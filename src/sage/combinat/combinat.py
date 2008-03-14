@@ -544,16 +544,31 @@ def mod_stirling(q,n,k):
 class CombinatorialObject(SageObject):
     def __init__(self, l):
         """
+        CombinatorialObject provides a thin wrapper around a list.
+        The main differences are that __setitem__ is disabled so that
+        CombinatorialObjects are shallowly immutable, and the intention
+        is that they are semantically immutable.
+
+        Because of this, CombinatorialObjects provide a __hash__
+        function which computes the hash of the string representation
+        of a list and the hash of its parent's class.  Thus, each
+        CombinatorialObject should have a unique string representation.
+
+        INPUT:
+            l -- a list
+
         EXAMPLES:
             sage: c = CombinatorialObject([1,2,3])
             sage: c == loads(dumps(c))
             True
-            sage: c.list
+            sage: c._list
             [1, 2, 3]
             sage: c._hash is None
             True
         """
-        self.list = l
+        if not isinstance(l, list):
+            raise ValueError, 'l must be a list'
+        self._list = l
         self._hash = None
 
     def __str__(self):
@@ -563,7 +578,7 @@ class CombinatorialObject(SageObject):
             sage: str(c)
             '[1, 2, 3]'
         """
-        return str(self.list)
+        return str(self._list)
 
     def __repr__(self):
         """
@@ -572,7 +587,7 @@ class CombinatorialObject(SageObject):
             sage: c.__repr__()
             '[1, 2, 3]'
         """
-        return self.list.__repr__()
+        return self._list.__repr__()
 
     def __eq__(self, other):
         """
@@ -588,9 +603,9 @@ class CombinatorialObject(SageObject):
         """
 
         if isinstance(other, CombinatorialObject):
-            return self.list.__eq__(other.list)
+            return self._list.__eq__(other._list)
         else:
-            return self.list.__eq__(other)
+            return self._list.__eq__(other)
 
     def __lt__(self, other):
         """
@@ -604,9 +619,9 @@ class CombinatorialObject(SageObject):
         """
 
         if isinstance(other, CombinatorialObject):
-            return self.list.__lt__(other.list)
+            return self._list.__lt__(other._list)
         else:
-            return self.list.__lt__(other)
+            return self._list.__lt__(other)
 
     def __le__(self, other):
         """
@@ -621,9 +636,9 @@ class CombinatorialObject(SageObject):
             True
         """
         if isinstance(other, CombinatorialObject):
-            return self.list.__le__(other.list)
+            return self._list.__le__(other._list)
         else:
-            return self.list.__le__(other)
+            return self._list.__le__(other)
 
     def __gt__(self, other):
         """
@@ -638,9 +653,9 @@ class CombinatorialObject(SageObject):
             False
         """
         if isinstance(other, CombinatorialObject):
-            return self.list.__gt__(other.list)
+            return self._list.__gt__(other._list)
         else:
-            return self.list.__gt__(other)
+            return self._list.__gt__(other)
 
     def __ge__(self, other):
         """
@@ -655,9 +670,9 @@ class CombinatorialObject(SageObject):
             True
         """
         if isinstance(other, CombinatorialObject):
-            return self.list.__ge__(other.list)
+            return self._list.__ge__(other._list)
         else:
-            return self.list.__ge__(other)
+            return self._list.__ge__(other)
 
     def __ne__(self, other):
         """
@@ -672,9 +687,9 @@ class CombinatorialObject(SageObject):
             False
         """
         if isinstance(other, CombinatorialObject):
-            return self.list.__ne__(other.list)
+            return self._list.__ne__(other._list)
         else:
-            return self.list.__ne__(other)
+            return self._list.__ne__(other)
 
     def __add__(self, other):
         """
@@ -685,12 +700,12 @@ class CombinatorialObject(SageObject):
             sage: type(_)
             <type 'list'>
         """
-        return self.list + other
+        return self._list + other
 
     def __hash__(self):
         """
         Computes the hash of self by computing the hash of the
-        string representation of self.list.  The hash is cached
+        string representation of self._list.  The hash is cached
         and stored in self._hash.
 
         EXAMPLES:
@@ -703,7 +718,7 @@ class CombinatorialObject(SageObject):
             1335416675971793195
         """
         if self._hash is None:
-            self._hash = str(self.list).__hash__()
+            self._hash = str(self._list).__hash__()
         return self._hash
 
     def __len__(self):
@@ -715,7 +730,7 @@ class CombinatorialObject(SageObject):
             sage: c.__len__()
             3
         """
-        return self.list.__len__()
+        return self._list.__len__()
 
     def __getitem__(self, key):
         """
@@ -728,7 +743,7 @@ class CombinatorialObject(SageObject):
             sage: type(_)
             <type 'list'>
         """
-        return self.list.__getitem__(key)
+        return self._list.__getitem__(key)
 
     def __iter__(self):
         """
@@ -737,7 +752,7 @@ class CombinatorialObject(SageObject):
             sage: list(iter(c))
             [1, 2, 3]
         """
-        return self.list.__iter__()
+        return self._list.__iter__()
 
     def __contains__(self, item):
         """
@@ -748,7 +763,7 @@ class CombinatorialObject(SageObject):
             sage: 5 in c
             False
         """
-        return self.list.__contains__(item)
+        return self._list.__contains__(item)
 
     def index(self, key):
         """
@@ -759,7 +774,7 @@ class CombinatorialObject(SageObject):
             sage: c.index(3)
             2
         """
-        return self.list.index(key)
+        return self._list.index(key)
 
 class CombinatorialClass(SageObject):
     def __len__(self):
@@ -1078,10 +1093,7 @@ class CombinatorialClass(SageObject):
         """
         c = self.count()
         r = randint(0, c-1)
-        if hasattr(self, 'object_class'):
-            return self.object_class(self.unrank(r))
-        else:
-            return self.unrank(r)
+        return self.unrank(r)
 
     #Set the default implementation of random
     random = __random_from_unrank
@@ -1197,13 +1209,22 @@ class CombinatorialClass(SageObject):
             sage: P.list()
             [[1, 2], [2, 1], [1]]
         """
+        if not isinstance(right_cc, CombinatorialClass):
+            raise TypeError, "right_cc must be a CombinatorialClass"
         return UnionCombinatorialClass(self, right_cc, name=name)
 
 class FilteredCombinatorialClass(CombinatorialClass):
     def __init__(self, combinatorial_class, f, name=None):
         """
+        A filtered combinatorial class F is a subset of another
+        combinatorial class C specified by a function f that
+        takes in an element c of C and returns True if and only
+        if c is in F.
+
         TESTS:
-            sage: P = Permutations(3).filter(lambda x: x.avoids([1,2]))
+            sage: Permutations(3).filter(lambda x: x.avoids([1,2]))
+            Filtered sublass of Standard permutations of 3
+
         """
         self.f = f
         self.combinatorial_class = combinatorial_class
@@ -1251,19 +1272,6 @@ class FilteredCombinatorialClass(CombinatorialClass):
             c += 1
         return c
 
-    def list(self):
-        """
-        EXAMPLES:
-            sage: P = Permutations(3).filter(lambda x: x.avoids([1,2]))
-            sage: P.list()
-            [[3, 2, 1]]
-        """
-        res = []
-        for x in self.combinatorial_class.iterator():
-            if self.f(x):
-                res.append(x)
-        return res
-
     def iterator(self):
         """
         EXAMPLES:
@@ -1278,6 +1286,9 @@ class FilteredCombinatorialClass(CombinatorialClass):
 class UnionCombinatorialClass(CombinatorialClass):
     def __init__(self, left_cc, right_cc, name=None):
         """
+        A UnionCombinatorialClass is a union of two other
+        combinatorial classes.
+
         TESTS:
             sage: P = Permutations(3).union(Permutations(2))
             sage: P == loads(dumps(P))
