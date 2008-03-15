@@ -1731,12 +1731,16 @@ class GenericGraph(SageObject):
             sage: D.add_edge(0,3)
             sage: D.is_connected()
             True
+            sage: D = DiGraph({1:[0], 2:[0]})
+            sage: D.is_connected()
+            True
 
         """
         if self.order() == 0:
             return True
-        import networkx
-        return networkx.component.is_connected(self.to_undirected().networkx_graph(copy=False))
+        v = self.vertex_iterator().next()
+        conn_verts = list(self.breadth_first_search(v, ignore_direction=True))
+        return len(conn_verts) == self.num_verts()
 
     def connected_components(self):
         """
@@ -1753,8 +1757,16 @@ class GenericGraph(SageObject):
             [[0, 1, 2, 3], [4, 5, 6]]
 
         """
-        import networkx
-        return networkx.component.connected_components(self.to_undirected().networkx_graph(copy=False))
+        seen = []
+        components = []
+        for v in self:
+            if v not in seen:
+                c = list(self.breadth_first_search(v, ignore_direction=True))
+                c.sort()
+                seen.extend(c)
+                components.append(c)
+        components.sort(lambda comp1, comp2: cmp(len(comp2), len(comp1)))
+        return components
 
     def connected_components_number(self):
         """
@@ -1769,8 +1781,7 @@ class GenericGraph(SageObject):
             2
 
         """
-        import networkx
-        return networkx.component.number_connected_components(self.to_undirected().networkx_graph(copy=False))
+        return len(self.connected_components())
 
     def connected_components_subgraphs(self):
         """
@@ -1804,8 +1815,9 @@ class GenericGraph(SageObject):
             [0, 1, 2, 3]
 
         """
-        import networkx
-        return networkx.component.node_connected_component(self.to_undirected().networkx_graph(copy=False), vertex)
+        c = list(self.breadth_first_search(vertex, ignore_direction=True))
+        c.sort()
+        return c
 
     ### Vertex handlers
 
@@ -2553,7 +2565,7 @@ class GenericGraph(SageObject):
             output = [(u,v) for u,v,l in output]
         return output
 
-    def edge_iterator(self, vertices=None, labels=True):
+    def edge_iterator(self, vertices=None, labels=True, ignore_direction=False):
         """
         Returns an iterator over the edges incident with any vertex given. If
         the graph is directed, iterates over edges going out only. If vertices
@@ -2562,6 +2574,8 @@ class GenericGraph(SageObject):
 
         INPUT:
         labels -- if False, each edge is a tuple (u,v) of vertices.
+        ignore_direction -- (default False) only applies to directed graphs. If
+            True, searches across edges in either direction.
 
         EXAMPLE:
             sage: for i in graphs.PetersenGraph().edge_iterator([0]):
@@ -2579,13 +2593,30 @@ class GenericGraph(SageObject):
             sage: list(G.edge_iterator(labels=False))
             [(0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3)]
 
+            sage: D = DiGraph({1:[0], 2:[0]})
+            sage: list(D.edge_iterator(0))
+            []
+            sage: list(D.edge_iterator(0, ignore_direction=True))
+            [(1, 0, None), (2, 0, None)]
+
         """
         if labels:
-            for u,v,l in self._nxg.edges_iter(vertices):
-                yield u,v,l
+            filter = lambda u,v,l: (u,v,l)
+        else:
+            filter = lambda u,v,l: (u,v)
+        if ignore_direction and self.is_directed():
+            if vertices is None:
+                vertices = self
+            elif vertices in self:
+                vertices = [vertices]
+            else:
+                vertices = [v for v in vertices if v in self]
+            for u,v,l in self._nxg.edges_iter():
+                if u in vertices or v in vertices:
+                    yield filter(u,v,l)
         else:
             for u,v,l in self._nxg.edges_iter(vertices):
-                yield u,v
+                yield filter(u,v,l)
 
     def edges_incident(self, vertices=None, labels=True):
         """
@@ -2857,6 +2888,10 @@ class GenericGraph(SageObject):
 
     def degree_iterator(self, vertices=None, labels=False):
         """
+        Returns an iterator over the degrees of the (di)graph. In the case of a
+        digraph, the degree is defined as the sum of the in-degree and the
+        out-degree, i.e. the total number of edges incident to a given vertex.
+
         INPUT:
         labels=False: returns an iterator over degrees.
         labels=True: returns an iterator over tuples (vertex, degree).
@@ -3366,23 +3401,30 @@ class GenericGraph(SageObject):
             {0: +Infinity, 1: +Infinity}
 
         """
-        import networkx
-        try:
-            return networkx.eccentricity(self.networkx_graph(copy=False), v, dist_dict, with_labels)
-        except networkx.NetworkXError:
+        if v is None:
+            v = self.vertices()
+        elif not isinstance(v, list):
+            v = [v]
+        e = {}
+        infinite = False
+        for u in v:
+            if dist_dict is None:
+                length = self.shortest_path_lengths(u)
+            else:
+                length = dist_dict[u]
+            if len(length) != self.num_verts():
+                infinite = True
+                break
+            e[u] = max(length.values())
+        if infinite:
             from sage.rings.infinity import Infinity
-            e = {}
-            if v is None:
-                v = self.vertices()
-            elif not isinstance(v, list):
-                v = [v]
             for u in v:
                 e[u] = Infinity
-            if with_labels:
-                return e
-            else:
-                if len(e)==1: return e.values()[0] # return single value
-                return e.values()
+        if with_labels:
+            return e
+        else:
+            if len(e)==1: return e.values()[0] # return single value
+            return e.values()
 
     def radius(self):
         """
@@ -3779,9 +3821,14 @@ class GenericGraph(SageObject):
 
     ### Searches
 
-    def breadth_first_search(self, u):
+    def breadth_first_search(self, u, ignore_direction=False):
         """
         Returns an iterator over vertices in a breadth-first ordering.
+
+        INPUT:
+        u -- vertex at which to start search
+        ignore_direction -- (default False) only applies to directed graphs. If
+            True, searches across edges in either direction.
 
         EXAMPLES:
             sage: G = Graph( { 0: {1: 1}, 1: {2: 1}, 2: {3: 1}, 3: {4: 2}, 4: {0: 2} } )
@@ -3789,18 +3836,25 @@ class GenericGraph(SageObject):
             [0, 1, 4, 2, 3]
             sage: list(G.depth_first_search(0))
             [0, 4, 3, 2, 1]
+
             sage: D = DiGraph( { 0: {1: 1}, 1: {2: 1}, 2: {3: 1}, 3: {4: 2}, 4: {0: 2} } )
             sage: list(D.breadth_first_search(0))
             [0, 1, 2, 3, 4]
             sage: list(D.depth_first_search(0))
             [0, 1, 2, 3, 4]
 
+            sage: D = DiGraph({1:[0], 2:[0]})
+            sage: list(D.breadth_first_search(0))
+            [0]
+            sage: list(D.breadth_first_search(0, ignore_direction=True))
+            [0, 1, 2]
+
         """
         # This function is straight from an old version of networkx
-        if self.is_directed():
-            neighbors=self.successor_iterator
-        else:
+        if not self.is_directed() or ignore_direction:
             neighbors=self.neighbor_iterator
+        else:
+            neighbors=self.successor_iterator
         # nlist=[u] # list of nodes in a BFS order
         yield u
         seen={} # nodes seen
@@ -3816,9 +3870,14 @@ class GenericGraph(SageObject):
                     yield w
         # return nlist
 
-    def depth_first_search(self, u):
+    def depth_first_search(self, u, ignore_direction=False):
         """
         Returns an iterator over vertices in a depth-first ordering.
+
+        INPUT:
+        u -- vertex at which to start search
+        ignore_direction -- (default False) only applies to directed graphs. If
+            True, searches across edges in either direction.
 
         EXAMPLES:
             sage: G = Graph( { 0: {1: 1}, 1: {2: 1}, 2: {3: 1}, 3: {4: 2}, 4: {0: 2} } )
@@ -3826,18 +3885,25 @@ class GenericGraph(SageObject):
             [0, 1, 4, 2, 3]
             sage: list(G.depth_first_search(0))
             [0, 4, 3, 2, 1]
+
             sage: D = DiGraph( { 0: {1: 1}, 1: {2: 1}, 2: {3: 1}, 3: {4: 2}, 4: {0: 2} } )
             sage: list(D.breadth_first_search(0))
             [0, 1, 2, 3, 4]
             sage: list(D.depth_first_search(0))
             [0, 1, 2, 3, 4]
 
+            sage: D = DiGraph({1:[0], 2:[0]})
+            sage: list(D.depth_first_search(0))
+            [0]
+            sage: list(D.depth_first_search(0, ignore_direction=True))
+            [0, 2, 1]
+
         """
         # This function is straight from an old version of networkx
-        if self.is_directed():
-            neighbors=self.successor_iterator
-        else:
+        if not self.is_directed() or ignore_direction:
             neighbors=self.neighbor_iterator
+        else:
+            neighbors=self.successor_iterator
         # nlist=[] # list of nodes in a DFS preorder
         seen={} # nodes seen
         queue=[u]  # use as LIFO queue
@@ -4590,7 +4656,6 @@ class GenericGraph(SageObject):
             if partition is None:
                 vertex_colors = {'#FFFFFF':self.vertices()}
         from sage.plot.plot import networkx_plot, Graphics, rainbow
-        import networkx
         if vertex_colors is None:
             if partition is not None:
                 l = len(partition)
@@ -6338,8 +6403,11 @@ class Graph(GenericGraph):
             False
 
         """
-        import networkx.generators.bipartite
-        return networkx.generators.bipartite.is_bipartite(self.networkx_graph(copy=False))
+        try:
+            self.bipartite_color()
+            return True
+        except:
+            return False
 
     ### Coloring
 
@@ -6356,11 +6424,27 @@ class Graph(GenericGraph):
             sage: graphs.CycleGraph(5).bipartite_color()
             Traceback (most recent call last):
             ...
-            NetworkXError: graph is not bipartite
+            RuntimeError: Graph is not bipartite.
 
         """
-        import networkx.generators.bipartite
-        return networkx.generators.bipartite.bipartite_color(self.networkx_graph(copy=False))
+        # Straight from the NetworkX source:
+        color = {}
+        for u in self:
+            if u in color:
+                continue
+            queue = [u]
+            color[u] = 1
+            while queue:
+                v = queue.pop()
+                c = 1-color[v]
+                for w in self.neighbors(v):
+                    if w in color:
+                        if color[w] == color[v]:
+                            raise RuntimeError("Graph is not bipartite.")
+                    else:
+                        color[w] = c
+                        queue.append(w)
+        return color
 
     def bipartite_sets(self):
         """
@@ -6375,11 +6459,13 @@ class Graph(GenericGraph):
             sage: graphs.CycleGraph(5).bipartite_sets()
             Traceback (most recent call last):
             ...
-            NetworkXError: graph is not bipartite
+            RuntimeError: Graph is not bipartite.
 
         """
-        import networkx.generators.bipartite
-        return networkx.generators.bipartite.bipartite_sets(self.networkx_graph(copy=False))
+        color = self.bipartite_color()
+        left = [v for v in color if color[v] == 1]
+        right = [v for v in color if color[v] == 0]
+        return (left, right)
 
     def chromatic_polynomial(self):
         """
@@ -6765,8 +6851,8 @@ class Graph(GenericGraph):
     def cliques_get_clique_bipartite(self, **kwds):
         """
         Returns a bipartite graph constructed such that cliques are the
-        top vertices and the bottom vertices are retained from the given graph.
-        Top and bottom vertices are connected if the bottom vertex belongs to
+        right vertices and the left vertices are retained from the given graph.
+        Right and left vertices are connected if the bottom vertex belongs to
         the clique represented by a top vertex.
 
         Currently only implemented for undirected graphs.  Use to_undirected
@@ -6781,6 +6867,7 @@ class Graph(GenericGraph):
             sage: G.cliques_get_clique_bipartite()
             Bipartite graph on 6 vertices
             sage: (G.cliques_get_clique_bipartite()).show(figsize=[2,2])
+
         """
         import networkx.cliques
         from bipartite_graph import BipartiteGraph
@@ -7354,8 +7441,11 @@ class DiGraph(GenericGraph):
             False
 
         """
-        import networkx
-        return networkx.is_directed_acyclic_graph(self.networkx_graph(copy=False))
+        try:
+            S = self.topological_sort()
+            return True
+        except:
+            return False
 
     def to_directed(self):
         """
@@ -7765,7 +7855,7 @@ class DiGraph(GenericGraph):
         """
         from sage.graphs.linearextensions import linearExtensions
         try:
-            return linearExtensions(self.networkx_graph(copy=False))
+            return linearExtensions(self)
         except:
             raise TypeError('Digraph is not acyclic-- there is no topological sort (or there was an error in sage/graphs/linearextensions.py).')
 
@@ -7774,7 +7864,6 @@ def tachyon_vertex_plot(g, bgcolor=(1,1,1),
                         vertex_size=0.06,
                         pos3d=None,
                         iterations=50, **kwds):
-    import networkx
     from math import sqrt
     from sage.plot.tachyon import Tachyon
 
