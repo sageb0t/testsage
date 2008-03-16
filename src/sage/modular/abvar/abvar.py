@@ -6,16 +6,10 @@ AUTHOR:
 
 TESTS:
     sage: A = J0(33)
-    sage: D = A.hecke_decomposition(); D
+    sage: D = A.decomposition(); D
     [
-    Abelian variety factor of dimension 1 of J0(33) defined by
-    [ 1  0  0 -1  0  0]
-    [ 0  0  1  0  1 -1],
-    Abelian variety factor of dimension 2 of J0(33) defined by
-    [ 1  0  0  0 -1  2]
-    [ 0  1  0  0 -1  1]
-    [ 0  0  1  0 -2  2]
-    [ 0  0  0  1 -1 -1]
+    Abelian variety factor of dimension 2 of J0(33),
+    Abelian variety factor of dimension 1 of J0(33)
     ]
     sage: loads(dumps(D)) == D
     True
@@ -111,11 +105,10 @@ class ModularAbelianVariety_abstract(ParentWithBase):
         """
         if self.is_ambient():
             return 'Abelian variety %s'%self._ambient_repr()
-        return "Abelian variety factor of dimension %s of %s%s defined by\n%s"%(
+        return "Abelian variety factor of dimension %s of %s%s"%(
             self.dimension(),
             self._ambient_repr(),
-            '' if self.base_field() == QQ else ' over %s'%self.base_field(),
-            self.lattice().basis_matrix())
+            '' if self.base_field() == QQ else ' over %s'%self.base_field())
 
     def _Hom_(self, B, cat=None):
         """
@@ -161,29 +154,22 @@ class ModularAbelianVariety_abstract(ParentWithBase):
             sage: J = J0(37)
             sage: J[0].intersection(J[1])
             (Multiplicative Abelian Group isomorphic to C2 x C2,
-             Abelian variety factor of dimension 0 of J0(37) defined by [])
+             Abelian variety factor of dimension 0 of J0(37))
             sage: J = J0(33)
             sage: J[0].intersection(J[1])
             (Multiplicative Abelian Group isomorphic to C3 x C3,
-             Abelian variety factor of dimension 0 of J0(33) defined by [])
+             Abelian variety factor of dimension 0 of J0(33))
 
         Next we intersect two abelian varieties with non-finite intersection:
             sage: J = J0(67); D = J.decomposition(); D
             [
-            Abelian variety factor of dimension 1 of J0(67) defined by
-            ...
-            Abelian variety factor of dimension 2 of J0(67) defined by
-            ...
-            Abelian variety factor of dimension 2 of J0(67) defined by
-            ...
+            Abelian variety factor of dimension 1 of J0(67),
+            Abelian variety factor of dimension 2 of J0(67),
+            Abelian variety factor of dimension 2 of J0(67)
             ]
             sage: (D[0] + D[1]).intersection(D[1] + D[2])
             (Multiplicative Abelian Group isomorphic to C2 x C2 x C10 x C10,
-             Abelian variety factor of dimension 2 of J0(67) defined by
-            [ 1  0  0  0  0  2  0 -1 -1  1]
-            [ 0  1  0  0 -1  2  0 -1  0  1]
-            [ 0  0  1  0  0  1 -1  0 -1  1]
-            [ 0  0  0  1 -1  1  1 -1  0  0])
+             Abelian variety factor of dimension 2 of J0(67))
 
         """
         if not is_ModularAbelianVariety(other):
@@ -238,15 +224,7 @@ class ModularAbelianVariety_abstract(ParentWithBase):
         We multiply some factors of $J_0(65)$:
             sage: d = J0(65).hecke_decomposition()
             sage: d[0] * d[1] * J0(11)
-            Abelian variety factor of dimension 4 of J0(65) x J0(65) x J0(11) defined by
-            [ 1  0  0  0 -1  0  0  0 -1  1  0  0  0  0  0  0  0  0  0  0  0  0]
-            [ 0  1  0 -1  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0]
-            [ 0  0  0  0  0  0  0  0  0  0  1  0  0  0 -1  0  0 -1  0  0  0  0]
-            [ 0  0  0  0  0  0  0  0  0  0  0  1  0  0  1 -1  1  1 -2 -1  0  0]
-            [ 0  0  0  0  0  0  0  0  0  0  0  0  1  0 -1  0 -1 -1  1  1  0  0]
-            [ 0  0  0  0  0  0  0  0  0  0  0  0  0  1  1 -1  0  0 -1  0  0  0]
-            [ 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0]
-            [ 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1]
+            Abelian variety factor of dimension 4 of J0(65) x J0(65) x J0(11)
         """
         if not is_ModularAbelianVariety(other):
             raise TypeError, "other must be a modular abelian variety"
@@ -316,9 +294,7 @@ class ModularAbelianVariety_abstract(ParentWithBase):
             sage: J = J0(37); J
             Jacobian of the modular curve associated to the congruence subgroup Gamma0(37)
             sage: A = J.hecke_decomposition()[0]; A
-            Abelian variety factor of dimension 1 of J0(37) defined by
-            [ 1 -1  1  0]
-            [ 0  0  2 -1]
+            Abelian variety factor of dimension 1 of J0(37)
             sage: A.is_subvariety(A)
             True
             sage: A.is_subvariety(J)
@@ -671,9 +647,7 @@ class ModularAbelianVariety_abstract(ParentWithBase):
             sage: J = J0(33)
             sage: A = J.new_quotient()
             sage: A
-            Abelian variety factor of dimension 1 of J0(33) defined by
-            [ 1  0  0 -1  0  0]
-            [ 0  0  1  0  1 -1]
+            Abelian variety factor of dimension 1 of J0(33)
             sage: t = A.torsion_subgroup()
             sage: t.multiple_of_order()
             4
@@ -684,9 +658,7 @@ class ModularAbelianVariety_abstract(ParentWithBase):
             sage: t.gens()
             [[(1/2, 0)], [(0, 1/2)]]
             sage: t
-            Torsion subgroup of Abelian variety factor of dimension 1 of J0(33) defined by
-            [ 1  0  0 -1  0  0]
-            [ 0  0  1  0  1 -1]
+            Torsion subgroup of Abelian variety factor of dimension 1 of J0(33)
         """
         try:
             return self._torsion_subgroup
@@ -871,23 +843,16 @@ class ModularAbelianVariety_abstract(ParentWithBase):
             sage: J = J0(389)
             sage: J.decomposition()
             [
-            Abelian variety factor of dimension 1 of J0(389) defined by
-            2 x 64 dense matrix over Rational Field,
-            Abelian variety factor of dimension 2 of J0(389) defined by
-            4 x 64 dense matrix over Rational Field,
-            Abelian variety factor of dimension 3 of J0(389) defined by
-            6 x 64 dense matrix over Rational Field,
-            Abelian variety factor of dimension 6 of J0(389) defined by
-            12 x 64 dense matrix over Rational Field,
-            Abelian variety factor of dimension 20 of J0(389) defined by
-            40 x 64 dense matrix over Rational Field
+            Abelian variety factor of dimension 1 of J0(389),
+            Abelian variety factor of dimension 2 of J0(389),
+            Abelian variety factor of dimension 3 of J0(389),
+            Abelian variety factor of dimension 6 of J0(389),
+            Abelian variety factor of dimension 20 of J0(389)
             ]
             sage: J[2]
-            Abelian variety factor of dimension 3 of J0(389) defined by
-            6 x 64 dense matrix over Rational Field
+            Abelian variety factor of dimension 3 of J0(389)
             sage: J[-1]
-            Abelian variety factor of dimension 20 of J0(389) defined by
-            40 x 64 dense matrix over Rational Field
+            Abelian variety factor of dimension 20 of J0(389)
         """
         return self.decomposition()[i]
 
@@ -898,19 +863,14 @@ class ModularAbelianVariety_abstract(ParentWithBase):
         EXAMPLES:
             sage: J = J0(125); J.decomposition()
             [
-            Abelian variety factor of dimension 2 of J0(125) defined by
-            ...
-            Abelian variety factor of dimension 2 of J0(125) defined by
-            ...
-            Abelian variety factor of dimension 4 of J0(125) defined by
-            ...
+            Abelian variety factor of dimension 2 of J0(125),
+            Abelian variety factor of dimension 2 of J0(125),
+            Abelian variety factor of dimension 4 of J0(125)
             ]
             sage: J[:2]
             [
-            Abelian variety factor of dimension 2 of J0(125) defined by
-            ...
-            Abelian variety factor of dimension 2 of J0(125) defined by
-            ...
+            Abelian variety factor of dimension 2 of J0(125),
+            Abelian variety factor of dimension 2 of J0(125)
             ]
         """
         return self.decomposition()[i:j]
@@ -1141,9 +1101,7 @@ class ModularAbelianVariety_modsym_abstract(ModularAbelianVariety_abstract):
             sage: J = J0(37); J
             Jacobian of the modular curve associated to the congruence subgroup Gamma0(37)
             sage: A = J.hecke_decomposition()[0]; A
-            Abelian variety factor of dimension 1 of J0(37) defined by
-            [ 1 -1  1  0]
-            [ 0  0  2 -1]
+            Abelian variety factor of dimension 1 of J0(37)
             sage: A.is_subvariety(J)
             True
             sage: A.is_subvariety(J0(11))
@@ -1202,13 +1160,9 @@ class ModularAbelianVariety_modsym_abstract(ModularAbelianVariety_abstract):
 
         EXAMPLES:
             sage: J0(33).new_quotient()
-            Abelian variety factor of dimension 1 of J0(33) defined by
-            [ 1  0  0 -1  0  0]
-            [ 0  0  1  0  1 -1]
+            Abelian variety factor of dimension 1 of J0(33)
             sage: J0(100).new_quotient()
-            Abelian variety factor of dimension 1 of J0(100) defined by
-            [ 0  1  3  0  1  1  0  3  1 -1 -3  0 -1 -2]
-            [ 0  0  4 -1  1  1  1  2  2  0 -4  1 -1 -2]
+            Abelian variety factor of dimension 1 of J0(100)
             sage: J1(13).new_quotient()
             Abelian variety J1(13)
         """
@@ -1236,28 +1190,11 @@ class ModularAbelianVariety_modsym_abstract(ModularAbelianVariety_abstract):
 
         EXAMPLES:
             sage: J0(33).old_quotient()
-            Abelian variety factor of dimension 2 of J0(33) defined by
-            [ 1  0  0  0 -1  2]
-            [ 0  1  0  0 -1  1]
-            [ 0  0  1  0 -2  2]
-            [ 0  0  0  1 -1 -1]
+            Abelian variety factor of dimension 2 of J0(33)
             sage: J0(100).old_quotient()
-            Abelian variety factor of dimension 6 of J0(100) defined by
-            [ 1  0  0  0  0  0  0  0  0  0  0  3  1  1]
-            [ 0  1  0  0  0  0  0  0  0  0  0  0  0 -1]
-            [ 0  0  1  0  0  0  0  0  0  0  0  0 -1  0]
-            [ 0  0  0  1  0  0  0  0  0  0  0  0  1  0]
-            [ 0  0  0  0  1  0  0  0  0  0  0  0  0  0]
-            [ 0  0  0  0  0  1  0  0  0  0  0  0 -1 -1]
-            [ 0  0  0  0  0  0  1  0  0  0  0  3  1  1]
-            [ 0  0  0  0  0  0  0  1  0  0  0  3  3  4]
-            [ 0  0  0  0  0  0  0  0  1  0  0  0 -1 -1]
-            [ 0  0  0  0  0  0  0  0  0  1  0  0 -1 -1]
-            [ 0  0  0  0  0  0  0  0  0  0  1  3  2  2]
-            [ 0  0  0  0  0  0  0  0  0  0  0  4  2  3]
+            Abelian variety factor of dimension 6 of J0(100)
             sage: J1(13).old_quotient()
-            Abelian variety factor of dimension 0 of J1(13) defined by
-            []
+            Abelian variety factor of dimension 0 of J1(13)
         """
         try:
             return self.__old_quotient[p]
@@ -1286,29 +1223,13 @@ class ModularAbelianVariety_modsym_abstract(ModularAbelianVariety_abstract):
             sage: J = J0(33)
             sage: J.hecke_decomposition()
             [
-            Abelian variety factor of dimension 1 of J0(33) defined by
-            [ 1  0  0 -1  0  0]
-            [ 0  0  1  0  1 -1],
-            Abelian variety factor of dimension 2 of J0(33) defined by
-            [ 1  0  0  0 -1  2]
-            [ 0  1  0  0 -1  1]
-            [ 0  0  1  0 -2  2]
-            [ 0  0  0  1 -1 -1]
+            Abelian variety factor of dimension 1 of J0(33),
+            Abelian variety factor of dimension 2 of J0(33)
             ]
             sage: J1(17).hecke_decomposition()
             [
-            Abelian variety factor of dimension 1 of J1(17) defined by
-            [ 1 -1  0  1  0 -1  1  0  0  0]
-            [ 0  0  0  0  0  0  0  1 -1  1],
-            Abelian variety factor of dimension 4 of J1(17) defined by
-            [ 1  0  0  0  0  0 -1  0  0  0]
-            [ 0  1  0  0  0  0 -1  0  0  1]
-            [ 0  0  1  0  0  0 -1  0  0  0]
-            [ 0  0  0  1  0  0 -1  0  0  0]
-            [ 0  0  0  0  1  0 -1  0  0  0]
-            [ 0  0  0  0  0  1  0  0  0 -1]
-            [ 0  0  0  0  0  0  0  1  0 -1]
-            [ 0  0  0  0  0  0  0  0  1  0]
+            Abelian variety factor of dimension 1 of J1(17),
+            Abelian variety factor of dimension 4 of J1(17)
             ]
         """
         try:
