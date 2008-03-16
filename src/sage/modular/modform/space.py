@@ -1512,6 +1512,15 @@ class ModularFormsSpace(hecke.HeckeModule_generic):
                 for M, t, is_cuspidal, B in self.ambient_module().__newspace_bases() \
                 if contains_each(V, B)]
 
+    def newforms(self, names):
+        """
+        Return all cusp forms in the cuspidal subspace of self.
+        """
+        M = self.modular_symbols(sign=1)
+        factors = M.cuspidal_subspace().new_subspace().decomposition()
+        return [ element.Newform(self, factors[i], names=(names+str(i)) )
+                 for i in range(len(factors)) ]
+
     def eisenstein_submodule(self):
         """
         Return the Eisenstein submodule for this space of modular forms.
