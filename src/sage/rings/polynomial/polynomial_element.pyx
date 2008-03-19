@@ -1088,7 +1088,7 @@ cdef class Polynomial(CommutativeAlgebraElement):
         A fairly simple example over $\QQ$.
             sage: x = polygen(QQ)
             sage: latex(x^3+2/3*x^2 - 5/3)
-            x^{3} + \frac{2}{3}x^{2} - \frac{5}{3}
+            x^{3} + \frac{2}{3} x^{2} - \frac{5}{3}
 
         A $p$-adic example where the coefficients are $0$ to some precision.
             sage: K = Qp(3,20)
@@ -1097,7 +1097,11 @@ cdef class Polynomial(CommutativeAlgebraElement):
             sage: f
             (O(3^-2))*x + (O(3^-1))
             sage: latex(f)
-            \left(O(3^{-2})\right)x + O(3^{-1})
+            \left(O(3^{-2})\right) x + O(3^{-1})
+
+        The following illustrates the fix of trac \#2586:
+            sage: latex(ZZ['alpha']['b']([0, ZZ['alpha'].0]))
+            \alpha b
         """
         s = " "
         coeffs = self.list()
@@ -1120,15 +1124,15 @@ cdef class Polynomial(CommutativeAlgebraElement):
                     var = "|%s"%name
                 else:
                     var = ""
-                s += "%s%s"%(x,var)
+                s += "%s %s"%(x,var)
         #if atomic_repr:
         s = s.replace(" + -", " - ")
-        s = s.replace(" 1|"," ")
-        s = s.replace(" -1|", " -")
+        s = s.replace(" 1 |"," ")
+        s = s.replace(" -1 |", " -")
         s = s.replace("|","")
         if s==" ":
             return "0"
-        return s[1:]
+        return s[1:].lstrip().rstrip()
 
     def __setitem__(self, n, value):
         """
