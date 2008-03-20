@@ -198,7 +198,10 @@ class ModularAbelianVariety_abstract(ParentWithBase):
             raise ValueError, "self is not simple"
 
         t, N = D[0].number()
-        return self.degeneracy_map(self.newform_level(),t)
+        m = self.degeneracy_map(self.newform_level(),t)
+        Af = AbelianVariety(self.newform_label())
+
+        return m.restrict_codomain(Af)
 
     def _simple_isogeny(self, other):
         """
