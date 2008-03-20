@@ -192,13 +192,13 @@ class TorsionSubgroup(FiniteSubgroup):
         order got from the rational cuspidal subgroup.
             sage: T.multiple_of_order(30)
             200
-            sage: J0(33).rational_cuspidal_subgroup().order()
+            sage: J0(33).rational_cusp_subgroup().order()
             100
         """
         A = self.abelian_variety()
         if A.dimension() == 0:
             return []
-        R = A.rational_cuspidal_subgroup()
+        R = A.rational_cusp_subgroup()
         if R.order() == self.multiple_of_order():
             return R._generators()
         else:
@@ -247,7 +247,7 @@ class TorsionSubgroup(FiniteSubgroup):
         A = self.abelian_variety()
         if A.dimension() == 0:
             return ZZ(1)
-        R = A.rational_cuspidal_subgroup()
+        R = A.rational_cusp_subgroup()
         return R.order()
 
     def multiple_of_order(self, maxp=None):
