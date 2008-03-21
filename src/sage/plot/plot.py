@@ -3171,6 +3171,9 @@ class PlotFieldFactory(GraphicPrimitiveFactory_plot_field):
         sage: f = exp(-(u^2+v^2))
         sage: plot_vector_field(f.gradient(), (u,-2,2), (v,-2,2))
 
+    TESTS:
+        sage: plot_vector_field((lambda x,y: .01*x,x+y), (-10,10), (-10,10))
+
     """
     def _reset(self):
         self.options={'plot_points':20, 'cmap':'gray'}
@@ -3179,6 +3182,9 @@ class PlotFieldFactory(GraphicPrimitiveFactory_plot_field):
         return "type plot_vector_field? for help and examples"
 
     def _from_xdata_ydata(self, xpos_array, ypos_array, xvec_array, yvec_array, xrange, yrange, options):
+        import numpy
+        xvec_array = numpy.array(xvec_array, dtype=float)
+        yvec_array = numpy.array(yvec_array, dtype=float)
         g = Graphics()
         g._plot_field(xpos_array, ypos_array, xvec_array, yvec_array, xrange, yrange, options)
         return g
