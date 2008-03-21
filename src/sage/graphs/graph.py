@@ -3557,7 +3557,7 @@ class GenericGraph(SageObject):
         """
         Returns an exhaustive list of paths (also lists) through
         only interior vertices from vertex start to vertex end in the
-        graph.
+        (di)graph.
 
         Note -- start and end do not necessarily have to be boundary
                 vertices.
@@ -3612,6 +3612,16 @@ class GenericGraph(SageObject):
              [1, 6, 9, 7, 5, 8, 3, 4]]
             sage: eg3.interior_paths(1,4)
             [[1, 6, 8, 5, 7, 9, 4], [1, 6, 9, 4]]
+            sage: dg = DiGraph({0:[1,3,4], 1:[3], 2:[0,3,4],4:[3]}, boundary=[4]);
+            sage: dg.all_paths(0,3)
+            [[0, 1, 3], [0, 3], [0, 4, 3]]
+            sage: dg.interior_paths(0,3)
+            [[0, 1, 3], [0, 3]]
+            sage: ug = dg.to_undirected()
+            sage: ug.all_paths(0,3)
+            [[0, 1, 3], [0, 2, 3], [0, 2, 4, 3], [0, 3], [0, 4, 2, 3], [0, 4, 3]]
+            sage: ug.interior_paths(0,3)
+            [[0, 1, 3], [0, 2, 3], [0, 3]]
         """
         H = self.copy()
         for vertex in self.get_boundary():
@@ -3661,6 +3671,12 @@ class GenericGraph(SageObject):
              [1, 6, 9, 7, 2, 3, 4],
              [1, 6, 9, 7, 5, 0, 4],
              [1, 6, 9, 7, 5, 8, 3, 4]]
+            sage: dg = DiGraph({0:[1,3], 1:[3], 2:[0,3]})
+            sage: dg.all_paths(0,3)
+            [[0, 1, 3], [0, 3]]
+            sage: ug = dg.to_undirected()
+            sage: ug.all_paths(0,3)
+            [[0, 1, 3], [0, 2, 3], [0, 3]]
         """
         all_paths = []
         if self.is_directed():
