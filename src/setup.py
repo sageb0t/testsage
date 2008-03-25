@@ -1274,6 +1274,8 @@ code = setup(name        = 'sage',
 
                      'sage.combinat.sf',
 
+                     'sage.combinat.matrices',
+
                      'sage.crypto',
 
              'sage.crypto.mq',
