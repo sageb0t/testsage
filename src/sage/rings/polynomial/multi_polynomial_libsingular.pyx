@@ -110,7 +110,7 @@ cdef init_singular():
     context these symbols are not known globally. The work around so
     far is to load the library again and to specifiy RTLD_GLOBAL.
     """
-    cdef void *handle
+    cdef void *handle = NULL
 
     for extension in ["so", "dylib", "dll"]:
         lib = os.environ['SAGE_LOCAL']+"/lib/libsingular."+extension
