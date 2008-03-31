@@ -199,6 +199,7 @@ cdef class Matrix_integer_2x2(matrix_dense.Matrix_dense):
 
         else:
             raise ZeroDivisionError, "Not a unit!"
+    _invert_unit = __invert__unit
 
     def _multiply_classical(left, matrix.Matrix _right):
         """
