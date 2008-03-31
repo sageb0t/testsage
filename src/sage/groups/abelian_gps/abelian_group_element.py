@@ -99,6 +99,14 @@ class AbelianGroupElement(MultiplicativeGroupElement):
             raise TypeError, "Argument x (= %s) is of wrong type."%x
 
     def _repr_(self):
+        """
+        EXAMPLES:
+            sage: AbelianGroupElement(AbelianGroup(1, [1], names='e'),[0])
+            1
+            sage: AbelianGroupElement(AbelianGroup(3, [2,3,4], names='e'),[1,2,3])
+            e0*e1^2*e2^3
+
+        """
         s = ""
         A = self.parent()
         n = A.ngens()
@@ -113,7 +121,7 @@ class AbelianGroupElement(MultiplicativeGroupElement):
             else:
                 if len(s) > 0: s += "*"
                 s += "%s^%s"%(x[i],v[i])
-        if len(s) == 0: s = "1"
+        if len(s) == 0: s = str(1)
         return s
 
     def _div_(self, y):
@@ -267,7 +275,7 @@ class AbelianGroupElement(MultiplicativeGroupElement):
         else:
             return N
 
-    def random(self):
+    def random_element(self):
         """
         Return a random element of this dual group.
         """

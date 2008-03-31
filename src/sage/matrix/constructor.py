@@ -454,6 +454,8 @@ def matrix(arg0=None, arg1=None, arg2=None, arg3=None, sparse=None):
     return matrix_space.MatrixSpace(ring, nrows, ncols, sparse=sparse)(entries)
 
 def prepare(w):
+    if 0 == len(w):
+        return Sequence([], rings.ZZ), rings.ZZ
     entries = Sequence(w)
     ring = entries.universe()
     if ring is int or ring is long:
@@ -473,9 +475,13 @@ def prepare_dict(w):
     return dict([(Z[i][0],entries[i]) for i in xrange(len(entries))]), ring
 
 def nrows_from_dict(d):
+    if 0 == len(d):
+        return 0
     return max([0] + [ij[0] for ij in d.keys()]) + 1
 
 def ncols_from_dict(d):
+    if 0 == len(d):
+        return 0
     return max([0] + [ij[1] for ij in d.keys()]) + 1
 
 Matrix = matrix
