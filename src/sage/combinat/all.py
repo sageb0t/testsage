@@ -59,6 +59,7 @@ from dyck_word import DyckWords, DyckWord
 from sloane_functions import sloane
 
 from sf.all import *
+from matrices.all import *
 
 #import lrcalc
 
