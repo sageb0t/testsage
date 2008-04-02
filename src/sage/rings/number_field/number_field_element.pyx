@@ -1360,6 +1360,11 @@ cdef class NumberFieldElement(FieldElement):
             sage: R = K.ring_of_integers()
             sage: R(zeta).trace().parent()
             Integer Ring
+
+        TESTS:
+            sage: F.<z> = CyclotomicField(5) ; t = 3*z**3 + 4*z**2 + 2
+            sage: t.trace(F)
+            3*z^3 + 4*z^2 + 2
         """
         if K is None:
             trace = self._pari_('x').trace()
@@ -1414,6 +1419,12 @@ cdef class NumberFieldElement(FieldElement):
             sage: R = K.ring_of_integers()
             sage: R(a).norm().parent()
             Integer Ring
+
+        TESTS:
+            sage: F.<z> = CyclotomicField(5)
+            sage: t = 3*z**3 + 4*z**2 + 2
+            sage: t.norm(F)
+            3*z^3 + 4*z^2 + 2
         """
         if K is None:
             norm = self._pari_('x').norm()
@@ -1568,6 +1579,11 @@ cdef class NumberFieldElement(FieldElement):
             a2
             sage: a.norm(v[0])
             -a2
+
+        TESTS:
+            sage: F.<z> = CyclotomicField(5) ; t = 3*z**3 + 4*z**2 + 2
+            sage: t.matrix(F)
+            [3*z^3 + 4*z^2 + 2]
         """
         if base is not None:
             if number_field.is_NumberField(base):
