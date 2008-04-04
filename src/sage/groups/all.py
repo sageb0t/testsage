@@ -6,3 +6,5 @@ from matrix_gps.all import (GL, SL, Sp, SU, GU, SO, GO,
 from abelian_gps.all import *
 
 from perm_gps.all import *
+
+from generic import *
