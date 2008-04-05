@@ -134,6 +134,12 @@ cdef init_singular():
 
     singular_options = singular_options | Sy_bit(OPT_REDSB)
 
+    On(SW_USE_NTL)
+    On(SW_USE_NTL_GCD_0)
+    On(SW_USE_NTL_GCD_P)
+    On(SW_USE_EZGCD)
+    Off(SW_USE_NTL_SORT)
+
  # call it
 init_singular()
 
@@ -260,6 +266,7 @@ cdef class MPolynomialRing_libsingular(MPolynomialRing_generic):
             rChangeCurrRing(k._ring)
             self._ring.algring = rCopy0(k._ring)
             rComplete(self._ring.algring,1)
+            self._ring.algring.pCompIndex = -1
             self._ring.P = self._ring.algring.N
             #self._ring.parameter = self._ring.algring.names
             self._ring.parameter = <char**>omAlloc0(sizeof(char*)*2)
