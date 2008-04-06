@@ -1315,6 +1315,7 @@ class Worksheet:
         # a cell to know it's ID.
         input += 'sage.server.notebook.interact.SAGE_CELL_ID=%s\n'%(C.id())
 
+        print "timing"
         if C.time():
             input += '__SAGE_t__=cputime()\n__SAGE_w__=walltime()\n'
         if I.endswith('?'):
