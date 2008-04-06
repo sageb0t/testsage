@@ -289,6 +289,8 @@ var slide_hidden = false; //whether the current slide has the hidden input class
    focus. */
 var ignore_next_jump = false;
 
+var control_key_pressed = 0;
+
 var worksheet_locked;
 
 var original_title;
@@ -1459,8 +1461,6 @@ function debug_input_key_event(e) {
     }
 }
 
-var control_key_pressed = 0;
-
 function cell_input_key_event(id, e) {
     /*
     This function is called each time a key is pressed when the cursor is inside
@@ -1494,10 +1494,11 @@ function cell_input_key_event(id, e) {
     }
     /* Check for the split and join keystrokes. */
     if (key_split_cell(e) || (key_enter(e) && control_key_pressed)) {
+        control_key_pressed = 0;
         split_cell(id);
         return false;
     } else if (key_join_cell(e) || (key_delete_cell(e) && control_key_pressed)) {
-        conrol_key = 0;
+        control_key_pressed = 0;
         join_cell(id);
         return false;
     }
