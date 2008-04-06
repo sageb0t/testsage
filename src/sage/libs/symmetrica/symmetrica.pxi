@@ -361,7 +361,7 @@ cdef object Integer
 cdef object Tableau, Tableau_class, SkewTableau, SkewTableau_class
 cdef object SkewPartition, SkewPartition_class
 cdef object Partition, Partition_class
-cdef object Permutation_class
+cdef object Permutation_class, Permutations
 cdef object builtinlist
 cdef object sqrt
 cdef object Rational
@@ -369,7 +369,7 @@ cdef object QQ
 cdef object ZZ
 cdef object SymmetricFunctionAlgebra
 cdef object PolynomialRing
-cdef object SchubertPolynomialRing
+cdef object SchubertPolynomialRing, SchubertPolynomial_class
 cdef object two, fifteen, thirty, zero, sage_maxint
 
 cdef int maxint = 2147483647
@@ -385,7 +385,7 @@ cdef void late_import():
            SkewPartition_class, \
            Partition, \
            Partition_class, \
-           Permutation_class, \
+           Permutation_class, Permutations,\
            prod, \
            PolynomialRing, \
            Rational, \
@@ -394,8 +394,8 @@ cdef void late_import():
            SymmetricFunctionAlgebra, \
            sqrt, \
            builtinlist, \
-           MPolynomialRing_generic, \
-           SchubertPolynomialRing, \
+           MPolynomialRing_generic, is_MPolynomial,\
+           SchubertPolynomialRing, SchubertPolynomial_class,\
            two, fifteen, thirty, zero, sage_maxint
 
     if matrix_constructor is not None:
@@ -425,6 +425,7 @@ cdef void late_import():
 
     import sage.combinat.permutation
     Permutation_class = sage.combinat.permutation.Permutation_class
+    Permutations = sage.combinat.permutation.Permutations
 
     import sage.calculus.calculus
     sqrt = sage.calculus.calculus.Function_sqrt()
@@ -449,9 +450,12 @@ cdef void late_import():
 
     import sage.rings.polynomial.multi_polynomial_ring
     MPolynomialRing_generic = sage.rings.polynomial.multi_polynomial_ring.MPolynomialRing_generic
+    import sage.rings.polynomial.multi_polynomial_element
+    is_MPolynomial = sage.rings.polynomial.multi_polynomial_element.is_MPolynomial
 
     import sage.combinat.schubert_polynomial
     SchubertPolynomialRing = sage.combinat.schubert_polynomial.SchubertPolynomialRing
+    SchubertPolynomial_class = sage.combinat.schubert_polynomial.SchubertPolynomial_class
 
     two = Integer(2)
     fifteen = Integer(15)
