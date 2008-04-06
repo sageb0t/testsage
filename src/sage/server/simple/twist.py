@@ -8,13 +8,14 @@ NOTE:
     parsed as JSON data.
 
 TESTS:
-    sage: from sage.server.notebook.notebook_object import test_notebook
-    sage: import urllib, re
-    sage: def get_url(url): h = urllib.urlopen(url); data = h.read(); h.close(); return data
-
 Start the notebook:
+    sage: from sage.server.notebook.notebook_object import test_notebook
     sage: passwd = str(randint(1,1<<128))
     sage: nb = test_notebook(passwd, address='localhost', port=8095)
+
+Import urllib:
+    sage: import urllib, re
+    sage: def get_url(url): h = urllib.urlopen(url); data = h.read(); h.close(); return data
 
 Login to a new session:
     sage: login_page = get_url('https://localhost:8095/simple/login?username=admin&password=%s' % passwd)
