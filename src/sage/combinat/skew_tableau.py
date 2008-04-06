@@ -778,7 +778,7 @@ class StandardSkewTableaux_skewpartition(CombinatorialClass):
         row reading.
 
         EXAMPLES:
-            sage: [st for st in StandardSkewTableaux([[3, 2, 1], [1, 1]])]
+            sage: [st for st in StandardSkewTableaux([[3, 2, 1], [1, 1]])] # indirect doctest
             [[[None, 1, 2], [None, 3], [4]],
              [[None, 1, 2], [None, 4], [3]],
              [[None, 1, 3], [None, 2], [4]],
@@ -880,7 +880,7 @@ class SemistandardSkewTableaux_n(CombinatorialClass):
     def iterator(self):
         """
         EXAMPLES:
-            sage: SemistandardSkewTableaux(2).list()
+            sage: SemistandardSkewTableaux(2).list() # indirect doctest
             [[[1], [2]],
              [[None, 1], [1]],
              [[None, 2], [1]],
@@ -927,7 +927,7 @@ class SemistandardSkewTableaux_nmu(CombinatorialClass):
     def iterator(self):
         """
         EXAMPLES:
-            sage: SemistandardSkewTableaux(2,[1,1]).list()
+            sage: SemistandardSkewTableaux(2,[1,1]).list() # indirect doctest
             [[[1], [2]], [[None, 2], [1]], [[None, 1], [2]], [[1, 2]]]
         """
         for p in skew_partition.SkewPartitions(self.n):

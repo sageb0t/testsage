@@ -2061,7 +2061,7 @@ class Permutations_nk(CombinatorialClass):
     def iterator(self):
         """
         EXAMPLES:
-            sage: [p for p in Permutations(3,2)]
+            sage: [p for p in Permutations(3,2)] # indirect doctest
             [[1, 2], [1, 3], [2, 1], [2, 3], [3, 1], [3, 2]]
             sage: [p for p in Permutations(3,0)]
             [[]]
@@ -2117,12 +2117,12 @@ class Permutations_mset(CombinatorialClass):
         return "Permutations of the multi-set %s"%self.mset
 
     def iterator(self):
-        """
+        r"""
         Algorithm based on:
-        http://marknelson.us/2002/03/01/next-permutation/
+        \url{http://marknelson.us/2002/03/01/next-permutation/}
 
         EXAMPLES:
-            sage: [ p for p in Permutations(['c','t','t'])]
+            sage: [ p for p in Permutations(['c','t','t'])] # indirect doctest
             [['c', 't', 't'], ['t', 'c', 't'], ['t', 't', 'c']]
         """
         mset = self.mset
@@ -2209,12 +2209,12 @@ class Permutations_set(CombinatorialClass):
         return "Permutations of the set %s"%self._set
 
     def iterator(self):
-        """
+        r"""
         Algorithm based on:
-        http://marknelson.us/2002/03/01/next-permutation/
+        \url{http://marknelson.us/2002/03/01/next-permutation/}
 
         EXAMPLES:
-            sage: [ p for p in Permutations(['c','a','t'])]
+            sage: [ p for p in Permutations(['c','a','t'])] # indirect doctest
             [['c', 'a', 't'],
              ['c', 't', 'a'],
              ['a', 'c', 't'],
@@ -2378,7 +2378,7 @@ class Permutations_setk(CombinatorialClass):
     def iterator(self):
         """
         EXAMPLES:
-            sage: [i for i in Permutations([1,2,3],2)]
+            sage: [i for i in Permutations([1,2,3],2)] # indirect doctest
             [[1, 2], [1, 3], [2, 1], [2, 3], [3, 1], [3, 2]]
         """
         for perm in PermutationsNK(len(self._set), self.k):
@@ -2506,7 +2506,7 @@ class StandardPermutations_n(CombinatorialClass):
     def iterator(self):
         """
         EXAMPLES:
-            sage: [p for p in Permutations(3)]
+            sage: [p for p in Permutations(3)] # indirect doctest
             [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]]
         """
         for p in Permutations_set(range(1,self.n+1)):
@@ -3292,7 +3292,7 @@ class CyclicPermutations_mset(CombinatorialClass):
     def iterator(self, distinct=False):
         """
         EXAMPLES:
-            sage: CyclicPermutations(range(4)).list()
+            sage: CyclicPermutations(range(4)).list() # indirect doctest
             [[0, 1, 2, 3],
              [0, 1, 3, 2],
              [0, 2, 1, 3],
@@ -3380,7 +3380,7 @@ class CyclicPermutationsOfPartition_partition(CombinatorialClass):
         AUTHOR: Robert Miller
 
         EXAMPLES:
-            sage: CyclicPermutationsOfPartition([[1,2,3,4],[5,6,7]]).list()
+            sage: CyclicPermutationsOfPartition([[1,2,3,4],[5,6,7]]).list() # indirect doctest
             [[[1, 2, 3, 4], [5, 6, 7]],
              [[1, 2, 4, 3], [5, 6, 7]],
              [[1, 3, 2, 4], [5, 6, 7]],
@@ -3520,7 +3520,7 @@ class StandardPermutations_avoiding_132(CombinatorialClass):
     def iterator(self):
         """
         EXAMPLES:
-            sage: Permutations(3, avoiding=[1,3,2]).list()
+            sage: Permutations(3, avoiding=[1,3,2]).list() # indirect doctest
             [[1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]]
             sage: Permutations(4, avoiding=[1,3,2]).list()
             [[4, 1, 3, 2],
@@ -3598,7 +3598,7 @@ class StandardPermutations_avoiding_123(CombinatorialClass):
     def iterator(self):
         """
         EXAMPLES:
-            sage: Permutations(3, avoiding=[1, 2, 3]).list()
+            sage: Permutations(3, avoiding=[1, 2, 3]).list() # indirect doctest
              [[1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]]
             sage: Permutations(2, avoiding=[1, 2, 3]).list()
             [[1, 2], [2, 1]]
