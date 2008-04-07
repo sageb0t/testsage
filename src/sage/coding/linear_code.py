@@ -149,27 +149,23 @@ TESTS:
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
 
-import os, re, urllib
-import copy
+import urllib
 import sage.modules.free_module as fm
 import sage.modules.module as module
-import sage.modules.free_module_element as fme
 from sage.interfaces.all import gap
 from sage.rings.finite_field import FiniteField as GF
 from sage.groups.perm_gps.permgroup import PermutationGroup
 from sage.matrix.matrix_space import MatrixSpace
 from sage.rings.arith import GCD, rising_factorial, binomial
 from sage.groups.all import SymmetricGroup
-from sage.misc.sage_eval import sage_eval
-from sage.misc.misc import prod, add
-from sage.misc.functional import log, is_even, is_odd
+from sage.misc.misc import prod
+from sage.misc.functional import log, is_even
 from sage.rings.rational_field import QQ
 from sage.structure.parent_gens import ParentWithGens
 from sage.rings.polynomial.polynomial_ring_constructor import PolynomialRing
 from sage.rings.fraction_field import FractionField
 from sage.rings.integer_ring import IntegerRing
 from sage.combinat.set_partition import SetPartitions
-from sage.rings.real_mpfr import RR      # RealField
 
 ZZ = IntegerRing()
 VectorSpace = fm.VectorSpace
@@ -202,13 +198,13 @@ def wtdist(Gmat, F):
 
     AUTHOR: David Joyner (2005-11)
     """
-    q = F.order()
     G = gap(Gmat)
+    q = F.order()
     k = gap(F)
     C = G.GeneratorMatCode(k)
     n = int(C.WordLength())
     z = 'Z(%s)*%s'%(q, [0]*n)     # GAP zero vector as a string
-    dist = gap.eval("w:=DistancesDistributionMatFFEVecFFE("+Gmat+", GF("+str(q)+"),"+z+")")
+    _ = gap.eval("w:=DistancesDistributionMatFFEVecFFE("+Gmat+", GF("+str(q)+"),"+z+")")
     # for some reason, this commented code doesn't work:
     #dist0 = gap("DistancesDistributionMatFFEVecFFE("+Gmat+", GF("+str(q)+"),"+z+")")
     #v0 = dist0._matrix_(F)
@@ -240,9 +236,6 @@ def min_wt_vec(Gmat,F):
     """
     from sage.interfaces.gap import gfq_gap_to_sage
     gap.eval("G:="+Gmat)
-    k = int(gap.eval("Length(G)"))
-    q = F.order()
-    qstr = str(q)
     C = gap(Gmat).GeneratorMatCode(F)
     n = int(C.WordLength())
     cg = C.MinimumDistanceCodeword()
@@ -585,15 +578,11 @@ class LinearCode(module.Module):
         REFERENCE:
             [HP] W. C. Huffman and V. Pless, {\bf Fundamentals of ECC}, Cambridge Univ. Press, 2003.
         """
-        from sage.rings.arith import binomial
         C = self
         ans = []
-        F = C.base_ring()
-        q = F.order()
         G = C.gen_mat()
         n = len(G.columns())
         Cp = C.dual_code()
-        k = len(G.rows())  # G is always full rank
         wts = C.spectrum()
         d = min([i for i in range(1,len(wts)) if wts[i]!=0])
         if t>=d:
@@ -729,9 +718,7 @@ class LinearCode(module.Module):
             satisfying the Riemann hypothesis", April 2007 preprint.
 
         """
-        from sage.rings.polynomial.polynomial_ring_constructor import PolynomialRing, polygen
-        #from sage.calculus.functional import expand
-        from sage.calculus.calculus import sqrt, SymbolicExpressionRing, var
+        from sage.calculus.calculus import sqrt
         C = self
         n = C.length()
         RT = PolynomialRing(QQ,2,"Ts")
@@ -852,7 +839,6 @@ class LinearCode(module.Module):
         q = F.order()
         G = self.gen_mat()
         n = len(G.columns())
-        k = len(G.rows())
         Gstr = str(gap(G))
         if not(type(right) == list):
             v = right.list()
@@ -926,35 +912,34 @@ class LinearCode(module.Module):
         return self.__dim
 
     def direct_sum(self,other):
-            """
-            C1, C2 must be linear codes defined over the same base ring.
-            Returns the (usual vector space) direct sum of the codes.
+        """
+        C1, C2 must be linear codes defined over the same base ring.
+        Returns the (usual vector space) direct sum of the codes.
 
-            EXAMPLES:
-                sage: C1 = HammingCode(3,GF(2))
-                sage: C2 = C1.direct_sum(C1); C2
-                Linear code of length 14, dimension 8 over Finite Field of size 2
-                sage: C3 = C1.direct_sum(C2); C3
-                Linear code of length 21, dimension 12 over Finite Field of size 2
+        EXAMPLES:
+            sage: C1 = HammingCode(3,GF(2))
+            sage: C2 = C1.direct_sum(C1); C2
+            Linear code of length 14, dimension 8 over Finite Field of size 2
+            sage: C3 = C1.direct_sum(C2); C3
+            Linear code of length 21, dimension 12 over Finite Field of size 2
 
-            """
-            C1 = self; C2 = other
-            G1 = C1.gen_mat()
-            G2 = C2.gen_mat()
-            F = C1.base_ring()
-            q = F.order()
-            n1 = len(G1.columns())
-            k1 = len(G1.rows())
-            n2 = len(G2.columns())
-            k2 = len(G2.rows())
-            MS1 = MatrixSpace(F,k2,n1)
-            MS2 = MatrixSpace(F,k1,n2)
-            Z1 = MS1(0)
-            Z2 = MS2(0)
-            top = G1.augment(Z2)
-            bottom = Z1.augment(G2)
-            G = top.stack(bottom)
-            return LinearCode(G)
+        """
+        C1 = self; C2 = other
+        G1 = C1.gen_mat()
+        G2 = C2.gen_mat()
+        F = C1.base_ring()
+        n1 = len(G1.columns())
+        k1 = len(G1.rows())
+        n2 = len(G2.columns())
+        k2 = len(G2.rows())
+        MS1 = MatrixSpace(F,k2,n1)
+        MS2 = MatrixSpace(F,k1,n2)
+        Z1 = MS1(0)
+        Z2 = MS2(0)
+        top = G1.augment(Z2)
+        bottom = Z1.augment(G2)
+        G = top.stack(bottom)
+        return LinearCode(G)
 
     def __eq__(self, right):
         """
@@ -983,7 +968,6 @@ class LinearCode(module.Module):
             return False
         if sF != rF:
             return False
-        V = VectorSpace(sF,sdim)
         sbasis = self.gens()
         rbasis = right.gens()
         scheck = self.check_mat()
@@ -1015,8 +999,6 @@ class LinearCode(module.Module):
         """
         G = self.gen_mat()
         F = self.base_ring()
-        q = F.order()
-        n = len(G.columns())
         k = len(G.rows())
         MS1 = MatrixSpace(F,k,1)
         ck_sums = [-sum(G.rows()[i]) for i in range(k)]
@@ -1300,7 +1282,6 @@ class LinearCode(module.Module):
         gens = gp.gens()
         G = self.gen_mat()
         n = len(G.columns())
-        k = len(G.rows())
         MS = MatrixSpace(F,n,n)
         mats = [] # initializing list of mats by which the gens act on self
         Fn = VectorSpace(F, n)
@@ -1352,7 +1333,6 @@ class LinearCode(module.Module):
         q = F.order()
         G = self.gen_mat()
         n = len(G.columns())
-        k = len(G.rows())                                 # G is always full rank
         Gp = gap("SymmetricGroup(%s)"%n)               # initializing G in gap
         Sn = SymmetricGroup(n)
         wts = self.spectrum()                                            # bottleneck 1
@@ -1435,7 +1415,6 @@ class LinearCode(module.Module):
         """
         G = self.gen_mat()
         F = self.base_ring()
-        q = F.order()
         nC = len(G.columns())
         kC = len(G.rows())
         nL = nC-len(L)
@@ -1601,13 +1580,13 @@ class LinearCode(module.Module):
             q = PR(qc)
         return q/q(1)
 
-    def sd_zeta_polynomial(C,type=1):
+    def sd_zeta_polynomial(C,typ=1):
         r"""
         Returns the Duursma zeta function of a self-dual code using
         the construction in [D].
 
         INPUT:
-            type -- type of the s.d. code; one of 1,2,3, or 4.
+            typ -- type of the s.d. code; one of 1,2,3, or 4.
 
         EXAMPLES:
             sage: C1 = HammingCode(3,GF(2))
@@ -1634,14 +1613,17 @@ class LinearCode(module.Module):
             [D] I. Duursma, "Extremal weight enumerators and ultraspherical polynomials"
         """
         d0 = C.divisor()
-        q = (C.base_ring()).order()
-        P = C.sd_duursma_q(type,d0)
+        P = C.sd_duursma_q(typ,d0)
         PR = P.parent()
         T = FractionField(PR).gen()
-        if type == 1: P0 = P
-        if type == 2: P0 = P/(1-2*T+2*T**2)
-        if type == 3: P0 = P/(1+3*T**2)
-        if type == 4: P0 = P/(1+2*T)
+        if typ == 1:
+            P0 = P
+        if typ == 2:
+            P0 = P/(1-2*T+2*T**2)
+        if typ == 3:
+            P0 = P/(1+3*T**2)
+        if typ == 4:
+            P0 = P/(1+2*T)
         return P0/P0(1)
 
     def shortened(self,L):
@@ -1662,12 +1644,6 @@ class LinearCode(module.Module):
             Linear code of length 5, dimension 2 over Finite Field of size 2
 
         """
-        G = self.gen_mat()
-        F = self.base_ring()
-        q = F.order()
-        n = len(G.columns())
-        k = len(G.rows())
-        nL = n-len(L)
         Cd = self.dual_code()
         Cdp = Cd.punctured(L)
         Cdpd = Cdp.dual_code()
@@ -1692,7 +1668,6 @@ class LinearCode(module.Module):
 
         """
         F = self.base_ring()
-        q = F.order()
         G = self.gen_mat()
         Gstr = G._gap_init_()
         spec = wtdist(Gstr,F)
@@ -1794,7 +1769,6 @@ class LinearCode(module.Module):
         """
         spec = self.spectrum()
         n = self.length()
-        from sage.rings.polynomial.polynomial_ring_constructor import PolynomialRing
         R = PolynomialRing(QQ,2,names)
         x,y = R.gens()
         we = sum([spec[i]*x**(n-i)*y**i for i in range(n+1)])
@@ -1838,9 +1812,6 @@ class LinearCode(module.Module):
         if d == 1 or dperp == 1:
             print "\n WARNING: There is no guarantee this function works when the minimum distance"
             print "            of the code or of the dual code equals 1.\n"
-        from sage.rings.polynomial.polynomial_ring_constructor import PolynomialRing
-        from sage.rings.fraction_field import FractionField
-        from sage.rings.power_series_ring import PowerSeriesRing
         RT = PolynomialRing(QQ,"%s"%name)
         R = PolynomialRing(QQ,3,"xy%s"%name)
         x,y,T = R.gens()
