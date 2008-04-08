@@ -139,9 +139,8 @@ TESTS:
 from __future__ import with_statement
 
 from sage.rings.ideal import Ideal_generic
-from sage.interfaces.all import singular as singular_default, is_SingularElement
+from sage.interfaces.all import singular as singular_default
 from sage.interfaces.all import macaulay2 as macaulay2_default
-from sage.interfaces.all import is_SingularElement
 singular = singular_default
 from sage.rings.integer import Integer
 from sage.structure.sequence import Sequence
@@ -295,7 +294,7 @@ class RedSBContext:
         self.o = singular.option("get")
         self.singular.option("redSB")
 
-    def __exit__(self, type, value, tb):
+    def __exit__(self, typ, value, tb):
         """
         EXAMPLE:
             sage: from sage.rings.polynomial.multi_polynomial_ideal import RedSBContext
@@ -1200,9 +1199,7 @@ class MPolynomialIdeal_singular_repr:
         result. So we may acutally use reduce to determine if self is
         a Groebner basis.
         """
-        from sage.matrix.constructor import matrix
         singular = self._singular_().parent()
-        R = self.ring()
 
         F = singular( self.gens(), "module" )
         LTF = singular( [f.lt() for f in self.gens()] , "module" )
@@ -1265,9 +1262,7 @@ class MPolynomialIdeal_singular_repr:
 
         ALGORITHM: Uses \Singular
         """
-        from sage.rings.polynomial.multi_polynomial_ring import TermOrder
         from sage.rings.polynomial.polynomial_ring_constructor import PolynomialRing
-        from sage.rings.quotient_ring import is_QuotientRing
 
         if self.basis_is_groebner():
             Is = self._singular_()
@@ -1493,7 +1488,7 @@ class MPolynomialIdeal_singular_repr:
             variable = f.variable(0)
             roots = f.univariate_polynomial().roots(ring=ring)
 
-            for root,multiplicity in roots:
+            for root,_ in roots:
                 vbar = v.copy()
                 vbar[variable] = root
                 Tbar = [ f.subs({variable:root}) for f in T ]
@@ -1534,11 +1529,10 @@ class MPolynomialIdeal_singular_repr:
         if not self.is_homogeneous():
             raise TypeError, "Ideal must be homogeneous."
 
-        from polynomial_ring_constructor import PolynomialRing
         from sage.rings.integer_ring import IntegerRing
         ZZ = IntegerRing()
         hp = self._singular_().hilbPoly()
-        P,t = PolynomialRing(ZZ,'t').objgen()
+        t = ZZ['t'].gen()
         fp = ZZ(len(hp)-1).factorial()
         return sum([ZZ(hp[i+1])*t**i for i in xrange(len(hp))])/fp
 
@@ -1565,11 +1559,10 @@ class MPolynomialIdeal_singular_repr:
         if not self.is_homogeneous():
             raise TypeError, "Ideal must be homogeneous."
 
-        from polynomial_ring_constructor import PolynomialRing
         from sage.rings.integer_ring import IntegerRing
         ZZ = IntegerRing()
         gb = self.groebner_basis()
-        P,t = PolynomialRing(ZZ,'t').objgen()
+        t = ZZ['t'].gen()
         n = self.ring().ngens()
         hs = singular.ideal(gb).hilb(1)
         return sum([ZZ(hs[i+1])*t**i for i in xrange(len(hs)-1)])/(1-t)**n
@@ -1713,7 +1706,7 @@ class MPolynomialIdeal( MPolynomialIdeal_singular_repr, \
             verbose -- default: False; if True, printout useful info during computations
 
         """
-        import groebner_fan
+        import sage.rings.polynomial.groebner_fan as groebner_fan
         return groebner_fan.GroebnerFan(self, is_groebner_basis=is_groebner_basis,
                                         symmetry=symmetry, verbose=verbose)
 

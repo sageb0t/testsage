@@ -1,6 +1,5 @@
 from sage.rings.integer import Integer
 from sage.rings.polynomial.polynomial_element import Polynomial_generic_dense, Polynomial
-from sage.structure.element import Element
 from sage.rings.infinity import infinity
 from sage.libs.all import pari_gen
 from sage.structure.factorization import Factorization
@@ -70,7 +69,7 @@ class Polynomial_padic_flat(Polynomial_generic_dense):
         n = m = self.degree()
         if name is None:
             name = self.parent().variable_name()
-        atomic_repr = self.parent().base_ring().is_atomic_repr()
+        #atomic_repr = self.parent().base_ring().is_atomic_repr()
         coeffs = self.list()
         for x in reversed(coeffs):
             if x != 0:
