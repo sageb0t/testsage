@@ -1040,6 +1040,9 @@ div.cell_input_active {
   margin-bottom:0px;
   line-height:1.2em;
   width: 97%;
+  zIndex: -100;
+  visibility: hidden;
+  position: absolute;
 }
 
 textarea.cell_input:hover{
