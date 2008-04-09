@@ -266,6 +266,18 @@ class TensorProductOfCrystalsElement(ImmutableListWithParent, CrystalElement):
         k = position[0]
         return self.set_index(k, self[k].e(i))
 
+    def weight(self):
+        """
+        Returns the weight of self.
+
+        EXAMPLES:
+            sage: C = CrystalOfLetters(['A',3])
+            sage: T = TensorProductOfCrystals(C,C)
+            sage: T(C(1),C(2)).weight()
+            (1, 1, 0, 0)
+        """
+        return sum(self[j].weight() for j in range(len(self)))
+
     def f(self, i):
         """
         Returns the action of $f_i$ on self.
