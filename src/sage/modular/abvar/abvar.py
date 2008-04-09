@@ -2748,7 +2748,7 @@ class ModularAbelianVariety_abstract(ParentWithBase):
     def _isogeny_to_product_of_simples(self):
         r"""
         Given an abelian variety $A$, return an isogeny
-        $\phi: A \rightarrow B_1 \times \cdots \times \B_n$,
+        $\phi: A \rightarrow B_1 \times \cdots \times B_n$,
         where each $B_i$ is simple. Note that this isogeny is
         not unique.
 
@@ -2799,7 +2799,7 @@ class ModularAbelianVariety_abstract(ParentWithBase):
     def _isogeny_to_product_of_powers(self):
         r"""
         Given an abelian variety $A$, return an isogeny
-        $\phi: A \rightarrow B_1 \times \cdots \times \B_n$, where
+        $\phi: A \rightarrow B_1 \times \cdots \times B_n$, where
         each $B_i$ is a power of a simple abelian variety.  These
         factors will be exactly those returned by
         self.decomposition(simple=False).Note that this isogeny is not
