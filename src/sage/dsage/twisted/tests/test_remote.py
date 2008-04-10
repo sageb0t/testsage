@@ -17,6 +17,7 @@
 ############################################################################
 import os
 import random
+import tempfile
 from glob import glob
 
 from twisted.trial import unittest
@@ -54,8 +55,10 @@ class ClientRemoteCallsTest(unittest.TestCase):
 
     """
 
+    test_db = tempfile.NamedTemporaryFile()
+
     def setUp(self):
-        Session = init_db('test.db')
+        Session = init_db(self.test_db.name)
         self.jobdb = JobDatabase(Session)
         self.workerdb = WorkerDatabase(Session)
         self.clientdb = ClientDatabase(Session)
@@ -99,7 +102,7 @@ class ClientRemoteCallsTest(unittest.TestCase):
         self.jobdb._shutdown()
         clear_mappers()
         self.connection.disconnect()
-        os.remove('test.db')
+        os.remove(self.test_db.name)
 
         return self.server.stopListening()
 
@@ -170,8 +173,10 @@ class WorkerRemoteCallsTest(unittest.TestCase):
 
     """
 
+    test_db = tempfile.NamedTemporaryFile()
+
     def setUp(self):
-        Session = init_db('test.db')
+        Session = init_db(self.test_db.name)
         self.jobdb = JobDatabase(Session)
         self.workerdb = WorkerDatabase(Session)
         self.clientdb = ClientDatabase(Session)
@@ -215,7 +220,7 @@ class WorkerRemoteCallsTest(unittest.TestCase):
         self.jobdb._shutdown()
         clear_mappers()
         self.connection.disconnect()
-        os.remove('test.db')
+        os.remove(self.test_db.name)
 
         return self.server.stopListening()
 
