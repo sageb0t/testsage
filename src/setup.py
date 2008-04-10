@@ -1280,6 +1280,8 @@ code = setup(name        = 'sage',
 
                      'sage.combinat.sf',
 
+                     'sage.combinat.root_system',
+
                      'sage.combinat.matrices',
 
                      'sage.crypto',
