@@ -95,7 +95,7 @@ def token_to_str(int token):
         return chr(token)
 
 cdef inline bint is_alphanumeric(char c):
-    return 'a' <= c < 'z' or 'A' <= c <= 'Z' or '0' <= c <= '9' or c == '_'
+    return 'a' <= c <= 'z' or 'A' <= c <= 'Z' or '0' <= c <= '9' or c == '_'
 
 cdef inline bint is_whitespace(char c):
     return (c != 0) & (strchr(" \t\n\r", c) != NULL)
@@ -184,7 +184,7 @@ cdef class Tokenizer:
             token = self.next()
         return all
 
-    def reset(self, int pos = 0):
+    cpdef reset(self, int pos = 0):
         """
         Reset the tokenizer to a given position.
 
@@ -544,7 +544,7 @@ cdef class Parser:
                     obj = self.integer_constructor(tokens.last_token_string())
                 else:
                     tokens.backtrack()
-                    obj = self.p_expr(tokens)
+                    obj = self.p_eqn(tokens)
             elif token == '[':
                 obj = self.p_list(tokens)
             elif token == '(':
@@ -555,14 +555,14 @@ cdef class Parser:
                 tokens.token = ','
                 return all
             else:
-                obj = self.p_expr(tokens)
+                obj = self.p_eqn(tokens)
             PyList_Append(all, obj)
             token = tokens.next()
 
         tokens.backtrack()
         return all
 
-    cpdef p_list(self, tokens):
+    cpdef p_list(self, Tokenizer tokens):
         """
         Parse a list of items.
 
@@ -583,16 +583,17 @@ cdef class Parser:
             self.parse_error(tokens, "Malformed list")
         return all
 
-    cpdef p_tuple(self, tokens):
+    cpdef p_tuple(self, Tokenizer tokens):
         """
         Parse a tuple of items.
 
         EXAMPLES:
             sage: from sage.misc.parser import Parser, Tokenizer
             sage: p = Parser(make_var=var)
-            sage: p.p_tuple(Tokenizer("( (), (1), (1,), (1,2), (1,2,3), )"))
-            ((), 1, (1,), (1, 2), (1, 2, 3))
+            sage: p.p_tuple(Tokenizer("( (), (1), (1,), (1,2), (1,2,3), (1+2)^2, )"))
+            ((), 1, (1,), (1, 2), (1, 2, 3), 9)
         """
+        cdef int start = tokens.pos
         cdef int token = tokens.next()
         cdef bint real_tuple = True
         if token != '(':
@@ -607,7 +608,13 @@ cdef class Parser:
         if real_tuple:
             return tuple(all)
         else:
-            return all[0]
+            token = tokens.peek()
+            if token == ',' or token == EOS:
+                return all[0]
+            else:
+                # we have to reparse the entire thing as an expression
+                tokens.reset(start)
+                return self.p_eqn(tokens)
 
 # eqn ::= expr op expr | expr
     cpdef p_eqn(self, Tokenizer tokens):
@@ -637,9 +644,7 @@ cdef class Parser:
         """
         lhs = self.p_expr(tokens)
         cdef int op = tokens.next()
-        if op == EOS:
-            return lhs
-        elif op == '=':
+        if op == '=':
             return lhs == self.p_expr(tokens)
         elif op == NOT_EQ:
             return lhs != self.p_expr(tokens)
@@ -652,7 +657,8 @@ cdef class Parser:
         elif op == GREATER_EQ:
             return lhs >= self.p_expr(tokens)
         else:
-            self.parse_error(tokens, "Malformed equation")
+            tokens.backtrack()
+            return lhs
 
 # expr ::=  term | expr '+' term | expr '-' term
     cpdef p_expr(self, Tokenizer tokens):
@@ -883,7 +889,7 @@ cdef class Parser:
             return self.p_expr(tokens)
 
     cdef parse_error(self, Tokenizer tokens, msg="Malformed expression"):
-        raise ValueError, (msg, tokens.s, tokens.pos)
+        raise SyntaxError, (msg, tokens.s, tokens.pos)
 
 cdef class LookupNameMaker:
     cdef object names
