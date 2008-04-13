@@ -5,9 +5,15 @@ using namespace std;
 #include "ntl_wrap.h"
 #include <NTL/mat_poly_ZZ.h>
 #include <NTL/LLL.h>
+#include <NTL/tools.h>
 
 void del_charstar(char* a) {
   delete[] a;
+}
+
+void setup_NTL_error_callback(void (*function)(const char*, void*), void* context)
+{
+   NTL::SetErrorCallbackFunction(function, context);
 }
 
 //////// ZZ //////////
