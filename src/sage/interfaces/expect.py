@@ -280,7 +280,7 @@ class Expect(ParentWithBase):
 #            os.makedirs(T)
 #        return T + str(x)
 
-    def name(self):
+    def name(self, new_name=None):
         return self.__name
 
     def path(self):
