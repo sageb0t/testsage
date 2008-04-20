@@ -202,8 +202,8 @@ class WeightLatticeRealization_class:
 
     def highest_root(self):
         """
-        EXAMPLE:
-            RootSystem(['E',6]).ambient_lattice().highest_root()
+        EXAMPLES:
+            sage: RootSystem(['E',6]).ambient_lattice().highest_root()
             (1/2, 1/2, 1/2, 1/2, 1/2, -1/2, -1/2, 1/2)
         """
         for alp in self.positive_roots():
