@@ -239,7 +239,7 @@ def _get_from_cache(key):
     """
     try:
         if _cache.has_key(key):
-            return _cache[key]()
+            return _cache[key]   # put () here to renable weakrefs
     except TypeError, msg:
         raise TypeError, 'key = %s\n%s'%(key,msg)
     return None
@@ -256,7 +256,9 @@ def _save_in_cache(key, R):
         True
     """
     try:
-        _cache[key] = weakref.ref(R)
+        # We disable weakrefs since they cause segfault at the end of doctesting.
+        #weakref.ref(R)
+        _cache[key] = R
     except TypeError, msg:
         raise TypeError, 'key = %s\n%s'%(key,msg)
 
