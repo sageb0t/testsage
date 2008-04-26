@@ -2104,10 +2104,10 @@ class Permutations_nk(CombinatorialClass):
         else:
             return 0
 
-    def random(self):
+    def random_element(self):
         """
         EXAMPLES:
-            sage: Permutations(3,2).random()
+            sage: Permutations(3,2).random_element()
             [0, 1]
         """
         return sample(range(self.n), self.k)
@@ -2286,16 +2286,16 @@ class Permutations_set(CombinatorialClass):
     def count(self):
         """
         EXAMPLES:
-        sage: Permutations([1,2,3]).count()
-        6
+            sage: Permutations([1,2,3]).count()
+            6
         """
         return factorial(len(self._set))
 
-    def random(self):
+    def random_element(self):
         """
         EXAMPLES:
-        sage: Permutations([1,2,3]).random()
-        [1, 2, 3]
+            sage: Permutations([1,2,3]).random_element()
+            [1, 2, 3]
         """
         return sample(self._set, len(self._set))
 
@@ -2398,10 +2398,10 @@ class Permutations_setk(CombinatorialClass):
         for perm in PermutationsNK(len(self._set), self.k):
             yield [self._set[x] for x in perm]
 
-    def random(self):
+    def random_element(self):
         """
         EXAMPLES:
-            sage: Permutations([1,2,3],2).random()
+            sage: Permutations([1,2,3],2).random_element()
             [1, 2]
         """
         return sample(self._set, self.k)
@@ -2572,10 +2572,10 @@ class StandardPermutations_n(CombinatorialClass):
         else:
             raise ValueError, "x not in self"
 
-    def random(self):
+    def random_element(self):
         """
         EXAMPLES:
-            sage: Permutations(4).random()
+            sage: Permutations(4).random_element()
             [1, 3, 2, 4]
         """
         r = randint(0, int(factorial(self.n)-1))
@@ -3980,7 +3980,7 @@ def Permutations(n=None,k=None, **kwargs):
         Standard permutations of 5 avoiding [[3, 4, 1, 2], [4, 2, 3, 1]]
         sage: p.count()
         88
-        sage: p.random()
+        sage: p.random_element()
         [1, 3, 4, 5, 2]
 
     """

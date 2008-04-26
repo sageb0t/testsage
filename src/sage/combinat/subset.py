@@ -45,7 +45,7 @@ def Subsets(s, k=None):
         {}
         sage: S.last()
         {1, 2, 3}
-        sage: S.random()
+        sage: S.random_element()
         {2}
         sage: S.list()
         [{}, {1}, {2}, {3}, {1, 2}, {1, 3}, {2, 3}, {1, 2, 3}]
@@ -156,14 +156,15 @@ class Subsets_s(CombinatorialClass):
         for sub in it:
             yield sub
 
-    def random(self):
+    def random_element(self):
         """
-        Returns a random subset of s.
+        Returns a random element of the class of subsets of s (in other words,
+        a random subset of s).
 
         EXAMPLES:
-            sage: Subsets(3).random()
+            sage: Subsets(3).random_element()
             {2}
-            sage: Subsets([4,5,6]).random()
+            sage: Subsets([4,5,6]).random_element()
             {5}
         """
         lset = __builtin__.list(self.s)
@@ -328,14 +329,15 @@ class Subsets_sk(CombinatorialClass):
         for sub in choose_nk.ChooseNK(len(lset),self.k):
             yield ind_set(sub)
 
-    def random(self):
+    def random_element(self):
         """
-        Returns a random subset of s of size k.
+        Returns a random element of the class of subsets of s of size k (in other words,
+        a random subset of s of size k).
 
         EXAMPLES:
-            sage: Subsets(3, 2).random()
+            sage: Subsets(3, 2).random_element()
             {1, 2}
-            sage: Subsets(3,4).random() is None
+            sage: Subsets(3,4).random_element() is None
             True
         """
         lset = __builtin__.list(self.s)
@@ -344,7 +346,7 @@ class Subsets_sk(CombinatorialClass):
         if self.k not in range(len(self.s)+1):
             return None
         else:
-            return Set([lset[i] for i in choose_nk.ChooseNK(n, self.k).random()])
+            return Set([lset[i] for i in choose_nk.ChooseNK(n, self.k).random_element()])
 
     def rank(self, sub):
         """

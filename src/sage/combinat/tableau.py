@@ -1872,13 +1872,13 @@ class StandardTableaux_partition(CombinatorialClass):
         """
         return [y for y in self]
 
-    def random(self):
+    def random_element(self):
         """
         Returns a random standard tableau of shape p using the
         Green-Nijenhuis-Wilf Algorithm.
 
         EXAMPLES:
-            sage: StandardTableaux([2,2]).random()
+            sage: StandardTableaux([2,2]).random_element()
             [[1, 2], [3, 4]]
         """
 
@@ -1920,21 +1920,6 @@ class StandardTableaux_partition(CombinatorialClass):
             m -= 1
 
         return Tableau(t)
-
-## def heights(t):
-##     """
-##     Returns a list of the heights of the tableau t.
-
-##     EXAMPLES:
-##         sage: tableau.heights([[1,2],[3,2])
-##         [2, 2]
-##         sage: tableau.heights([3,2,1])
-##         [3, 2, 1]
-##         sage: tableau.heights([3,1])
-##         [2, 1, 1]
-##     """
-
-##     return partition.heights(shape(t))
 
 ##########################
 # Semi-standard tableaux #
