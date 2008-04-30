@@ -1658,7 +1658,7 @@ class Toplevel(resource.PostableResource):
         self.username = username if username else 'guest'
 
     def render(self, ctx):
-        return http.Response(stream =  login_page_template(notebook.get_accounts()))
+        return http.Response(stream =  login_page_template(notebook.get_accounts(), notebook.default_user()))
 
     def userchildFactory(self, request, name):
         return InvalidPage(msg = "unauthorized request", username = self.username)
@@ -1674,7 +1674,7 @@ from sage.server.notebook.template import failed_login_template
 
 class LoginResourceClass(resource.Resource):
     def render(self, ctx):
-        return http.Response(stream =  login_page_template(notebook.get_accounts()))
+        return http.Response(stream =  login_page_template(notebook.get_accounts(), notebook.default_user()))
 
     def childFactory(self, request, name):
         return LoginResource
@@ -1707,7 +1707,7 @@ class AnonymousToplevel(Toplevel):
     #child_login = LoginResource
 
     def render(self, ctx):
-        return http.Response(stream =  login_page_template(notebook.get_accounts()))
+        return http.Response(stream =  login_page_template(notebook.get_accounts(), notebook.default_user()))
 
 class FailedToplevel(Toplevel):
     def __init__(self, info, problem):
