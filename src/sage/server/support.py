@@ -74,6 +74,11 @@ def completions(s, globs, format=False, width=90, system="None"):
     """
     Return a list of completions in the context of globs.
     """
+    if system not in ['sage', 'python']:
+        prepend = system + '.'
+        s = prepend + s
+    else:
+        prepend = ''
     n = len(s)
     if n == 0:
         return '(empty string)'
@@ -107,6 +112,11 @@ def completions(s, globs, format=False, width=90, system="None"):
         v.sort()
     except Exception, msg:
         v = []
+
+    if prepend:
+        i = len(prepend)
+        v = [x[i:] for x in v]
+
     if format:
         if len(v) == 0:
             return "No completions of '%s' currently defined"%s
@@ -114,7 +124,7 @@ def completions(s, globs, format=False, width=90, system="None"):
             return tabulate(v, width)
     return v
 
-def docstring(obj_name, globs):
+def docstring(obj_name, globs, system='sage'):
     r"""
     Format \var{obj_name}'s docstring for printing in \sage notebook.
 
@@ -122,6 +132,8 @@ def docstring(obj_name, globs):
         -- William Stein (but partly taken from IPython for use in \sage).
         -- Extensions by Nick Alexander
     """
+    if system not in ['sage', 'python']:
+        obj_name = system + '.' + obj_name
     try:
         obj = eval(obj_name, globs)
     except (AttributeError, NameError, SyntaxError):
@@ -142,7 +154,7 @@ def docstring(obj_name, globs):
     s += 'Docstring: \n%s\n'%sageinspect.sage_getdoc(obj, obj_name)
     return s.rstrip()
 
-def source_code(s, globs):
+def source_code(s, globs, system='sage'):
     r"""
     Format obj's source code for printing in \sage notebook.
 
@@ -150,6 +162,9 @@ def source_code(s, globs):
         -- William Stein (but partly taken from IPython for use in \sage).
         -- Extensions by Nick Alexander
     """
+    if system not in ['sage', 'python']:
+        s = system + '.' + s
+
     try:
         obj = eval(s, globs)
     except NameError:
