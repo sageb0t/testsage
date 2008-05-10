@@ -128,16 +128,6 @@ class dancing_links {
             cover(p->col);
     }
 
-    void freemem() {
-        for(vector<column*>::iterator i = col_array.begin(); i != col_array.end(); i++) {
-            free(*i);
-        }
-
-        for(vector<node*>::iterator i = node_array.begin(); i != node_array.end(); i++) {
-            free(*i);
-        }
-    }
-
     // Links a row, we call this for each column i that contains
     // a 1. We start things by calling with *rowStart == 0
     // and this function allocates a new row, otherwise it continues the
@@ -257,12 +247,6 @@ public:
         best_col = NULL;
     }
 
-    //~dancing_links();
-    ~dancing_links() {
-        freemem();
-    }
-
-    //void add_rows(vector<vector<int> > rows);
     void add_rows(vector<vector<int> > rows) {
         assert(nr_columns == -1);
 
@@ -353,4 +337,14 @@ public:
             }
         }
     }
-};
+
+    void freemem() {
+        for(vector<column*>::iterator i = col_array.begin(); i != col_array.end(); i++) {
+            free(*i);
+        }
+
+        for(vector<node*>::iterator i = node_array.begin(); i != node_array.end(); i++) {
+            free(*i);
+        }
+    }
+ };
