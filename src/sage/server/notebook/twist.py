@@ -1291,6 +1291,17 @@ class SendWorksheetToActive(SendWorksheetToFolder):
     def action(self, W):
         W.set_active(self.username)
 
+# Using SendWorksheet does feel somewhat hackish.  It however is
+# exactly the right thing to actually do, and minimizes code
+# duplication.
+class SendWorksheetToQuit(SendWorksheetToFolder):
+    """
+    Saves and quits each selected worksheet.
+    """
+    def action(self, W):
+        W.save_snapshot(self.username)
+        W.quit()
+
 ############################
 # Publically Available Worksheets
 ############################
@@ -1774,6 +1785,7 @@ class UserToplevel(Toplevel):
     userchild_send_to_trash = SendWorksheetToTrash
     userchild_send_to_archive = SendWorksheetToArchive
     userchild_send_to_active = SendWorksheetToActive
+    userchild_send_to_quit = SendWorksheetToQuit
 
     userchild_settings = UserSettings
 
