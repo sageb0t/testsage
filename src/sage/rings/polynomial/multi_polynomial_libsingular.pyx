@@ -1602,7 +1602,7 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
         Add left and right.
 
         EXAMPLE:
-            sage: P.<x,y,z>=MPolynomialRing(QQ,3)
+            sage: P.<x,y,z>=PolynomialRing(QQ,3)
             sage: 3/2*x + 1/2*y + 1
             3/2*x + 1/2*y + 1
 
@@ -1628,7 +1628,7 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
         Add left and right inplace.
 
         EXAMPLE:
-            sage: P.<x,y,z>=MPolynomialRing(QQ,3)
+            sage: P.<x,y,z>=PolynomialRing(QQ,3)
             sage: 3/2*x + 1/2*y + 1
             3/2*x + 1/2*y + 1
 
@@ -1655,7 +1655,7 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
         Subtract left and right.
 
         EXAMPLE:
-            sage: P.<x,y,z>=MPolynomialRing(QQ,3)
+            sage: P.<x,y,z>=PolynomialRing(QQ,3)
             sage: 3/2*x - 1/2*y - 1
             3/2*x - 1/2*y - 1
 
@@ -1680,7 +1680,7 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
         Subtract left and right inplace.
 
         EXAMPLE:
-            sage: P.<x,y,z>=MPolynomialRing(QQ,3)
+            sage: P.<x,y,z>=PolynomialRing(QQ,3)
             sage: 3/2*x - 1/2*y - 1
             3/2*x - 1/2*y - 1
 
@@ -1705,7 +1705,7 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
         Multiply self with a base ring element.
 
         EXAMPLE:
-            sage: P.<x,y,z>=MPolynomialRing(QQ,3)
+            sage: P.<x,y,z>=PolynomialRing(QQ,3)
             sage: 3/2*x
             3/2*x
         """
@@ -1737,7 +1737,7 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
         Multiply left and right.
 
         EXAMPLE:
-            sage: P.<x,y,z>=MPolynomialRing(QQ,3)
+            sage: P.<x,y,z>=PolynomialRing(QQ,3)
             sage: (3/2*x - 1/2*y - 1) * (3/2*x + 1/2*y + 1)
             9/4*x^2 - 1/4*y^2 - y - 1
         """
@@ -1756,7 +1756,7 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
         Multiply left and right inplace.
 
         EXAMPLE:
-            sage: P.<x,y,z>=MPolynomialRing(QQ,3)
+            sage: P.<x,y,z>=PolynomialRing(QQ,3)
             sage: (3/2*x - 1/2*y - 1) * (3/2*x + 1/2*y + 1)
             9/4*x^2 - 1/4*y^2 - y - 1
         """
@@ -1776,7 +1776,7 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
         Divide left by right
 
         EXAMPLES:
-            sage: R.<x,y>=MPolynomialRing(QQ,2)
+            sage: R.<x,y>=PolynomialRing(QQ,2)
             sage: f = (x + y)/3
             sage: f.parent()
             Multivariate Polynomial Ring in x, y over Rational Field
@@ -1786,7 +1786,6 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
         same parent.
 
             sage: R.<x,y>=PolynomialRing(QQ,2)
-            sage: R.<x,y>=MPolynomialRing(QQ,2)
             sage: f = x^3 + y
             sage: g = x
             sage: h = f/g; h
@@ -1795,7 +1794,7 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
             Fraction Field of Multivariate Polynomial Ring in x, y over Rational Field
 
         TESTS:
-            sage: R.<x,y>=MPolynomialRing(QQ,2)
+            sage: R.<x,y>=PolynomialRing(QQ,2)
             sage: x/0
             Traceback (most recent call last):
             ...
@@ -1823,7 +1822,7 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
         Return self^(exp).
 
         EXAMPLE:
-            sage: R.<x,y>=MPolynomialRing(QQ,2)
+            sage: R.<x,y>=PolynomialRing(QQ,2)
             sage: f = x^3 + y
             sage: f^2
             x^6 + 2*x^3*y + y^2
@@ -1859,7 +1858,7 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
         Return -self.
 
         EXAMPLE:
-            sage: R.<x,y>=MPolynomialRing(QQ,2)
+            sage: R.<x,y>=PolynomialRing(QQ,2)
             sage: f = x^3 + y
             sage: -f
             -x^3 - y
@@ -1874,7 +1873,7 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
     def _repr_(self):
         """
         EXAMPLE:
-            sage: R.<x,y>=MPolynomialRing(QQ,2)
+            sage: R.<x,y>=PolynomialRing(QQ,2)
             sage: f = x^3 + y
             sage: f # indirect doctest
             x^3 + y
@@ -1896,7 +1895,7 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
         available it uses the short \SINGULAR notation.
 
         EXAMPLES:
-            sage: R.<x,y>=MPolynomialRing(QQ,2)
+            sage: R.<x,y>=PolynomialRing(QQ,2)
             sage: f = x^3 + y
             sage: f._repr_short_()
             'x3+y'
@@ -3040,7 +3039,7 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
         variables in some power without a coefficient.
 
         EXAMPLES:
-            sage: R.<x,y,z>=MPolynomialRing(GF(7),3,order='lex')
+            sage: R.<x,y,z>=PolynomialRing(GF(7),3,order='lex')
             sage: f = x^1*y^2 + y^3*z^4
             sage: f.lm()
             x*y^2
@@ -3048,7 +3047,7 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
             sage: f.lm()
             x^3*y^2*z^4
 
-            sage: R.<x,y,z>=MPolynomialRing(QQ,3,order='deglex')
+            sage: R.<x,y,z>=PolynomialRing(QQ,3,order='deglex')
             sage: f = x^1*y^2*z^3 + x^3*y^2*z^0
             sage: f.lm()
             x*y^2*z^3
@@ -3081,7 +3080,7 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
         term order of \code{self.parent()}.
 
         EXAMPLE:
-            sage: R.<x,y,z>=MPolynomialRing(GF(7),3,order='lex')
+            sage: R.<x,y,z>=PolynomialRing(GF(7),3,order='lex')
             sage: f = 3*x^1*y^2 + 2*y^3*z^4
             sage: f.lc()
             3
@@ -3114,7 +3113,7 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
         of variables in some power and a coefficient.
 
         EXAMPLE:
-            sage: R.<x,y,z>=MPolynomialRing(GF(7),3,order='lex')
+            sage: R.<x,y,z>=PolynomialRing(GF(7),3,order='lex')
             sage: f = 3*x^1*y^2 + 2*y^3*z^4
             sage: f.lt()
             3*x*y^2
@@ -3619,8 +3618,8 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
             -y*z + x
 
         TESTS:
-            sage: Q.<x,y,z>=MPolynomialRing(QQ,3)
-            sage: P.<x,y,z>=MPolynomialRing(QQ,3)
+            sage: Q.<x,y,z>=PolynomialRing(QQ,3)
+            sage: P.<x,y,z>=PolynomialRing(QQ,3)
             sage: P(0).sub_m_mul_q(P(0),P(1))
             0
             sage: x.sub_m_mul_q(Q.gen(1),Q.gen(2))
@@ -3688,8 +3687,8 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
             y*z + x
 
         TESTS:
-            sage: R.<x,y,z>=MPolynomialRing(QQ,3)
-            sage: P.<x,y,z>=MPolynomialRing(QQ,3)
+            sage: R.<x,y,z>=PolynomialRing(QQ,3)
+            sage: P.<x,y,z>=PolynomialRing(QQ,3)
             sage: P(0).add_m_mul_q(P(0),P(1))
             0
             sage: x.add_m_mul_q(R.gen(),R.gen(1))

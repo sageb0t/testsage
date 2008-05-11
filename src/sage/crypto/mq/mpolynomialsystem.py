@@ -83,7 +83,7 @@ def MPolynomialRoundSystem(R, gens):
         gens -- list (default: [])
 
     EXAMPLE:
-        sage: P.<x,y,z> = MPolynomialRing(GF(2),3)
+        sage: P.<x,y,z> = PolynomialRing(GF(2),3)
         sage: mq.MPolynomialRoundSystem(P,[x*y +1, z + 1])
         [x*y + 1, z + 1]
     """
@@ -152,7 +152,7 @@ class MPolynomialRoundSystem_generic(SageObject):
             gens -- list (default: [])
 
         EXAMPLE:
-            sage: P.<x,y,z> = MPolynomialRing(GF(2),3)
+            sage: P.<x,y,z> = PolynomialRing(GF(2),3)
             sage: mq.MPolynomialRoundSystem(P,[x*y +1, z + 1])
             [x*y + 1, z + 1]
         """
@@ -286,7 +286,7 @@ class MPolynomialRoundSystem_generic(SageObject):
         Return string representation of self.
 
         EXAMPLE:
-            sage: P.<x,y,z> = MPolynomialRing(GF(2),3)
+            sage: P.<x,y,z> = PolynomialRing(GF(2),3)
             sage: F = mq.MPolynomialRoundSystem(P,[x*y +1, z + 1])
             sage: str(F) # indirect doctest
             '[x*y + 1, z + 1]'
@@ -298,7 +298,7 @@ class MPolynomialRoundSystem_generic(SageObject):
         Return the i-th generator of self.
 
         EXAMPLE:
-            sage: P.<x,y,z> = MPolynomialRing(GF(2),3)
+            sage: P.<x,y,z> = PolynomialRing(GF(2),3)
             sage: F = mq.MPolynomialRoundSystem(P,[x*y +1, z + 1])
             sage: F[0] # indirect doctest
             x*y + 1
@@ -351,7 +351,7 @@ class MPolynomialRoundSystem_generic(SageObject):
         Return self.ngens().
 
         EXAMPLE:
-            sage: P.<x,y,z> = MPolynomialRing(GF(2),3)
+            sage: P.<x,y,z> = PolynomialRing(GF(2),3)
             sage: F = mq.MPolynomialRoundSystem(P,[x*y +1, z + 1])
             sage: len(F)
             2
@@ -364,7 +364,7 @@ class MPolynomialRoundSystem_generic(SageObject):
         Iterate over the generators of self.
 
         EXAMPLE:
-            sage: P.<x,y,z> = MPolynomialRing(GF(2),3)
+            sage: P.<x,y,z> = PolynomialRing(GF(2),3)
             sage: F = mq.MPolynomialRoundSystem(P,[x*y +1, z + 1])
             sage: for f in F:
             ...     print f
