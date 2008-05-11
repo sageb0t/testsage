@@ -1361,7 +1361,6 @@ class Worksheet:
         absD = os.path.abspath(D)
         input = 'os.chdir("%s")\n'%absD
 
-        # TODOss
         os.system('chmod -R a+rw "%s"'%absD)
 
         # This is useful mainly for interact -- it allows
@@ -1370,7 +1369,11 @@ class Worksheet:
 
         if C.time():
             input += '__SAGE_t__=cputime()\n__SAGE_w__=walltime()\n'
-        if I.endswith('?'):
+
+        # If the input ends in a question mark and is *not* a comment line,
+        # then we introspect on it.
+        Istrip = I.strip()
+        if Istrip.endswith('?') and not Istrip.startswith('#'):
             C.set_introspect(I, '')
         I = I.replace('\\\n','')
         C._before_preparse = input + I
