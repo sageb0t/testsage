@@ -3581,6 +3581,10 @@ function interact(id, input) {
     cell_has_changed = false;
     current_cell = id;
 
+    // Delete the old images, etc., that might be sitting
+    // in the output from the previos evaluation of this cell.
+    get_element('cell_output_html_' + id).innerHTML = "";
+
     var cell_number = get_element('cell_number_' + id);
     cell_number.className = 'cell_number_running';
 
