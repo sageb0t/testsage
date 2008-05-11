@@ -129,7 +129,7 @@ class Notebook(SageObject):
 
         EXAMPLES:
             sage: nb = sage.server.notebook.notebook.Notebook('notebook-test')
-            sage: os.listdir('notebook-test')
+            sage: sorted(os.listdir('notebook-test'))
             ['backups', 'nb.sobj', 'objects', 'worksheets']
             sage: nb.delete()
 
