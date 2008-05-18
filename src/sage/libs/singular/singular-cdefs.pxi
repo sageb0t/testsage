@@ -179,7 +179,7 @@ cdef extern from "libsingular.h":
     # current ring
 
     cdef ring *currRing
-
+    cdef ideal *currQuotient
     # omalloc bin for numbers
 
     cdef omBin *rnumber_bin
@@ -660,3 +660,7 @@ cdef extern from "libsingular.h":
     # number for rows of matrix
 
     int MATROWS(matrix *)
+
+cdef extern from "stairc.h":
+    # Computes the monomial basis for R[x]/I
+    ideal *scKBase(int deg, ideal *s, ideal *Q)
