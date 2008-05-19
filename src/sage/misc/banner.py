@@ -34,7 +34,7 @@ def version(clone = False):
         'Mercurial clone branch: ...')
     """
     import os
-    branch = os.popen("ls -l devel/sage").read().split()[-1][5:]
+    branch = os.popen("ls -l $SAGE_ROOT/devel/sage").read().split()[-1][5:]
     import sage.version
     v = 'SAGE Version %s, Release Date: %s'%(sage.version.version, sage.version.date)
     if clone:
