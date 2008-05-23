@@ -40,4 +40,5 @@ else
     # we delete it.
     # NOTE -- we *only* delete the dylib's.  Apps that need libpng can still link it in statically.
     rm -f "$SAGE_LOCAL"/lib/libpng*dylib
+    rm -f "$SAGE_LOCAL"/lib/libpng*.la
 fi
