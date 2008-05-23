@@ -1919,7 +1919,7 @@ cdef class NumberFieldElement_relative(NumberFieldElement):
         return repr(R(self.list()))
 
     def _latex_(self):
-        """
+        r"""
         Returns the latex representation for this element.
 
         EXAMPLES:
