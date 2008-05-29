@@ -161,6 +161,8 @@ if [ "$1" = "-short" ]; then
     exit 0
 fi
 
+RHOME="$SAGE_LOCAL/lib/R" && export RHOME
+
 ############ compilation flags
 
 # Setting SAGE-related compilation flags.
