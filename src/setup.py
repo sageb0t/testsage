@@ -461,6 +461,8 @@ symmetrica = Extension('sage.libs.symmetrica.symmetrica',
                        include_dirs=debian_include_dirs + ['/usr/include/malloc/'],
                        libraries = ["symmetrica"])
 
+time_series = Extension('sage.finance.time_series',['sage/finance/time_series.pyx'])
+
 #####################################################
 
 ext_modules = [ \
@@ -571,6 +573,8 @@ ext_modules = [ \
     sagex_ds,
 
     symmetrica,
+
+    time_series,
 
     Extension('sage.media.channels',
               sources = ['sage/media/channels.pyx']), \
