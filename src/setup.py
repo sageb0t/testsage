@@ -465,6 +465,9 @@ symmetrica = Extension('sage.libs.symmetrica.symmetrica',
 
 time_series = Extension('sage.finance.time_series',['sage/finance/time_series.pyx'])
 
+markov_multifractal = Extension('sage.finance.markov_multifractal_cython',
+                                ['sage/finance/markov_multifractal_cython.pyx'])
+
 #####################################################
 
 ext_modules = [ \
@@ -577,6 +580,8 @@ ext_modules = [ \
     symmetrica,
 
     time_series,
+
+    markov_multifractal,
 
     Extension('sage.media.channels',
               sources = ['sage/media/channels.pyx']), \
