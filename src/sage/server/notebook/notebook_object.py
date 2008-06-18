@@ -152,7 +152,7 @@ def inotebook(*args, **kwds):
     kwds['secure'] = False
     notebook(*args, **kwds)
 
-def test_notebook(admin_passwd, secure=False, directory=None, port=8050, address='localhost'):
+def test_notebook(admin_passwd, secure=False, directory=None, port=8050, address='localhost', verbose=False):
     """
     This function is used to test notebook server functions.
 
@@ -194,4 +194,6 @@ def test_notebook(admin_passwd, secure=False, directory=None, port=8050, address
         p.close(force=True)
         shutil.rmtree(nb.directory())
     p.dispose = dispose
+    if verbose:
+        print "Notebook started."
     return p

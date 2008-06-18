@@ -113,6 +113,8 @@ from sage.numerical.all  import *
 
 from sage.stats.all      import *
 
+import sage.finance.all  as finance
+
 from sage.parallel.all   import *
 
 from copy import copy, deepcopy
