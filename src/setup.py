@@ -1021,6 +1021,9 @@ ext_modules = [ \
               ['sage/misc/sage_timeit_class.pyx']
               ), \
 
+    Extension('sage.misc.fpickle',
+              ['sage/misc/fpickle.pyx']
+              ), \
     ]
 
 #mpc = Extension('sage.rings.mpc',
