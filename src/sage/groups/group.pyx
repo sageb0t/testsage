@@ -159,7 +159,7 @@ cdef class FiniteGroup(Group):
                 if not xg == x:
                     arrows[x][xg] = g
 
-        return DiGraph(arrows)
+        return DiGraph(arrows, implementation='networkx')
 
 cdef class AlgebraicGroup(Group):
     """
