@@ -3044,7 +3044,7 @@ class GenericGraph(SageObject):
 
         """
         if vertices is None:
-            vertices = self.vertices()
+            vertices = self
         for v in vertices:
             if self.has_edge(v,v):
                 self.delete_multiedge(v,v)
