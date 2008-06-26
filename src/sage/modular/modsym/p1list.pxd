@@ -20,3 +20,4 @@ cdef class P1List:
                             int* uu, int* vv, int* ss,
                             int compute_s) except -1
     cpdef index(self, int u, int v)
+    cdef index_and_scalar(self, int u, int v, int* i, int* s)
