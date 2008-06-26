@@ -850,6 +850,11 @@ class GenericGraph(SageObject):
             [ 0  1 -1  0]
             [-1 -1  3 -1]
             [-1  0 -1  2]
+            sage: M = G.laplacian_matrix(boundary_first=True); M
+            [ 2  0 -1 -1]
+            [ 0  1 -1  0]
+            [-1 -1  3 -1]
+            [-1  0 -1  2]
 
         """
         from sage.matrix.constructor import matrix
@@ -867,6 +872,8 @@ class GenericGraph(SageObject):
         for i in range(len(A)):
             A[i][i] = S[i]
         return M.parent()(A)
+
+    laplacian_matrix = kirchhoff_matrix
 
     ### Attributes
 
