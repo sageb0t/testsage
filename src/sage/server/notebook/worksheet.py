@@ -16,6 +16,7 @@ from __future__ import with_statement
 ###########################################################################
 
 import os
+import copy
 import shutil
 import re
 import string
@@ -133,10 +134,10 @@ class Worksheet:
             return cmp(type(self), type(other))
 
     def __repr__(self):
-        return str(self.__cells)
+        return str(self.cell_list())
 
     def __len__(self):
-        return len(self.__cells)
+        return len(self.cell_list())
 
     def docbrowser(self):
         try:
@@ -675,6 +676,21 @@ class Worksheet:
             os.makedirs(path)
         return path
 
+    ##########################################################
+    # Stuff to customize how pickling works slightly.
+    ##########################################################
+
+    # The getstate method makes sure that the self.__cells
+    # dictionary is not saved in the pickle since it could be
+    # huge.
+    def __getstate__(self):
+        d = copy.copy(self.__dict__)
+        if d.has_key('_Worksheet__cells'):
+            self.save()  # make sure the worksheet.txt file is up to date.
+            # maybe put a "save to disk" call here first!
+            del d['_Worksheet__cells']
+        return d
+
     # The following setstate method is here
     # so that when this object is pickled and
     # unpickled, the self.__sage attribute
@@ -703,7 +719,7 @@ class Worksheet:
             s += "# Worksheet: %s"%self.name() + '\n'
             s += "#"*80+ '\n\n'
 
-        for C in self.__cells:
+        for C in self.cell_list():
             t = C.plain_text(prompts=prompts).strip('\n')
             if t != '':
                 s += '\n' + t
@@ -713,7 +729,7 @@ class Worksheet:
         """
         Return text version of the input to the worksheet.
         """
-        return '\n\n---\n\n'.join([C.input_text() for C in self.__cells])
+        return '\n\n---\n\n'.join([C.input_text() for C in self.cell_list()])
 
     ##########################################################
     # Editing the worksheet in plain text format (export and import)
@@ -726,7 +742,7 @@ class Worksheet:
         s = self.name() + '\n'
         s += 'system:%s'%self.system()
 
-        for C in self.__cells:
+        for C in self.cell_list():
             t = C.edit_text().strip()
             if t != '':
                 s += '\n\n' + t
@@ -748,6 +764,16 @@ class Worksheet:
             return
 
     def edit_save(self, text, ignore_ids=False):
+        """
+        Set the contents of this worksheet to the worksheet defined by
+        the plain text string text, which should be a sequence of html
+        and {{{}}}'s code blocks.
+
+        INPUT:
+            text -- a string
+            ignore_ids -- bool (default: False); if True ignore all the
+                          id's in the {{{}}} code block.
+        """
         # Clear any caching.
         try:
             del self.__html
@@ -806,8 +832,11 @@ class Worksheet:
                     ids.add(id)
                     html = False
                 used_ids.add(id)
-                C = self.get_cell_with_id(id = id)
-                if isinstance(C, TextCell):
+                if hasattr(self, '__cells'):
+                    C = self.get_cell_with_id(id = id)
+                    if isinstance(C, TextCell):
+                        C = self._new_cell(id)
+                else:
                     C = self._new_cell(id)
                 C.set_input_text(input)
                 C.set_output_text(output, '')
@@ -823,12 +852,12 @@ class Worksheet:
         self.__cells = cells
 
         if not self.is_published():
-            for c in self.__cells:
+            for c in self.cell_list():
                 if c.is_interactive_cell():
                     if not c in self.__queue:
                         self.enqueue(c)
 
-        # This *depends* on self.__cells being set!!
+        # This *depends* on self.cell_list() being set!!
         self.set_cell_counter()
 
     ##########################################################
@@ -993,7 +1022,7 @@ class Worksheet:
         return menu
 
     def html_worksheet_body(self, do_print, publish=False):
-        n = len(self.__cells)
+        n = len(self.cell_list())
         published = self.is_published() or publish
 
         s = '<div class="cell_input_active" id="cell_resizer"></div>'
@@ -1003,7 +1032,7 @@ class Worksheet:
             s += '<div class="worksheet_cell_list" id="worksheet_cell_list">\n'
 
         for i in range(n):
-            cell = self.__cells[i]
+            cell = self.cell_list()[i]
             s += cell.html(ncols, do_print=do_print) + '\n'
 
         if not do_print and not published:
@@ -1089,20 +1118,40 @@ class Worksheet:
     ##########################################################
 
     def cell_id_list(self):
-        return [C.id() for C in self.__cells]
+        return [C.id() for C in self.cell_list()]
 
     def compute_cell_id_list(self):
-        return [C.id() for C in self.__cells if isinstance(C, Cell)]
+        return [C.id() for C in self.cell_list() if isinstance(C, Cell)]
 
     def cell_list(self):
-        return self.__cells
+        """
+        Return a reference to the list of the all the cells in this worksheet.
+
+        OUTPUT:
+            list -- a list of cells
+
+        This function loads the cell list from disk (the file
+        worksheet.txt) if it isn't available in memory.
+        """
+        try:
+            return self.__cells
+        except AttributeError:
+            worksheet_txt = '%s/worksheet.txt'%self.__dir
+            if not os.path.exists(worksheet_txt):
+                print "Creating new worksheet file %s"%worksheet_txt
+                self.__cells = []
+            else:
+                print "Loading worksheet %s"%worksheet_txt
+                txt = open(worksheet_txt).read()
+                self.edit_save(txt)
+            return self.__cells
 
     def append_new_cell(self):
         """
         Create and append a new cell to the list of cells.
         """
         C = self._new_cell()
-        self.__cells.append(C)
+        self.cell_list().append(C)
         return C
 
     def new_cell_before(self, id, input=""):
@@ -1120,7 +1169,7 @@ class Worksheet:
             new cell with the given input text (empty by default).
 
         """
-        cells = self.__cells
+        cells = self.cell_list()
         for i in range(len(cells)):
             if cells[i].id() == id:
                 C = self._new_cell(input=input)
@@ -1143,7 +1192,7 @@ class Worksheet:
             new cell with the given input text (empty by default).
 
         """
-        cells = self.__cells
+        cells = self.cell_list()
         for i in range(len(cells)):
             if cells[i].id() == id:
                 C = self._new_cell(input=input)
@@ -1157,7 +1206,7 @@ class Worksheet:
         """
         Remove the cell with given id and return the cell before it.
         """
-        cells = self.__cells
+        cells = self.cell_list()
         for i in range(len(cells)):
             if cells[i].id() == id:
 
@@ -1625,7 +1674,7 @@ class Worksheet:
         return [c.id() for c in self.__queue]
 
     def _enqueue_auto(self):
-        for c in self.__cells:
+        for c in self.cell_list():
             if c.is_auto_cell():
                 self.__queue.append(c)
 
@@ -1665,12 +1714,12 @@ class Worksheet:
         self.start_next_comp()
 
     def _enqueue_auto_cells(self):
-        for c in self.__cells:
+        for c in self.cell_list():
             if c.is_auto_cell():
                 self.enqueue(c)
 
     def set_cell_counter(self):
-        self.__next_id = 1 + max([C.id() for C in self.__cells])
+        self.__next_id = 1 + max([C.id() for C in self.cell_list()])
 
     def _new_text_cell(self, plain_text, id=None):
         if id is None:
@@ -1697,23 +1746,23 @@ class Worksheet:
         return Cell(id, input, '', self)
 
     def append(self, L):
-        self.__cells.append(L)
+        self.cell_list().append(L)
 
     ##########################################################
     # Accessing existing cells
     ##########################################################
     def __getitem__(self, n):
         try:
-            return self.__cells[n]
+            return self.cell_list()[n]
         except IndexError:
             if n >= 0:  # this should never happen -- but for robustness we cover this case.
-                for k in range(len(self.__cells),n+1):
-                    self.__cells.append(self._new_cell())
-                return self.__cells[n]
+                for k in range(len(self.cell_list()),n+1):
+                    self.cell_list().append(self._new_cell())
+                return self.cell_list()[n]
             raise IndexError
 
     def get_cell_with_id(self, id):
-        for c in self.__cells:
+        for c in self.cell_list():
             if c.id() == id:
                 return c
         return self._new_cell(id)
@@ -1765,11 +1814,11 @@ class Worksheet:
         return status, cell
 
     def is_last_id_and_previous_is_nonempty(self, id):
-        if self.__cells[-1].id() != id:
+        if self.cell_list()[-1].id() != id:
             return False
-        if len(self.__cells) == 1:
+        if len(self.cell_list()) == 1:
             return False
-        if len(self.__cells[-2].output_text(ncols=0)) == 0:
+        if len(self.cell_list()[-2].output_text(ncols=0)) == 0:
             return False
         return True
 
@@ -2203,14 +2252,14 @@ class Worksheet:
     # Showing and hiding all cells
     ##########################################################
     def show_all(self):
-        for C in self.__cells:
+        for C in self.cell_list():
             try:
                 C.set_cell_output_type('wrap')
             except AttributeError:   # for backwards compatibility
                 pass
 
     def hide_all(self):
-        for C in self.__cells:
+        for C in self.cell_list():
             try:
                 C.set_cell_output_type('hidden')
             except AttributeError:
@@ -2228,7 +2277,7 @@ class Worksheet:
             sage: nb = sage.server.notebook.notebook.Notebook(tmp_dir())
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
-            sage: W.edit_save('Sage\n{{{\n2+3\n///\n5\n}}}')
+            sage: W.edit_save('Sage\nsystem:sage\n{{{\n2+3\n///\n5\n}}}')
 
         Notice that there is 1 cell with 5 in its output.
             sage: W.cell_list()
@@ -2251,7 +2300,7 @@ class Worksheet:
         if not self.user_can_edit(username):
             raise ValueError, "user '%s' not allowed to edit this worksheet"%username
         self.save_snapshot(username)
-        for C in self.__cells:
+        for C in self.cell_list():
             C.delete_output()
 
 __internal_test1 = '''
