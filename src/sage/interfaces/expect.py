@@ -922,8 +922,8 @@ If this all works, you can then make calls like:
     def execute(self, *args, **kwds):
         return self.eval(*args, **kwds)
 
-    #def __call__(self, x, globals=None):
-    def __call__(self, x):
+    def __call__(self, x, name=None):
+
         r"""
         Create a new object in self from x.
 
@@ -933,15 +933,12 @@ If this all works, you can then make calls like:
                       X.foo(y,z,...)
         calls foo(X, y, z, ...) and returns the corresponding object.
         """
-        #if not globals is None:
-        #    for k, x in globals.iteritems():
-        #        self.set(k,x)
         cls = self._object_class()
 
         if isinstance(x, cls) and x.parent() is self:
             return x
         if isinstance(x, basestring):
-            return cls(self, x)
+            return cls(self, x, name=name)
         try:
             return self._coerce_from_special_method(x)
         except TypeError:
@@ -952,7 +949,7 @@ If this all works, you can then make calls like:
             return self._coerce_impl(x, use_special=False)
         except TypeError, msg:
             try:
-                return cls(self, str(x))
+                return cls(self, str(x), name=name)
             except TypeError, msg2:
                 raise TypeError, msg
 
@@ -1079,14 +1076,10 @@ If this all works, you can then make calls like:
         self.__seq += 1
         return "sage%s"%self.__seq
 
-    def _create(self, value):
-        name = self._next_var_name()
-        #self._last_name = name
+    def _create(self, value, name=None):
+        name = self._next_var_name() if name is None else name
         self.set(name, value)
         return name
-
-    #def _last_created_varname(self):
-    #    return self._last_name
 
     def _object_class(self):
         return ExpectElement
@@ -1184,7 +1177,7 @@ class ExpectElement(RingElement):
     """
     Expect element.
     """
-    def __init__(self, parent, value, is_name=False):
+    def __init__(self, parent, value, is_name=False, name=None):
         RingElement.__init__(self, parent)
         self._create = value
         if parent is None: return     # means "invalid element"
@@ -1199,7 +1192,7 @@ class ExpectElement(RingElement):
             self._name = value
         else:
             try:
-                self._name = parent._create(value)
+                self._name = parent._create(value, name=name)
             except (TypeError, KeyboardInterrupt, RuntimeError, ValueError), x:
                 self._session_number = -1
                 raise TypeError, x
