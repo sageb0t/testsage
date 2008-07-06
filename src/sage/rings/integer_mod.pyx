@@ -868,6 +868,12 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
             sage: a.crt(b)
             125900000037
 
+            sage: b = mod(0,1)
+            sage: a.crt(b) == a
+            True
+            sage: a.crt(b).modulus()
+            100000000
+
         AUTHOR:
             -- Robert Bradshaw
         """
@@ -891,6 +897,9 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
 
         if not PY_TYPE_CHECK(other, IntegerMod_gmp):
             other = IntegerMod_gmp(other._parent, other.lift())
+
+        if other.modulus() == 1:
+            return self
 
         return self.__crt(other)
 
