@@ -26,9 +26,11 @@ import threading
 import time
 from getpass import getuser
 
-from twisted.cred.credentials import Anonymous
-from twisted.internet.threads import blockingCallFromThread
-from twisted.internet import reactor
+# This is a version of blockingCallFromThread that delays importing
+# twisted.internet until it is first used.
+def blockingCallFromThread(*args, **kwds):
+    from twisted.internet.threads import blockingCallFromThread
+    return blockingCallFromThread(*args, **kwds)
 
 from sage.dsage.database.job import Job, expand_job
 from sage.dsage.misc.misc import random_str
@@ -41,6 +43,7 @@ class DSageThread(threading.Thread):
     """
 
     def run(self):
+        from twisted.internet import reactor
         if not reactor.running:
             try:
                 reactor.run(installSignalHandlers=0)
@@ -195,6 +198,7 @@ class DSage(object):
             reactor.connectTCP(self.server, self.port, factory)
 
     def _login(self, *args, **kwargs):
+        from twisted.cred.credentials import Anonymous
         if self._testing:
             d = self.factory.login(Anonymous(), None)
         else:
@@ -395,6 +399,7 @@ class BlockingDSage(DSage):
                                    self.port, self.factory)
 
     def _login(self, *args, **kwargs):
+        from twisted.cred.credentials import Anonymous
         if self._testing:
             d = self.factory.login(Anonymous(), None)
         else:
@@ -671,6 +676,7 @@ class BlockingDSage(DSage):
         """
 
         self.is_connected()
+        from twisted.internet import reactor
         jdicts = blockingCallFromThread(reactor, self._remoteobj.callRemote,
                                         'get_jobs_by_username',
                                         self.username, status)
@@ -695,7 +701,7 @@ class BlockingDSage(DSage):
         """
 
         self.is_connected()
-
+        from twisted.internet import reactor
         return blockingCallFromThread(reactor, self._remoteobj.callRemote,
                                          'get_cluster_speed')
 
@@ -705,7 +711,7 @@ class BlockingDSage(DSage):
         """
 
         self.is_connected()
-
+        from twisted.internet import reactor
         return blockingCallFromThread(reactor, self._remoteobj.callRemote,
                                          'get_worker_list')
 
@@ -715,7 +721,7 @@ class BlockingDSage(DSage):
         """
 
         self.is_connected()
-
+        from twisted.internet import reactor
         return blockingCallFromThread(reactor, self._remoteobj.callRemote,
                                          'get_client_list')
 
@@ -726,7 +732,7 @@ class BlockingDSage(DSage):
         """
 
         self.is_connected()
-
+        from twisted.internet import reactor
         return blockingCallFromThread(reactor, self._remoteobj.callRemote,
                                          'get_worker_count')
 
@@ -736,7 +742,7 @@ class BlockingDSage(DSage):
         """
 
         self.is_connected()
-
+        from twisted.internet import reactor
         return blockingCallFromThread(reactor, self._remoteobj.callRemote,
                                       'web_server_url')
 
@@ -753,10 +759,12 @@ class BlockingDSage(DSage):
         open_page(address, port, False)
 
     def server_log(self, n=50):
+        from twisted.internet import reactor
         return blockingCallFromThread(reactor, self._remoteobj.callRemote,
                                       'read_log', n, 'server')
 
     def worker_log(self, n=50):
+        from twisted.internet import reactor
         return blockingCallFromThread(reactor, self._remoteobj.callRemote,
                                       'read_log', n, 'worker')
 
@@ -963,6 +971,7 @@ class BlockingJobWrapper(JobWrapper):
     def __init__(self, remoteobj, job):
         self._update_job(job._reduce())
         self._remoteobj = remoteobj
+        from twisted.internet import reactor
         self.job_id = blockingCallFromThread(reactor, self._remoteobj.callRemote,
                                            'submit_job', job._reduce())
 
@@ -986,6 +995,7 @@ class BlockingJobWrapper(JobWrapper):
         if self.status == 'completed':
             return
 
+        from twisted.internet import reactor
         jdict = blockingCallFromThread(reactor, self._remoteobj.callRemote,
                                         'get_job_by_id', self.job_id)
 
@@ -997,8 +1007,8 @@ class BlockingJobWrapper(JobWrapper):
     def rerun(self):
         """
         Resubmits the current job.
-
         """
+	from twisted.internet import reactor
         self.job_id = blockingCallFromThread(reactor,
                                              self._remoteobj.callRemote,
                                              'submit_job', self._jdict)
@@ -1007,7 +1017,7 @@ class BlockingJobWrapper(JobWrapper):
         Kills the current job.
 
         """
-
+        from twisted.internet import reactor
         job_id = blockingCallFromThread(reactor, self._remoteobj.callRemote,
                                            'kill_job', self.job_id)
         self.job_id = job_id
