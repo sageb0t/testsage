@@ -1685,7 +1685,6 @@ class Slider(resource.Resource):
 class Logout(resource.Resource):
     def render(self, ctx):
         # TODO -- actually log out.
-        notebook.save()
         s = message("<br>Thank you for using Sage.<br><br><a href='/'>Please login and use Sage again soon.</a><br>")
         return http.Response(stream=s)
 
@@ -2055,7 +2054,6 @@ class RedirectLogin(resource.PostableResource):
 import sage.server.simple.twist
 
 class Toplevel(resource.PostableResource):
-    child_logout = Logout()
     child_login = RedirectLogin()
     child_simple = sage.server.simple.twist.SimpleServer()
 
