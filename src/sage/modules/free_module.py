@@ -147,8 +147,6 @@ import sage.rings.integer_mod_ring
 import sage.rings.infinity
 import sage.rings.integer
 import sage.structure.parent_gens as gens
-import sage.modules.real_double_vector
-import sage.modules.complex_double_vector
 from sage.misc.randstate import current_randstate
 from sage.structure.sequence import Sequence
 
@@ -4122,6 +4120,9 @@ class ComplexDoubleVectorSpace_class(FreeModule_ambient_field):
 ######################################################
 
 def element_class(R, is_sparse):
+    import sage.modules.real_double_vector
+    import sage.modules.complex_double_vector
+
     if sage.rings.integer_ring.is_IntegerRing(R) and not is_sparse:
         from vector_integer_dense import Vector_integer_dense
         return Vector_integer_dense
