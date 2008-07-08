@@ -88,6 +88,7 @@ def find_next_available_port(start, max_tries=100, verbose=False):
         9002
     """
     from sage.misc.misc import alarm, cancel_alarm
+    alarm_count = 0
     for port in range(start, start+max_tries+1):
         try:
             alarm(1)
@@ -99,6 +100,9 @@ def find_next_available_port(start, max_tries=100, verbose=False):
                 return port
         except KeyboardInterrupt:
             if verbose: print "alarm"
+            alarm_count += 1
+            if alarm_count >= 10:
+                 break
             pass
         finally:
             cancel_alarm()
