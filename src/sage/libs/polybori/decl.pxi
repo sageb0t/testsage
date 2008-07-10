@@ -48,7 +48,7 @@ cdef extern from "pb_wrap.h":
     ctypedef struct PBMonomIter "BooleMonomial::const_iterator":
         int (* value "operator*")()
         int (* next "operator++")()
-        bint (* equal "operator==")(PBMonomIter rhs)
+        bint (* equal "equal")(PBMonomIter rhs)
         int (* hash)()
 
     void PBMonomIter_destruct "Destruct<BooleMonomial::const_iterator>" \
@@ -67,7 +67,7 @@ cdef extern from "pb_wrap.h":
     ctypedef struct PBMonomVarIter "BooleMonomial::variable_iterator":
         PBVar (* value "operator*")()
         int (* next "operator++")()
-        bint (* equal "operator==")(PBMonomVarIter rhs)
+        bint (* equal "equal")(PBMonomVarIter rhs)
 
     void PBMonomVarIter_destruct "Destruct<BooleMonomial::variable_iterator>" \
             (PBMonomVarIter *mem)
@@ -188,7 +188,7 @@ cdef extern from "pb_wrap.h":
         void (* imul_monom "operator*=")(PBMonom right)
         bint (* is_equal "operator==")(PBPoly right)
 
-    PBSet pb_zeroes "zeroes" (PBPoly p, PBSet s)
+    PBSet pb_zeros "zeros" (PBPoly p, PBSet s)
     PBPoly pb_spoly "spoly" (PBPoly p, PBPoly r)
 
     PBPoly pb_map_every_x_to_x_plus_one "map_every_x_to_x_plus_one" (PBPoly)
@@ -339,6 +339,5 @@ cdef extern from "pb_wrap.h":
         (int idx, char *varname)
 
     #M4RI initialization
-    void buildAllCodes()
-    void destroyAllCodes()
-    void setupPackingMasks()
+    void m4ri_build_all_codes()
+    void m4ri_destroy_all_codes()
