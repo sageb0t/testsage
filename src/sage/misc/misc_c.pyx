@@ -270,6 +270,7 @@ class NonAssociative:
 # Bitset Testing
 #############################################################################
 
+include "bitset_pxd.pxi"
 include "bitset.pxi"
 
 def test_bitset(py_a, py_b, long n):
