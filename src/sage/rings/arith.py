@@ -2052,7 +2052,7 @@ def multinomial(*ks):
 
 def binomial_coefficients(n):
     r"""
-    Return a dictionary containing pairs $\{(k_1,k_2) : C_{k_n}\}$ where
+    Return a dictionary containing pairs $\{(k_1,k_2) : C_{k,n}\}$ where
     $C_{k_n}$ are binomial coefficients and $n = k_1 + k_2$.
 
     INPUT:
@@ -2070,7 +2070,7 @@ def binomial_coefficients(n):
         sage: (x+y)^3
         x^3 + 3*x^2*y + 3*x*y^2 + y^3
 
-    AUTHOR: Pearu Peterson
+    AUTHOR: Fredrik Johansson
     """
     d = {(0, n):1, (n, 0):1}
     a = 1
@@ -2081,8 +2081,8 @@ def binomial_coefficients(n):
 
 def multinomial_coefficients(m, n, _tuple=tuple, _zip=zip):
     r"""
-    Return a dictionary containing pairs $\{(k_1,k_2,...,k_m) : C_{k_n}\}$
-    where $C_{k_n}$ are multinomial coefficients such that
+    Return a dictionary containing pairs $\{(k_1,k_2,...,k_m) : C_{k,n}\}$
+    where $C_{k,n}$ are multinomial coefficients such that
     $n = k_1 + k_2 + ...+ k_m$.
 
     INPUT:
@@ -2109,7 +2109,7 @@ def multinomial_coefficients(m, n, _tuple=tuple, _zip=zip):
     The algorithm we implement for computing the multinomial coefficients
     is based on the following result:
 
-       Consider a polynomial and it's $m$-th exponent::
+       Consider a polynomial and its $n$-th exponent:
 
           $$ P(x) = \sum_{i=0}^m p_i x^k $$
 
@@ -2117,8 +2117,7 @@ def multinomial_coefficients(m, n, _tuple=tuple, _zip=zip):
 
        We compute the coefficients $a(n,k)$ using the J.C.P. Miller
        Pure Recurrence [see D.E.Knuth, Seminumerical Algorithms, The
-       art of Computer Programming v.2, Addison Wesley, Reading,
-       1981;]::
+       art of Computer Programming v.2, Addison Wesley, Reading, 1981].
        $$
          a(n,k) = 1/(k p_0) \sum_{i=1}^m p_i ((n+1)i-k) a(n,k-i),
        $$
