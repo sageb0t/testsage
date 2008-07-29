@@ -144,6 +144,5 @@ cdef class Matrix(AlgebraElement):
     cdef bint is_dense_c(self)
 
 cdef class CoercionModel:
-    cdef canonical_coercion_c(self, x, y)
-    cdef canonical_base_coercion_c(self, Element x, Element y)
-    cdef bin_op_c(self, x, y, op)
+    cpdef canonical_coercion(self, x, y)
+    cpdef bin_op(self, x, y, op)
