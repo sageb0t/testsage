@@ -2745,6 +2745,13 @@ def set_coercion_model(cm):
     global coercion_model
     coercion_model = cm
 
+def coercion_traceback(dump=True):
+    if dump:
+        for e in coercion_model.exception_stack():
+            print e
+    else:
+        return coercion_model.exception_stack()
+
 ###############################################################################
 
 def lcm(x,y):
