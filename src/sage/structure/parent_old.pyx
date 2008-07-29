@@ -45,6 +45,10 @@ def is_Parent(x):
     """
     return PyBool_FromLong(PyObject_TypeCheck(x, Parent))
 
+cdef inline check_old_coerce(Parent p):
+    if p._element_constructor is not None:
+        raise RuntimeError, "%s still using old coercion framework" % p
+
 ## def make_parent_v0(_class, _dict, has_coerce_map_from):
 ##     """
 ##     This should work for any Python class deriving from this, as long
@@ -91,38 +95,6 @@ cdef class Parent(parent.Parent):
             self._action_list = []
             self._action_hash = {}
 
-    #############################################################################
-    # Containment testing
-    #############################################################################
-    def __contains__(self, x):
-        r"""
-        True if there is an element of self that is equal to x under ==.
-
-        For many structures we test this by using \code{__call__} and
-        then testing equality between x and the result.
-
-        EXAMPLES:
-            sage: 2 in Integers(7)
-            True
-            sage: 2 in ZZ
-            True
-            sage: Integers(7)(3) in ZZ
-            True
-            sage: 3/1 in ZZ
-            True
-            sage: 5 in QQ
-            True
-            sage: I in RR
-            False
-            sage: SR(2) in ZZ
-            True
-        """
-        try:
-            x2 = self(x)
-            return bool(x2 == x)
-        except TypeError:
-            return False
-
     #################################################################################
     # New Coercion support functionality
     #################################################################################
@@ -131,6 +103,7 @@ cdef class Parent(parent.Parent):
 #        return self.coerce_map_from_c(S)
 
     cpdef coerce_map_from_c(self, S):
+        check_old_coerce(self)
         if S is self:
             from sage.categories.homset import Hom
             return Hom(self, self).identity()
@@ -166,9 +139,11 @@ cdef class Parent(parent.Parent):
         return mor
 
     def coerce_map_from_impl(self, S):
+        check_old_coerce(self)
         return self.coerce_map_from_c_impl(S)
 
     cdef coerce_map_from_c_impl(self, S):
+        check_old_coerce(self)
         import sage.categories.morphism
         from sage.categories.map import Map
         from sage.categories.homset import Hom
@@ -201,6 +176,7 @@ cdef class Parent(parent.Parent):
 #        return self.get_action_c(S, op, self_on_left)
 
     cpdef get_action_c(self, S, op, bint self_on_left):
+        check_old_coerce(self)
         try:
             if self._action_hash is None: # this is because parent.__init__() does not always get called
                 self.init_coerce()
@@ -219,9 +195,11 @@ cdef class Parent(parent.Parent):
         return action
 
     def get_action_impl(self, S, op, self_on_left):
+        check_old_coerce(self)
         return self.get_action_c_impl(S, op, self_on_left)
 
     cdef get_action_c_impl(self, S, op, bint self_on_left):
+        check_old_coerce(self)
         # G acts on S, G -> G', R -> S => G' acts on R (?)
         from sage.categories.action import Action, PrecomposedAction
         from sage.categories.homset import Hom
@@ -330,21 +308,16 @@ cdef class Parent(parent.Parent):
 
 #            print "found nothing"
 
-    def construction(self):
-        """
-        Returns a pair (functor, parent) such that functor(parent) return self.
-        If this ring does not have a functorial construction, return None.
-        """
-        return None
-
     #################################################################################
     # Coercion support functionality
     #################################################################################
 
     def _coerce_(self, x):            # Call this from Python (do not override!)
+        check_old_coerce(self)
         return self._coerce_c(x)
 
     cpdef _coerce_c(self, x):          # DO NOT OVERRIDE THIS (call it)
+        check_old_coerce(self)
         try:
             P = x.parent()   # todo -- optimize
             if P is self:
@@ -361,6 +334,7 @@ cdef class Parent(parent.Parent):
         Canonically coerce x in assuming that the parent of x is not
         equal to self.
         """
+        check_old_coerce(self)
         raise TypeError
 
     def _coerce_impl(self, x):        # OVERRIDE THIS FOR PYTHON CLASSES
@@ -368,6 +342,7 @@ cdef class Parent(parent.Parent):
         Canonically coerce x in assuming that the parent of x is not
         equal to self.
         """
+        check_old_coerce(self)
         return self._coerce_c_impl(x)
 
     def _coerce_try(self, x, v):
@@ -381,6 +356,7 @@ cdef class Parent(parent.Parent):
              x -- Python object
              v -- parent object or list (iterator) of parent objects
         """
+        check_old_coerce(self)
         if not isinstance(v, list):
             v = [v]
 
@@ -393,6 +369,7 @@ cdef class Parent(parent.Parent):
         raise TypeError, "no canonical coercion of element into self"
 
     def _coerce_self(self, x):
+        check_old_coerce(self)
         return self._coerce_self_c(x)
 
     cdef _coerce_self_c(self, x):
@@ -400,6 +377,7 @@ cdef class Parent(parent.Parent):
         Try to canonically coerce x into self.
         Return result on success or raise TypeError on failure.
         """
+        check_old_coerce(self)
         # todo -- optimize?
         try:
             P = x.parent()
@@ -419,6 +397,7 @@ cdef class Parent(parent.Parent):
         Return True if there is a natural map from S to self.
         Otherwise, return False.
         """
+        check_old_coerce(self)
         if self == S:
             return True
         if self._has_coerce_map_from is None:
@@ -436,9 +415,11 @@ cdef class Parent(parent.Parent):
         return x
 
     def has_coerce_map_from_impl(self, S):
+        check_old_coerce(self)
         return self.has_coerce_map_from_c_impl(S)
 
     cdef has_coerce_map_from_c_impl(self, S):
+        check_old_coerce(self)
         if not PY_TYPE_CHECK(S, parent.Parent):
             return False
         try:
@@ -450,14 +431,7 @@ cdef class Parent(parent.Parent):
         return True
 
     cpdef _an_element_impl(self):     # override this in Python
-        r"""
-        Implementation of a function that returns an element (often non-trivial)
-        of a parent object.  Every parent object should implement it,
-        unless the default implementation works.
-
-        NOTE: Parent structures that are implemented in SageX should
-        implement \code{_an_element_c_impl} instead.
-        """
+        check_old_coerce(self)
         return self._an_element_c_impl()
 
     cpdef _an_element_c_impl(self):  # override this in SageX
@@ -466,6 +440,7 @@ cdef class Parent(parent.Parent):
         that poorly-written functions won't work when they're not
         supposed to. This is cached so doesn't have to be super fast.
         """
+        check_old_coerce(self)
         try:
             return self.gen(0)
         except:
@@ -486,9 +461,11 @@ cdef class Parent(parent.Parent):
         raise NotImplementedError, "please implement _an_element_c_impl or _an_element_impl for %s"%self
 
     def _an_element(self):        # do not override this (call from Python)
+        check_old_coerce(self)
         return self._an_element_c()
 
     cpdef _an_element_c(self):     # do not override this (call from SageX)
+        check_old_coerce(self)
         if not self.__an_element is None:
             return self.__an_element
         if HAS_DICTIONARY(self):
@@ -504,6 +481,7 @@ cdef class Parent(parent.Parent):
         """
         Compare left and right.
         """
+        check_old_coerce(left)
         cdef int r
 
         if not PY_TYPE_CHECK(right, parent.Parent) or not PY_TYPE_CHECK(left, parent.Parent):
@@ -555,6 +533,7 @@ cdef class Parent(parent.Parent):
 ##         return (make_parent_v0, (self.__class__, _dict, self._has_coerce_map_from))
 
     cdef int _cmp_c_impl(left, parent.Parent right) except -2:
+        check_old_coerce(left)
         pass
         # this would be nice to do, but we can't since
         # it leads to infinite recurssions -- and is slow -- and this
@@ -574,50 +553,26 @@ cdef class Parent(parent.Parent):
 ##         return left._cmp_c_impl(right)   # default
 
     ############################################################################
-    # Homomorphism --
-    ############################################################################
-    def Hom(self, codomain, cat=None):
-        r"""
-        self.Hom(codomain, cat=None):
-
-        Return the homspace \code{Hom(self, codomain, cat)} of all
-        homomorphisms from self to codomain in the category cat.  The
-        default category is \code{self.category()}.
-
-        EXAMPLES:
-            sage: R.<x,y> = PolynomialRing(QQ, 2)
-            sage: R.Hom(QQ)
-            Set of Homomorphisms from Multivariate Polynomial Ring in x, y over Rational Field to Rational Field
-
-        Homspaces are defined for very general \sage objects, even elements of familiar rings.
-            sage: n = 5; Hom(n,7)
-            Set of Morphisms from 5 to 7 in Category of elements of Integer Ring
-            sage: z=(2/3); Hom(z,8/1)
-            Set of Morphisms from 2/3 to 8 in Category of elements of Rational Field
-
-        This example illustrates the optional third argument:
-            sage: QQ.Hom(ZZ, Sets())
-            Set of Morphisms from Rational Field to Integer Ring in Category of sets
-        """
-        try:
-            return self._Hom_(codomain, cat)
-        except (TypeError, AttributeError):
-            pass
-        from sage.categories.all import Hom
-        return Hom(self, codomain, cat)
-
-    ############################################################################
     # Coercion Compatibility Layer
     ############################################################################
 
     cpdef _coerce_map_from_(self, S):
-        return self.coerce_map_from_c(S)
+        if self._element_constructor is None:
+            return self.coerce_map_from_c(S)
+        else:
+            return None
 
     cpdef _get_action_(self, other, op, bint self_on_left):
-        return self.get_action_c(other, op, self_on_left)
+        if self._element_constructor is None:
+            return self.get_action_c(other, op, self_on_left)
+        else:
+            return None
 
     cpdef _an_element_(self):
-        return self._an_element_c()
+        if self._element_constructor is None:
+            return self._an_element_c()
+        else:
+            return parent.Parent._an_element_(self)
 
     cpdef _generic_convert_map(self, S):
         if self._element_constructor is None:
