@@ -389,7 +389,7 @@ cdef class RingMap_lift(RingMap):
     def _repr_defn(self):
         return "Choice of lifting map"
 
-    cdef Element _call_c_impl(self, Element x):
+    cpdef Element _call_(self, x):
         return self.S._coerce_c(x.lift())
 
 cdef class RingHomomorphism(RingMap):
@@ -513,7 +513,7 @@ cdef class RingHomomorphism_coercion(RingHomomorphism):
     def _repr_type(self):
         return "Ring Coercion"
 
-    cdef Element _call_c_impl(self, Element x):
+    cpdef Element _call_(self, x):
         return self.codomain()._coerce_(x)
 
 import sage.structure.all
@@ -602,7 +602,7 @@ cdef class RingHomomorphism_im_gens(RingHomomorphism):
         return '\n'.join(['%s |--> %s'%(D.gen(i), ig[i]) for\
                        i in range(D.ngens())])
 
-    cdef Element _call_c_impl(self, Element x):
+    cpdef Element _call_(self, x):
         return x._im_gens_(self.codomain(), self.im_gens())
 
 cdef class RingHomomorphism_cover(RingHomomorphism):
@@ -623,7 +623,7 @@ cdef class RingHomomorphism_cover(RingHomomorphism):
     def __init__(self, parent):
         RingHomomorphism.__init__(self, parent)
 
-    cdef Element _call_c_impl(self, Element x):
+    cpdef Element _call_(self, x):
         return self.codomain()(x)
 
     def _repr_defn(self):
@@ -742,5 +742,5 @@ cdef class RingHomomorphism_from_quotient(RingHomomorphism):
         return '\n'.join(['%s |--> %s'%(D.gen(i), ig[i]) for\
                           i in range(D.ngens())])
 
-    cdef Element _call_c_impl(self, Element x):
+    cpdef Element _call_(self, x):
         return self.phi(self.lift(x))
