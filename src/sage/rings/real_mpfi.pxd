@@ -46,3 +46,4 @@ cdef class RealIntervalFieldElement(sage.structure.element.RingElement):
 
     cdef RealIntervalFieldElement abs(RealIntervalFieldElement self)
     cdef Rational _simplest_rational_helper(self)
+    cpdef _str_question_style(self, int base, int error_digits, e, bint prefer_sci)
