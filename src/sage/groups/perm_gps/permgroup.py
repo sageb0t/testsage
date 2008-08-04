@@ -104,6 +104,13 @@ from sage.rings.polynomial.polynomial_ring_constructor import PolynomialRing
 from sage.rings.fraction_field import FractionField
 from sage.matrix.matrix_space import MatrixSpace
 
+def load_hap():
+     try:
+         gap.eval('LoadPackage("hap")')
+     except:
+         gap.eval('LoadPackage("hap")')
+     return True
+
 def direct_product_permgroups(P):
     """
     Takes the direct product of the permutation groups listed in P.
@@ -1020,8 +1027,6 @@ class PermutationGroup_generic(group.FiniteGroup):
             GAP package HAP (in gap_packages-*.spkg).
 
         EXAMPLES:
-            sage: gap.eval('LoadPackage("hap")')               # requires optional gap_packages
-            'true'
             sage: G = SymmetricGroup(4)
             sage: G.cohomology(1,2)                            # requires optional gap_packages
             Multiplicative Abelian Group isomorphic to C2
@@ -1050,7 +1055,7 @@ class PermutationGroup_generic(group.FiniteGroup):
              \code{http://front.math.ucdavis.edu/0706.0549}.
 
         """
-        gap.eval('RequirePackage("HAP")')
+        load_hap()
         from sage.rings.arith import is_prime
         if not (p == 0 or is_prime(p)):
             raise ValueError, "p must be 0 or prime"
@@ -1082,7 +1087,7 @@ class PermutationGroup_generic(group.FiniteGroup):
         AUTHORS:
             David Joyner and Graham Ellis
         """
-        gap.eval('RequirePackage("HAP")')
+        load_hap()
         from sage.rings.arith import is_prime
         if not (p == 0 or is_prime(p)):
             raise ValueError, "p must be 0 or prime"
@@ -1130,7 +1135,7 @@ class PermutationGroup_generic(group.FiniteGroup):
             \code{http://front.math.ucdavis.edu/0706.0549}
 
         """
-        gap.eval('RequirePackage("HAP")')
+        load_hap()
         from sage.rings.arith import is_prime
         if not (p == 0 or is_prime(p)):
             raise ValueError, "p must be 0 or prime"
@@ -1159,7 +1164,7 @@ class PermutationGroup_generic(group.FiniteGroup):
         AUTHORS:
             David Joyner and Graham Ellis
         """
-        gap.eval('RequirePackage("HAP")')
+        gap.eval('LoadPackage("hap")')
         from sage.rings.arith import is_prime
         if not (p == 0 or is_prime(p)):
             raise ValueError, "p must be 0 or prime"
@@ -1792,10 +1797,10 @@ class PermutationGroup_generic(group.FiniteGroup):
 
         EXAMPLES:
             sage: G = SymmetricGroup(5)
-            sage: G.molien_series()                              # requires optional gap_packages
+            sage: G.molien_series()
             1/(-x^15 + x^14 + x^13 - x^10 - x^9 - x^8 + x^7 + x^6 + x^5 - x^2 - x + 1)
             sage: G = SymmetricGroup(3)
-            sage: G.molien_series()                              # requires optional gap_packages
+            sage: G.molien_series()
             1/(-x^6 + x^5 + x^4 - x^2 - x + 1)
 
         """
@@ -1883,7 +1888,7 @@ class PermutationGroup_generic(group.FiniteGroup):
         AUTHORS:
             David Joyner and Graham Ellis
         """
-        gap.eval('RequirePackage("HAP")')
+        load_hap()
         from sage.rings.arith import is_prime
         if not (p == 0 or is_prime(p)):
             raise ValueError, "p must be 0 or prime"
@@ -1892,8 +1897,8 @@ class PermutationGroup_generic(group.FiniteGroup):
         ff = gap.eval("ff := PoincareSeriesPrimePart(%s,%s,%s)"%(GG,p,n))
         R = PolynomialRing(RationalField(),"x")
 	x = R.gen()
-        nn = gap.eval("NumeratorOfRationalFunction(ff)")
-        dd = gap.eval("DenominatorOfRationalFunction(ff)")
+        nn = gap.eval("NumeratorOfRationalFunction(ff)").replace("x_1","x")
+        dd = gap.eval("DenominatorOfRationalFunction(ff)").replace("x_1","x")
         FF = FractionField(R)
         return FF(nn)/FF(dd)
 
