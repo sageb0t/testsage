@@ -2197,12 +2197,6 @@ class AdminToplevel(UserToplevel):
     userchild_home = WorksheetsAdmin
     userchild_conf = NotebookConf
 
-    def render(self, ctx):
-        s = render_worksheet_list(ctx.args, pub=False, username=self.username)
-        return http.Response(responsecode.OK,
-                             {'set-cookie':set_cookie(self.cookie)},
-                             stream=s)
-
 def set_cookie(cookie):
     return [http_headers.Cookie(SID_COOKIE, cookie)]
 
