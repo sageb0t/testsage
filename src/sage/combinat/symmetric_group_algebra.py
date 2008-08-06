@@ -279,7 +279,7 @@ class SymmetricGroupAlgebra_n(CombinatorialAlgebra):
         if permutation.PermutationOptions()['mult'] == 'l2r':
             return z
         else:
-            return z.map_basis(lambda x: x.inverse())
+            return z.map_support(lambda x: x.inverse())
 
 epsilon_ik_cache = {}
 def epsilon_ik(itab, ktab, star=0):
