@@ -2097,6 +2097,7 @@ class AnonymousToplevel(Toplevel):
     child_javascript = Javascript()
     child_java = Java()
     child_slider = Slider()
+    child_logout = RedirectLogin()
 
     def userchildFactory(self, request, name):
         # This is called from Toplevel above
