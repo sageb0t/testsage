@@ -311,7 +311,7 @@ class WeylCharacter(AlgebraElement):
             sage: B3 = WeylCharacterRing(['B',3])
             sage: B3(1/2,1/2,1/2).mlist()
             [[(1/2, -1/2, -1/2), 1], [(-1/2, 1/2, -1/2), 1], [(1/2, 1/2, 1/2), 1], [(1/2, 1/2, -1/2), 1], [(-1/2, -1/2, 1/2), 1], [(-1/2, -1/2, -1/2), 1], [(1/2, -1/2, 1/2), 1], [(-1/2, 1/2, 1/2), 1]]
-
+        """
 # Why did the test not pass with the following indentation?
 #             [[( 1/2, -1/2, -1/2), 1],
 #              [(-1/2,  1/2, -1/2), 1],
@@ -321,7 +321,6 @@ class WeylCharacter(AlgebraElement):
 #              [(-1/2, -1/2, -1/2), 1],
 #              [( 1/2, -1/2,  1/2), 1],
 #              [(-1/2,  1/2,  1/2), 1]]
-        """
         return [[k,m] for k,m in self._mdict.iteritems()]
 
     def parent(self):

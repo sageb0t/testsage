@@ -344,7 +344,7 @@ cdef class Matrix_modn_dense(matrix_dense.Matrix_dense):
         return (word_size, little_endian, s), 10
 
     def _unpickle(self, data, int version):
-        """
+        r"""
         TESTS:
 
         Test for char-sized modulus:
