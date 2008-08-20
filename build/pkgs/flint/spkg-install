@@ -83,7 +83,7 @@ fi
 
 # OS X
 if [ $UNAME = "Darwin" ]; then
-    if ["$SAGE64" = "yes" ]; then
+    if [ "$SAGE64" = "yes" ]; then
        $MAKE libflint.dylib64
     else
        $MAKE libflint.dylib
