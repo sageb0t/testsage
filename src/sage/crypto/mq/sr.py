@@ -444,7 +444,7 @@ class SR_generic(MPolynomialSystemGenerator):
                                                 [0, 0, 1, 1, 1, 1, 1, 0],
                                                 [0, 0, 0, 1, 1, 1, 1, 1]])
 
-            b = k(self._L * b.vector())
+            b = k(self._L * b._vector_())
 
             # constant addition
             if e == 4:
@@ -1887,16 +1887,16 @@ class SR_gf2(SR_generic):
 
         # ground field elements
         if l in self.k:
-            return list(reversed(l.vector()))
+            return list(reversed(l._vector_()))
 
         # remaining matrices
         if is_Matrix(l):
             for x in l.transpose().list():
-                ret += list(reversed(x.vector()))
+                ret += list(reversed(x._vector_()))
         # or lists
         else:
             for x in l:
-                ret += list(reversed(x.vector()))
+                ret += list(reversed(x._vector_()))
 
         if isinstance(l, list):
             return ret
@@ -2076,7 +2076,7 @@ class SR_gf2(SR_generic):
 
         columns = []
         for i in reversed(range(e)):
-            columns.append( list(reversed((x * a**i).vector())) )
+            columns.append( list(reversed((x * a**i)._vector_())) )
         return Matrix(GF(2), e, e, columns).transpose()
 
     def _square_matrix(self):
@@ -2100,7 +2100,7 @@ class SR_gf2(SR_generic):
 
         columns = []
         for i in reversed(range(e)):
-            columns.append( list(reversed(((a**i)**2).vector())) )
+            columns.append( list(reversed(((a**i)**2)._vector_())) )
         return Matrix(GF(2), e , e, columns).transpose()
 
     def inversion_polynomials_single_sbox(self, x= None, w=None, biaffine_only=None, correct_only=None):
