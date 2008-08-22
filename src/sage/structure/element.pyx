@@ -1206,6 +1206,8 @@ cdef class MultiplicativeGroupElement(MonoidElement):
         return self._div_c_impl(right)
 
     def __invert__(self):
+        if self.is_one():
+            return self
         return 1/self
 
 def is_RingElement(x):
@@ -1514,6 +1516,8 @@ cdef class RingElement(ModuleElement):
         return self
 
     def __invert__(self):
+        if self.is_one():
+            return self
         return 1/self
 
     ##################################################
