@@ -119,7 +119,8 @@ cdef public object py_imag(object x):
 
 from sage.rings.rational cimport Rational
 cdef public bint py_is_rational(object x):
-    return PY_TYPE_CHECK_EXACT(x, Rational) or  PY_TYPE_CHECK_EXACT(x, Integer) or\
+    return PY_TYPE_CHECK_EXACT(x, Rational) or \
+           PY_TYPE_CHECK_EXACT(x, Integer) or\
            IS_INSTANCE(x, int) or IS_INSTANCE(x, long)
 
 cdef public bint py_is_integer(object x):
@@ -165,6 +166,11 @@ cdef public object py_denom(object n):
 
 cdef public object py_float(object n):
     return float(n)
+
+# TODO: Optimize this
+from sage.rings.real_double import RDF
+cdef public object py_RDF_from_double(double x):
+    return RDF(x)
 
 #################################################################
 # SPECIAL FUNCTIONS
@@ -364,8 +370,14 @@ cdef public object py_eval_catalan(long ndigits):
 ##################################################################
 # Constructors
 ##################################################################
-cdef public object py_rational_long(long numer, long denom):
-    return Rational((numer, denom))
+cdef Integer z = Integer(0)
+cdef public object py_integer_from_long(long x):
+    cdef Integer z = PY_NEW(Integer)
+    mpz_init_set_si(z.value, x)
+    return z
+
+cdef public object py_integer_from_pythonint(object x):
+    return Integer(x)
 
 import ring
 ZERO = ring.NSR(0)
