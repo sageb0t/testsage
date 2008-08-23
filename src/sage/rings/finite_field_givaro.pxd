@@ -62,9 +62,6 @@ cdef extern from "givaro/givgfq.h":
     int gfq_element_factory "GFqDom<int>::Element"()
 
 cdef class FiniteField_givaro(FiniteField):
-    # so it is possible to make weakrefs to this finite field
-    cdef object __weakref__
-
     cdef GivaroGfq *objectptr # C++ object
     cdef object _polynomial
     cdef object _polynomial_ring
