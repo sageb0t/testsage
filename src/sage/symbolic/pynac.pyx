@@ -15,6 +15,8 @@ include "../ext/cdefs.pxi"
 include "../ext/stdsage.pxi"
 
 from sage.rings.integer cimport Integer
+from sage.rings.real_mpfr import RR, RealField
+from sage.rings.all import CC
 
 #################################################################
 # Binomial Coefficients
@@ -254,8 +256,6 @@ cdef public object py_cos(object x):
     except AttributeError:
         return cos(float(x))
 
-from sage.rings.real_mpfr import RR, RealField
-
 cdef public object py_zeta(object x):
     try:
         return x.zeta()
@@ -339,19 +339,19 @@ cdef public object py_asinh(object x):
     try:
         return x.arcsinh()
     except AttributeError:
-        return RR(x).arcsinh()
+        return CC(x).arcsinh()
 
 cdef public object py_acosh(object x):
     try:
         return x.arccosh()
     except AttributeError:
-        return RR(x).arccosh()
+        return CC(x).arccosh()
 
 cdef public object py_atanh(object x):
     try:
         return x.arctanh()
     except AttributeError:
-        return RR(x).arctanh()
+        return CC(x).arctanh()
 
 cdef public object py_tgamma(object x):
     try:
