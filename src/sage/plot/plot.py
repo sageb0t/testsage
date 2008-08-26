@@ -2323,7 +2323,7 @@ class GraphicPrimitive_Point(GraphicPrimitive):
             sage: E = EllipticCurve('37a')
             sage: P = E(0,0)
             sage: def get_points(n):
-            ....:     return sum([point((i*P)[0:2], pointsize=3) for i in range(-n,n) if i != 0 and (i*P)[0] < 3])
+            ...     return sum([point((i*P)[0:2], pointsize=3) for i in range(-n,n) if i != 0 and (i*P)[0] < 3])
             sage: sum([get_points(15*n).plot3d(z=n) for n in range(1,10)])
         """
         from sage.plot.plot3d.base import Graphics3dGroup
@@ -2653,7 +2653,6 @@ def xydata_from_point_list(points):
             pass
 
     if len(points)>0 and len(list(points[0]))!=2:
-        print points
         raise ValueError, "points must have 2 coordinates in a 2d line"
 
     xdata = [float(z[0]) for z in points]
@@ -2927,6 +2926,24 @@ def implicit_plot(f, xrange, yrange, **kwds):
     return contour_plot(f, xrange, yrange, **options)
 
 def line(points, **kwds):
+    """
+    Returns either a 2-dimensional or 3-dimensional line depending
+    on value of points.
+
+    For information regarding additional arguments, see either line2d?
+    or line3d?.
+
+    EXAMPLES:
+        sage: line([(0,0), (1,1)])
+        sage: line([(0,0,1), (1,1,1)])
+    """
+    try:
+        return line2d(points, **kwds)
+    except ValueError:
+        from sage.plot.plot3d.shapes2 import line3d
+        return line3d(points, **kwds)
+
+def line2d(points, **kwds):
     r"""
     Create the line through the given list of points.
 
@@ -3185,6 +3202,24 @@ def disk(point, radius, angle, **kwds):
     return g
 
 def point(points, **kwds):
+    """
+    Returns either a 2-dimensional or 3-dimensional point depending
+    on value of points.
+
+    For information regarding additional arguments, see either point2d?
+    or point3d?.
+
+    EXAMPLES:
+        sage: point([(0,0), (1,1)])
+        sage: point([(0,0,1), (1,1,1)])
+    """
+    try:
+        return point2d(points, **kwds)
+    except ValueError:
+        from sage.plot.plot3d.shapes2 import point3d
+        return point3d(points, **kwds)
+
+def point2d(points, **kwds):
     r"""
 
     A point of size `pointsize' defined by point = $(x,y)$.
@@ -3599,7 +3634,7 @@ def text(string, (x,y), **kwds):
         sage: text("Sage is really neat!!",(2,12))
 
     The same text in larger font and colored red:
-        sage: text3d("Sage is really neat!!",(2,12),fontsize=20,rgbcolor=(1,0,0))
+        sage: text("Sage is really neat!!",(2,12),fontsize=20,rgbcolor=(1,0,0))
 
     Some text but guaranteed to be in the lower left no matter what:
         sage: text("Sage is really neat!!",(0,0), axis_coords=True, horizontal_alignment='left')
