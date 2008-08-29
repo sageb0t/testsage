@@ -275,7 +275,7 @@ class Octave(Expect):
         Set the variable var to the given value.
 
         EXAMPLES:
-            sage: octave.set('x', '2') #optonal -- requires Octave
+            sage: octave.set('x', '2') #optional -- requires Octave
             sage: octave.get('x') #optional
             ' 2'
         """
@@ -289,7 +289,7 @@ class Octave(Expect):
         Get the value of the variable var.
 
         EXAMPLES:
-            sage: octave.set('x', '2') #optonal -- requires Octave
+            sage: octave.set('x', '2') #optional -- requires Octave
             sage: octave.get('x') #optional
             ' 2'
         """
@@ -302,7 +302,7 @@ class Octave(Expect):
         Clear the variable named var.
 
         EXAMPLES:
-            sage: octave.set('x', '2') #optonal -- requires Octave
+            sage: octave.set('x', '2') #optional -- requires Octave
             sage: octave.clear('x') #optional
             sage: octave.get('x') #optional
             "error: `x' undefined near line ... column 1"
