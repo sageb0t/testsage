@@ -457,6 +457,19 @@ class GenericGraph(SageObject):
             return repr(self)
 
     def _bit_vector(self):
+        """
+        Returns a string representing the edges of the (simple) graph for graph6 and dig6 strings.
+
+        EXAMPLE:
+            sage: G = graphs.PetersenGraph()
+            sage: G._bit_vector()
+            '101001100110000010000001001000010110000010110'
+            sage: len([a for a in G._bit_vector() if a == '1'])
+            15
+            sage: G.num_edges()
+            15
+
+        """
         vertices = self.vertices()
         n = len(vertices)
         if self._directed:
@@ -464,9 +477,8 @@ class GenericGraph(SageObject):
             bit = lambda x,y : x*n + y
         else:
             total_length = int(n*(n - 1))/int(2)
-            def bit(x,y):
-                a,b = sorted([x,y])
-                return int(b*(b-1))/int(2) + a
+            n_ch_2 = lambda b : int(b*(b-1))/int(2)
+            bit = lambda x,y : n_ch_2(max([x,y])) + min([x,y])
         bit_vector = set()
         for u,v,_ in self.edge_iterator():
             bit_vector.add(bit(vertices.index(u), vertices.index(v)))
@@ -491,6 +503,10 @@ class GenericGraph(SageObject):
             Traceback (most recent call last):
             ...
             NotImplementedError: To include a graph in LaTeX document, see function Graph.write_to_eps().
+            sage: G._latex_()
+            Traceback (most recent call last):
+            ...
+            NotImplementedError: To include a graph in LaTeX document, see function Graph.write_to_eps().
 
         """
         raise NotImplementedError('To include a graph in LaTeX document, see function Graph.write_to_eps().')
@@ -509,6 +525,12 @@ class GenericGraph(SageObject):
             [1 1 0 0 0]
             [1 1 0 0 0]
             [1 1 0 0 0]
+            sage: G._matrix_()
+            [0 0 1 1 1]
+            [0 0 1 1 1]
+            [1 1 0 0 0]
+            [1 1 0 0 0]
+            [1 1 0 0 0]
             sage: factor(m.charpoly())
             x^3 * (x^2 - 6)
 
@@ -519,6 +541,15 @@ class GenericGraph(SageObject):
             return self.am().change_ring(R)
 
     def _repr_(self):
+        """
+        Return a string representation of self.
+
+        EXAMPLE:
+            sage: G = graphs.PetersenGraph()
+            sage: G._repr_()
+            'Petersen graph: Graph on 10 vertices'
+
+        """
         name = ""
         if self.loops():
             name += "looped "
@@ -1069,6 +1100,24 @@ class GenericGraph(SageObject):
         """
         Returns the position dictionary, a dictionary specifying the coordinates
         of each vertex.
+
+        EXAMPLES:
+        By default, the position of a graph is None:
+            sage: G = Graph()
+            sage: G.get_pos()
+            sage: G.get_pos() is None
+            True
+            sage: P = G.plot(save_pos=True)
+            sage: G.get_pos()
+            {}
+
+        Some of the named graphs come with a pre-specified positioning:
+            sage: G = graphs.PetersenGraph()
+            sage: G.get_pos()
+            {0: [..., ...],
+             ...
+             9: [..., ...]}
+
         """
         return self._pos
 
@@ -1076,6 +1125,22 @@ class GenericGraph(SageObject):
         """
         Sets the position dictionary, a dictionary specifying the
         coordinates of each vertex.
+
+        EXAMPLE:
+        Note that set_pos will allow you to do ridiculous things, which
+        will not blow up until plotting:
+            sage: G = graphs.PetersenGraph()
+            sage: G.get_pos()
+            {0: [..., ...],
+             ...
+             9: [..., ...]}
+
+            sage: G.set_pos('spam')
+            sage: P = G.plot()
+            Traceback (most recent call last):
+            ...
+            TypeError: string indices must be integers
+
         """
         self._pos = pos
 
@@ -5074,6 +5139,16 @@ class GenericGraph(SageObject):
         """
         Logic for coloring by label (factored out from plot() for use
         in 3d plots, etc)
+
+        EXAMPLE:
+            sage: G = AlternatingGroup(5).cayley_graph()
+            sage: G.num_edges()
+            120
+            sage: G._color_by_label()
+            {'#00ffff': [((1,4)(3,5), (1,5,4), (3,4,5)),
+             ...],
+             '#ff0000': [((1,4)(3,5), (1,5,4,2,3), (1,2,3,4,5)),
+             ...]}
         """
         from sage.plot.plot import rainbow
         edge_labels = []
@@ -6754,6 +6829,13 @@ class Graph(GenericGraph):
     def __init__(self, data=None, pos=None, loops=False, format=None,
                  boundary=[], weighted=False, implementation='networkx',
                  sparse=True, vertex_labels=True, **kwds):
+        """
+        TEST:
+            sage: G = Graph()
+            sage: loads(dumps(G)) == G
+            True
+
+        """
         if implementation == 'networkx':
             import networkx
             from sage.graphs.base.graph_backends import NetworkXGraphBackend
@@ -7098,19 +7180,7 @@ class Graph(GenericGraph):
             for i in range(len(edges)): # replace edge labels with natural numbers (by index in vertices)
                 edges[i] = (vertices.index(edges[i][0]),vertices.index(edges[i][1]))
             # order edges
-            def cmp(x, y):
-                if x[1] < y[1]:
-                    return -1
-                elif x[1] > y[1]:
-                    return 1
-                elif x[1] == y[1]:
-                    if x[0] < y[0]:
-                        return -1
-                    if x[0] > y[0]:
-                        return 1
-                    else:
-                        return 0
-            edges.sort(cmp)
+            edges.sort(compare_edges)
 
             # encode bit vector
             from math import ceil
@@ -7154,6 +7224,9 @@ class Graph(GenericGraph):
         """
         Since graph is undirected, returns False.
 
+        EXAMPLE:
+            sage: Graph().is_directed()
+            False
         """
         return False
 
@@ -8068,6 +8141,12 @@ class DiGraph(GenericGraph):
     def __init__(self, data=None, pos=None, loops=False, format=None,
                  boundary=[], weighted=False, implementation='networkx',
                  sparse=True, vertex_labels=True, **kwds):
+        """
+        TEST:
+            sage: D = DiGraph()
+            sage: loads(dumps(D)) == D
+            True
+        """
         if implementation == 'networkx':
             import networkx
             from sage.graphs.base.graph_backends import NetworkXGraphBackend
@@ -8296,7 +8375,13 @@ class DiGraph(GenericGraph):
         Returns the dig6 representation of the digraph as an ASCII string.
         Valid for single (no multiple edges) digraphs on 0 to 262143 vertices.
 
-        EXAMPLE: TODO
+        EXAMPLE:
+            sage: D = DiGraph()
+            sage: D.dig6_string()
+            '?'
+            sage: D.add_edge(0,1)
+            sage: D.dig6_string()
+            'AO'
 
         """
         n = self.order()
@@ -8313,6 +8398,9 @@ class DiGraph(GenericGraph):
         """
         Since digraph is directed, returns True.
 
+        EXAMPLE:
+            sage: DiGraph().is_directed()
+            True
         """
         return True
 
@@ -8787,6 +8875,20 @@ def tachyon_vertex_plot(g, bgcolor=(1,1,1),
                         vertex_size=0.06,
                         pos3d=None,
                         iterations=50, **kwds):
+    """
+    Helper function for plotting graphs in 3d with Tachyon. Returns a plot containing
+    only the vertices, as well as the 3d position dictionary used for the plot.
+
+    EXAMPLE:
+        sage: G = graphs.TetrahedralGraph()
+        sage: from sage.graphs.graph import tachyon_vertex_plot
+        sage: T,p = tachyon_vertex_plot(G)
+        sage: type(T)
+        <class 'sage.plot.tachyon.Tachyon'>
+        sage: type(p)
+        <type 'dict'>
+
+    """
     from math import sqrt
     from sage.plot.tachyon import Tachyon
 
@@ -8959,3 +9061,33 @@ def graph_isom_equivalent_non_edge_labeled_graph(g, partition):
         index += 1
     new_partition = [[('o',v) for v in cell] for cell in partition] + [[('x',v) for v in a[1]] for a in edge_partition]
     return G, new_partition
+
+def compare_edges(x, y):
+    """
+    Compare edge x to edge y, return -1 if x < y, 1 if x > y, else 0.
+
+    EXAMPLE:
+        sage: G = graphs.PetersenGraph()
+        sage: E = G.edges()
+        sage: from sage.graphs.graph import compare_edges
+        sage: compare_edges(E[0], E[2])
+        -1
+        sage: compare_edges(E[0], E[1])
+        -1
+        sage: compare_edges(E[0], E[0])
+        0
+        sage: compare_edges(E[1], E[0])
+        1
+
+    """
+    if x[1] < y[1]:
+        return -1
+    elif x[1] > y[1]:
+        return 1
+    elif x[1] == y[1]:
+        if x[0] < y[0]:
+            return -1
+        if x[0] > y[0]:
+            return 1
+        else:
+            return 0
