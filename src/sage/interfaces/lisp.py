@@ -411,6 +411,18 @@ class LispElement(ExpectElement):
         else:
             return 1
 
+    def bool(self):
+        """
+        EXAMPLES:
+            sage: lisp(2).bool()
+            True
+            sage: lisp(0).bool()
+            False
+            sage: bool(lisp(2))
+            True
+        """
+        return self != 0
+
     def _add_(self, right):
         """
         EXAMPLES:
