@@ -1184,7 +1184,7 @@ def make_FreeModuleElement_generic_dense_v1(parent, entries, degree, is_mutable)
 
 cdef class FreeModuleElement_generic_dense(FreeModuleElement):
     """
-    A generic dense element of a free module. a
+    A generic dense element of a free module.
     """
     ## these work fine on the command line but fail in doctests :-(
 ##         TESTS:
@@ -1420,6 +1420,29 @@ cdef class FreeModuleElement_generic_dense(FreeModuleElement):
         module element are equal if their coefficients are the same.
         """
         return cmp(left._entries, (<FreeModuleElement_generic_dense>right)._entries)
+
+    def __call__(self, *args, **kwargs):
+        """
+        Calling a free module element returns the result of calling each component.
+
+        EXAMPLES:
+            sage: x, y = var('x,y')
+            sage: f = x^2 + y^2
+            sage: g = f.gradient()
+            sage: g
+            (2*x, 2*y)
+            sage: type(g)
+            <type 'sage.modules.free_module_element.FreeModuleElement_generic_dense'>
+            sage: g(y=2, x=3)
+            (6, 4)
+            sage: f(x,y) = x^2 + y^2
+            sage: g = f.gradient()
+            sage: g(3,2)
+            (6, 4)
+            sage: g(x=3, y=2)
+            (6, 4)
+        """
+        return vector([e(*args, **kwargs) for e in self])
 
     def n(self, *args, **kwargs):
         """
