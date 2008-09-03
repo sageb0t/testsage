@@ -357,7 +357,10 @@ def N_inverse(s):
         n = int(a + b + c,2)
         s = s[4:]
     else: # only first byte is N
-        n = ord(s[0]) - 63
+        o = ord(s[0])
+        if o > 126 or o < 63:
+            raise RuntimeError("The string seems corrupt: valid characters are \n" + ''.join([chr(i) for i in xrange(63,127)]))
+        n = o - 63
         s = s[1:]
     return n, s
 
@@ -380,7 +383,10 @@ def R_inverse(s, n):
     l = []
     cdef int i
     for i from 0 <= i < len(s):
-        a = binary(ord(s[i])-63)
+        o = ord(s[i])
+        if o > 126 or o < 63:
+            raise RuntimeError("The string seems corrupt: valid characters are \n" + ''.join([chr(i) for i in xrange(63,127)]))
+        a = binary(o-63)
         l.append( '0'*(6-len(a)) + a )
     m = "".join(l)
     return m
@@ -400,7 +406,10 @@ def D_inverse(s, n):
     l = []
     cdef int i
     for i from 0 <= i < len(s):
-        a = binary(ord(s[i])-63)
+        o = ord(s[i])
+        if o > 126 or o < 63:
+            raise RuntimeError("The string seems corrupt: valid characters are \n" + ''.join([chr(i) for i in xrange(63,127)]))
+        a = binary(o-63)
         l.append( '0'*(6-len(a)) + a )
     m = "".join(l)
     return m[:n*n]
