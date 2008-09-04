@@ -65,7 +65,7 @@ def mink_sum(polyhedra_list, verbose = False):
 
 class Polyhedron(SageObject):
 
-    def __init__(self, vertices = [], rays = [], ieqs = [], linearities = []):
+    def __init__(self, vertices = [], rays = [], ieqs = [], linearities = [], cdd_type = 'rational'):
         """
         A class for polyhedral objects.  Architecture is still in flux.
         Do not instantiate with both vertex/ray and ieq/linearity data:
@@ -78,13 +78,17 @@ class Polyhedron(SageObject):
             [[1, -1], [1, 1], [-1, 1], [-1, -1]]
             sage: square_from_vertices.ieqs()
             [[1, 0, 1], [1, 1, 0], [1, 0, -1], [1, -1, 0]]
+	    sage: p = Polyhedron(vertices = [[1.1, 2.2], [3.3, 4.4]], cdd_type = 'real')
+	    sage: len(p.ieqs())
+	    2
         """
+	self._cdd_type = cdd_type
         self._vertices = vertices
         self._ieqs = ieqs
         self._linearities = linearities
         self._rays = rays
 	if self._vertices != []:
-	    self.remove_redundant_vertices()
+	    self.remove_redundant_vertices(cdd_type = self._cdd_type)
 
     def _repr_(self):
         """
@@ -210,7 +214,7 @@ class Polyhedron(SageObject):
             [5, -1, 0, 0, 0, 0]
         """
         if (self._ieqs == [] and self._vertices != []) or force_from_vertices:
-            temp_poly_object = vert_to_ieq(self._vertices, rays = self._rays)
+            temp_poly_object = vert_to_ieq(self._vertices, rays = self._rays, cdd_type = self._cdd_type)
             self._linearities = temp_poly_object._linearity
             self._ieqs = temp_poly_object._inequalities
             #temp_verts = temp_poly_object.
@@ -299,7 +303,7 @@ class Polyhedron(SageObject):
             self._linearities_checked = True
             return self._linearities
 
-    def remove_redundant_vertices(self):
+    def remove_redundant_vertices(self, cdd_type = 'rational'):
         """
         Removes vertices from the description of the polyhedron which
         do not affect the convex hull.  Now done automatically when a
@@ -318,7 +322,7 @@ class Polyhedron(SageObject):
                 pass
         except AttributeError:
             if self.vertices() != []:
-                ex_verts = extreme_verts(self.vertices())
+                ex_verts = extreme_verts(self.vertices(), cdd_type = cdd_type)
             else:
                 return []
             self._vertices = ex_verts
@@ -637,7 +641,7 @@ def vert_to_ieq(vertices, rays = [], cdd_type = 'rational', verbose = False):
                 post = cdd_convert(post,a_type = cast)
                 post = [face_index - 1 for face_index in post] # subtract to make indexing pythonic
                 adjacencies.append([pre,post])
-    poly_obj = Polyhedron(vertices = vertices)
+    poly_obj = Polyhedron(vertices = vertices, cdd_type = cdd_type)
     poly_obj._linearity = linearities
     poly_obj._inequalities = hieqs
     poly_obj._facial_incidences = incidences
