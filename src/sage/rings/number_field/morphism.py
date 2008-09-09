@@ -228,7 +228,7 @@ class RelativeNumberFieldHomset(NumberFieldHomset):
             ...
             Relative number field endomorphism of Number Field in a with defining polynomial x^2 + x + 1 over its base field
               Defn: a |--> a
-                    b |--> (-b)*a - b
+                    b |--> -b*a - b
             ]
         """
         try:
@@ -325,7 +325,7 @@ class CyclotomicFieldHomset(NumberFieldHomset):
             Ring morphism:
               From: Cyclotomic Field of order 12 and degree 4
               To:   Number Field in a with defining polynomial x^2 + x + 1 over its base field
-              Defn: zeta12 |--> (-b^2)*a
+              Defn: zeta12 |--> -b^2*a
             sage: list(Hom(CyclotomicField(5), K))
             []
         """

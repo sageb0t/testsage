@@ -3716,7 +3716,7 @@ class AlgebraicPolynomialTracker(SageObject):
         sage: x = polygen(QQbar)
         sage: P = QQbar.common_polynomial(x^2 - x - 1)
         sage: P
-        x^2 + (-1)*x - 1
+        x^2 - x - 1
         sage: QQbar.polynomial_root(P, RIF(1, 2))
         1.618033988749895?
     """
