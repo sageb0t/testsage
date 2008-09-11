@@ -23,7 +23,7 @@ This is paced in a seperate file from categories.py to avoid circular imports
 
 from category import *
 import sage.rings.all
-import sage.algebras.all
+from sage.algebras.algebra import is_Algebra
 
 ####################################################################
 #   Different types of categories
@@ -735,7 +735,7 @@ class Algebras(Category_over_base_ring):
         return Algebras, (self.base(), )
 
     def __contains__(self, x):
-        return sage.algebras.all.is_Algebra(x) and x.base_field() == self.base_field()
+        return is_Algebra(x) and x.base_field() == self.base_field()
 
     def base_field(self):
         """
@@ -1041,7 +1041,7 @@ class AlgebraModules(Category_module):
     The category of modules over a fixed algebra $A$.
     """
     def __init__(self, A):
-        if not sage.algebras.all.is_Algebra(A):
+        if not is_Algebra(A):
             raise TypeError, "A (=%s) must be an algebra"%A
         Category_module.__init__(self, A)
 
@@ -1070,7 +1070,7 @@ class AlgebraIdeals(Category_ideal):
         True
     """
     def __init__(self, A):
-        if not sage.algebras.all.is_Algebra(A):
+        if not is_Algebra(A):
             raise TypeError, "A (=%s) must be an algebra"%A
         Category_ideal.__init__(self, A)
 
@@ -1088,7 +1088,7 @@ class CommutativeAlgebraIdeals(Category_ideal):
     The category of ideals in a fixed commutative algebra $A$.
     """
     def __init__(self, A):
-        if not sage.algebras.all.is_CommutativeAlgebra(A):
+        if not is_CommutativeAlgebra(A):
             raise TypeError, "A (=%s) must be a commutative algebra"%A
         Category_in_ambient.__init__(self, A)
 
