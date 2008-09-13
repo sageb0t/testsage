@@ -54,7 +54,7 @@ cdef class SageObject:
         Real numbers are not Python classes, so rename is not supported:
             sage: a = 3.14
             sage: type(a)
-            <type 'sage.rings.real_mpfr.RealNumber'>
+            <type 'sage.rings.real_mpfr.RealLiteral'>
             sage: a.rename('pi')
             Traceback (most recent call last):
             ...
