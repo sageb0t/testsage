@@ -97,6 +97,12 @@ SAGE_LOCAL="$SAGE_ROOT/local"   && export SAGE_LOCAL
 SAGE_DATA="$SAGE_ROOT/data"     && export SAGE_DATA
 PATH="$SAGE_ROOT:$SAGE_LOCAL/bin:$PATH" && export PATH
 
+# We offer a toolchain option, so if $SAGE_LOCAL/toolchain/toolchain-env exists source it.
+# Since the user might do something crazy we do not do any checks, but hope for the best.
+if [ -f $SAGE_LOCAL/toolchain/toolchain-env ]; then
+  source $SAGE_LOCAL/toolchain/toolchain-env
+fi
+
 # For a framework Python build on OS X, Python's bin directory is not local/bin
 if [ `uname` = "Darwin" ]; then
     PATH="$SAGE_LOCAL/Frameworks/Python.framework/Versions/2.5/bin:$PATH" && export PATH
