@@ -526,10 +526,12 @@ fi
 if [ $1 = '-b' ]; then
     shift
     if [ "$SAGE_PBUILD" == "yes" ]; then
-        if [ "$@" ]; then
-            ln -snf "$SAGE_ROOT"/devel/sage-"$@" "$SAGE_ROOT"/devel/sage
-        fi
-        time python "$SAGE_ROOT"/devel/sage/build.py -b
+        echo 'Pbuild is currently broken -- defaulting to serial build.'
+        # if [ "$@" ]; then
+        #     ln -snf "$SAGE_ROOT"/devel/sage-"$@" "$SAGE_ROOT"/devel/sage
+        # fi
+        # time python "$SAGE_ROOT"/devel/sage/build.py -b
+        time sage-build "$@"
     else
         time sage-build "$@"
     fi
@@ -539,10 +541,12 @@ fi
 if [ $1 = '-br' -o $1 = "--br" ]; then
     shift
     if [ "$SAGE_PBUILD" == "yes" ]; then
-        if [ "$@" ]; then
-            ln -snf "$SAGE_ROOT"/devel/sage-"$@" "$SAGE_ROOT"/devel/sage
-        fi
-        python "$SAGE_ROOT"/devel/sage/build.py -b && sage
+        echo 'Pbuild is currently broken -- defaulting to serial build.'
+        # if [ "$@" ]; then
+        #     ln -snf "$SAGE_ROOT"/devel/sage-"$@" "$SAGE_ROOT"/devel/sage
+        # fi
+        # python "$SAGE_ROOT"/devel/sage/build.py -b && sage
+        sage-build "$@" && sage
     else
         sage-build "$@" && sage
     fi
@@ -580,11 +584,13 @@ if [ $1 = '-ba' ]; then
 	   exit 0
    fi
    if [ "$SAGE_PBUILD" == "yes" ]; then
-        if [ "$@" ]; then
-            echo 'foo'
-            ln -snf "$SAGE_ROOT"/devel/sage-"$@" "$SAGE_ROOT"/devel/sage
-        fi
-        python "$SAGE_ROOT"/devel/sage/build.py --all
+        echo 'Pbuild is currently broken -- defaulting to serial build.'
+        # if [ "$@" ]; then
+        #     echo 'foo'
+        #     ln -snf "$SAGE_ROOT"/devel/sage-"$@" "$SAGE_ROOT"/devel/sage
+        # fi
+        # python "$SAGE_ROOT"/devel/sage/build.py --all
+        sage-build -b "$@"
    else
       sage-build -b "$@"
    fi
@@ -594,11 +600,13 @@ fi
 if [ $1 = '-ba-force' ]; then
    shift
    if [ "$SAGE_PBUILD" == "yes" ]; then
-        if [ "$@" ]; then
-            echo 'foo'
-            ln -snf "$SAGE_ROOT"/devel/sage-"$@" "$SAGE_ROOT"/devel/sage
-        fi
-        python "$SAGE_ROOT"/devel/sage/build.py --all
+        echo 'Pbuild is currently broken -- defaulting to serial build.'
+        # if [ "$@" ]; then
+        #     echo 'foo'
+        #     ln -snf "$SAGE_ROOT"/devel/sage-"$@" "$SAGE_ROOT"/devel/sage
+        # fi
+        # python "$SAGE_ROOT"/devel/sage/build.py --all
+        sage-build -b "$@"
    else
       sage-build -b "$@"
    fi
