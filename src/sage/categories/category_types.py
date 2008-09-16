@@ -22,7 +22,8 @@ This is paced in a seperate file from categories.py to avoid circular imports
 #*****************************************************************************
 
 from category import *
-import sage.rings.all
+from sage.rings.ring import is_Ring
+from sage.rings.field import is_Field
 from sage.algebras.algebra import is_Algebra
 
 ####################################################################
@@ -159,7 +160,7 @@ class Category_over_base(uniq1, Category):
 class Category_over_base_ring(Category_over_base):
     def __init__(self, base, name=None):
         Category_over_base.__init__(self, base, name)
-        if not sage.rings.all.is_Ring(base):
+        if not is_Ring(base):
             raise TypeError, "base must be a ring"
         self.__base = base
 
@@ -216,6 +217,7 @@ class Category_ideal(Category_in_ambient):
             sage: IntegerRing().zero_ideal() in C
             True
         """
+        import sage.rings.all
         if sage.rings.all.is_Ideal(x) and x.ring() == self.ring():
             return True
         return False
@@ -608,7 +610,7 @@ class Fields(Category_uniq):
         Real Field with 53 bits of precision
     """
     def __contains__(self, x):
-        return sage.rings.all.is_Field(x)
+        return is_Field(x)
 
     def __call__(self, x):
         if x in self:
@@ -648,7 +650,7 @@ class FiniteFields(Category_uniq):
         TypeError: unable to canonically associate a finite field to Rational Field
     """
     def __contains__(self, x):
-        return sage.rings.all.is_Field(x) and x.is_finite()
+        return is_Field(x) and x.is_finite()
 
     def __call__(self, x):
         if x in self:
@@ -698,6 +700,7 @@ class NumberFields(Category_uniq):
         True
     """
     def __contains__(self, x):
+        import sage.rings.all
         return sage.rings.all.is_NumberField(x)
 
     def __call__(self, x):
@@ -866,7 +869,7 @@ class FreeModules(Category_module):
         Category of free modules over Integer Ring
     """
     def __init__(self, R):
-        if not sage.rings.all.is_Ring(R):
+        if not is_Ring(R):
             raise TypeError, "R (=%s) must be a ring"%R
         Category_module.__init__(self, R)
 
@@ -904,7 +907,7 @@ class VectorSpaces(Category_module):
         Category of vector spaces over Rational Field
     """
     def __init__(self, K):
-        if not sage.rings.all.is_Field(K):
+        if not is_Field(K):
             raise TypeError, "K (=%s) must be a field"%K
         Category_module.__init__(self, K)
 
@@ -961,7 +964,7 @@ class HeckeModules(Category_module):
         Category of Hecke modules over Univariate Polynomial Ring in x over Integer Ring
     """
     def __init__(self, R):
-        if not (sage.rings.all.is_Ring(R) and R.is_commutative()):
+        if not (is_Ring(R) and R.is_commutative()):
             raise TypeError, "R (=%s) must be a commutative ring"%R
         Category_module.__init__(self, R, "Hecke modules")
 
@@ -991,7 +994,7 @@ class RingIdeals(Category_ideal):
         Principal ideal (2) of Integer Ring
     """
     def __init__(self, R):
-        if not sage.rings.all.is_Ring(R):
+        if not is_Ring(R):
             raise TypeError, "R (=%s) must be a ring"%R
         Category_ideal.__init__(self, R)
 
@@ -1020,6 +1023,7 @@ class CommutativeRingIdeals(Category_ideal):
         Category of commutative ring ideals in Integer Ring
     """
     def __init__(self, R):
+        import sage.rings.all
         if not sage.rings.all.is_CommutativeRing(R):
             raise TypeError, "R (=%s) must be a commutative ring"%R
         Category_ideal.__init__(self, R)
