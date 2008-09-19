@@ -1814,6 +1814,24 @@ cdef class NumberFieldElement_absolute(NumberFieldElement):
         self.__pari[var] = h
         return h
 
+    def _magma_(self, magma):
+        """
+        Return Magma version of this number field element.
+
+        INPUT:
+            magma -- a Magma interpreter
+        OUTPUT:
+            MagmaElement that has parent the Magma object
+            corresponding to the parent number field.
+
+        EXAMPLES:
+            sage: K.<a> = NumberField(x^3 + 2)
+            sage: magma((2/3)*a^2 - 17/3)
+            1/3*(2*a^2 - 17)
+        """
+        K = magma(self.parent())
+        return K(self.list())
+
     cdef void _parent_poly_c_(self, ZZX_c *num, ZZ_c *den):
         """
         I believe this function should be removed since I've put the pointer
