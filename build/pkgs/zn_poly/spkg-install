@@ -14,12 +14,15 @@ fi
 
 cd src
 
-./configure --gmp-prefix="$SAGE_LOCAL/" --ntl-prefix="$SAGE_LOCAL/" \
-            --prefix="$SAGE_LOCAL/" --cflags="-fPIC -O3"
+./configure --gmp-prefix="$SAGE_LOCAL" --ntl-prefix="$SAGE_LOCAL" \
+            --prefix="$SAGE_LOCAL" --cflags="-fPIC -O3"
 
 # optionally run tuning program, only takes 1 minute or so
 make tune
-./tune > tuning.c
+tune/tune > src/tuning.c
+
+# run test suite (quick version)
+make check
 
 make
 
@@ -30,7 +33,8 @@ if [ $UNAME != "Darwin" ]; then
         echo "Error building zn_poly shared library."
         exit 1
     fi
-    $CP libzn_poly.so "$SAGE_LOCAL/lib/"
+    $CP libzn_poly-0.9.so "$SAGE_LOCAL/lib/"
+    (cd $SAGE_LOCAL/lib/ && ln -sf libzn_poly-0.9.so libzn_poly.so)
 fi
 
 # OS X
@@ -46,8 +50,8 @@ fi
 # copy header files
 
 mkdir -p $SAGE_LOCAL/include/zn_poly
-$CP zn_poly.h $SAGE_LOCAL/include/zn_poly
-$CP wide_arith.h $SAGE_LOCAL/include/zn_poly
+$CP include/zn_poly.h $SAGE_LOCAL/include/zn_poly
+$CP include/wide_arith.h $SAGE_LOCAL/include/zn_poly
 
 if [ $? -ne 0 ]; then
     echo "Error building zn_poly"
