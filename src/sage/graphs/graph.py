@@ -187,8 +187,8 @@ AUTHORS:
             sage: S.density()
             1/2
 
-            sage: G = GraphDatabase()
-            sage: L = G.get_list(num_vertices=7, diameter=5)
+            sage: G = GraphQuery(display_cols=['graph6'], num_vertices=7, diameter=5)
+            sage: L = G.get_graphs_list()
             sage: graphs_list.show_graphs(L)
 
         \subsection{Labels}\label{Graph:labels}
@@ -231,8 +231,8 @@ AUTHORS:
 
         and hit \kbd{tab}.
 
-            sage: graphs_query = GraphDatabase()
-            sage: L = graphs_query.get_list(num_vertices=7, diameter=5)
+            sage: gq = GraphQuery(display_cols=['graph6'],num_vertices=7, diameter=5)
+            sage: L = gq.get_graphs_list()
             sage: graphs_list.show_graphs(L)
 
         \subsection{Visualization}
@@ -6221,8 +6221,8 @@ class GenericGraph(SageObject):
 
         EXAMPLES:
         Graphs:
-            sage: graphs_query = GraphDatabase()
-            sage: L = graphs_query.get_list(num_vertices=4)
+            sage: graphs_query = GraphQuery(display_cols=['graph6'],num_vertices=4)
+            sage: L = graphs_query.get_graphs_list()
             sage: graphs_list.show_graphs(L)
             sage: for g in L:
             ...    G = g.automorphism_group()
