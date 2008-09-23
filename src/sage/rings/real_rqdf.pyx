@@ -750,7 +750,7 @@ cdef class QuadDoubleElement(FieldElement):
         _sig_off
         return res
 
-    cdef ModuleElement _add_c_impl(self, ModuleElement right):
+    cpdef ModuleElement _add_(self, ModuleElement right):
         """
         Add two quad double numbers
 
@@ -766,7 +766,7 @@ cdef class QuadDoubleElement(FieldElement):
         fpu_fix_end(&cw)
         return res
 
-    cdef ModuleElement _sub_c_impl(self, ModuleElement right):
+    cpdef ModuleElement _sub_(self, ModuleElement right):
         """
         Substract two quad double numbers
 
@@ -782,7 +782,7 @@ cdef class QuadDoubleElement(FieldElement):
         fpu_fix_end(&cw)
         return res
 
-    cdef RingElement _mul_c_impl(self, RingElement right):
+    cpdef RingElement _mul_(self, RingElement right):
         """
         Multiply two quad double numbers
 
@@ -798,7 +798,7 @@ cdef class QuadDoubleElement(FieldElement):
         fpu_fix_end(&cw)
         return res
 
-    cdef RingElement _div_c_impl(self, RingElement right):
+    cpdef RingElement _div_(self, RingElement right):
         """
         Divide two quad double numbers
 
@@ -814,7 +814,7 @@ cdef class QuadDoubleElement(FieldElement):
         fpu_fix_end(&cw)
         return res
 
-    cdef ModuleElement _neg_c_impl(self):
+    cpdef ModuleElement _neg_(self):
         """
         Negates a quad double number.
 

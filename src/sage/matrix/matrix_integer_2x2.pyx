@@ -129,8 +129,8 @@ cdef class Matrix_integer_2x2(matrix_dense.Matrix_dense):
 
     ########################################################################
     # LEVEL 2 functionality
-    # x  * cdef _add_c_impl
-    #    * cdef _mul_c_impl
+    # x  * cdef _add_
+    #    * cdef _mul_
     #    * cdef _cmp_c_impl
     # x  * __neg__
     # x  * __invert__
@@ -151,7 +151,7 @@ cdef class Matrix_integer_2x2(matrix_dense.Matrix_dense):
             x.subdivide(*self.get_subdivisions())
         return x
 
-    cdef ModuleElement _add_c_impl(left, ModuleElement right):
+    cpdef ModuleElement _add_(left, ModuleElement right):
         cdef Matrix_integer_2x2 A
         A = left._new_c()
         mpz_add(A.a, left.a, (<Matrix_integer_2x2>right).a)
@@ -237,7 +237,7 @@ cdef class Matrix_integer_2x2(matrix_dense.Matrix_dense):
 
     ########################################################################
     # LEVEL 3 functionality (Optional)
-    # x  * cdef _sub_c_impl
+    # x  * cdef _sub_
     # x  * __deepcopy__
     #    * Matrix windows -- only if you need strassen for that base
     #    * Other functions (list them here):
@@ -245,7 +245,7 @@ cdef class Matrix_integer_2x2(matrix_dense.Matrix_dense):
     # x  * charpoly
     ########################################################################
 
-    cdef ModuleElement _sub_c_impl(left, ModuleElement right):
+    cpdef ModuleElement _sub_(left, ModuleElement right):
         cdef Matrix_integer_2x2 A
         A = left._new_c()
         mpz_sub(A.a, left.a, (<Matrix_integer_2x2>right).a)

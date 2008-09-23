@@ -784,7 +784,7 @@ cdef class NumberFieldElement(FieldElement):
         self.__numerator = t2
         self.__denominator = t1
 
-    cdef ModuleElement _add_c_impl(self, ModuleElement right):
+    cpdef ModuleElement _add_(self, ModuleElement right):
         cdef NumberFieldElement x
         cdef NumberFieldElement _right = right
         x = self._new()
@@ -796,7 +796,7 @@ cdef class NumberFieldElement(FieldElement):
         x._reduce_c_()
         return x
 
-    cdef ModuleElement _sub_c_impl(self, ModuleElement right):
+    cpdef ModuleElement _sub_(self, ModuleElement right):
         cdef NumberFieldElement x
         cdef NumberFieldElement _right = right
         x = self._new()
@@ -808,7 +808,7 @@ cdef class NumberFieldElement(FieldElement):
         x._reduce_c_()
         return x
 
-    cdef RingElement _mul_c_impl(self, RingElement right):
+    cpdef RingElement _mul_(self, RingElement right):
         """
         Returns the product of self and other as elements of a number field.
 
@@ -854,7 +854,7 @@ cdef class NumberFieldElement(FieldElement):
         # but asymptotically fast poly multiplication means it's
         # actually faster to *not* build a table!?!
 
-    cdef RingElement _div_c_impl(self, RingElement right):
+    cpdef RingElement _div_(self, RingElement right):
         """
         Returns the quotient of self and other as elements of a number field.
 
@@ -941,7 +941,7 @@ cdef class NumberFieldElement(FieldElement):
         """
         return not IsZero_ZZX(self.__numerator)
 
-    cdef ModuleElement _neg_c_impl(self):
+    cpdef ModuleElement _neg_(self):
         cdef NumberFieldElement x
         x = self._new()
         ZZX_mul_long(x.__numerator, self.__numerator, -1)

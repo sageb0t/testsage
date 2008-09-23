@@ -827,7 +827,7 @@ cdef class FiniteField_ntl_gf2eElement(FiniteFieldElement):
         else:
             return self.nth_root(2)
 
-    cdef ModuleElement _add_c_impl(self, ModuleElement right):
+    cpdef ModuleElement _add_(self, ModuleElement right):
         """
         Add two elements.
 
@@ -842,7 +842,7 @@ cdef class FiniteField_ntl_gf2eElement(FiniteFieldElement):
         GF2E_add(r.x, (<FiniteField_ntl_gf2eElement>self).x, (<FiniteField_ntl_gf2eElement>right).x)
         return r
 
-    cdef ModuleElement _iadd_c_impl(self, ModuleElement right):
+    cpdef ModuleElement _iadd_(self, ModuleElement right):
         """
         Add two elements.
 
@@ -856,7 +856,7 @@ cdef class FiniteField_ntl_gf2eElement(FiniteFieldElement):
         GF2E_add((<FiniteField_ntl_gf2eElement>self).x, (<FiniteField_ntl_gf2eElement>self).x, (<FiniteField_ntl_gf2eElement>right).x)
         return self
 
-    cdef RingElement _mul_c_impl(self, RingElement right):
+    cpdef RingElement _mul_(self, RingElement right):
         """
         Multiply two elements.
 
@@ -871,7 +871,7 @@ cdef class FiniteField_ntl_gf2eElement(FiniteFieldElement):
         GF2E_mul(r.x, (<FiniteField_ntl_gf2eElement>self).x, (<FiniteField_ntl_gf2eElement>right).x)
         return r
 
-    cdef RingElement _imul_c_impl(self, RingElement right):
+    cpdef RingElement _imul_(self, RingElement right):
         """
         Multiply two elements.
 
@@ -885,7 +885,7 @@ cdef class FiniteField_ntl_gf2eElement(FiniteFieldElement):
         GF2E_mul((<FiniteField_ntl_gf2eElement>self).x, (<FiniteField_ntl_gf2eElement>self).x, (<FiniteField_ntl_gf2eElement>right).x)
         return self
 
-    cdef RingElement _div_c_impl(self, RingElement right):
+    cpdef RingElement _div_(self, RingElement right):
         """
         Divide two elements.
 
@@ -906,7 +906,7 @@ cdef class FiniteField_ntl_gf2eElement(FiniteFieldElement):
         GF2E_div(r.x, (<FiniteField_ntl_gf2eElement>self).x, (<FiniteField_ntl_gf2eElement>right).x)
         return r
 
-    cdef RingElement _idiv_c_impl(self, RingElement right):
+    cpdef RingElement _idiv_(self, RingElement right):
         """
         Divide two elements.
 
@@ -920,7 +920,7 @@ cdef class FiniteField_ntl_gf2eElement(FiniteFieldElement):
         GF2E_div((<FiniteField_ntl_gf2eElement>self).x, (<FiniteField_ntl_gf2eElement>self).x, (<FiniteField_ntl_gf2eElement>right).x)
         return self
 
-    cdef ModuleElement _sub_c_impl(self, ModuleElement right):
+    cpdef ModuleElement _sub_(self, ModuleElement right):
         """
         Subtract two elements.
 
@@ -935,7 +935,7 @@ cdef class FiniteField_ntl_gf2eElement(FiniteFieldElement):
         GF2E_sub(r.x, (<FiniteField_ntl_gf2eElement>self).x, (<FiniteField_ntl_gf2eElement>right).x)
         return r
 
-    cdef ModuleElement _isub_c_impl(self, ModuleElement right):
+    cpdef ModuleElement _isub_(self, ModuleElement right):
         """
         Subtract two elements.
 

@@ -174,7 +174,7 @@ cdef class RealDoubleVectorSpaceElement(free_module_element.FreeModuleElement):
             x._value = gsl_vector_get(self.v,i)
             return x
 
-    cdef ModuleElement _add_c_impl(self, ModuleElement right):
+    cpdef ModuleElement _add_(self, ModuleElement right):
         if not self.v:
             return self
         cdef gsl_vector* v
@@ -184,7 +184,7 @@ cdef class RealDoubleVectorSpaceElement(free_module_element.FreeModuleElement):
             raise RuntimeError, "error adding real double vectors"
         return self._new_c(v)
 
-    cdef ModuleElement _sub_c_impl(self, ModuleElement right):
+    cpdef ModuleElement _sub_(self, ModuleElement right):
         if not self.v:
             return self
         cdef gsl_vector* v
@@ -194,7 +194,7 @@ cdef class RealDoubleVectorSpaceElement(free_module_element.FreeModuleElement):
             raise RuntimeError, "error subtracting real double vectors"
         return self._new_c(v)
 
-    cdef Element _dot_product_c_impl(self, Vector right):
+    cpdef Element _dot_product_(self, Vector right):
         """
         Dot product of self and right.
 
@@ -212,7 +212,7 @@ cdef class RealDoubleVectorSpaceElement(free_module_element.FreeModuleElement):
             y._value += gsl_vector_get(self.v, i) * gsl_vector_get((<RealDoubleVectorSpaceElement>right).v, i)
         return y
 
-    cdef Vector _pairwise_product_c_impl(self, Vector right):
+    cpdef Vector _pairwise_product_(self, Vector right):
         """
         Return the component-wise product of self and right.
 
@@ -232,7 +232,7 @@ cdef class RealDoubleVectorSpaceElement(free_module_element.FreeModuleElement):
             raise RuntimeError, "error multiplying real double vectors"
         return self._new_c(v)
 
-    cdef ModuleElement _rmul_c_impl(self, RingElement left):
+    cpdef ModuleElement _rmul_(self, RingElement left):
         if not self.v:
             return self
         cdef gsl_vector* v
@@ -240,7 +240,7 @@ cdef class RealDoubleVectorSpaceElement(free_module_element.FreeModuleElement):
         gsl_vector_scale(v, (<RealDoubleElement>left)._value)
         return self._new_c(v)
 
-    cdef ModuleElement _lmul_c_impl(self, RingElement right):
+    cpdef ModuleElement _lmul_(self, RingElement right):
         if not self.v:
             return self
         cdef gsl_vector* v

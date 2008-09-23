@@ -333,9 +333,9 @@ cdef class Matrix_modn_dense(matrix_dense.Matrix_dense):
     # LEVEL 2 functionality
     #   * cdef _pickle
     #   * cdef _unpickle
-    # x * cdef _add_c_impl
-    #   * cdef _mul_c_impl
-    # x * cdef _matrix_times_matrix_c_impl
+    # x * cdef _add_
+    #   * cdef _mul_
+    # x * cdef _matrix_times_matrix_
     # x * cdef _cmp_c_impl
     # x * __neg__
     #   * __invert__
@@ -346,8 +346,8 @@ cdef class Matrix_modn_dense(matrix_dense.Matrix_dense):
     ########################################################################
     # def _pickle(self):
     # def _unpickle(self, data, int version):   # use version >= 0
-    # cdef ModuleElement _add_c_impl(self, ModuleElement right):
-    # cdef _mul_c_impl(self, Matrix right):
+    # cpdef ModuleElement _add_(self, ModuleElement right):
+    # cdef _mul_(self, Matrix right):
     # cdef int _cmp_c_impl(self, Matrix right) except -2:
     # def __invert__(self):
     # def _multiply_classical(left, matrix.Matrix _right):
@@ -565,16 +565,16 @@ cdef class Matrix_modn_dense(matrix_dense.Matrix_dense):
         _sig_off
         return M
 
-    cdef ModuleElement _lmul_c_impl(self, RingElement right):
+    cpdef ModuleElement _lmul_(self, RingElement right):
         """
         EXAMPLES:
             sage: a = random_matrix(Integers(60), 400, 500)
             sage: 3*a + 9*a == 12*a
             True
         """
-        return self._rmul_c_impl(right)
+        return self._rmul_(right)
 
-    cdef ModuleElement _rmul_c_impl(self, RingElement left):
+    cpdef ModuleElement _rmul_(self, RingElement left):
         """
         EXAMPLES:
             sage: a = matrix(GF(101), 3, 3, range(9)); a
@@ -619,7 +619,7 @@ cdef class Matrix_modn_dense(matrix_dense.Matrix_dense):
             A.subdivide(*self.get_subdivisions())
         return A
 
-    cdef ModuleElement _add_c_impl(self, ModuleElement right):
+    cpdef ModuleElement _add_(self, ModuleElement right):
         """
         Add two dense matrices over Z/nZ
 
@@ -661,7 +661,7 @@ cdef class Matrix_modn_dense(matrix_dense.Matrix_dense):
         _sig_off
         return M
 
-    cdef ModuleElement _sub_c_impl(self, ModuleElement right):
+    cpdef ModuleElement _sub_(self, ModuleElement right):
         """
         Subtract two dense matrices over Z/nZ
 
@@ -746,7 +746,7 @@ cdef class Matrix_modn_dense(matrix_dense.Matrix_dense):
         _sig_off
         return 0
 
-    cdef Matrix _matrix_times_matrix_c_impl(self, Matrix right):
+    cdef Matrix _matrix_times_matrix_(self, Matrix right):
         if get_verbose() >= 2:
             verbose('mod-p multiply of %s x %s matrix by %s x %s matrix modulo %s'%(
                 self._nrows, self._ncols, right._nrows, right._ncols, self.p))
@@ -784,7 +784,7 @@ cdef class Matrix_modn_dense(matrix_dense.Matrix_dense):
     def _multiply_classical(left, right):
         return left._multiply_strassen(right, left._ncols + left._nrows)
 
-    cdef Vector _vector_times_matrix_c_impl(self, Vector v):
+    cdef Vector _vector_times_matrix_(self, Vector v):
         cdef Vector_modn_dense w, ans
         cdef Py_ssize_t i, j
         cdef mod_int k
@@ -808,7 +808,7 @@ cdef class Matrix_modn_dense(matrix_dense.Matrix_dense):
 
     ########################################################################
     # LEVEL 3 functionality (Optional)
-    #  x * cdef _sub_c_impl
+    #  x * cdef _sub_
     #    * __deepcopy__
     #    * __invert__
     #    * Matrix windows -- only if you need strassen for that base

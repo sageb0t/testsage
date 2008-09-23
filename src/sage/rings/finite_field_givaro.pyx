@@ -1388,7 +1388,7 @@ cdef class FiniteField_givaroElement(FiniteFieldElement):
             else:
                 return L[0][0]
 
-    cdef ModuleElement _add_c_impl(self, ModuleElement right):
+    cpdef ModuleElement _add_(self, ModuleElement right):
         """
         Add two elements.
 
@@ -1402,7 +1402,7 @@ cdef class FiniteField_givaroElement(FiniteFieldElement):
                                               (<FiniteField_givaroElement>right).element )
         return make_FiniteField_givaroElement(parent_object(self),r)
 
-    cdef ModuleElement _iadd_c_impl(self, ModuleElement right):
+    cpdef ModuleElement _iadd_(self, ModuleElement right):
         """
         Add two elements inplace.
 
@@ -1416,7 +1416,7 @@ cdef class FiniteField_givaroElement(FiniteFieldElement):
                                                          (<FiniteField_givaroElement>right).element )
         return self
 
-    cdef RingElement _mul_c_impl(self, RingElement right):
+    cpdef RingElement _mul_(self, RingElement right):
         """
         Multiply two elements:
 
@@ -1432,7 +1432,7 @@ cdef class FiniteField_givaroElement(FiniteFieldElement):
                                               (<FiniteField_givaroElement>right).element)
         return make_FiniteField_givaroElement(parent_object(self),r)
 
-    cdef RingElement _imul_c_impl(self, RingElement right):
+    cpdef RingElement _imul_(self, RingElement right):
         """
         Multiply two elements inplace.
 
@@ -1448,7 +1448,7 @@ cdef class FiniteField_givaroElement(FiniteFieldElement):
                                                          (<FiniteField_givaroElement>right).element)
         return self
 
-    cdef RingElement _div_c_impl(self, RingElement right):
+    cpdef RingElement _div_(self, RingElement right):
         """
         Divide two elements
 
@@ -1469,7 +1469,7 @@ cdef class FiniteField_givaroElement(FiniteFieldElement):
                                               (<FiniteField_givaroElement>right).element)
         return make_FiniteField_givaroElement(parent_object(self),r)
 
-    cdef RingElement _idiv_c_impl(self, RingElement right):
+    cpdef RingElement _idiv_(self, RingElement right):
         """
         Divide two elements inplace
 
@@ -1491,7 +1491,7 @@ cdef class FiniteField_givaroElement(FiniteFieldElement):
                                                          (<FiniteField_givaroElement>right).element)
         return self
 
-    cdef ModuleElement _sub_c_impl(self, ModuleElement right):
+    cpdef ModuleElement _sub_(self, ModuleElement right):
         """
         Subtract two elements
 
@@ -1507,7 +1507,7 @@ cdef class FiniteField_givaroElement(FiniteFieldElement):
                                               (<FiniteField_givaroElement>right).element)
         return make_FiniteField_givaroElement(parent_object(self),r)
 
-    cdef ModuleElement _isub_c_impl(self, ModuleElement right):
+    cpdef ModuleElement _isub_(self, ModuleElement right):
         """
         Subtract two elements inplace
 

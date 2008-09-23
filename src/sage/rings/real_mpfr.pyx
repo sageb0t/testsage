@@ -1454,7 +1454,7 @@ cdef class RealNumber(sage.structure.element.RingElement):
     #   Basic Arithmetic
     ########################
 
-    cdef ModuleElement _add_c_impl(self, ModuleElement other):
+    cpdef ModuleElement _add_(self, ModuleElement other):
         """
         Add two real numbers with the same parent.
 
@@ -1471,7 +1471,7 @@ cdef class RealNumber(sage.structure.element.RingElement):
     def __invert__(self):
         return self._parent(1) / self
 
-    cdef ModuleElement _sub_c_impl(self, ModuleElement right):
+    cpdef ModuleElement _sub_(self, ModuleElement right):
         """
         Subtract two real numbers with the same parent.
 
@@ -1485,7 +1485,7 @@ cdef class RealNumber(sage.structure.element.RingElement):
         mpfr_sub(x.value, self.value, (<RealNumber>right).value, (<RealField> self._parent).rnd)
         return x
 
-    cdef RingElement _mul_c_impl(self, RingElement right):
+    cpdef RingElement _mul_(self, RingElement right):
         """
         Multiply two real numbers with the same parent.
 
@@ -1518,7 +1518,7 @@ cdef class RealNumber(sage.structure.element.RingElement):
         mpfr_mul(x.value, self.value, (<RealNumber>right).value, (<RealField>self._parent).rnd)
         return x
 
-    cdef RingElement _div_c_impl(self, RingElement right):
+    cpdef RingElement _div_(self, RingElement right):
         """
         Divide self by other, where both are real numbers with the same parent.
 
@@ -1538,7 +1538,7 @@ cdef class RealNumber(sage.structure.element.RingElement):
                  (<RealNumber>right).value, (<RealField>self._parent).rnd)
         return x
 
-    cdef ModuleElement _neg_c_impl(self):
+    cpdef ModuleElement _neg_(self):
         cdef RealNumber x
         x = self._new()
         mpfr_neg(x.value, self.value, (<RealField>self._parent).rnd)
