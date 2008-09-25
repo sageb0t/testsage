@@ -104,7 +104,14 @@ Test introspection of functions defined in Python and Cython files:
 
 import inspect
 import os
-import types
+
+def isclassinstance(obj):
+    r"""
+    Checks if argument is instance of non built-in class
+    """
+    return (hasattr(obj, '__class__') and \
+            hasattr(obj.__class__, '__module__') and \
+            obj.__class__.__module__ not in ('__builtin__', 'exceptions'))
 
 SAGE_ROOT = os.environ["SAGE_ROOT"]
 
@@ -227,7 +234,7 @@ def sage_getfile(obj):
         return filename
 
     # The instance case
-    if type(obj) == types.InstanceType:
+    if isclassinstance(obj):
         return inspect.getabsfile(obj.__class__)
     # No go? fall back to inspect.
     return inspect.getabsfile(obj)
@@ -254,7 +261,7 @@ def sage_getargspec(obj):
         func_obj = obj
     elif inspect.ismethod(obj):
         func_obj = obj.im_func
-    elif type(obj) == types.InstanceType:
+    elif isclassinstance(obj):
         return sage_getargspec(obj.__class__.__call__)
     elif inspect.isclass(obj):
         return sage_getargspec(obj.__call__)
@@ -367,7 +374,7 @@ def sage_getsourcelines(obj, is_binary=False):
         -- Extensions by Nick Alexander
     """
     # Check if we deal with instance
-    if type(obj) == types.InstanceType:
+    if isclassinstance(obj):
         obj=obj.__class__
     # If we can handle it, we do.  This is because Python's inspect will
     # happily dump binary for cython extension source code.
