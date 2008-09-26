@@ -113,6 +113,7 @@ def is_FreeAlgebra(x):
     Return True if x is a free algebra; otherwise, return False.
 
     EXAMPLES:
+        sage: from sage.algebras.free_algebra import is_FreeAlgebra
         sage: is_FreeAlgebra(5)
         False
         sage: is_FreeAlgebra(ZZ)

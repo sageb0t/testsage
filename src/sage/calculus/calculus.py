@@ -308,6 +308,7 @@ arc_functions =  ['asin', 'acos', 'atan', 'asinh', 'acosh', 'atanh', 'acoth', 'a
 def is_SymbolicExpression(x):
     """
     EXAMPLES:
+        sage: from sage.calculus.calculus import is_SymbolicExpression
         sage: is_SymbolicExpression(sin(x))
         True
         sage: is_SymbolicExpression(2/3)
@@ -320,6 +321,7 @@ def is_SymbolicExpression(x):
 def is_SymbolicExpressionRing(x):
     """
     EXAMPLES:
+        sage: from sage.calculus.calculus import is_SymbolicExpressionRing
         sage: is_SymbolicExpressionRing(QQ)
         False
         sage: is_SymbolicExpressionRing(SR)
@@ -424,6 +426,7 @@ class SymbolicExpressionRing_class(uniq, CommutativeRing):
             Symbolic Ring
             sage: type(SR(I))
             <class 'sage.calculus.calculus.SymbolicConstant'>
+            sage: from sage.calculus.calculus import is_SymbolicExpression
             sage: is_SymbolicExpression(SR(I))
             True
 
@@ -5175,6 +5178,7 @@ def is_SymbolicVariable(x):
         bool -- True precisely if x is a symbolic variable.
 
     EXAMPLES:
+        sage: from sage.calculus.calculus import is_SymbolicVariable
         sage: is_SymbolicVariable('x')
         False
         sage: is_SymbolicVariable(x)
@@ -5390,6 +5394,7 @@ def is_CallableSymbolicExpressionRing(x):
         bool
 
     EXAMPLES:
+        sage: from sage.calculus.calculus import is_CallableSymbolicExpressionRing
         sage: is_CallableSymbolicExpressionRing(QQ)
         False
         sage: var('x,y,z')
@@ -5525,6 +5530,7 @@ def is_CallableSymbolicExpression(x):
     Returns true if \var{x} is a callable symbolic expression.
 
     EXAMPLES:
+        sage: from sage.calculus.calculus import is_CallableSymbolicExpression
         sage: var('a x y z')
         (a, x, y, z)
         sage: f(x,y) = a + 2*x + 3*y + z

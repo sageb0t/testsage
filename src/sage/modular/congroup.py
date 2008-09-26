@@ -41,6 +41,7 @@ def is_CongruenceSubgroup(x):
     Return True if x is of type CongruenceSubgroup.
 
     EXAMPLES:
+        sage: from sage.modular.congroup import is_CongruenceSubgroup
         sage: is_CongruenceSubgroup(SL2Z)
         True
         sage: is_CongruenceSubgroup(Gamma0(13))
@@ -530,6 +531,7 @@ def is_Gamma0(x):
     Return True if x is a congruence subgroup of type Gamma0.
 
     EXAMPLES:
+        sage: from sage.modular.congroup import is_Gamma0
         sage: is_Gamma0(SL2Z)
         True
         sage: is_Gamma0(Gamma0(13))
@@ -822,6 +824,7 @@ def is_SL2Z(x):
     Return True if x is the modular group ${\rm SL}_2(\Z)$.
 
     EXAMPLES:
+        sage: from sage.modular.congroup import is_SL2Z
         sage: is_SL2Z(SL2Z)
         True
         sage: is_SL2Z(Gamma0(6))
@@ -930,6 +933,7 @@ def is_Gamma1(x):
     Return True if x is a congruence subgroup of type Gamma1.
 
     EXAMPLES:
+        sage: from sage.modular.congroup import is_Gamma1
         sage: is_Gamma1(SL2Z)
         True
         sage: is_Gamma1(Gamma1(13))
@@ -1176,6 +1180,7 @@ def is_GammaH(x):
     Return True if x is a congruence subgroup of type GammaH.
 
     EXAMPLES:
+        sage: from sage.modular.congroup import is_GammaH
         sage: is_GammaH(GammaH(13, [2]))
         True
         sage: is_GammaH(Gamma0(6))

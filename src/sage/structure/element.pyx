@@ -196,6 +196,7 @@ def is_Element(x):
     Return True if x is of type Element.
 
     EXAMPLES:
+        sage: from sage.structure.element import is_Element
         sage: is_Element(2/3)
         True
         sage: is_Element(QQ^3)
@@ -592,6 +593,7 @@ def is_ModuleElement(x):
     This is even faster than using isinstance inline.
 
     EXAMPLES:
+        sage: from sage.structure.element import is_ModuleElement
         sage: is_ModuleElement(2/3)
         True
         sage: is_ModuleElement((QQ^3).0)
