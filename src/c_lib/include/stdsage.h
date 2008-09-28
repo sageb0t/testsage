@@ -159,7 +159,6 @@ the I/O buffer escapes completely the Python memory manager."
  *****************************************/
 
 #define sage_malloc  malloc
-#define sage_calloc  calloc
 #define sage_free    free
 #define sage_realloc realloc
 
