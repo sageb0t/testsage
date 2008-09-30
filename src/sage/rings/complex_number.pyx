@@ -915,10 +915,12 @@ cdef class ComplexNumber(sage.structure.element.FieldElement):
         cdef ComplexNumber z
         z = self._new()
         cdef mpfr_t ch, sh
-        mpfr_init2(ch, self._prec)
-        mpfr_cosh(ch, self.__im, rnd)
         mpfr_init2(sh, self._prec)
         mpfr_sinh(sh, self.__im, rnd)
+        mpfr_init2(ch, self._prec)
+        mpfr_sqr(ch, sh, rnd)
+        mpfr_add_ui(ch, ch, 1, rnd)
+        mpfr_sqrt(ch, ch, rnd)
         mpfr_neg(sh, sh, rnd)
         mpfr_sin_cos(z.__im, z.__re, self.__re, rnd)
         mpfr_mul(z.__re, z.__re, ch, rnd)
@@ -938,10 +940,12 @@ cdef class ComplexNumber(sage.structure.element.FieldElement):
         cdef ComplexNumber z
         z = self._new()
         cdef mpfr_t ch, sh
-        mpfr_init2(ch, self._prec)
-        mpfr_cosh(ch, self.__re, rnd)
         mpfr_init2(sh, self._prec)
         mpfr_sinh(sh, self.__re, rnd)
+        mpfr_init2(ch, self._prec)
+        mpfr_sqr(ch, sh, rnd)
+        mpfr_add_ui(ch, ch, 1, rnd)
+        mpfr_sqrt(ch, ch, rnd)
         mpfr_sin_cos(z.__im, z.__re, self.__im, rnd)
         mpfr_mul(z.__re, z.__re, ch, rnd)
         mpfr_mul(z.__im, z.__im, sh, rnd)
@@ -1018,10 +1022,12 @@ cdef class ComplexNumber(sage.structure.element.FieldElement):
         cdef ComplexNumber z
         z = self._new()
         cdef mpfr_t ch, sh
-        mpfr_init2(ch, self._prec)
-        mpfr_cosh(ch, self.__im, rnd)
         mpfr_init2(sh, self._prec)
         mpfr_sinh(sh, self.__im, rnd)
+        mpfr_init2(ch, self._prec)
+        mpfr_sqr(ch, sh, rnd)
+        mpfr_add_ui(ch, ch, 1, rnd)
+        mpfr_sqrt(ch, ch, rnd)
         mpfr_sin_cos(z.__re, z.__im, self.__re, rnd)
         mpfr_mul(z.__re, z.__re, ch, rnd)
         mpfr_mul(z.__im, z.__im, sh, rnd)
@@ -1040,10 +1046,12 @@ cdef class ComplexNumber(sage.structure.element.FieldElement):
         cdef ComplexNumber z
         z = self._new()
         cdef mpfr_t ch, sh
-        mpfr_init2(ch, self._prec)
-        mpfr_cosh(ch, self.__re, rnd)
         mpfr_init2(sh, self._prec)
         mpfr_sinh(sh, self.__re, rnd)
+        mpfr_init2(ch, self._prec)
+        mpfr_sqr(ch, sh, rnd)
+        mpfr_add_ui(ch, ch, 1, rnd)
+        mpfr_sqrt(ch, ch, rnd)
         mpfr_sin_cos(z.__im, z.__re, self.__im, rnd)
         mpfr_mul(z.__re, z.__re, sh, rnd)
         mpfr_mul(z.__im, z.__im, ch, rnd)
@@ -1062,16 +1070,17 @@ cdef class ComplexNumber(sage.structure.element.FieldElement):
         cdef ComplexNumber z
         z = self._new()
         cdef mpfr_t ch, sh, c, s, a, b
-        mpfr_init2(ch, self._prec)
-        mpfr_cosh(ch, self.__im, rnd)
         mpfr_init2(sh, self._prec)
         mpfr_sinh(sh, self.__im, rnd)
+        mpfr_init2(ch, self._prec)
+        mpfr_init2(a, self._prec)
+        mpfr_sqr(a, sh, rnd)
+        mpfr_add_ui(ch, a, 1, rnd)
+        mpfr_sqrt(ch, ch, rnd)
         mpfr_init2(c, self._prec)
         mpfr_init2(s, self._prec)
         mpfr_sin_cos(s, c, self.__re, rnd)
-        mpfr_init2(a, self._prec)
         mpfr_init2(b, self._prec)
-        mpfr_sqr(a, sh, rnd)
         mpfr_sqr(b, c, rnd)
         mpfr_add(a, a, b, rnd)
         mpfr_mul(z.__re, c, s, rnd)
@@ -1097,16 +1106,17 @@ cdef class ComplexNumber(sage.structure.element.FieldElement):
         cdef ComplexNumber z
         z = self._new()
         cdef mpfr_t ch, sh, c, s, a, b
-        mpfr_init2(ch, self._prec)
-        mpfr_cosh(ch, self.__re, rnd)
         mpfr_init2(sh, self._prec)
         mpfr_sinh(sh, self.__re, rnd)
+        mpfr_init2(ch, self._prec)
+        mpfr_init2(a, self._prec)
+        mpfr_sqr(a, sh, rnd)
+        mpfr_add_ui(ch, a, 1, rnd)
+        mpfr_sqrt(ch, ch, rnd)
         mpfr_init2(c, self._prec)
         mpfr_init2(s, self._prec)
         mpfr_sin_cos(s, c, self.__im, rnd)
-        mpfr_init2(a, self._prec)
         mpfr_init2(b, self._prec)
-        mpfr_sqr(a, sh, rnd)
         mpfr_sqr(b, c, rnd)
         mpfr_add(a, a, b, rnd)
         mpfr_mul(z.__im, c, s, rnd)
@@ -1346,7 +1356,7 @@ cdef class ComplexNumber(sage.structure.element.FieldElement):
         # t is arg(z)/2
         mpfr_init2(t, self._prec)
         mpfr_atan2(t, self.__im, self.__re, rnd)
-        mpfr_div_ui(t, t, long(2), rnd)
+        mpfr_div_ui(t, t, 2, rnd)
 
         # r is sqrt(abs(z))
         mpfr_init2(a, self._prec)
@@ -1363,11 +1373,11 @@ cdef class ComplexNumber(sage.structure.element.FieldElement):
             mpfr_mul(z.__im, z.__im, r, rnd)
         elif mpfr_sgn(self.__re) > 0:
             # if self is positive real, so should be sqrt(self)
-            mpfr_set_ui(z.__im, long(0), rnd)
+            mpfr_set_ui(z.__im, 0, rnd)
             mpfr_mul(z.__re, z.__re, r, rnd)
         else:
             # if self is negative real, sqrt(self) should be pure imaginary
-            mpfr_set_ui(z.__re, long(0), rnd)
+            mpfr_set_ui(z.__re, 0, rnd)
             mpfr_mul(z.__im, z.__im, r, rnd)
         mpfr_clear(r)
         mpfr_clear(t)
