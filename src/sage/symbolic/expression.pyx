@@ -130,7 +130,7 @@ cdef class Expression(CommutativeRingElement):
         """
         return GEx_to_str(&self._gobj)
 
-    def _integer_(self):
+    def _integer_(self, ZZ=None):
         """
         EXAMPLES:
             sage: var('x',ns=1); S = parent(x)
@@ -409,7 +409,7 @@ cdef class Expression(CommutativeRingElement):
         except TypeError:
             return self._parent._coerce_c(z)
 
-    cdef ModuleElement _add_c_impl(left, ModuleElement right):
+    cpdef ModuleElement _add_(left, ModuleElement right):
         """
         Add left and right.
 
@@ -456,7 +456,7 @@ cdef class Expression(CommutativeRingElement):
             x = gadd(left._gobj, _right._gobj)
         return new_Expression_from_GEx(x)
 
-    cdef ModuleElement _sub_c_impl(left, ModuleElement right):
+    cpdef ModuleElement _sub_(left, ModuleElement right):
         """
         EXAMPLES:
             sage: var("x y", ns=1)
@@ -501,7 +501,7 @@ cdef class Expression(CommutativeRingElement):
             x = gsub(left._gobj, _right._gobj)
         return new_Expression_from_GEx(x)
 
-    cdef RingElement _mul_c_impl(left, RingElement right):
+    cpdef RingElement _mul_(left, RingElement right):
         """
         Multiply left and right.
 
@@ -554,7 +554,7 @@ cdef class Expression(CommutativeRingElement):
             x = gmul(left._gobj, _right._gobj)
         return new_Expression_from_GEx(x)
 
-    cdef RingElement _div_c_impl(left, RingElement right):
+    cpdef RingElement _div_(left, RingElement right):
         """
         Divide left and right.
 
