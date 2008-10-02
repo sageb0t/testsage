@@ -4096,6 +4096,15 @@ class SymbolicConstant(Symbolic_object):
                 if isinstance(self._obj, int):
                     return True
 
+    def __index__(self):
+        """
+        EXAMPLES:
+            sage: a = range(10)
+            sage: a[:SR(5)]
+            [0, 1, 2, 3, 4]
+        """
+        return int(Integer(self))
+
     def _fast_float_(self, *vars):
         """
         Returns an object which provides fast floating point evaluation of
