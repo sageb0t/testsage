@@ -154,6 +154,8 @@ from monomials import monomials
 
 CC = ComplexField()
 CIF = ComplexIntervalField()
+
+# i = I = QuadraticField(-1, 'I').gen()
 I = CC.gen()
 
 from residue_field import ResidueField
