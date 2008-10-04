@@ -295,9 +295,6 @@ class Expect(ParentWithBase):
     def path(self):
         return self.__path
 
-    def _continuation_prompt(self):
-        return False
-
     def expect(self):
         if self._expect is None:
             self._start()
