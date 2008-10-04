@@ -990,8 +990,13 @@ ext_modules = [ \
 
     Extension('sage.symbolic.pynac',
                  sources = ['sage/symbolic/pynac.pyx'],
-                 language = 'c',
+                 language = 'c++',
                  libraries = ["pynac"]), \
+
+    Extension('sage.symbolic.constants',
+                 sources = ['sage/symbolic/constants.pyx'],
+                  language = 'c++',
+                  libraries = ["pynac"]), \
 
     Extension('sage.symbolic.function',
                  sources = ['sage/symbolic/function.pyx'],
