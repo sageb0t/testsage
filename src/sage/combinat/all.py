@@ -78,6 +78,7 @@ from integer_vector_weighted import WeightedIntegerVectors
 
 from finite_class import FiniteCombinatorialClass
 
+from species.all import *
 from dlx import AllExactCovers, OneExactCover, DLXMatrix
 
 from multichoose_nk import MultichooseNK
