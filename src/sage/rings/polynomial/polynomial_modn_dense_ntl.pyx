@@ -607,7 +607,7 @@ cdef class Polynomial_dense_modn_ntl_zz(Polynomial_dense_mod_n):
 
     def int_list(self):
         """
-        Returns the coefficents of self as efficiently as possible as a
+        Returns the coefficients of self as efficiently as possible as a
         list of python ints.
 
         EXAMPLES:
@@ -960,7 +960,7 @@ cdef class Polynomial_dense_modn_ntl_zz(Polynomial_dense_mod_n):
 
     def reverse(self):
         """
-        Reverses the coeffients of self. The reverse of f(x) is x^n f(1/x).
+        Reverses the coefficients of self. The reverse of f(x) is x^n f(1/x).
 
         The degree will go down if the constant term is zero.
 
@@ -1123,7 +1123,7 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
 
 #    def int_list(self):
 #        """
-#        Returns the coefficents of self as efficiently as possible as a
+#        Returns the coefficients of self as efficiently as possible as a
 #        list of python ints.
 #
 #        EXAMPLES:
@@ -1472,7 +1472,7 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
 
     def reverse(self):
         """
-        Reverses the coeffients of self. The reverse of f(x) is x^n f(1/x).
+        Reverses the coefficients of self. The reverse of f(x) is x^n f(1/x).
 
         The degree will go down if the constant term is zero.
 
