@@ -1247,7 +1247,7 @@ cdef class Parent(category_object.CategoryObject):
             (FractionField, Integer Ring)
             sage: f, R = QQ['x'].construction()
             sage: f
-            PolynomialFunctor
+            Poly[x]
             sage: R
             Rational Field
             sage: f(R)
