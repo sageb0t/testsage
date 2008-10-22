@@ -709,7 +709,7 @@ class A003418(SloaneSequence):
 	    sage: [sloane.A003418._eval(n) for n in range(1,11)]
 	    [1, 2, 6, 12, 60, 60, 420, 840, 2520, 2520]
 	"""
-        return arith.lcm([i for i in range(1,n+1)],integer=True)
+        return arith.lcm([i for i in range(1,n+1)])
 
 class A007318(SloaneSequence):
     def __init__(self):
