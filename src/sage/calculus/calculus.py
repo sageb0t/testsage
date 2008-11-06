@@ -7884,6 +7884,10 @@ class Function_sqrt(PrimitiveFunction):
         I
         sage: sqrt(2)
         sqrt(2)
+        sage: sqrt(4)
+        2
+        sage: sqrt(4,all=True)
+        [2, -2]
         sage: sqrt(x^2)
         sqrt(x^2)
     """
@@ -7897,6 +7901,8 @@ class Function_sqrt(PrimitiveFunction):
         return "\\sqrt"
 
     def _do_sqrt(self, x, prec=None, extend=True, all=False):
+        if prec and x >= 0:
+            return RealField(prec)(x).sqrt(all=all)
         if prec:
             return ComplexField(prec)(x).sqrt(all=all)
         z = SymbolicComposition(self, SR(x))
@@ -7920,11 +7926,10 @@ class Function_sqrt(PrimitiveFunction):
         """
         if isinstance(x, float):
             return math.sqrt(x)
-        if not isinstance(x, (Integer, Rational)):
-            try:
-                return x.sqrt(*args, **kwds)
-            except AttributeError:
-                pass
+        try:
+            return x.sqrt(*args, **kwds)
+        except AttributeError:
+            pass
         return self._do_sqrt(x, *args, **kwds)
 
     def _approx_(self, x):

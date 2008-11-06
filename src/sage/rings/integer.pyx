@@ -3081,6 +3081,8 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
         EXAMPLES:
             sage: Integer(144).sqrt()
             12
+            sage: sqrt(Integer(144))
+            12
             sage: Integer(102).sqrt()
             sqrt(102)
 
@@ -3101,6 +3103,12 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
             [12, -12]
             sage: Integer(0).sqrt(all=True)
             [0]
+            sage: type(Integer(5).sqrt())
+            <class 'sage.calculus.calculus.SymbolicComposition'>
+            sage: type(Integer(5).sqrt(prec=53))
+            <type 'sage.rings.real_mpfr.RealNumber'>
+            sage: type(Integer(-5).sqrt(prec=53))
+            <type 'sage.rings.complex_number.ComplexNumber'>
         """
         if mpz_sgn(self.value) == 0:
             return [self] if all else self
@@ -3108,12 +3116,8 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
         if mpz_sgn(self.value) < 0:
             if not extend:
                 raise ValueError, "square root of negative number not an integer"
-            if prec:
-                from sage.rings.complex_field import ComplexField
-                K = ComplexField(prec)
-                return K(self).sqrt(all=all)
             from sage.calculus.calculus import sqrt
-            return sqrt(self, all=all)
+            return sqrt._do_sqrt(self, prec=prec, all=all)
 
         cdef int non_square
         cdef Integer z = PY_NEW(Integer)
@@ -3128,12 +3132,12 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
         if non_square:
             if not extend:
                 raise ValueError, "square root of %s not an integer"%self
-            if prec:
-                from sage.rings.real_mpfr import RealField
-                K = RealField(prec)
-                return K(self).sqrt(all=all)
             from sage.calculus.calculus import sqrt
-            return sqrt(self, all=all)
+            return sqrt._do_sqrt(self, prec=prec, all=all)
+
+        if prec:
+            from sage.calculus.calculus import sqrt
+            return sqrt._do_sqrt(self, prec=prec, all=all)
 
         if all:
            return [z, -z]
