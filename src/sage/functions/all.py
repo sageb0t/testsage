@@ -1,7 +1,7 @@
 from piecewise import piecewise, Piecewise
 
 from transcendental import (exponential_integral_1,
-                            gamma, gamma_inc, incomplete_gamma,
+                            gamma_inc, incomplete_gamma,
                             zeta, zeta_symmetric,
                             Li, Ei,
                             prime_pi,
