@@ -7206,7 +7206,14 @@ class Function_arcsech(PrimitiveFunction):
         return "asech"
 
     def _latex_(self):
-        return "\\sech^{-1}"
+        """
+        Returns the LaTeX code for arcsech.
+
+        EXAMPLES:
+            sage: latex(arcsech)
+            \text{sech}^{-1}
+        """
+        return r"\text{sech}^{-1}"
 
     def _approx_(self, x):
         return float(pari(float(1/x)).acosh())
@@ -7239,7 +7246,14 @@ class Function_arccsch(PrimitiveFunction):
         return "acsch"
 
     def _latex_(self):
-        return "\\csch^{-1}"
+        """
+        Returns the LaTeX code for arccsch.
+
+        EXAMPLES:
+            sage: latex(arccsch)
+            \text{csch}^{-1}
+        """
+        return r"\text{csch}^{-1}"
 
     def _approx_(self, x):
         return float(pari(float(1/x)).arcsinh())
@@ -7555,7 +7569,14 @@ class Function_sech(PrimitiveFunction):
         return "sech"
 
     def _latex_(self):
-        return "\\sech"
+        """
+        Returns the LaTeX code for sech.
+
+        EXAMPLES:
+            sage: latex(sech)
+            \text{sech}
+        """
+        return r"\text{sech}"
 
     def _approx_(self, x):
         return 1/math.cosh(x)
@@ -7582,7 +7603,14 @@ class Function_csch(PrimitiveFunction):
         return "csch"
 
     def _latex_(self):
-        return "\\csch"
+        """
+        Returns the LaTeX code for csch.
+
+        EXAMPLES:
+            sage: latex(csch)
+            \text{csch}
+        """
+        return r"\text{csch}"
 
     def _approx_(self, x):
         return 1/math.sinh(x)
