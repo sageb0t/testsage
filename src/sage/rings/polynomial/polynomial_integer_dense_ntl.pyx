@@ -726,7 +726,7 @@ cdef class Polynomial_integer_dense_ntl(Polynomial):
 ##         f.__poly = self.__poly.copy()
 ##         return f
 
-    def degree(self):
+    def degree(self, gen=None):
         """
         Return the degree of this polynomial. The zero polynomial has
         degree -1.
