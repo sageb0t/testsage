@@ -131,6 +131,11 @@ cdef class Matrix_cyclo_dense(matrix_dense.Matrix_dense):
             True
 
         TESTS:
+            sage: matrix(W, 2, 1, a)
+            Traceback (most recent call last):
+            ...
+            TypeError: nonzero scalar matrix must be square
+
         We call __init__ explicitly below.
             sage: from sage.matrix.matrix_cyclo_dense import Matrix_cyclo_dense
             sage: A = Matrix_cyclo_dense.__new__(Matrix_cyclo_dense, MatrixSpace(CyclotomicField(3),2), [0,1,2,3], True, True)
@@ -140,6 +145,7 @@ cdef class Matrix_cyclo_dense(matrix_dense.Matrix_dense):
             [2 3]
 
         """
+        cdef int i
         z = None
         if entries == 0:
             pass
@@ -159,6 +165,8 @@ cdef class Matrix_cyclo_dense(matrix_dense.Matrix_dense):
                                             entries, copy=False, coerce=False).transpose()
         # This could also be made much faster.
         if z is not None:
+            if self._nrows != self._ncols:
+                raise TypeError, "nonzero scalar matrix must be square"
             for i in range(self._nrows):
                 self.set_unsafe(i,i,z)
 
