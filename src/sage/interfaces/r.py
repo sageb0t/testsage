@@ -310,7 +310,7 @@ class R(Expect):
         # necessary for non-interactive execution
         self.eval('options(error = expression(NULL))')
 
-    def png(self, *args, **kwargs):
+    def png(self, *args, **kwds):
         """
         Creates an R PNG device.
 
@@ -339,7 +339,7 @@ class R(Expect):
         from sage.server.support import EMBEDDED_MODE
         if EMBEDDED_MODE:
             self.setwd('"%s"'%os.path.abspath('.'))
-        return RFunction(self, 'png')(*args, **kwargs)
+        return RFunction(self, 'png')(*args, **kwds)
 
     def convert_r_list(self, l):
         """
@@ -718,7 +718,7 @@ class R(Expect):
         """
         r_console()
 
-    def function_call(self, function, args=None, kwargs=None):
+    def function_call(self, function, args=None, kwds=None):
         """
         Return the result of calling an R function, with given args and keyword args.
 
@@ -729,30 +729,12 @@ class R(Expect):
             sage: r.function_call('length', args=[ [1,2,3] ])
             [1] 3
         """
-        if args is None:
-            args = []
-        if kwargs is None:
-            kwargs = {}
+        args, kwds = self._convert_args_kwds(args, kwds)
+        self._check_valid_function_name(function)
+        return self.new("%s(%s)"%(function, ",".join([s.name() for s in args] +
+                                                     [self._sage_to_r_name(key)+'='+kwds[key].name() for key in kwds ] )))
 
-        if function == '':
-            raise ValueError, "function name must be nonempty"
-        elif function[:2] == "__":
-            raise AttributeError
-
-        if not isinstance(args, list):
-            args = [args]
-
-        for i in range(len(args)):
-            if not isinstance(args[i], RElement):
-                args[i] = self.new(args[i])
-
-        for key in kwargs:
-            if not isinstance(kwargs[key], RElement):
-                kwargs[key] = self.new(kwargs[key])
-
-        return self.new("%s(%s)"%(function, ",".join([s.name() for s in args] + [self._sage_to_r_name(key)+'='+kwargs[key].name() for key in kwargs ] )))
-
-    def call(self, function_name, *args, **kwargs):
+    def call(self, function_name, *args, **kwds):
         r"""
         This is an alias for \code{self.function_call}.
 
@@ -760,7 +742,7 @@ class R(Expect):
             sage: r.call('length', [1,2,3])
             [1] 3
         """
-        return self.function_call(function_name, args=args, kwargs=kwargs)
+        return self.function_call(function_name, args=args, kwds=kwds)
 
     def _an_element_impl(self):
         """
@@ -927,7 +909,7 @@ class R(Expect):
                 sage.misc.persist.save(v, COMMANDS_CACHE)
             return v
 
-    def plot(self, *args, **kwargs):
+    def plot(self, *args, **kwds):
         """
         The R plot function.  Type r.help('plot') for much more extensive
         documentatin about this function.  See the examples below for how
@@ -948,7 +930,7 @@ class R(Expect):
         """
         # We have to define this to override the plot function defined in the
         # superclass.
-        return RFunction(self, 'plot')(*args, **kwargs)
+        return RFunction(self, 'plot')(*args, **kwds)
 
     def _strip_prompt(self, code):
         """
@@ -966,7 +948,7 @@ class R(Expect):
         """
         return prompt_re.sub("", code)
 
-    def eval(self, *args, **kwargs):
+    def eval(self, *args, **kwds):
         """
         Evaluates a command inside the R interpreter and returns the output
         as a string.
@@ -987,7 +969,7 @@ class R(Expect):
             raise TypeError, "R eval takes at least one argument"
         else:
             code = args[0]
-            ret = Expect.eval(self, code, synchronize=True, *args,**kwargs)
+            ret = Expect.eval(self, code, synchronize=True, *args,**kwds)
             return ret
 
     def _r_to_sage_name(self, s):
@@ -1509,7 +1491,7 @@ class RElement(ExpectElement):
 
         return ''.join(ret)
 
-    def _r_list(self, *args, **kwargs):
+    def _r_list(self, *args, **kwds):
         """
         This is used internally in the code for converting R
         expressions to Sage objects.
@@ -1519,14 +1501,14 @@ class RElement(ExpectElement):
             sage: list(sorted(a._r_list(1,2,3,k=5).items()))
             [('#0', 1), ('#1', 2), ('#2', 3), ('k', 5)]
         """
-        ret = dict(kwargs)
+        ret = dict(kwds)
         i = 0
         for k in args:
             ret['#%s'%i] = k
             i += 1
         return ret
 
-    def _r_structure(self, __DATA__, **kwargs):
+    def _r_structure(self, __DATA__, **kwds):
         """
         This is used internally in the code for converting R
         expressions to Sage objects.
@@ -1541,12 +1523,12 @@ class RElement(ExpectElement):
             [2 4]
 
         """
-        if '_Dim' in kwargs: #we have a matrix
+        if '_Dim' in kwds: #we have a matrix
             # TODO what about more than 2 dimensions?
             #      additional checks!!
             try:
                 from sage.matrix.constructor import matrix
-                d = kwargs.get('_Dim')
+                d = kwds.get('_Dim')
                 # TODO: higher dimensions? happens often in statistics
                 if len(d) != 2:
                     raise TypeError
@@ -1557,7 +1539,7 @@ class RElement(ExpectElement):
             except TypeError:
                 pass
         d = dict(DATA=__DATA__)
-        d.update(kwargs)
+        d.update(kwds)
         return d
 
     def _sage_(self):
@@ -1733,7 +1715,7 @@ class RFunctionElement(FunctionElement):
         M = self._obj.parent()
         return M.source(self._name)
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, **kwds):
         """
         EXAMPLES:
             sage: a = r([1,2,3])
@@ -1741,7 +1723,7 @@ class RFunctionElement(FunctionElement):
             sage: length()
             [1] 3
         """
-        return self._obj.parent().function_call(self._name, args=[self._obj] + list(args), kwargs=kwargs)
+        return self._obj.parent().function_call(self._name, args=[self._obj] + list(args), kwds=kwds)
 
 class RFunction(ExpectFunction):
     def __init__(self, parent, name, r_name=None):
@@ -1805,14 +1787,14 @@ class RFunction(ExpectFunction):
         M = self._parent
         return M.source(self._name)
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, **kwds):
         """
         EXAMPLES:
             sage: length = r.length
             sage: length([1,2,3])
             [1] 3
         """
-        return self._parent.function_call(self._name, args=list(args), kwargs=kwargs)
+        return self._parent.function_call(self._name, args=list(args), kwds=kwds)
 
 def is_RElement(x):
     """
