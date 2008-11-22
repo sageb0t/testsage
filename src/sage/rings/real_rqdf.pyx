@@ -56,7 +56,8 @@ Note that the following numerical imprecision is caused by coercion:
 
 include '../ext/cdefs.pxi'
 include '../ext/interrupt.pxi'
-include 'mpfr.pxi'
+
+from sage.libs.mpfr cimport *
 
 from sage.rings.integer cimport Integer
 from sage.rings.rational cimport Rational
