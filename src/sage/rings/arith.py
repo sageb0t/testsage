@@ -174,7 +174,7 @@ def bernoulli(n, algorithm='default', num_threads=1):
         -691/2730
         sage: bernoulli(12, algorithm='gp')
         -691/2730
-        sage: bernoulli(12, algorithm='magma')           # optional
+        sage: bernoulli(12, algorithm='magma')           # optional - magma
         -691/2730
         sage: bernoulli(12, algorithm='pari')
         -691/2730
@@ -1698,10 +1698,10 @@ def factor(n, proof=None, int_=False, algorithm='pari', verbose=0, **kwds):
         sage: f.value()
         -20
 
-        sage: factor(-500, algorithm='kash')     # requires optional kash package
+        sage: factor(-500, algorithm='kash')      # optional - kash
         -1 * 2^2 * 5^3
 
-        sage: factor(-500, algorithm='magma')     # requires optional magma
+        sage: factor(-500, algorithm='magma')     # optional - magma
         -1 * 2^2 * 5^3
 
         sage: factor(0)

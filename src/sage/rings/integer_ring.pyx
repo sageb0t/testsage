@@ -837,7 +837,7 @@ cdef class IntegerRing_class(PrincipalIdealDomain):
     def _magma_init_(self):
         """
         EXAMPLES:
-            sage: magma(ZZ)           # optional
+            sage: magma(ZZ)           # optional - magma
             Integer Ring
         """
         return 'IntegerRing()'
@@ -845,7 +845,7 @@ cdef class IntegerRing_class(PrincipalIdealDomain):
     def _macaulay2_init_(self):
         """
         EXAMPLES:
-            sage: macaulay2(ZZ)       #optional
+            sage: macaulay2(ZZ)       #optional - macaulay2
             ZZ
         """
         return "ZZ"

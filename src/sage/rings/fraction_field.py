@@ -198,7 +198,7 @@ class FractionField_generic(field.Field):
         Return a string representation of self Magma can understand.
 
         EXAMPLES:
-            sage: QQ['x'].fraction_field()._magma_init_()
+            sage: QQ['x'].fraction_field()._magma_init_()            # optional - magma
             'FieldOfFractions(PolynomialRing(RationalField()))'
         """
         if self.__magma:
@@ -209,11 +209,11 @@ class FractionField_generic(field.Field):
     def _magma_(self, magma = None):
         """
         EXAMPLES:
-            sage: magma(QQ['x,y'].fraction_field()) #optional
+            sage: magma(QQ['x,y'].fraction_field())                  # optional - magma
             Multivariate rational function field of rank 2 over Rational Field
             Variables: x, y
 
-            sage: magma(ZZ['x'].fraction_field()) #optional
+            sage: magma(ZZ['x'].fraction_field())                    # optional - magma
             Univariate rational function field over Integer Ring
             Variables: x
         """
