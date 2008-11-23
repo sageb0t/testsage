@@ -77,7 +77,7 @@ def is_Functor(x):
     return isinstance(x, Functor)
 
 ###########################################
-# The natural functors in SAGE
+# The natural functors in Sage
 ###########################################
 
 class ForgetfulFunctor_generic(Functor):
