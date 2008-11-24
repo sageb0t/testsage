@@ -6832,6 +6832,8 @@ class Function_gamma(PrimitiveFunction):
             return Integer(x).gamma()
         if is_Element(x) and x.parent() is SR:
             return SymbolicComposition(self, x)
+        if isinstance(x, float):
+            return RR(x).gamma()
         return CC(x).gamma()
 
 gamma = Function_gamma()
