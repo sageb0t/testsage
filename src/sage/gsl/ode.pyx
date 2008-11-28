@@ -9,7 +9,6 @@ include '../ext/cdefs.pxi'
 include '../ext/interrupt.pxi'
 include 'gsl.pxi'
 
-import sage.plot.plot
 import sage.gsl.interpolation
 
 cdef class PyFunctionWrapper:
@@ -299,12 +298,13 @@ class ode_solver(object):
       l=eval('[ (x[0],x[1][i]) for x in solution]',{'solution':self.solution,'i':i})
       return sage.gsl.interpolation.spline(l)
 
-   def plot_solution(self,i=0,filename=None,interpolate=False):
+   def plot_solution(self, i=0, filename=None, interpolate=False):
+      from sage.plot.all import plot, point
       points=[]
       for x in self.solution:
-         points.append(sage.plot.plot.point((x[0],x[1][i])))
-      t=sage.plot.plot.plot(points)
-      if filename==None:
+         points.append(point((x[0],x[1][i])))
+      t = plot(points)
+      if filename is None:
          t.show()
       else:
          t.save(filename=filename)
