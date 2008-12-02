@@ -228,6 +228,10 @@ class suboptions(object):
             kwds[self.name + "options"] = suboptions
 
             return func(*args, **kwds)
+
+        from sage.misc.sageinspect import sage_getsource
+        wrapper._sage_src_ = lambda: sage_getsource(func)
+
         return wrapper
 
 class options(object):
@@ -333,6 +337,9 @@ class options(object):
         %s
         """%self.options
 
+        from sage.misc.sageinspect import sage_getsource
+        wrapper._sage_src_ = lambda: sage_getsource(func)
+
         return wrapper
 
 class rename_keyword(object):
@@ -374,4 +381,8 @@ class rename_keyword(object):
                     kwds[new_name] = kwds[old_name]
                     del kwds[old_name]
             return func(*args, **kwds)
+
+        from sage.misc.sageinspect import sage_getsource
+        wrapper._sage_src_ = lambda: sage_getsource(func)
+
         return wrapper
