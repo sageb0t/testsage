@@ -22,7 +22,7 @@ SID_COOKIE = None
 ############################################################
 
 import os, shutil, time
-
+from sage.version import version
 import bz2
 
 from twisted.web2 import server, http, resource, channel
@@ -32,7 +32,7 @@ import css, js, keyboards
 
 import notebook as _notebook
 
-import sage.server.notebook.template as template
+from sage.server.notebook.template import template
 
 HISTORY_MAX_OUTPUT = 92*5
 HISTORY_NCOLS = 90
@@ -106,7 +106,8 @@ def notebook_updates():
 # An error message
 ############################
 def message(msg, cont=None):
-    return template.error_message(msg=msg, cont=cont)
+    template_dict = {'msg': msg, 'cont': cont}
+    return template('error_message.html', **template_dict)
 
 ############################
 # Create a Sage worksheet from a latex2html'd file
@@ -895,7 +896,7 @@ class SettingsPage(resource.PostableResource):
         if template_dict['email']:
             template_dict['email_address'] = 'None' if not notebook.user(self.username)._User__email else notebook.user(self.username)._User__email
             template_dict['email_confirmed'] = 'Not confirmed' if not notebook.user(self.username).is_email_confirmed() else 'Confirmed'
-        return http.Response(stream=template.account_settings(**template_dict))
+        return http.Response(stream=template('account_settings.html', **template_dict))
 
 ########################################################
 # Set output type of a cell
@@ -1261,35 +1262,78 @@ class Worksheet(WorksheetResource, resource.Resource):
                     return static.File(h)
             return NotImplementedWorksheetOp(op, self.worksheet)
 
+def worksheets_by_group(user, group):
+    X = notebook.get_worksheets_with_viewer(user)
+    if group == "trash":
+        return ('Trash', [x for x in X if x.is_trashed(user)])
+    elif group == "active":
+        return ('Active Worksheets', [x for x in X if x.is_active(user)])
+    else: # typ must be archived or "all"
+        return ('Archived and Active', [x for x in X if not x.is_trashed(user)])
+
+def sort_worksheet_list(v, sort, reverse):
+    """
+    INPUT:
+        sort -- 'last_edited', 'owner', or 'name'
+        reverse -- if True, reverse the order of the sort.
+    """
+    f = None
+    if sort == 'last_edited':
+        def c(a, b):
+            return -cmp(a.last_edited(), b.last_edited())
+        f = c
+    elif sort == 'name':
+        def c(a,b):
+            return cmp((a.name().lower(), -a.last_edited()), (b.name().lower(), -b.last_edited()))
+        f = c
+    elif sort == 'owner':
+        def c(a,b):
+            return cmp((a.owner().lower(), -a.last_edited()), (b.owner().lower(), -b.last_edited()))
+        f = c
+    elif sort == "rating":
+        def c(a,b):
+            return -cmp((a.rating(), -a.last_edited()), (b.rating(), -b.last_edited()))
+        f = c
+    else:
+        raise ValueError, "invalid sort key '%s'"%sort
+    v.sort(cmp = f, reverse=reverse)
+
 def render_worksheet_list(args, pub, username):
-    if args.has_key('typ'):
-        typ = args['typ'][0]
+    template_dict = {'pub': pub,
+               'typ': args['typ'][0] if 'typ' in args else 'active',
+               'search': args['search'][0] if 'search' in args else None,
+               'sort': args['sort'][0] if 'sort' in args else 'last_edited',
+               'reverse': (args['reverse'][0] == 'True') if 'reverse' in args else False}
+    typ = template_dict['typ']
+    if not pub:
+        template_dict['group'], template_dict['worksheets'] = worksheets_by_group(username, template_dict['typ'])
     else:
-        typ = 'active'
-    if args.has_key('search'):
-        search = args['search'][0]
-    else:
-        search = None
-    if not args.has_key('sort'):
-        sort = 'last_edited'
-    else:
-        sort = args['sort'][0]
-    if args.has_key('reverse'):
-        reverse = (args['reverse'][0] == 'True')
-    else:
-        reverse = False
+        template_dict['group'] = ''
+        template_dict['worksheets'] = [x for x in notebook.all_worksheets().itervalues() if x.is_published() and not x.is_trashed(username)]
+    sort_worksheet_list(template_dict['worksheets'], template_dict['sort'], template_dict['reverse'])
+    template_dict['worksheet_filenames'] = [x.filename() for x in template_dict['worksheets']]
+    template_dict['username'] = username
+    template_dict['version'] = version
+    if pub and (not username or username == tuple([])):
+        template_dict['username'] = 'pub'
+
+    template_dict['any_worksheets'] = bool(template_dict['worksheets'])
+    #k += '<td class="owner_collab">%s</td>'%html_owner_collab_view(w, username, typ)
+    #k += '<td class="last_edited">%s</td>'%w.html_time_since_last_edited()
 
     if pub:
-        if username is None or username == tuple([]):
-            user = 'pub'
-        else:
-            user = username
-        s = notebook.html_worksheet_list_public(
-            user, sort=sort, reverse=reverse, search=search)
-    else:
-        s = notebook.html_worksheet_list_for_user(
-            username, typ=typ, sort=sort, reverse=reverse, search=search)
-    return s
+        template_dict['worksheet_heading'] = "Published Worksheets"
+    elif template_dict['typ'] == "trash":
+        template_dict['worksheet_heading'] = "Deleted Worksheets"
+        #W = [x for x in X if x.is_trashed(user)]
+    elif template_dict['typ'] == "active":
+        template_dict['worksheet_heading'] = "Active Worksheets"
+        #W = [x for x in X if x.is_active(user)]
+    else: # typ must be archived or "all"
+        template_dict['worksheet_heading'] = "Archived and Active Worksheets"
+        #W = [x for x in X if not x.is_trashed(user)]
+
+    return template('worksheet_listing.html', **template_dict)
 
 class WorksheetsByUser(resource.Resource):
     addSlash = True
@@ -1652,7 +1696,7 @@ server. Please <a href="/register">register</a> with the server.</p>
             user.set_email_confirmation(True)
         except KeyError:
             return http.Response(stream=message(invalid_confirm_key, '/register'))
-        success = """<h1>Hello, %s. Thank you for registering!</h1>""" % username
+        success = """<h1>Email address confirmed for user %s</h1>""" % username
         del waiting[key]
         return http.Response(stream=message(success))
 
@@ -1828,7 +1872,7 @@ class RegistrationPage(resource.PostableResource):
                     missing[i] = True
 
             if set(missing) == set([True]):
-                return http.Response(stream=template.registration(**template_dict))
+                return http.Response(stream=template('registration.html', **template_dict))
             elif set(missing) == set([False]):
                 for i, box in enumerate(input_boxes):
                     filled_in[box] = request.args[box][0]
@@ -1854,7 +1898,7 @@ class RegistrationPage(resource.PostableResource):
 
         if template_dict and set(template_dict) != set(['email']):
             errors_found()
-            return http.Response(stream=template.registration(**template_dict))
+            return http.Response(stream=template('registration.html', **template_dict))
         else:
             try:
                 e = filled_in['email'] if notebook.conf()['email'] else ''
@@ -1863,7 +1907,7 @@ class RegistrationPage(resource.PostableResource):
             except ValueError:
                 template_dict['username_taken'] = True
                 errors_found()
-                return http.Response(stream=template.registration(**template_dict))
+                return http.Response(stream=template('registration.html', **template_dict))
 
             if notebook.conf()['email']:
                 destaddr = filled_in['email']
@@ -1884,9 +1928,11 @@ class RegistrationPage(resource.PostableResource):
                 except ValueError:
                     pass
 
-            return http.Response(stream=template.login(accounts=notebook.get_accounts(),
-                                                            default_user=notebook.default_user(), welcome=filled_in['username'],
-                                                            recovery=notebook.conf()['email']))
+            template_dict = {'accounts': notebook.get_accounts(),
+                             'default_user': notebook.default_user(),
+                             'welcome': filled_in['username'],
+                             'recovery': notebook.conf()['email']}
+            return http.Response(stream=template('login.html', **template_dict))
 
 class ForgotPassPage(resource.Resource):
 
@@ -1932,7 +1978,7 @@ class ForgotPassPage(resource.Resource):
 
             return http.Response(stream=message("A new password has been sent to your e-mail address.", '/'))
         else:
-            s = template.account_recovery()
+            s = template('account_recovery.html')
         return http.Response(stream=s)
 
 class ListOfUsers(resource.Resource):
@@ -1943,7 +1989,7 @@ class ListOfUsers(resource.Resource):
             if user_type(self.username) != 'admin':
                 s = message('You must an admin to manage other users.')
             else:
-                s = template.user_management(users=notebook.valid_login_names())
+                s = template('user_management.html', {'users':notebook.valid_login_names()})
             return http.Response(stream = s)
 
 class InvalidPage(resource.Resource):
@@ -1982,7 +2028,10 @@ class Toplevel(resource.PostableResource):
         self.username = username if username else 'guest'
 
     def render(self, ctx):
-        return http.Response(stream = template.login(accounts = notebook.get_accounts(), default_user = notebook.default_user(), recovery=notebook.conf()['email']))
+        template_dict = {'accounts': notebook.get_accounts(),
+                         'default_user': notebook.default_user(),
+                         'recovery': notebook.conf()['email']}
+        return http.Response(stream=template('login.html', **template_dict))
 
     def userchildFactory(self, request, name):
         return InvalidPage(msg = "unauthorized request", username = self.username)
@@ -1994,7 +2043,10 @@ setattr(Toplevel, 'child_favicon.ico', static.File(image_path + '/favicon.ico'))
 
 class LoginResourceClass(resource.Resource):
     def render(self, ctx):
-        return http.Response(stream =  template.login(accounts=notebook.get_accounts(), default_user=notebook.default_user(), recovery=notebook.conf()['email']))
+        template_dict = {'accounts': notebook.get_accounts(),
+                         'default_user': notebook.default_user(),
+                         'recovery': notebook.conf()['email']}
+        return http.Response(stream=template('login.html', **template_dict))
 
     def childFactory(self, request, name):
         return LoginResource
@@ -2029,7 +2081,10 @@ class AnonymousToplevel(Toplevel):
     #child_login = LoginResource
 
     def render(self, ctx):
-        response = http.Response(stream =  template.login(accounts=notebook.get_accounts(), default_user=notebook.default_user(), recovery=notebook.conf()['email']))
+        template_dict = {'accounts': notebook.get_accounts(),
+                         'default_user': notebook.default_user(),
+                         'recovery': notebook.conf()['email']}
+        response = http.Response(stream=template('login.html', **template_dict))
         response.headers.setHeader("set-cookie", [http_headers.Cookie('cookie_test', 'cookie_test')])
         return response
 
@@ -2044,9 +2099,17 @@ class FailedToplevel(Toplevel):
         # worksheets and ratings, this gives no new information way.
         # If published pages were disabled, then this should be disabled too.
         if self.problem == 'username':
-            return http.Response(stream = template.login(accounts=notebook.get_accounts(), default_user='', username_error=True, recovery=notebook.conf()['email']))
+            template_dict = {'accounts': notebook.get_accounts(),
+                             'default_user': notebook.default_user(),
+                             'username_error': True,
+                             'recovery': notebook.conf()['email']}
+            return http.Response(stream=template('login.html', **template_dict))
         elif self.problem == 'password':
-            return http.Response(stream = template.login(accounts=notebook.get_accounts(), default_user=self.username, password_error=True, recovery=notebook.conf()['email']))
+            template_dict = {'accounts': notebook.get_accounts(),
+                             'default_user': self.username,
+                             'password_error': True,
+                             'recovery': notebook.conf()['email']}
+            return http.Response(stream=template('login.html', **template_dict))
         else:
             return http.Response(stream = message("Please enable cookies and try again."))
 
