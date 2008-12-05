@@ -36,6 +36,12 @@ def javascript():
     s = async_lib()
     s += notebook_lib()
     s += jmol_lib()
+    # TODO: use minify here, which is more standard (and usually safer
+    # and with gzip compression, smaller); But first inquire about the
+    # propriety of the "This software shall be used for Good, not
+    # Evil" clause in the license.  Does that prevent us from
+    # distributing it (i.e., it adds an extra condition to the
+    # software)?  See http://www.crockford.com/javascript/jsmin.py.txt
     s = JavaScriptCompressor().getPacked(s)
     _cache_javascript = s
     return s
@@ -62,111 +68,34 @@ function jmol_popup(url) {
 
 def async_lib():
     s = r"""
-///////////////////////////////////////////////////////////////////
-// An AJAX framework for connections back to the
-// Sage server (written by Tom Boothby and William Stein).
-///////////////////////////////////////////////////////////////////
-
-//globals
-
-var async_oblist = [null,null,null,null,null];
-var async_idstack= [0,1,2,3,4];
-
-function getAsyncObject(handler) {
-    var asyncObj;
-    try {
-        if (browser_ie) {
-            var s =browser_ie5?"Microsoft.XMLHTTP":"Msxml2.XMLHTTP";
-            asyncObj = new ActiveXObject(s);
-            asyncObj.onreadystatechange = handler;
-            return asyncObj;
-        } else {
-            asyncObj = new XMLHttpRequest();
-            asyncObj.onload  = handler;
-            asyncObj.onerror = handler;
-            return asyncObj;
-        }
-    } catch(e) {
-        no_async = true;
-        return null;
-    }
-}
-
 function generic_callback(status, response_text) {
     /* do nothing */
 }
 
-function asyncCallbackHandler(id) {
-    //this was a one-liner, but Opera doesn't like to eval
-    // "function() {bla}" -- it needs to be part of an assignment
-    //Also, some versions of firefox don't like to see "function()"
-    //you need a space between the parentheses.  WTF?
-    var f;
-    eval("f = function( ) { async_callback("+id+"); }");
-    return f;
-}
-
-function async_callback(id) {
-    var asyncObj = async_oblist[id][0];
-    var callback = async_oblist[id][1];
-    try {
-        if( (asyncObj.readyState==4 || asyncObj.readyState=="complete")
-              && asyncObj.status == 200 )
-            try {
-                callback('success', asyncObj.responseText);
-                async_release(id);  //don't release the id until we've tried to capture output
-            } catch(e) {
-                async_release(id);  //release immediately in case exception was in the callback
-                callback('success', "empty");
-            }
-    } catch(e) {
-        if(async_oblist[id] != null) //release immediately
-            async_release(id);
-        try {
-            callback("failure", e);
-        } catch(e) {
-            /* In some cases the failure report can't be done as above because
-               callback itself is not a function. */
-        }
-    }
-}
-
 function async_request(url, callback, postvars) {
-    var id = async_id();
-    var f = asyncCallbackHandler(id);
-    var asyncObj = getAsyncObject(f);
-    async_oblist[id] = [asyncObj,callback];
+    var settings = {url : url,
+		    async : true,
+		    cache : false,
+                    dataType: "text"};
 
-    if (postvars != null) {
-        asyncObj.open('POST',url,true);
-        asyncObj.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-        asyncObj.send(postvars);
+    if($.isFunction(callback)) {
+	settings['error'] = function (XMLHttpRequest, textStatus, errorThrown) {
+	    callback("failure", errorThrown);
+	};
+	settings['success'] = function (data, textStatus) {
+	    callback("success", data);
+	}
+    }
+
+    if(postvars != null) {
+	settings['type'] = "POST";
+	settings['data'] = postvars;
     } else {
-        asyncObj.open('GET',url,true);
-        asyncObj.setRequestHeader('Content-Type',  "text/html");
-        asyncObj.send(null);
+	settings['type'] = "GET";
     }
-}
 
-function async_id() {
-    if(async_idstack.length == 0) {
-        id = async_oblist.length;
-        async_oblist.push(null);
-    } else {
-        id = async_idstack.pop();
-    }
-    return id;
+    $.ajax(settings);
 }
-
-function async_release(id) {
-    async_oblist[id] = null;
-    async_idstack.push(id);
-    if(async_idstack.length == async_oblist.length && async_oblist.length > 10) {
-        async_oblist = [null,null,null,null,null];
-        async_idstack= [0,1,2,3,4];
-    }
-}
-
 """
     return s
 
@@ -353,6 +282,7 @@ function initialize_the_notebook() {
         });
     } catch(e) {}
 
+    //TODO: Maybe use jquery browser plugin (http://plugins.jquery.com/project/Browser)?
     // Determine the browser, OS and set global variables.
     try {
         var n=navigator;
@@ -433,7 +363,7 @@ function get_keyboard() {
         alert("Your browser / OS combination is not supported.  \nPlease use Firefox or Opera under linux, windows, or mac OSX, or Safari.")
     }
 
-    async_request('/javascript/keyboard/'+b+o, get_keyboard_callback, null);
+    async_request('/javascript/keyboard/'+b+o, get_keyboard_callback);
 }
 
 function get_keyboard_callback(status, response_text) {
@@ -531,7 +461,7 @@ function get_event(e) {
 
 function key_event(e) {
     /*
-    Normalizes the different possible keyboard even structures for different browsers.
+    Normalizes the different possible keyboard event structures for different browsers.
 
     INPUT:
         e -- a javascript event
@@ -811,35 +741,6 @@ function input_keyup(id, event) {
     } else if(!will_resize_soon) {
         will_resize_soon = true;
         setTimeout("cell_input_resize("+id+"); will_resize_soon=false;", keypress_resize_delay)
-    }
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// Top control bar toggle
-//////////////////////////////////////////////////////////////////////////////
-
-function toggle_top() {
-    /*
-    Called when one clicks to toggle the top control bar in the worksheet view.
-    */
-    toggle_displayed('topbar');
-}
-
-function toggle_displayed(id) {
-    /*
-    Toggle whether or not the DOM element with the given
-    id is displayed.
-
-    INPUT:
-        id -- a string DOM identifier
-    OUTPUT:
-        changes the given element's display style to/from none.
-    */
-    var el = get_element(id)
-    if ( el.style.display != 'none' ) {
-        el.style.display = 'none';
-    } else {
-        el.style.display = '';
     }
 }
 
@@ -1163,7 +1064,7 @@ function worksheet_list_button(action) {
     // Send the list of worksheet names and requested action back to
     // the server.
     async_request(action, worksheet_list_button_callback,
-                  'filenames='+filenames + '&sep='+SEP);
+                  {filenames: filenames, sep: SEP});
 }
 
 function worksheet_list_button_callback(status, response_text) {
@@ -1301,7 +1202,7 @@ function save_worksheet() {
     /*
     Save a snapshot of the current worksheet.
     */
-    async_request(worksheet_command('save_snapshot'), save_worksheet_callback, null);
+    async_request(worksheet_command('save_snapshot'), save_worksheet_callback);
 }
 
 function save_worksheet_callback(status, response_text) {
@@ -1332,7 +1233,7 @@ function save_worksheet_and_close() {
     worksheet and quitting the Sage process, then
     close the current window returning to the home screen.
     */
-    async_request(worksheet_command('save_and_quit'), close_callback, null);
+    async_request(worksheet_command('save_and_quit'), close_callback);
 }
 
 function worksheet_discard() {
@@ -1341,7 +1242,7 @@ function worksheet_discard() {
     running Sage process, then close the current window and
     replace it by the home screen .
     */
-    async_request(worksheet_command('discard_and_quit'), close_callback, null);
+    async_request(worksheet_command('discard_and_quit'), close_callback);
 }
 
 function rename_worksheet() {
@@ -1364,7 +1265,8 @@ function rename_worksheet() {
     worksheet_name = new_worksheet_name;
     original_title = worksheet_name + ' (Sage)';
     document.title = original_title;
-    async_request(worksheet_command('rename'), null, 'name='+escape0(new_worksheet_name));
+    async_request(worksheet_command('rename'), null,
+                  {name: new_worksheet_name});
 }
 
 function search_worksheets_enter_pressed(event, typ) {
@@ -1425,7 +1327,7 @@ function system_select(s) {
     INPUT:
         s -- a string
     */
-    async_request(worksheet_command('system/'+s), null, null);
+    async_request(worksheet_command('system/'+s));
 }
 
 function pretty_print_check(s) {
@@ -1434,7 +1336,7 @@ function pretty_print_check(s) {
     INPUT:
         s -- true or false; true if the pretty print selection is checked.
     */
-    async_request(worksheet_command('pretty_print/'+s), null, null);
+    async_request(worksheet_command('pretty_print/'+s));
 }
 
 function handle_data_menu(theform) {
@@ -1463,7 +1365,8 @@ function delete_worksheet(name) {
     INPUT:
         name -- string
     */
-    async_request('/send_to_trash', delete_worksheet_callback, 'filename='+escape0(name))
+    async_request('/send_to_trash', delete_worksheet_callback,
+                  {filename: name});
 }
 
 function delete_worksheet_callback(status, response_text) {
@@ -1509,7 +1412,7 @@ function link_datafile(target_worksheet_filename, filename) {
         filename -- string; the name of this file
     */
     open(worksheet_command("link_datafile?filename=" + escape0(filename) +
-         "&target="+escape0(target_worksheet_filename)));
+         "&target="+escape0(target_worksheet_filename)), process=false);
 }
 
 function list_rename_worksheet(filename, curname) {
@@ -1523,7 +1426,7 @@ function list_rename_worksheet(filename, curname) {
     */
     var new_name = prompt('Enter new worksheet name:', curname);
     async_request('/home/' + filename + '/' + 'rename',
-        refresh, 'name='+ escape0(new_name));
+        refresh, {name: new_name});
 }
 
 function list_edit_worksheet(filename) {
@@ -1548,7 +1451,7 @@ function list_copy_worksheet(filename) {
     INPUT:
         filename -- string; filename of the worsheet to share
     */
-    async_request('/home/' + filename + '/copy', refresh, null);
+    async_request('/home/' + filename + '/copy', refresh);
 }
 
 function list_share_worksheet(filename) {
@@ -1596,7 +1499,7 @@ function server_ping_while_alive() {
     Ping the server every server_ping_time miliseconds to announce
     that we are still viewing this page.
     */
-    async_request(worksheet_command('alive'), server_ping_while_alive_callback, null);
+    async_request(worksheet_command('alive'), server_ping_while_alive_callback);
     setTimeout("server_ping_while_alive();", server_ping_time);
 }
 
@@ -1695,7 +1598,8 @@ function send_cell_input(id) {
     // the cell with this new text has not been evaluated.
     cell_set_not_evaluated(id);
 
-    async_request(worksheet_command('eval'), generic_callback, "save_only=1&id="+id+"&input="+escape0(cell.value));
+    async_request(worksheet_command('eval'), null,
+                  {save_only: 1, id: id, input: cell.value});
 }
 
 function debug_focus() {
@@ -1840,7 +1744,8 @@ function cell_delete(id) {
         // In most cases this avoids potentially tons of confusion.
         async_request(worksheet_command('interrupt'));
     }
-    async_request(worksheet_command('delete_cell'), cell_delete_callback, 'id='+id)
+    async_request(worksheet_command('delete_cell'), cell_delete_callback,
+                  {id: id});
 }
 
 function cell_delete_callback(status, response_text) {
@@ -2405,11 +2310,9 @@ function evaluate_cell(id, newcell) {
 
     // Finally make the request back to the server to do the actual calculation.
     var cell_input = get_cell(id);
-    var I = cell_input.value;
-    var input = escape0(I);
     if (newcell) { newcell = 1; } else { newcell = 0; }
     async_request(worksheet_command('eval'), evaluate_cell_callback,
-            'newcell=' + newcell + '&id=' + id + '&input='+input);
+            {newcell: newcell, id: id, input: cell_input.value});
 }
 
 function evaluate_cell_introspection(id, before, after) {
@@ -2459,12 +2362,10 @@ function evaluate_cell_introspection(id, before, after) {
         focus_delay(id);
 
     update_introspection_text();
-    var before_cursor_e = escape0(before);
-    var after_cursor_e = escape0(after);
     active_cell_list = active_cell_list.concat([id]);
     cell_set_running(id);
     async_request(worksheet_command('introspect'), evaluate_cell_callback,
-          'id=' + id + '&before_cursor='+before_cursor_e + '&after_cursor='+after_cursor_e);
+          {id: id, before_cursor: before, after_cursor: after});
 }
 
 function evaluate_cell_callback(status, response_text) {
@@ -2557,7 +2458,7 @@ function cell_output_set_type(id, typ, do_async) {
 
     // Do async request back to the server
     if(do_async)
-        async_request(worksheet_command('set_cell_output_type'), generic_callback, 'id='+id+'&type=' + typ)
+        async_request(worksheet_command('set_cell_output_type'), null, {id: id, type: typ})
 }
 
 function cycle_cell_output_type(id) {
@@ -2667,7 +2568,7 @@ function check_for_cell_update() {
     var cell_id = active_cell_list[0];
     async_request(worksheet_command('cell_update'),
                     check_for_cell_update_callback,
-                    'id=' + cell_id);
+                    {id: cell_id});
 
     // spin the little title spinner in the title bar.
     try{
@@ -3258,8 +3159,7 @@ function insert_new_cell_after(id, input) {
         input -- text (default: "")
     */
     if(input == null) input = "";
-    async_request(worksheet_command('new_cell_after'), insert_new_cell_after_callback,
-                       'id='+id+'&input='+escape0(input));
+    async_request(worksheet_command('new_cell_after'), insert_new_cell_after_callback, {id: id, input: input});
 }
 
 function insert_new_cell_after_callback(status, response_text) {
@@ -3331,7 +3231,7 @@ function insert_new_cell_before(id, input) {
         input -- string
     */
     if(input == null) input = "";
-    async_request(worksheet_command('new_cell_before'), insert_new_cell_before_callback, 'id='+id+'&input='+escape0(input));
+    async_request(worksheet_command('new_cell_before'), insert_new_cell_before_callback, {id: id, input: input});
 }
 
 function insert_new_cell_before_callback(status, response_text) {
@@ -3621,7 +3521,7 @@ function interact(id, input) {
 
     // the __sage_interact__ string appears also in cell.py
     async_request(worksheet_command('eval'), evaluate_cell_callback,
-            'newcell=0' + '&id=' + id + '&input='+escape0('%__sage_interact__\n' + input));
+            {newcell: 0, id: id, input: '%__sage_interact__\n' + input});
 }
 
 ///////////////////////////////////////////////////////////////////
