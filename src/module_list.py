@@ -1071,7 +1071,8 @@ ext_modules = [
 
     Extension('sage.rings.polynomial.real_roots',
               sources = ['sage/rings/polynomial/real_roots.pyx'],
-              libraries=['mpfr', 'qd']),
+              libraries=['mpfr', 'qd'],
+              include_dirs = numpy_include_dirs),
 
     ################################
     ##
