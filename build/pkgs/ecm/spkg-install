@@ -16,6 +16,12 @@ else
    CFLAGS="$CFLAGS -fPIC"; export CFLAGS
 fi
 
+# remove old executable/headers/library
+echo "Removing old binary, headers and static library"
+rm -f "$SAGE_LOCAL"/bin/ecm
+rm -f "$SAGE_LCOAL"/lib/libecm.*
+rm -r "$SAGE_LOCAL"/include/ecm.h
+
 cd src
 
 ./configure --with-gmp=$SAGE_LOCAL  --prefix=$SAGE_LOCAL
