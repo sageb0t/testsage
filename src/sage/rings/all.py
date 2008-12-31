@@ -157,3 +157,5 @@ I = CC.gen()
 from residue_field import ResidueField
 
 from misc import composite_field
+
+import tests
