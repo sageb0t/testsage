@@ -112,7 +112,8 @@ cdef class Graphics3d(SageObject):
         return a_min, a_max
 
     def bounding_box(self):
-        raise NotImplementedError
+        # default
+        return ((0.0, 0.0, 0.0), (0.0, 0.0, 0.0))
 
     def transform(self, **kwds):
         return TransformGroup([self], **kwds)
@@ -271,7 +272,13 @@ end_scene""" % (
         render_params.output_archive.close()
 
     def jmol_repr(self, render_params):
-        raise NotImplementedError
+        return []
+
+    def tachyon_repr(self, render_params):
+        return []
+
+    def obj_repr(self, render_params):
+        return []
 
     def texture_set(self):
         return set()
