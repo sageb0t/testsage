@@ -618,4 +618,8 @@ class FiniteField_ext_pari(FiniteField_generic):
             sage: {GF(9,'b'): 1} # indirect doctest
             {Finite Field in b of size 3^2: 1}
         """
-        return hash((self.__order, self.variable_name(), self.__modulus))
+        try:
+            return self.__hash
+        except AttributeError:
+            self.__hash = hash((self.__order, self.variable_name(), self.__modulus))
+            return self.__hash
