@@ -1074,7 +1074,7 @@ class AbelianGroup_subgroup(AbelianGroup_class):
                             x *= g**((-1)*(x.list()[a]/g.list()[a]))
                         if x.list()[a] == 0:
                             break
-            return x == 1
+            return x == x.parent()(1)
 
     def ambient_group(self):
         """
