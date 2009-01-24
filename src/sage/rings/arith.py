@@ -1398,9 +1398,19 @@ def power_mod(a,n,m):
         285
         sage: power_mod(2,-1,7)
         4
+        sage: power_mod(11,1,7)
+        4
+        sage: R.<x> = ZZ[]
+        sage: power_mod(3*x, 10, 7)
+        4*x^10
+
+        sage: power_mod(11,1,0)
+        Traceback (most recent call last):
+        ...
+        ZeroDivisionError: modulus must be nonzero.
     """
     if m==0:
-        raise ZeroDivisionError, "Modulus must be nonzero."
+        raise ZeroDivisionError, "modulus must be nonzero."
     if m==1:
         return 0
     if n < 0:
@@ -1411,7 +1421,7 @@ def power_mod(a,n,m):
             raise ArithmeticError, "0^0 is undefined."
         return 1
 
-    apow = a
+    apow = a % m
     while n&1 == 0:
         apow = (apow*apow) % m
         n = n >> 1
