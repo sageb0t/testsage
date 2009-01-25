@@ -574,7 +574,7 @@ cdef class RealDoubleElement(FieldElement):
         """
         return complex(self._value,0)
 
-    def _integer_(self):
+    def _integer_(self, ZZ=None):
         """
         If this floating-point number is actually an integer, return
         that integer.  Otherwise, raise an exception.
