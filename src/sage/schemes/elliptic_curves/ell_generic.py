@@ -202,12 +202,12 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
         elif b[0]:
             s += "+ %s*x*y "%a[0]
         if a[2] == "-1":
-            s += " - y"
+            s += "- y "
         elif a[2] == '1':
-            s += "+ y"
+            s += "+ y "
         elif b[2]:
-            s += "+ %s*y"%a[2]
-        s += " = x^3 "
+            s += "+ %s*y "%a[2]
+        s += "= x^3 "
         if a[1] == "-1":
             s += "- x^2 "
         elif a[1] == '1':
@@ -221,9 +221,9 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
         elif b[3]:
             s += "+ %s*x "%a[3]
         if a[4] == '-1':
-            s += "-1 "
+            s += "- 1 "
         elif a[4] == '1':
-            s += "+1 "
+            s += "+ 1 "
         elif b[4]:
             s += "+ %s "%a[4]
         s = s.replace("+ -","- ")
@@ -238,9 +238,9 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
         EXAMPLES:
             sage: E=EllipticCurve(QQ,[1,1])
             sage: E._latex_()
-            'y^2  = x^3 + x +1 '
+            'y^2 = x^3 + x + 1 '
             sage: latex(E)
-            y^2  = x^3 + x +1
+            y^2 = x^3 + x + 1
         """
         b = self.ainvs()
         a = [z._latex_coeff_repr() for z in b]
@@ -252,12 +252,12 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
         elif b[0]:
             s += "+ %sxy "%a[0]
         if a[2] == '-1':
-            s += " - y"
+            s += "- y "
         elif a[2] == '1':
-            s += "+ y"
+            s += "+ y "
         elif b[2]:
-            s += "+ %sy"%a[2]
-        s += " = x^3 "
+            s += "+ %sy "%a[2]
+        s += "= x^3 "
         if a[1] == '-1':
             s += "- x^2 "
         elif a[1] == '1':
@@ -271,9 +271,9 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
         elif b[3]:
             s += "+ %sx "%a[3]
         if a[4] == '-1':
-            s += "-1 "
+            s += "- 1 "
         elif a[4] == '1':
-            s += "+1 "
+            s += "+ 1 "
         elif b[4]:
             s += "+ %s "%a[4]
         s = s.replace("+ -","- ")
@@ -482,7 +482,7 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
             sage: E([0,0])
             Traceback (most recent call last):
             ...
-            TypeError: coordinates [0, 0, 1] do not define a point on Elliptic Curve defined by y^2  = x^3 +1 over Finite Field of size 7
+            TypeError: coordinates [0, 0, 1] do not define a point on Elliptic Curve defined by y^2 = x^3 + 1 over Finite Field of size 7
 
         We create a point on an elliptic curve over a number field.
             sage: x = polygen(RationalField())
@@ -492,7 +492,7 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
             Elliptic Curve defined by y^2  = x^3 + a*x + a over Number Field in a with defining polynomial x^3 + x + 1
             sage: E = EllipticCurve([K(1),1])
             sage: E
-            Elliptic Curve defined by y^2  = x^3 + x +1 over Number Field in a with defining polynomial x^3 + x + 1
+            Elliptic Curve defined by y^2 = x^3 + x + 1 over Number Field in a with defining polynomial x^3 + x + 1
             sage: P = E([a,0,1])
             sage: P
             (a : 0 : 1)
@@ -849,7 +849,7 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
             [1, 2, 3, 4, 5]
             sage: E = EllipticCurve([0,1])
             sage: E
-            Elliptic Curve defined by y^2  = x^3 +1 over Rational Field
+            Elliptic Curve defined by y^2 = x^3 + 1 over Rational Field
             sage: E.a_invariants()
             [0, 0, 0, 0, 1]
             sage: E = EllipticCurve([GF(7)(3),5])
@@ -860,7 +860,7 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
             sage: E = EllipticCurve([1,0,0,0,1])
             sage: E.a_invariants()[0] = 100000000
             sage: E
-            Elliptic Curve defined by y^2 + x*y  = x^3 +1 over Rational Field
+            Elliptic Curve defined by y^2 + x*y = x^3 + 1 over Rational Field
         """
         return list(self.__ainvs)
 
@@ -1011,16 +1011,16 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
 
         EXAMPLES:
         sage: E=EllipticCurve(GF(5),[1,1]); E
-        Elliptic Curve defined by y^2  = x^3 + x +1 over Finite Field of size 5
+        Elliptic Curve defined by y^2 = x^3 + x + 1 over Finite Field of size 5
         sage: E1=E.base_extend(GF(125,'a')); E1
-        Elliptic Curve defined by y^2  = x^3 + x +1 over Finite Field in a of size 5^3
+        Elliptic Curve defined by y^2 = x^3 + x + 1 over Finite Field in a of size 5^3
         sage: F2=GF(5^2,'a'); a=F2.gen()
         sage: F4=GF(5^4,'b'); b=F4.gen()
         sage: h=F2.hom([a.charpoly().roots(ring=F4,multiplicities=False)[0]],F4)
         sage: E=EllipticCurve(F2,[1,a]); E
-        Elliptic Curve defined by y^2  = x^3 + x + a over Finite Field in a of size 5^2
+        Elliptic Curve defined by y^2 = x^3 + x + a over Finite Field in a of size 5^2
         sage: E.base_extend(h)
-        Elliptic Curve defined by y^2  = x^3 + x + (4*b^3+4*b^2+4*b+3) over Finite Field in b of size 5^4
+        Elliptic Curve defined by y^2 = x^3 + x + (4*b^3+4*b^2+4*b+3) over Finite Field in b of size 5^4
         """
         return constructor.EllipticCurve([R(a) for a in self.a_invariants()])
 
@@ -1290,9 +1290,9 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
 
         EXAMPLES:
         sage: E=EllipticCurve(GF(13)(0)); E
-        Elliptic Curve defined by y^2  = x^3 +1 over Finite Field of size 13
+        Elliptic Curve defined by y^2 = x^3 + 1 over Finite Field of size 13
         sage: E1=E.sextic_twist(2); E1
-        Elliptic Curve defined by y^2  = x^3 + 11 over Finite Field of size 13
+        Elliptic Curve defined by y^2 = x^3 + 11 over Finite Field of size 13
         sage: E.is_isomorphic(E1)
         False
         sage: E.is_isomorphic(E1,GF(13^2,'a'))
@@ -2299,17 +2299,17 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
         EXAMPLES:
         sage: E = EllipticCurve(QQ(0)) # a curve with j=0 over QQ
         sage: E.automorphisms();
-        [Generic endomorphism of Abelian group of points on Elliptic Curve defined by y^2  = x^3 +1 over Rational Field
-        Via:  (u,r,s,t) = (-1, 0, 0, 0), Generic endomorphism of Abelian group of points on Elliptic Curve defined by y^2  = x^3 +1 over Rational Field
+        [Generic endomorphism of Abelian group of points on Elliptic Curve defined by y^2 = x^3 + 1 over Rational Field
+        Via:  (u,r,s,t) = (-1, 0, 0, 0), Generic endomorphism of Abelian group of points on Elliptic Curve defined by y^2 = x^3 + 1 over Rational Field
         Via:  (u,r,s,t) = (1, 0, 0, 0)]
 
         We can also find automorphisms defined over extension fields:
         sage: K.<a> = NumberField(x^2+3) # adjoin roots of unity
         sage: E.automorphisms(K)
-        [Generic endomorphism of Abelian group of points on Elliptic Curve defined by y^2  = x^3 +1 over Number Field in a with defining polynomial x^2 + 3
+        [Generic endomorphism of Abelian group of points on Elliptic Curve defined by y^2 = x^3 + 1 over Number Field in a with defining polynomial x^2 + 3
         Via:  (u,r,s,t) = (1, 0, 0, 0),
         ...
-        Generic endomorphism of Abelian group of points on Elliptic Curve defined by y^2  = x^3 +1 over Number Field in a with defining polynomial x^2 + 3
+        Generic endomorphism of Abelian group of points on Elliptic Curve defined by y^2 = x^3 + 1 over Number Field in a with defining polynomial x^2 + 3
         Via:  (u,r,s,t) = (-1/2*a - 1/2, 0, 0, 0)]
 
         sage: [ len(EllipticCurve(GF(q,'a')(0)).automorphisms()) for q in [2,4,3,9,5,25,7,49]]
@@ -2331,11 +2331,11 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
         sage: F = EllipticCurve('36a1') # should be the same one
         sage: E.isomorphisms(F);
         [Generic morphism:
-        From: Abelian group of points on Elliptic Curve defined by y^2  = x^3 +1 over Rational Field
-        To:   Abelian group of points on Elliptic Curve defined by y^2  = x^3 +1 over Rational Field
+        From: Abelian group of points on Elliptic Curve defined by y^2 = x^3 + 1 over Rational Field
+        To:   Abelian group of points on Elliptic Curve defined by y^2 = x^3 + 1 over Rational Field
         Via:  (u,r,s,t) = (-1, 0, 0, 0), Generic morphism:
-        From: Abelian group of points on Elliptic Curve defined by y^2  = x^3 +1 over Rational Field
-        To:   Abelian group of points on Elliptic Curve defined by y^2  = x^3 +1 over Rational Field
+        From: Abelian group of points on Elliptic Curve defined by y^2 = x^3 + 1 over Rational Field
+        To:   Abelian group of points on Elliptic Curve defined by y^2 = x^3 + 1 over Rational Field
         Via:  (u,r,s,t) = (1, 0, 0, 0)]
 
         We can also find istomorphisms defined over extension fields:
@@ -2345,11 +2345,11 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
         []
         sage: E.isomorphisms(F,GF(49,'a'))
         [Generic morphism:
-        From: Abelian group of points on Elliptic Curve defined by y^2  = x^3 + x +1 over Finite Field in a of size 7^2
-        To:   Abelian group of points on Elliptic Curve defined by y^2  = x^3 + x + 6 over Finite Field in a of size 7^2
+        From: Abelian group of points on Elliptic Curve defined by y^2 = x^3 + x + 1 over Finite Field in a of size 7^2
+        To:   Abelian group of points on Elliptic Curve defined by y^2 = x^3 + x + 6 over Finite Field in a of size 7^2
         Via:  (u,r,s,t) = (a + 3, 0, 0, 0), Generic morphism:
-        From: Abelian group of points on Elliptic Curve defined by y^2  = x^3 + x +1 over Finite Field in a of size 7^2
-        To:   Abelian group of points on Elliptic Curve defined by y^2  = x^3 + x + 6 over Finite Field in a of size 7^2
+        From: Abelian group of points on Elliptic Curve defined by y^2 = x^3 + x + 1 over Finite Field in a of size 7^2
+        To:   Abelian group of points on Elliptic Curve defined by y^2 = x^3 + x + 6 over Finite Field in a of size 7^2
         Via:  (u,r,s,t) = (6*a + 4, 0, 0, 0)]
         """
         if field==None:
@@ -2447,20 +2447,20 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
 
             sage: E = EllipticCurve(GF(3),[1,2,3,4,5])
             sage: E.short_weierstrass_model(complete_cube=False)
-            Elliptic Curve defined by y^2  = x^3 + x + 2 over Finite Field of size 3
+            Elliptic Curve defined by y^2 = x^3 + x + 2 over Finite Field of size 3
 
             This used to be different see trac \#3973
             sage: E.short_weierstrass_model()
-            Elliptic Curve defined by y^2  = x^3 + x + 2 over Finite Field of size 3
+            Elliptic Curve defined by y^2 = x^3 + x + 2 over Finite Field of size 3
 
             More tests in characteristic 3
             sage: E = EllipticCurve(GF(3),[0,2,1,2,1])
             sage: E.short_weierstrass_model()
             Traceback (most recent call last):
             ...
-            ValueError: short_weierstrass_model(): no short model for Elliptic Curve defined by y^2 + y = x^3 + 2*x^2 + 2*x +1 over Finite Field of size 3 (characteristic is 3)
+            ValueError: short_weierstrass_model(): no short model for Elliptic Curve defined by y^2 + y = x^3 + 2*x^2 + 2*x + 1 over Finite Field of size 3 (characteristic is 3)
             sage: E.short_weierstrass_model(complete_cube=False)
-            Elliptic Curve defined by y^2  = x^3 + 2*x^2 + 2*x + 2 over Finite Field of size 3
+            Elliptic Curve defined by y^2 = x^3 + 2*x^2 + 2*x + 2 over Finite Field of size 3
             sage: E.short_weierstrass_model(complete_cube=False).is_isomorphic(E)
             True
 
