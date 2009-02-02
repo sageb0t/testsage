@@ -68,6 +68,9 @@ def symbolic_expression(x):
         sage: a.parent()
         Symbolic Ring
     """
+    from sage.symbolic.expression import Expression
+    if isinstance(x, Expression):
+        return x
     return SR(x)
 
 import desolvers
