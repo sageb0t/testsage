@@ -42,7 +42,7 @@ build()
             ABI=64
         else
             ABI=32
-            if [ `uname -m` = i386 ]; then
+            if [ `uname -m` = "i386" ]; then
                 remove_pic_osx_32_bit
             fi
         fi;;
@@ -82,3 +82,8 @@ else
     echo "Failed to build shared GMP library."
     exit 1
 fi
+
+#uncomment the line below to avoid running the test suite.
+#this should be done in all final releases
+#exit 0
+cd ..; ./spkg-check
