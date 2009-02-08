@@ -45,7 +45,7 @@ class baseWI:
         (1, 0, 0, 0)
         sage: baseWI(2,3,4,5)
         (2, 3, 4, 5)
-        sage: w=var('u r s t'); baseWI(u,r,s,t)
+        sage: R.<u,r,s,t>=QQ[]; baseWI(u,r,s,t)
         (u, r, s, t)
         """
         if u==0:
@@ -121,10 +121,9 @@ class baseWI:
         (1, 0, 0, 0)
         sage: ~w*w
         (1, 0, 0, 0)
-        sage: var('u r s t'); w=baseWI(u,r,s,t)
-        (u, r, s, t)
+        sage: R.<u,r,s,t>=QQ[]; w=baseWI(u,r,s,t)
         sage: ~w
-        (1/u, -r/u^2, -s/u, (r*s - t)/u^3)
+        (1/u, (-r)/u^2, (-s)/u, (r*s - t)/u^3)
         sage: ~w*w
         (1, 0, 0, 0)
         """
