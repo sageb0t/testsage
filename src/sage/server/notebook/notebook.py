@@ -899,6 +899,7 @@ class Notebook(SageObject):
         t = escape(t)
         s = '<head>\n'
         s += '<title>Command History</title>\n'
+        s += '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">'
         s += '</head>\n'
         s += '<body>\n'
         s += '<pre>' + t + '</pre>\n'
@@ -1148,6 +1149,7 @@ class Notebook(SageObject):
         t = escape(t)
         s = '<head>\n'
         s += '<title>Sage Worksheet: %s</title>\n'%W.name()
+        s += '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">'
         s += '</head>\n'
         s += '<body>\n'
         s += '<h1><a href=".">Sage Worksheet: %s</a></h1>\n'%W.name()
@@ -1282,6 +1284,7 @@ class Notebook(SageObject):
         W = self.get_worksheet_with_filename(filename)
         s = '<head>\n'
         s += '<title>Sage Worksheet: %s</title>\n'%W.name()
+        s += '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">'
         s += '<script type="text/javascript" src="/javascript_local/jquery/jquery.js"></script>'
         s += '<script type="text/javascript" src="/javascript/main.js"></script>\n'
         if do_print:
@@ -1676,6 +1679,7 @@ class Notebook(SageObject):
         else:
             head = '\n<title>Sage Notebook | Welcome</title>'
 
+        head += '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">'
         # Load the Sage javascript libray.
         head += '\n<script type="text/javascript" src="/javascript_local/jquery/jquery.js"></script>'
         head += '\n<script type="text/javascript" src="/javascript/main.js"></script>\n'
