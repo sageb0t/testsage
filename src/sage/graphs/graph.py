@@ -6355,6 +6355,8 @@ class GenericGraph(SageObject):
             partition = [self.vertices()]
         if edge_labels:
             G, partition = graph_isom_equivalent_non_edge_labeled_graph(self, partition)
+            if hasattr(G._backend, '_cg'):
+                G = G._backend._cg
             A = search_tree(G, partition, lab=False, dict_rep=True, dig=dig, verbosity=verbosity, order=order)
             if order:
                 a,b,c = A
@@ -6386,6 +6388,8 @@ class GenericGraph(SageObject):
             b = translation_d
         elif self.multiple_edges():
             G, partition = graph_isom_equivalent_non_multi_graph(self, partition)
+            if hasattr(G._backend, '_cg'):
+                G = G._backend._cg
             A = search_tree(G, partition, lab=False, dict_rep=True, dig=dig, verbosity=verbosity, order=order)
             if order:
                 a,b,c = A
@@ -6417,13 +6421,21 @@ class GenericGraph(SageObject):
             b = translation_d
         else:
             if translation:
-                A = search_tree(self, partition, dict_rep=True, lab=False, dig=dig, verbosity=verbosity, order=order)
+                if hasattr(self._backend, '_cg'):
+                    G = self._backend._cg
+                else:
+                    G = self
+                A = search_tree(G, partition, dict_rep=True, lab=False, dig=dig, verbosity=verbosity, order=order)
                 if order:
                     a,b,c = A
                 else:
                     a,b = A
             else:
-                a = search_tree(self, partition, dict_rep=False, lab=False, dig=dig, verbosity=verbosity, order=order)
+                if hasattr(self._backend, '_cg'):
+                    G = self._backend._cg
+                else:
+                    G = self
+                a = search_tree(G, partition, dict_rep=False, lab=False, dig=dig, verbosity=verbosity, order=order)
                 if order:
                     a,c = a
         output = []
@@ -6593,6 +6605,12 @@ class GenericGraph(SageObject):
         else:
             G = self; partition = [self.vertices()]
             G2 = other; partition2 = [other.vertices()]
+
+        if hasattr(G._backend, '_cg'):
+            G = G._backend._cg
+        if hasattr(G2._backend, '_cg'):
+            G2 = G2._backend._cg
+
         from sage.misc.flatten import flatten
         isom = isomorphic(G, G2, partition, flatten(partition2, max_level=1), (self._directed or self.loops()), 1)
         if not isom and certify:
@@ -6665,6 +6683,8 @@ class GenericGraph(SageObject):
             partition = [self.vertices()]
         if edge_labels:
             G, partition = graph_isom_equivalent_non_edge_labeled_graph(self, partition)
+            if hasattr(G._backend, '_cg'):
+                G = G._backend._cg
             a,b,c = search_tree(G, partition, certify=True, dig=dig, verbosity=verbosity)
             # c is a permutation to the canonical label of G, which depends only on isomorphism class of self.
             H = self.copy()
@@ -6678,6 +6698,8 @@ class GenericGraph(SageObject):
                 return H
         if self.multiple_edges():
             G, partition = graph_isom_equivalent_non_multi_graph(self, partition)
+            if hasattr(G._backend, '_cg'):
+                G = G._backend._cg
             a,b,c = search_tree(G, partition, certify=True, dig=dig, verbosity=verbosity)
             # c is a permutation to the canonical label of G, which depends only on isomorphism class of self.
             H = self.copy()
@@ -6690,11 +6712,15 @@ class GenericGraph(SageObject):
             else:
                 return H
         else:
+            if hasattr(self._backend, '_cg'):
+                G = self._backend._cg
+            else:
+                G = self
             if certify:
-                a,b,c = search_tree(self, partition, certify=True, dig=dig, verbosity=verbosity)
+                a,b,c = search_tree(G, partition, certify=True, dig=dig, verbosity=verbosity)
                 return b,c
             else:
-                a,b = search_tree(self, partition, dig=dig, verbosity=verbosity)
+                a,b = search_tree(G, partition, dig=dig, verbosity=verbosity)
                 return b
 
 class Graph(GenericGraph):
