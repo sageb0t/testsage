@@ -1082,7 +1082,8 @@ def build_ft2font(ext_modules, packages):
     deps.extend(glob.glob('CXX/*.cxx'))
     deps.extend(glob.glob('CXX/*.c'))
 
-    module = Extension('matplotlib.ft2font', deps)
+    module = Extension('matplotlib.ft2font', deps,
+                       define_macros=[('PY_ARRAYAUNIQUE_SYMBOL', 'MPL_ARRAY_API')])
     add_ft2font_flags(module)
     ext_modules.append(module)
     BUILT_FT2FONT = True
@@ -1103,12 +1104,13 @@ def build_ttconv(ext_modules, packages):
 def build_gtkagg(ext_modules, packages):
     global BUILT_GTKAGG
     if BUILT_GTKAGG: return # only build it if you you haven't already
-    deps = ['src/_gtkagg.cpp', 'src/mplutils.cpp']#, 'src/_transforms.cpp']
+    deps = ['src/agg_py_transforms.cpp', 'src/_gtkagg.cpp', 'src/mplutils.cpp']
     deps.extend(glob.glob('CXX/*.cxx'))
     deps.extend(glob.glob('CXX/*.c'))
 
     module = Extension('matplotlib.backends._gtkagg',
                        deps,
+                       define_macros=[('PY_ARRAY_UNIQUE_SYMBOL', 'MPL_ARRAY_API')]
                        )
 
     # add agg flags before pygtk because agg only supports freetype1
@@ -1125,12 +1127,13 @@ def build_gtkagg(ext_modules, packages):
 def build_tkagg(ext_modules, packages):
     global BUILT_TKAGG
     if BUILT_TKAGG: return # only build it if you you haven't already
-    deps = ['src/_tkagg.cpp']
+    deps = ['src/agg_py_transforms.cpp', 'src/_tkagg.cpp']
     deps.extend(glob.glob('CXX/*.cxx'))
     deps.extend(glob.glob('CXX/*.c'))
 
     module = Extension('matplotlib.backends._tkagg',
                        deps,
+                       define_macros=[('PY_ARRAY_UNIQUE_SYMBOL', 'MPL_ARRAY_API')]
                        )
 
     add_tk_flags(module) # do this first
@@ -1165,6 +1168,7 @@ def build_macosx(ext_modules, packages):
     module = Extension('matplotlib.backends._macosx',
                        ['src/_macosx.m'],
                        extra_link_args = ['-framework','Cocoa'],
+                       define_macros=[('PY_ARRAY_UNIQUE_SYMBOL', 'MPL_ARRAY_API')]
                       )
     add_numpy_flags(module)
     ext_modules.append(module)
@@ -1182,6 +1186,7 @@ def build_png(ext_modules, packages):
         'matplotlib._png',
         deps,
         include_dirs=numpy_inc_dirs,
+        define_macros=[('PY_ARRAY_UNIQUE_SYMBOL', 'MPL_ARRAY_API')]
         )
 
     add_png_flags(module)
@@ -1203,20 +1208,19 @@ def build_agg(ext_modules, packages):
            )
 
     deps = ['%s/src/%s'%(AGG_VERSION, name) for name in agg]
-    deps.extend(('src/_image.cpp', 'src/ft2font.cpp', 'src/mplutils.cpp'))
+    deps.extend(['src/mplutils.cpp', 'src/agg_py_transforms.cpp'])
     deps.extend(glob.glob('CXX/*.cxx'))
     deps.extend(glob.glob('CXX/*.c'))
-
     temp_copy('src/_backend_agg.cpp', 'src/backend_agg.cpp')
     deps.append('src/backend_agg.cpp')
     module = Extension(
         'matplotlib.backends._backend_agg',
         deps,
         include_dirs=numpy_inc_dirs,
+        define_macros=[('PY_ARRAY_UNIQUE_SYMBOL', 'MPL_ARRAY_API')]
         )
 
     add_numpy_flags(module)
-
     add_agg_flags(module)
     add_ft2font_flags(module)
     ext_modules.append(module)
@@ -1239,11 +1243,14 @@ def build_path(ext_modules, packages):
     deps.extend(glob.glob('CXX/*.c'))
 
     temp_copy('src/_path.cpp', 'src/path.cpp')
-    deps.extend(['src/path.cpp'])
+    deps.extend(['src/agg_py_transforms.cpp',
+                 'src/path_cleanup.cpp',
+                 'src/path.cpp'])
     module = Extension(
         'matplotlib._path',
         deps,
         include_dirs=numpy_inc_dirs,
+        define_macros=[('PY_ARRAY_UNIQUE_SYMBOL', 'MPL_ARRAY_API')]
         )
 
     add_numpy_flags(module)
@@ -1272,6 +1279,7 @@ def build_image(ext_modules, packages):
         'matplotlib._image',
         deps,
         include_dirs=numpy_inc_dirs,
+        define_macros=[('PY_ARRAY_UNIQUE_SYMBOL', 'MPL_ARRAY_API')]
         )
 
     add_numpy_flags(module)
@@ -1289,7 +1297,9 @@ def build_delaunay(ext_modules, packages):
                  "delaunay_utils.cpp", "natneighbors.cpp"]
     sourcefiles = [os.path.join('lib/matplotlib/delaunay',s) for s in sourcefiles]
     delaunay = Extension('matplotlib._delaunay',sourcefiles,
-                         include_dirs=numpy_inc_dirs)
+                         include_dirs=numpy_inc_dirs,
+                         define_macros=[('PY_ARRAY_UNIQUE_SYMBOL', 'MPL_ARRAY_API')]
+                         )
     add_numpy_flags(delaunay)
     add_base_flags(delaunay)
     ext_modules.append(delaunay)
@@ -1304,6 +1314,7 @@ def build_contour(ext_modules, packages):
         'matplotlib._cntr',
         [ 'src/cntr.c'],
         include_dirs=numpy_inc_dirs,
+        define_macros=[('PY_ARRAY_UNIQUE_SYMBOL', 'MPL_ARRAY_API')]
         )
     add_numpy_flags(module)
     add_base_flags(module)
@@ -1318,6 +1329,7 @@ def build_nxutils(ext_modules, packages):
         'matplotlib.nxutils',
         [ 'src/nxutils.c'],
         include_dirs=numpy_inc_dirs,
+        define_macros=[('PY_ARRAY_UNIQUE_SYMBOL', 'MPL_ARRAY_API')]
         )
     add_numpy_flags(module)
     add_base_flags(module)
@@ -1335,6 +1347,7 @@ def build_gdk(ext_modules, packages):
         ['src/backend_gdk.c'],
         libraries = [],
         include_dirs=numpy_inc_dirs,
+        define_macros=[('PY_ARRAY_UNIQUE_SYMBOL', 'MPL_ARRAY_API')]
         )
 
     add_numpy_flags(module)
