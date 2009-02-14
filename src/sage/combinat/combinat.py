@@ -197,7 +197,6 @@ from sage.libs.all import pari
 from sage.misc.prandom import randint
 from sage.misc.misc import prod
 from sage.structure.sage_object import SageObject
-import sage
 ######### combinatorial sequences
 
 def hadamard_matrix(n):
@@ -911,7 +910,7 @@ class CombinatorialClass(SageObject):
             sage: C = CombinatorialClass()
             sage: C.first = lambda: 0
             sage: C.next  = lambda c: c+1
-            sage: it = C.__iter__() # indirect doctest
+            sage: it = iter(C) # indirect doctest
             sage: [it.next() for _ in range(4)]
             [0, 1, 2, 3]
         """
@@ -945,7 +944,7 @@ class CombinatorialClass(SageObject):
             ...           return c-1
             ...
             sage: C.previous  = prev
-            sage: it = C.__iter__() # indirect doctest
+            sage: it = iter(C) # indirect doctest
             sage: [it.next() for _ in range(4)]
             [1, 2, 3, 4]
         """
@@ -971,7 +970,7 @@ class CombinatorialClass(SageObject):
             sage: C = CombinatorialClass()
             sage: l = [1,2,3]
             sage: C.unrank = lambda c: l[c]
-            sage: list(C.__iter__()) # indirect doctest
+            sage: list(C) # indirect doctest
             [1, 2, 3]
         """
         r = 0
@@ -996,7 +995,7 @@ class CombinatorialClass(SageObject):
         EXAMPLES:
             sage: C = CombinatorialClass()
             sage: C.list = lambda: [1, 2, 3]
-            sage: list(C.__iter__()) # indirect doctest
+            sage: list(C) # indirect doctest
             [1, 2, 3]
         """
         for x in self.list():
@@ -1012,7 +1011,7 @@ class CombinatorialClass(SageObject):
             sage: [i for i in p5]
             [[5], [4, 1], [3, 2], [3, 1, 1], [2, 2, 1], [2, 1, 1, 1], [1, 1, 1, 1, 1]]
             sage: C = CombinatorialClass()
-            sage: C.__iter__()
+            sage: iter(C)
             Traceback (most recent call last):
             ...
             NotImplementedError: iterator called but not implemented
@@ -1020,7 +1019,8 @@ class CombinatorialClass(SageObject):
 
         if hasattr(self, 'iterator'):
 #            Prepare the deprecated bomb to be activated :-)
-#            sage.misc.misc.deprecation("The usage of iterator for combinatorial classes is deprecated. Please use the class itself")
+#            from sage.misc.misc import deprecation
+#            deprecation("The usage of iterator for combinatorial classes is deprecated. Please use the class itself")
             return self.iterator()
         #Check to see if .first() and .next() are overridden in the subclass
         if ( self.first != self.__first_from_iterator and
