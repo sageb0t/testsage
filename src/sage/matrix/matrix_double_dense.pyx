@@ -425,6 +425,13 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
             sage: A.determinant() < 10e-12
             True
 
+        TESTS:
+            sage: ~Matrix(RDF, 0,0)
+            []
+            sage: ~Matrix(RDF, 0,3)
+            Traceback (most recent call last):
+            ...
+            ArithmeticError: self must be a square matrix
         """
 # see trac ticket 4502 --- there is an issue with the "#random" pragma that needs to be fixed
 #                          as for the mathematical side, scipy v0.7 is expected to fix the invertibility failures
@@ -444,9 +451,11 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
 #            sage: ~A                       # random - on some computers, this will be invertible due to numerical error.
 #            Traceback (most recent call last):
 #            ...
-#            LinAlgError: singular matrix
+#            ZeroDivisionError: singular matrix
 #
-        if self._nrows == 0 or self._ncols == 0:
+        if self._nrows != self._ncols:
+            raise ArithmeticError, "self must be a square matrix"
+        if self._nrows == 0 and self._ncols == 0:
             return self.copy()
 
         # Maybe we should cache the (P)LU decomposition and use scipy.lu_solve?
@@ -456,8 +465,11 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
         if scipy is None:
             import scipy
         import scipy.linalg
-
-        M._matrix_numpy = scipy.linalg.inv(self._matrix_numpy)
+        from numpy.linalg import LinAlgError
+        try: ##  Standard error reporting for Sage.
+            M._matrix_numpy = scipy.linalg.inv(self._matrix_numpy)
+        except LinAlgError:
+            raise ZeroDivisionError, "singular matrix"
         return M
 
     # def __copy__(self):
@@ -621,7 +633,7 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
             []
         """
         if not self.is_square():
-            raise ValueError, "self must be square"
+            raise ArithmeticError, "self must be a square matrix"
         if self._nrows == 0:
             return []
         global scipy
@@ -654,7 +666,7 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
             True
         """
         if not self.is_square():
-            raise ValueError, "self must be square"
+            raise ArithmeticError, "self must be a square matrix"
         if self._nrows == 0:
             return [], self.copy()
         global scipy
@@ -691,7 +703,7 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
             True
         """
         if not self.is_square():
-            raise ValueError, "self must be square"
+            raise ArithmeticError, "self must be a square matrix"
         if self._nrows == 0:
             return [], self.copy()
         global scipy
@@ -805,12 +817,12 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
             sage: m = matrix(RDF, 2, range(6)); m.det()
             Traceback (most recent call last):
             ...
-            ValueError: self must be square
+            ArithmeticError: self must be a square matrix
         """
+        if not self.is_square():
+            raise ArithmeticError, "self must be a square matrix"
         if self._nrows == 0 or self._ncols == 0:
             return self._sage_dtype(1)
-        if not self.is_square():
-            raise ValueError, "self must be square"
         global scipy
         if scipy is None:
             import scipy
@@ -854,7 +866,7 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
             return sage.rings.real_double.RDF(0)
 
         if not self.is_square():
-            raise ValueError, "self must be square"
+            raise ArithmeticError, "self must be a square matrix"
 
         if(self.fetch('LU_valid') !=True):
             self._c_compute_LU()
@@ -1102,7 +1114,7 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
             [ 1.0   341.0  4681.0 22621.0 69905.0]
         """
         if not self.is_square():
-            raise ValueError, "self must be square"
+            raise ArithmeticError, "self must be a square matrix"
         if self._nrows == 0:   # special case
             return self.copy()
 

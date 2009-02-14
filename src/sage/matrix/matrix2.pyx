@@ -707,7 +707,7 @@ cdef class Matrix(matrix1.Matrix):
             0
         """
         if self._nrows != self._ncols:
-            raise ValueError, "self must be square"
+            raise ArithmeticError, "self must be a square matrix"
 
         d = self.fetch('det')
         if not d is None: return d
@@ -1148,7 +1148,7 @@ cdef class Matrix(matrix1.Matrix):
             34/3
         """
         if self._nrows != self._ncols:
-            raise ArithmeticError, "matrix must be square"
+            raise ArithmeticError, "self must be a square matrix"
         R = self._base_ring
         cdef Py_ssize_t i
         cdef object s
@@ -2278,7 +2278,7 @@ cdef class Matrix(matrix1.Matrix):
         if not sage.modules.free_module.is_FreeModule(M):
             raise TypeError, "M must be a free module."
         if not self.is_square():
-            raise ArithmeticError, "matrix must be square"
+            raise ArithmeticError, "self must be a square matrix"
         if M.base_ring() != self.base_ring():
             raise ArithmeticError, "base rings must be the same, but self is over %s and module is over %s"%(
                 self.base_ring(), M.base_ring())
@@ -2520,7 +2520,7 @@ cdef class Matrix(matrix1.Matrix):
         """
         i = int(i); t=int(t)
         if self.nrows() != self.ncols():
-            raise ArithmeticError, "matrix must be square."
+            raise ArithmeticError, "self must be a square matrix"
         n = self.nrows()
         v = sage.modules.free_module.VectorSpace(self.base_ring(), n).gen(i)
         tm = verbose('computing iterates...')
@@ -4057,7 +4057,10 @@ cdef class Matrix(matrix1.Matrix):
             [  -2    1]
             [ 3/2 -1/2]
 
-        """
+        TESTS:
+            sage: matrix().inverse()
+            []
+       """
         return self.__invert__()
 
     def gram_schmidt(self):
