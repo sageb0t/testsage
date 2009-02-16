@@ -259,7 +259,7 @@ class Sage(Expect):
         """
         return sage.misc.preparser.preparse(x)
 
-    def eval(self, line, strip=True):
+    def eval(self, line, strip=True, **kwds):
         """
         Send the code x to a second instance of the \sage interpreter and
         return the output as a string.
@@ -277,7 +277,7 @@ class Sage(Expect):
         """
         if self._preparse:
             line = self.preparse(line)
-        return Expect.eval(self, line).strip()
+        return Expect.eval(self, line, **kwds).strip()
 
     def set(self, var, value):
         """

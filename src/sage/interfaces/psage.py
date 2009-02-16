@@ -97,7 +97,7 @@ class PSage(Sage):
             os.system(cmd)
         Sage.__del__(self)
 
-    def eval(self, x, strip=True):
+    def eval(self, x, strip=True, **kwds):
         """
             x -- code
             strip --ignored
@@ -111,7 +111,7 @@ class PSage(Sage):
             self.expect().expect(self._prompt)
             self.expect().expect(self._prompt)
         try:
-            return Sage.eval(self, x)
+            return Sage.eval(self, x, **kwds)
         except:
             return "<<currently executing code>>"
 
