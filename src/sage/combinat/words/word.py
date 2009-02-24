@@ -4008,10 +4008,17 @@ exponent %s: the length of the word (%s) times the exponent \
                      = \{ (v, a), (a, b), (l, c) \}
 
         These three couples correspond to the pairs of letters one above
-        the other in the following overlap : cheval abcdef The symmetric,
-        reflexive and transitive closure of `R_{u,v,d}` defines
-        the following partition of the alphabet `A`:
-        `\{\{a, b, v\}, \{c, l\}, \{d\}, \{e\}, \{f\}, \{h\}\}`.
+        the other in the following overlap::
+
+           cheval
+              abcdef
+
+        The symmetric, reflexive and transitive closure of `R_{u,v,d}`
+        defines the following partition of the alphabet `A`:
+
+        .. math::
+
+           \{\{a, b, v\}, \{c, l\}, \{d\}, \{e\}, \{f\}, \{h\}\}.
 
         INPUT:
 
@@ -4370,7 +4377,7 @@ exponent %s: the length of the word (%s) times the exponent \
 
     def swap_increase(self, i):
         """
-        Returns the word with positions i and i+1 exchanged if self[i]
+        Returns the word with positions i and i+1 exchanged if self[i] >
         self[i+1]. Otherwise, it returns self.
 
         EXAMPLES::
@@ -4394,7 +4401,7 @@ exponent %s: the length of the word (%s) times the exponent \
 
     def swap_decrease(self, i):
         """
-        Returns the word with positions i and i+1 exchanged if self[i]
+        Returns the word with positions i and i+1 exchanged if self[i] <
         self[i+1]. Otherwise, it returns self.
 
         EXAMPLES::

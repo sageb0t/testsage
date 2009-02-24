@@ -213,7 +213,7 @@ def rank(comb, n):
 
 def _comb_largest(a,b,x):
     """
-    Returns the largest w a such that binomial(w,b) = x.
+    Returns the largest w < a such that binomial(w,b) <= x.
 
     EXAMPLES::
 

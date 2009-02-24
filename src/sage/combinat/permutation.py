@@ -120,7 +120,7 @@ def PermutationOptions(**kwargs):
 
 def Permutation(l):
     """
-    Convert l to a permutation.
+    Converts l to a permutation.
 
     INPUT:
 
@@ -137,7 +137,9 @@ def Permutation(l):
 
     -  a PermutationGroupElement
 
-    OUTPUT: Permutation_class object.
+    OUTPUT:
+
+    - :class:`Permutation_class` object.
 
     EXAMPLES::
 
@@ -1635,9 +1637,9 @@ class Permutation_class(CombinatorialObject):
         Returns the list of inversions of p such that the application of
         this inversion to p decrements its number of inversions.
 
-        Equivalently, it returns the list of pairs (i,j), ij such that p[i]
-        p[j] and such that there exists no k between i and j satisfying
-        p[i] p[k].
+        Equivalently, it returns the list of pairs (i,j), i < j such that p[i]
+        < p[j] and such that there exists no k between i and j satisfying
+        p[i] < p[k].
 
         EXAMPLES::
 
@@ -2026,7 +2028,7 @@ class Permutation_class(CombinatorialObject):
     def complement(self):
         """
         Returns the complement of the permutation which is obtained by
-        replacing each value x in the list with n - x + 1
+        replacing each value x in the list with n - x + 1.
 
         EXAMPLES::
 
@@ -2060,7 +2062,7 @@ class Permutation_class(CombinatorialObject):
 
     def action(self, a):
         """
-        Return the action of the permutation on a list.
+        Returns the action of the permutation on a list.
 
         EXAMPLES::
 
@@ -3427,7 +3429,7 @@ class StandardPermutations_bruhat_greater(CombinatorialClass):
 
 def bruhat_lequal(p1, p2):
     r"""
-    Returns True if p1 is less than p2in the Bruhat order.
+    Returns True if p1 is less than p2 in the Bruhat order.
 
     Algorithm from mupad-combinat.
 

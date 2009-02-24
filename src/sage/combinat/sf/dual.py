@@ -118,7 +118,7 @@ class SymmetricFunctionAlgebra_dual(classical.SymmetricFunctionAlgebra_classical
     def _precompute(self, n):
         """
         Computes the transition matrix between self and its dual basis for
-        the homogenous component of size n.
+        the homogenous component of size `n`.
 
         EXAMPLES::
 

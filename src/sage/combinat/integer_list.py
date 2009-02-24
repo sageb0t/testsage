@@ -460,7 +460,7 @@ def upper_regular(comp, min_slope, max_slope):
 
 def comp2floor(f, min_slope, max_slope):
     """
-    Given a composition, returns the lowest regular function N-N above
+    Given a composition, returns the lowest regular function N->N above
     it.
 
     EXAMPLES::
@@ -476,7 +476,7 @@ def comp2floor(f, min_slope, max_slope):
 
 def comp2ceil(c, min_slope, max_slope):
     """
-    Given a composition, returns the lowest regular function N-N below
+    Given a composition, returns the lowest regular function N->N below
     it.
 
     EXAMPLES::

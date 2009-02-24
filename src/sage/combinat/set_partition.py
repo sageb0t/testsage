@@ -441,7 +441,7 @@ def standard_form(sp):
 
 def less(s, t):
     """
-    Returns True if s t otherwise it returns False.
+    Returns True if s < t otherwise it returns False.
 
     EXAMPLES::
 

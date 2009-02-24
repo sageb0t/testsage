@@ -28,7 +28,9 @@ def from_list(l):
 
     -  ``l`` - a list
 
-    OUTPUT [rank, unrank] - functions
+    OUTPUT:
+
+    - ``[rank, unrank]`` - functions
 
     EXAMPLES::
 
