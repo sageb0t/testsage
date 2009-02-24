@@ -1,5 +1,5 @@
 """
-Alternating sign matrices
+Low-level Combinations
 """
 #*****************************************************************************
 #       Copyright (C) 2007 Mike Hansen <mhansen@gmail.com>,
@@ -23,7 +23,8 @@ from combinat import CombinatorialClass
 class ChooseNK(CombinatorialClass):
     def __init__(self, n, k):
         """
-        TESTS:
+        TESTS::
+
             sage: from sage.combinat.choose_nk import ChooseNK
             sage: c52 = ChooseNK(5,2)
             sage: c52 == loads(dumps(c52))
@@ -34,7 +35,8 @@ class ChooseNK(CombinatorialClass):
 
     def __contains__(self, x):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.combinat.choose_nk import ChooseNK
             sage: c52 = ChooseNK(5,2)
             sage: [0,1] in c52
@@ -54,10 +56,10 @@ class ChooseNK(CombinatorialClass):
 
     def count(self):
         """
-        Returns the number of choices of k things from a list
-        of n things.
+        Returns the number of choices of k things from a list of n things.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.combinat.choose_nk import ChooseNK
             sage: ChooseNK(3,2).count()
             3
@@ -70,7 +72,8 @@ class ChooseNK(CombinatorialClass):
         """
         An iterator for all choies of k thinkgs from range(n).
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.combinat.choose_nk import ChooseNK
             sage: [c for c in ChooseNK(5,2)]
             [[0, 1],
@@ -123,7 +126,8 @@ class ChooseNK(CombinatorialClass):
         """
         Returns a random choice of k things from range(n).
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.combinat.choose_nk import ChooseNK
             sage: ChooseNK(5,2).random_element()
             [0, 2]
@@ -134,7 +138,8 @@ class ChooseNK(CombinatorialClass):
 
     def unrank(self, r):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.combinat.choose_nk import ChooseNK
             sage: c52 = ChooseNK(5,2)
             sage: c52.list() == map(c52.unrank, range(c52.count()))
@@ -146,7 +151,8 @@ class ChooseNK(CombinatorialClass):
 
     def rank(self, x):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.combinat.choose_nk import ChooseNK
             sage: c52 = ChooseNK(5,2)
             sage: range(c52.count()) == map(c52.rank, c52)
@@ -159,14 +165,13 @@ class ChooseNK(CombinatorialClass):
 
 def rank(comb, n):
     """
-    Returns the rank of comb in the subsets of range(n) of
-    size k.
+    Returns the rank of comb in the subsets of range(n) of size k.
 
-    The algorithm used is based on combinadics and James
-    McCaffrey's MSDN article.
-    See: http://en.wikipedia.org/wiki/Combinadic
+    The algorithm used is based on combinadics and James McCaffrey's
+    MSDN article. See: http://en.wikipedia.org/wiki/Combinadic
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: import sage.combinat.choose_nk as choose_nk
         sage: choose_nk.rank([], 3)
         0
@@ -208,9 +213,10 @@ def rank(comb, n):
 
 def _comb_largest(a,b,x):
     """
-    Returns the largest w < a such that binomial(w,b) <= x.
+    Returns the largest w a such that binomial(w,b) = x.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: from sage.combinat.choose_nk import _comb_largest
         sage: _comb_largest(6,3,10)
         5
@@ -226,14 +232,14 @@ def _comb_largest(a,b,x):
 
 def from_rank(r, n, k):
     """
-    Returns the combination of rank r in the subsets of range(n)
-    of size k when listed in lexicographic order.
+    Returns the combination of rank r in the subsets of range(n) of
+    size k when listed in lexicographic order.
 
-    The algorithm used is based on combinadics and James
-    McCaffrey's MSDN article.
-    See: http://en.wikipedia.org/wiki/Combinadic
+    The algorithm used is based on combinadics and James McCaffrey's
+    MSDN article. See: http://en.wikipedia.org/wiki/Combinadic
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: import sage.combinat.choose_nk as choose_nk
         sage: choose_nk.from_rank(0,3,0)
         []

@@ -1,5 +1,5 @@
 """
-Macdonald Polynomials -- under development.
+Macdonald Polynomials
 """
 #*****************************************************************************
 #       Copyright (C) 2007 Mike Hansen <mhansen@gmail.com>,
@@ -27,11 +27,12 @@ QQqt = QQ['q,t'].fraction_field()
 
 def MacdonaldPolynomialsP(R, q=None, t=None):
     """
-    Returns the Macdonald polynomials on the P basis.  These are
-    upper triangularly related to the monomial symmetric functions
-    and are orthogonal with respect to the qt-Hall scalar product.
+    Returns the Macdonald polynomials on the P basis. These are upper
+    triangularly related to the monomial symmetric functions and are
+    orthogonal with respect to the qt-Hall scalar product.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: P = MacdonaldPolynomialsP(QQ); P
         Macdonald polynomials in the P basis over Fraction Field of Multivariate Polynomial Ring in q, t over Rational Field
         sage: m = SFAMonomial(P.base_ring())
@@ -45,25 +46,28 @@ def MacdonaldPolynomialsP(R, q=None, t=None):
         sage: P([1,1]).scalar_qt(P([1,1]))
         (q^2*t - q*t - q + 1)/(t^3 - t^2 - t + 1)
 
-      When q = 0, the Macdonald polynomials on the P basis are the same
-      as the Hall-Littlewood polynomials on the P basis.
+    When q = 0, the Macdonald polynomials on the P basis are the same
+    as the Hall-Littlewood polynomials on the P basis.
+
+    ::
+
         sage: P = MacdonaldPolynomialsP(QQ,q=0)
         sage: P([2])^2
         (t+1)*McdP[2, 2] + (-t+1)*McdP[3, 1] + McdP[4]
         sage: HLP = HallLittlewoodP(QQ)
         sage: HLP([2])^2
         (t+1)*P[2, 2] + (-t+1)*P[3, 1] + P[4]
-
     """
     return cache_p(R, q, t)
 
 def MacdonaldPolynomialsQ(R, q=None, t=None):
     """
-    Returns the Macdonald polynomials on the Q basis.  These are
-    dual to the Macdonald polynomials on the P basis with
-    respect to the qt-Hall scalar product.
+    Returns the Macdonald polynomials on the Q basis. These are dual to
+    the Macdonald polynomials on the P basis with respect to the
+    qt-Hall scalar product.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: Q = MacdonaldPolynomialsQ(QQ); Q
         Macdonald polynomials in the Q basis over Fraction Field of Multivariate Polynomial Ring in q, t over Rational Field
         sage: P = MacdonaldPolynomialsP(QQ)
@@ -79,19 +83,19 @@ def MacdonaldPolynomialsQ(R, q=None, t=None):
         ((q^3-q^2-q+1)/(q*t^2-q*t-t+1))*McdQ[2]
         sage: Q(P([1,1]))
         ((q^2*t-q*t-q+1)/(t^3-t^2-t+1))*McdQ[1, 1]
-
     """
     return cache_q(R, q, t)
 
 def MacdonaldPolynomialsJ(R, q=None, t=None):
     """
-    Returns the Macdonald polynomials on the J basis also known as
-    the integral form of the Macdonald polynomials.  These are
-    scalar multiples of both the P and Q bases. When expressed in
-    the P or Q basis, the scaling coefficients are polynomials in
-    q and t rather than rational functions.
+    Returns the Macdonald polynomials on the J basis also known as the
+    integral form of the Macdonald polynomials. These are scalar
+    multiples of both the P and Q bases. When expressed in the P or Q
+    basis, the scaling coefficients are polynomials in q and t rather
+    than rational functions.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: J = MacdonaldPolynomialsJ(QQ); J
         Macdonald polynomials in the J basis over Fraction Field of Multivariate Polynomial Ring in q, t over Rational Field
         sage: P = MacdonaldPolynomialsP(QQ)
@@ -104,17 +108,17 @@ def MacdonaldPolynomialsJ(R, q=None, t=None):
         (q^3-q^2-q+1)*McdQ[2]
         sage: Q(J([1,1]))
         (q^2*t-q*t-q+1)*McdQ[1, 1]
-
     """
     return cache_j(R, q, t)
 
 def MacdonaldPolynomialsH(R, q=None, t=None):
     """
-    Returns the Macdonald polynomials on the H basis. When the H
-    basis is expanded on the Schur basis, the coefficients are
-    the qt-Kostka numbers.
+    Returns the Macdonald polynomials on the H basis. When the H basis
+    is expanded on the Schur basis, the coefficients are the qt-Kostka
+    numbers.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: H = MacdonaldPolynomialsH(QQ)
         sage: s = SFASchur(H.base_ring())
         sage: s(H([2]))
@@ -126,15 +130,18 @@ def MacdonaldPolynomialsH(R, q=None, t=None):
 
 def MacdonaldPolynomialsHt(R, q=None, t=None):
     """
-    Returns the Macdonald polynomials on the Ht basis. The elements
-    of the Ht basis are eigenvectors of the nabla operator. When
-    expanded on the Schur basis, the coefficients are the modified
-    qt-Kostka numbers.
+    Returns the Macdonald polynomials on the Ht basis. The elements of
+    the Ht basis are eigenvectors of the nabla operator. When expanded
+    on the Schur basis, the coefficients are the modified qt-Kostka
+    numbers.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: Ht = MacdonaldPolynomialsHt(QQ)
         sage: [Ht(p).nabla() for p in Partitions(3)]
         [q^3*McdHt[3], q*t*McdHt[2, 1], t^3*McdHt[1, 1, 1]]
+
+    ::
 
         sage: s = SFASchur(Ht.base_ring())
         sage: from sage.combinat.sf.macdonald import qt_kostka
@@ -147,19 +154,18 @@ def MacdonaldPolynomialsHt(R, q=None, t=None):
         q + t
         sage: qt_kostka([3],[2,1]).subs(t=1/t)*t^Partition([2,1]).weighted_size()
         1
-
     """
     return cache_ht(R, q, t)
 
 def MacdonaldPolynomialsS(R, q=None, t=None):
     """
-    Returns the modified Schur functions defined by the
-    plethystic subsitution  $S_{\mu} = s_{\mu}[X(1-t)]$.
-    When the Macdonald polynomials in the J basis are expressed
-    in terms of the modified Schur functions, the coefficients
-    are qt-Kostka numbers.
+    Returns the modified Schur functions defined by the plethystic
+    subsitution `S_{\mu} = s_{\mu}[X(1-t)]`. When the
+    Macdonald polynomials in the J basis are expressed in terms of the
+    modified Schur functions, the coefficients are qt-Kostka numbers.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: S = MacdonaldPolynomialsS(QQ)
         sage: J = MacdonaldPolynomialsJ(QQ)
         sage: S(J([2]))
@@ -171,7 +177,6 @@ def MacdonaldPolynomialsS(R, q=None, t=None):
         t
         sage: qt_kostka([1,1],[2])
         q
-
     """
     return cache_s(R, q, t)
 
@@ -179,10 +184,11 @@ def MacdonaldPolynomialsS(R, q=None, t=None):
 
 def c1(part, q, t):
     """
-    This function returns the qt-Hall scalar product between
-    J(part) and P(part).
+    This function returns the qt-Hall scalar product between J(part)
+    and P(part).
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: from sage.combinat.sf.macdonald import c1
         sage: R.<q,t> = QQ[]
         sage: c1(Partition([2,1]),q,t)
@@ -197,16 +203,17 @@ def c1(part, q, t):
 
 def c2(part, q, t):
     """
-    This function returns the qt-Hall scalar product between
-    J(part) and Q(part).
+     This function returns the qt-Hall scalar product between J(part)
+     and Q(part).
 
-    EXAMPLES:
-        sage: from sage.combinat.sf.macdonald import c2
-        sage: R.<q,t> = QQ[]
-        sage: c2(Partition([1,1]),q,t)
-        t^3 - t^2 - t + 1
-        sage: c2(Partition([2,1]),q,t)
-        -q*t^4 + 2*q*t^3 - q*t^2 + t^2 - 2*t + 1
+     EXAMPLES::
+
+         sage: from sage.combinat.sf.macdonald import c2
+         sage: R.<q,t> = QQ[]
+         sage: c2(Partition([1,1]),q,t)
+         t^3 - t^2 - t + 1
+         sage: c2(Partition([2,1]),q,t)
+         -q*t^4 + 2*q*t^3 - q*t^2 + t^2 - 2*t + 1
      """
     res = 1
     for i in range(part.size()):
@@ -217,7 +224,8 @@ def c2(part, q, t):
 class MacdonaldPolynomials_generic(sfa.SymmetricFunctionAlgebra_generic):
     def __init__(self, R, q=None, t=None):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: MacdonaldPolynomialsP(QQ)
             Macdonald polynomials in the P basis over Fraction Field of Multivariate Polynomial Ring in q, t over Rational Field
             sage: MacdonaldPolynomialsP(QQ,t=2)
@@ -262,14 +270,14 @@ class MacdonaldPolynomials_generic(sfa.SymmetricFunctionAlgebra_generic):
 class MacdonaldPolynomial_generic(sfa.SymmetricFunctionAlgebraElement_generic):
     def scalar_qt(self, x):
         """
-        Returns the qt-Hall scalar product of self and x by converting
-        both to the power-sum basis.
+        Returns the qt-Hall scalar product of self and x by converting both
+        to the power-sum basis.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: H = MacdonaldPolynomialsH(QQ)
             sage: H([1]).scalar_qt(H([1]))
             (-q + 1)/(-t + 1)
-
         """
         P = self.parent()
         p = sfa.SFAPower(self.parent().base_ring())
@@ -280,13 +288,14 @@ class MacdonaldPolynomial_generic(sfa.SymmetricFunctionAlgebraElement_generic):
 
     def omega_qt(self):
         """
-        Returns the image of self under the $\omega_{qt}$ automorphism.
+        Returns the image of self under the `\omega_{qt}`
+        automorphism.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: H = MacdonaldPolynomialsH(QQ)
             sage: H([1,1]).omega_qt()
             ((2*q^2-2*q*t-2*q+2*t)/(t^3-t^2-t+1))*McdH[1, 1] + ((q-1)/(t-1))*McdH[2]
-
         """
         P = self.parent()
         p = sfa.SFAPower(self.parent().base_ring())
@@ -296,11 +305,12 @@ class MacdonaldPolynomial_generic(sfa.SymmetricFunctionAlgebraElement_generic):
 
     def nabla(self):
         """
-        Returns the value of the nabla operator applied to self.  The
-        eigenvectors of the nabla operator are the Macdonald polynomials
-        in the Ht basis.
+        Returns the value of the nabla operator applied to self. The
+        eigenvectors of the nabla operator are the Macdonald polynomials in
+        the Ht basis.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.combinat.sf.macdonald import *
             sage: P = MacdonaldPolynomialsP(QQ)
             sage: P([1,1]).nabla()
@@ -314,7 +324,8 @@ class MacdonaldPolynomial_generic(sfa.SymmetricFunctionAlgebraElement_generic):
 class MacdonaldPolynomials_p(MacdonaldPolynomials_generic):
     def __init__(self, R, q=None, t=None):
         """
-        TESTS:
+        TESTS::
+
             sage: P = MacdonaldPolynomialsP(QQ)
             sage: P == loads(dumps(P))
             True
@@ -331,31 +342,36 @@ class MacdonaldPolynomials_p(MacdonaldPolynomials_generic):
         """
         Coerce things into the P basis
 
-        1) Q basis (proportional)
-        2) J basis (proportional)
-        3) Other symmetric functions
+        1) Q basis (proportional) 2) J basis (proportional) 3) Other
+        symmetric functions
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: P = MacdonaldPolynomialsP(QQ)
             sage: Q = MacdonaldPolynomialsQ(QQ)
             sage: J = MacdonaldPolynomialsJ(QQ)
             sage: s = SFASchur(P.base_ring())
+
+        ::
 
             sage: P._coerce_start(Q([2]))
             ((q*t^2-q*t-t+1)/(q^3-q^2-q+1))*McdP[2]
             sage: P._coerce_start(Q([2,1]))
             ((-q*t^4+2*q*t^3-q*t^2+t^2-2*t+1)/(-q^4*t+2*q^3*t-q^2*t+q^2-2*q+1))*McdP[2, 1]
 
+        ::
+
             sage: P(J([2]))
             (q*t^2-q*t-t+1)*McdP[2]
             sage: P(J([2,1]))
             (-q*t^4+2*q*t^3-q*t^2+t^2-2*t+1)*McdP[2, 1]
 
+        ::
+
             sage: P(s([2]))
             ((q-t)/(q*t-1))*McdP[1, 1] + McdP[2]
             sage: P(s([2,1]))
             ((q*t-t^2+q-t)/(q*t^2-1))*McdP[1, 1, 1] + McdP[2, 1]
-
         """
         BR = self.base_ring()
 
@@ -373,7 +389,8 @@ class MacdonaldPolynomials_p(MacdonaldPolynomials_generic):
 
     def _multiply(self, left, right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: P = MacdonaldPolynomialsP(QQ)
             sage: P([1])^2 #indirect doctest
             ((q*t+q-t-1)/(q*t-1))*McdP[1, 1] + McdP[2]
@@ -383,12 +400,13 @@ class MacdonaldPolynomials_p(MacdonaldPolynomials_generic):
 class MacdonaldPolynomial_p(MacdonaldPolynomial_generic):
     def scalar_qt(self, x):
         """
-        Returns the qt-Hall scalar product of self and x.  If x is
-        in the Macdonald P or Q basis, then specialized code is used;
-        otherwise, both are converted to the power-sums and the scalar
-        product is carried out there.
+        Returns the qt-Hall scalar product of self and x. If x is in the
+        Macdonald P or Q basis, then specialized code is used; otherwise,
+        both are converted to the power-sums and the scalar product is
+        carried out there.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Q = MacdonaldPolynomialsQ(QQ)
             sage: P = MacdonaldPolynomialsP(QQ)
             sage: a = P([2])
@@ -397,7 +415,6 @@ class MacdonaldPolynomial_p(MacdonaldPolynomial_generic):
             (q^3 - q^2 - q + 1)/(q*t^2 - q*t - t + 1)
             sage: a.scalar_qt(b)
             1
-
         """
         if isinstance(x, MacdonaldPolynomial_p):
             P = self.parent()
@@ -412,7 +429,8 @@ class MacdonaldPolynomial_p(MacdonaldPolynomial_generic):
 class MacdonaldPolynomials_q(MacdonaldPolynomials_generic):
     def __init__(self, R, q=None, t=None):
         """
-        TESTS:
+        TESTS::
+
             sage: Q = MacdonaldPolynomialsQ(QQ)
             sage: Q == loads(dumps(Q))
             True
@@ -431,18 +449,22 @@ class MacdonaldPolynomials_q(MacdonaldPolynomials_generic):
         """
         Coerce things into the Q basis
 
-        1) P basis (proportional)
-        2) J basis (proportional)
-        3) Other symmetric functions
+        1) P basis (proportional) 2) J basis (proportional) 3) Other
+        symmetric functions
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: P = MacdonaldPolynomialsP(QQ)
             sage: Q = MacdonaldPolynomialsQ(QQ)
             sage: J = MacdonaldPolynomialsJ(QQ)
             sage: s = SFASchur(P.base_ring())
 
+        ::
+
             sage: Q._coerce_start(J([2]))
             (q^3-q^2-q+1)*McdQ[2]
+
+        ::
 
             sage: Q(P([2]))
             ((q^3-q^2-q+1)/(q*t^2-q*t-t+1))*McdQ[2]
@@ -450,6 +472,8 @@ class MacdonaldPolynomials_q(MacdonaldPolynomials_generic):
             McdP[2]
             sage: Q(P(Q([2])))
             McdQ[2]
+
+        ::
 
             sage: Q(s([2]))
             ((q^2-q*t-q+t)/(t^3-t^2-t+1))*McdQ[1, 1] + ((q^3-q^2-q+1)/(q*t^2-q*t-t+1))*McdQ[2]
@@ -469,7 +493,8 @@ class MacdonaldPolynomials_q(MacdonaldPolynomials_generic):
 
     def _multiply(self, left, right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: J = MacdonaldPolynomialsJ(QQ)
             sage: J([1])^2 #indirect doctest
             ((q-1)/(q*t-1))*McdJ[1, 1] + ((t-1)/(q*t-1))*McdJ[2]
@@ -479,12 +504,13 @@ class MacdonaldPolynomials_q(MacdonaldPolynomials_generic):
 class MacdonaldPolynomial_q(MacdonaldPolynomial_generic):
     def scalar_qt(self, x):
         """
-        Returns the qt-Hall scalar product of self and x.  If x is
-        in the Macdonald P basis, then specialized code is used;
-        otherwise, both are converted to the power-sums and the scalar
-        product is carried out there.
+        Returns the qt-Hall scalar product of self and x. If x is in the
+        Macdonald P basis, then specialized code is used; otherwise, both
+        are converted to the power-sums and the scalar product is carried
+        out there.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Q = MacdonaldPolynomialsQ(QQ)
             sage: H = MacdonaldPolynomialsH(QQ)
             sage: a = Q([2])
@@ -492,7 +518,6 @@ class MacdonaldPolynomial_q(MacdonaldPolynomial_generic):
             (-q*t^2 + q*t + t - 1)/(-q^3 + q^2 + q - 1)
             sage: a.scalar_qt(H([1,1]))
             t
-
         """
         if isinstance(x, MacdonaldPolynomial_p):
             P = self.parent()
@@ -508,7 +533,8 @@ s_to_j_cache = {}
 class MacdonaldPolynomials_j(MacdonaldPolynomials_generic):
     def __init__(self, R, q=None, t=None):
         """
-        TESTS:
+        TESTS::
+
             sage: J = MacdonaldPolynomialsJ(QQ)
             sage: J == loads(dumps(J))
             True
@@ -530,28 +556,33 @@ class MacdonaldPolynomials_j(MacdonaldPolynomials_generic):
         """
         Coerce things into the J basis
 
-        1) P basis (proportional)
-        2) Q basis (proportional)
-        4) Schur functions ( Lascoux, Lapointe and Morse creation operators on Macdonald polynomials )
-        3) Everything else through s
+        1) P basis (proportional) 2) Q basis (proportional) 4) Schur
+        functions ( Lascoux, Lapointe and Morse creation operators on
+        Macdonald polynomials ) 3) Everything else through s
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: P = MacdonaldPolynomialsP(QQ)
             sage: Q = MacdonaldPolynomialsQ(QQ)
             sage: J = MacdonaldPolynomialsJ(QQ)
             sage: s = SFASchur(P.base_ring())
 
+        ::
+
             sage: J._coerce_start(P([2]))
             (1/(q*t^2-q*t-t+1))*McdJ[2]
 
+        ::
+
             sage: J(Q([2]))
             (1/(q^3-q^2-q+1))*McdJ[2]
+
+        ::
 
             sage: s(J([2]))
             (-q*t+t^2+q-t)*s[1, 1] + (q*t^2-q*t-t+1)*s[2]
             sage: J(s([2]))
             ((q-t)/(q*t^4-q*t^3-q*t^2-t^3+q*t+t^2+t-1))*McdJ[1, 1] + (1/(q*t^2-q*t-t+1))*McdJ[2]
-
         """
         BR = self.base_ring()
 
@@ -574,7 +605,8 @@ class MacdonaldPolynomials_j(MacdonaldPolynomials_generic):
         Compute the change of basis and its inverse between the Macdonald
         polynomials on the J basis and the Schur functions.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: J = MacdonaldPolynomialsJ(QQ)
             sage: J._s_cache(2)
             sage: l = lambda c: [ (i[0],[j for j in sorted(i[1].items())]) for i in sorted(c.items())]
@@ -586,7 +618,6 @@ class MacdonaldPolynomials_j(MacdonaldPolynomials_generic):
             sage: l( J._j_to_s_cache[2] )
             [([1, 1], [([1, 1], t^3 - t^2 - t + 1)]),
              ([2], [([1, 1], -q*t + t^2 + q - t), ([2], q*t^2 - q*t - t + 1)])]
-
         """
         self._invert_morphism(n, QQqt, self._j_to_s_cache, \
                               self._s_to_j_cache, to_other_function = self._to_s, \
@@ -594,10 +625,11 @@ class MacdonaldPolynomials_j(MacdonaldPolynomials_generic):
 
     def _to_s(self, part):
         """
-        Returns a function which gives the coefficient of a partition in the Schur
-        expansion of self(part).
+        Returns a function which gives the coefficient of a partition in
+        the Schur expansion of self(part).
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: J = MacdonaldPolynomialsJ(QQ)
             sage: f21 = J._to_s(Partition([2,1]))
             sage: [f21(part) for part in Partitions(3)]
@@ -616,25 +648,26 @@ class MacdonaldPolynomials_j(MacdonaldPolynomials_generic):
 
     def _multiply(self, left, right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: J = MacdonaldPolynomialsJ(QQ)
             sage: J([1])^2 #indirect doctest
             ((q-1)/(q*t-1))*McdJ[1, 1] + ((t-1)/(q*t-1))*McdJ[2]
             sage: J([2])^2
             ((q^3-q^2-q+1)/(q^3*t^2-q^2*t-q*t+1))*McdJ[2, 2] + ((q^3*t-q^3+q^2*t-q^2-q*t+q-t+1)/(q^4*t^2-q^3*t-q*t+1))*McdJ[3, 1] + ((q*t^2-q*t-t+1)/(q^5*t^2-q^3*t-q^2*t+1))*McdJ[4]
-
         """
         return self( self._s(left)*self._s(right) )
 
 class MacdonaldPolynomial_j(MacdonaldPolynomial_generic):
     def scalar_qt(self, x):
         """
-        Returns the qt-Hall scalar product of self and x.  If x is
-        in the Macdonald J basis, then specialized code is used;
-        otherwise, both are converted to the power-sums and the scalar
-        product is carried out there.
+        Returns the qt-Hall scalar product of self and x. If x is in the
+        Macdonald J basis, then specialized code is used; otherwise, both
+        are converted to the power-sums and the scalar product is carried
+        out there.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: J = MacdonaldPolynomialsJ(QQ)
             sage: J([1,1]).scalar_qt(J([1,1]))
             q^2*t^4 - q^2*t^3 - q*t^4 - q^2*t^2 + q^2*t + 2*q*t^2 + t^3 - t^2 - q - t + 1
@@ -642,7 +675,6 @@ class MacdonaldPolynomial_j(MacdonaldPolynomial_generic):
             0
             sage: J([2]).scalar_qt(J([2]))
             q^4*t^2 - q^4*t - q^3*t^2 - q^2*t^2 + q^3 + 2*q^2*t + q*t^2 - q^2 - q - t + 1
-
         """
         if isinstance(x, MacdonaldPolynomial_j):
             J = self.parent()
@@ -657,7 +689,8 @@ s_to_h_cache = {}
 class MacdonaldPolynomials_h(MacdonaldPolynomials_generic):
     def __init__(self, R, q=None, t=None):
         """
-        TESTS:
+        TESTS::
+
             sage: H = MacdonaldPolynomialsH(QQ)
             sage: H == loads(dumps(H))
             True
@@ -679,7 +712,8 @@ class MacdonaldPolynomials_h(MacdonaldPolynomials_generic):
         """
         Coerce things into the H basis through the Schur functions.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: H = MacdonaldPolynomialsH(QQ)
             sage: s = SFASchur(H.base_ring())
             sage: H._coerce_start(s([2]))
@@ -697,7 +731,8 @@ class MacdonaldPolynomials_h(MacdonaldPolynomials_generic):
         Compute the change of basis and its inverse between the Macdonald
         polynomials on the H basis and the Schur functions.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: H = MacdonaldPolynomialsH(QQ)
             sage: H._s_cache(2)
             sage: l = lambda c: [ (i[0],[j for j in sorted(i[1].items())]) for i in sorted(c.items())]
@@ -712,10 +747,11 @@ class MacdonaldPolynomials_h(MacdonaldPolynomials_generic):
 
     def _to_s(self, part):
         """
-        Returns a function which gives the coefficient of a partition in the Schur
-        expansion of self(part).
+        Returns a function which gives the coefficient of a partition in
+        the Schur expansion of self(part).
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: H = MacdonaldPolynomialsH(QQ)
             sage: f21 = H._to_s(Partition([2,1]))
             sage: [f21(part) for part in Partitions(3)]
@@ -730,7 +766,8 @@ class MacdonaldPolynomials_h(MacdonaldPolynomials_generic):
 
     def _multiply(self, left, right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: H = MacdonaldPolynomialsH(QQ)
             sage: H([1])^2 #indirect doctest
             ((q-1)/(q*t-1))*McdH[1, 1] + ((t-1)/(q*t-1))*McdH[2]
@@ -746,7 +783,8 @@ s_to_ht_cache = {}
 class MacdonaldPolynomials_ht(MacdonaldPolynomials_generic):
     def __init__(self, R, q=None, t=None):
         """
-        TESTS:
+        TESTS::
+
             sage: Ht = MacdonaldPolynomialsHt(QQ)
             sage: Ht == loads(dumps(Ht))
             True
@@ -767,14 +805,14 @@ class MacdonaldPolynomials_ht(MacdonaldPolynomials_generic):
         """
         Coerce things into the Ht basis though the Schur functions.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Ht = MacdonaldPolynomialsHt(QQ)
             sage: s = SFASchur(Ht.base_ring())
             sage: Ht._coerce_start(s([2,1]))
             ((-q)/(-q*t^2+t^3+q^2-q*t))*McdHt[1, 1, 1] + ((q^2+q*t+t^2)/(-q^2*t^2+q^3+t^3-q*t))*McdHt[2, 1] + ((-t)/(q^3-q^2*t-q*t+t^2))*McdHt[3]
             sage: Ht._coerce_start(s([2]))
             ((-q)/(-q+t))*McdHt[1, 1] + (t/(-q+t))*McdHt[2]
-
         """
         BR = self.base_ring()
         if isinstance(x, sfa.SymmetricFunctionAlgebraElement_generic):
@@ -788,7 +826,8 @@ class MacdonaldPolynomials_ht(MacdonaldPolynomials_generic):
         Compute the change of basis and its inverse between the Macdonald
         polynomials on the Ht basis and the Schur functions.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Ht = MacdonaldPolynomialsHt(QQ)
             sage: Ht._s_cache(2)
             sage: l = lambda c: [ (i[0],[j for j in sorted(i[1].items())]) for i in sorted(c.items())]
@@ -803,10 +842,11 @@ class MacdonaldPolynomials_ht(MacdonaldPolynomials_generic):
 
     def _to_s(self, part):
         """
-        Returns a function which gives the coefficient of a partition in the Schur
-        expansion of self(part).
+        Returns a function which gives the coefficient of a partition in
+        the Schur expansion of self(part).
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Ht = MacdonaldPolynomialsHt(QQ)
             sage: f21 = Ht._to_s(Partition([2,1]))
             sage: [f21(part) for part in Partitions(3)]
@@ -814,7 +854,6 @@ class MacdonaldPolynomials_ht(MacdonaldPolynomials_generic):
             sage: f22 = Ht._to_s(Partition([2,2]))
             sage: [f22(part) for part in Partitions(4)]
             [1, q*t + q + t, q^2 + t^2, q^2*t + q*t^2 + q*t, q^2*t^2]
-
         """
         q,t = QQqt.gens()
         s = sfa.SFASchur(QQqt)
@@ -829,7 +868,8 @@ class MacdonaldPolynomials_ht(MacdonaldPolynomials_generic):
 
     def _multiply(self, left, right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Ht = MacdonaldPolynomialsHt(QQ)
             sage: Ht([1])^2 #indirect doctest
             ((-q+1)/(-q+t))*McdHt[1, 1] + ((t-1)/(-q+t))*McdHt[2]
@@ -839,11 +879,12 @@ class MacdonaldPolynomials_ht(MacdonaldPolynomials_generic):
 class MacdonaldPolynomial_ht(MacdonaldPolynomial_generic):
     def nabla(self):
         """
-        Returns the value of the nabla operator applied to self.  The
-        eigenvectors of the nabla operator are the Macdonald polynomials
-        in the Ht basis.
+        Returns the value of the nabla operator applied to self. The
+        eigenvectors of the nabla operator are the Macdonald polynomials in
+        the Ht basis.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Ht = MacdonaldPolynomialsHt(QQ)
             sage: t = Ht.t; q = Ht.q;
             sage: a = sum(Ht(p) for p in Partitions(3))
@@ -860,7 +901,8 @@ s_to_S_cache = {}
 class MacdonaldPolynomials_s(MacdonaldPolynomials_generic):
     def __init__(self, R, q=None, t=None):
         """
-        TESTS:
+        TESTS::
+
             sage: S = MacdonaldPolynomialsS(QQ)
             sage: S == loads(dumps(S))
             True
@@ -878,10 +920,11 @@ class MacdonaldPolynomials_s(MacdonaldPolynomials_generic):
 
     def _multiply(self, left, right):
         """
-        The multiplication of the modified Schur functions behaves the
-        same as the multiplication of the Schur functions.
+        The multiplication of the modified Schur functions behaves the same
+        as the multiplication of the Schur functions.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: S = MacdonaldPolynomialsS(QQ)
             sage: S([2])^2 #indirect doctest
             McdS[2, 2] + McdS[3, 1] + McdS[4]
@@ -893,17 +936,17 @@ class MacdonaldPolynomials_s(MacdonaldPolynomials_generic):
 
     def _to_s(self, part):
         """
-        Returns a function which gives the coefficient of a partition in the Schur
-        expansion of self(part).
+        Returns a function which gives the coefficient of a partition in
+        the Schur expansion of self(part).
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: S = MacdonaldPolynomialsS(QQ)
             sage: S2 = S._to_s(Partition([2]))
             sage: S2(Partition([2]))
             -t + 1
             sage: S2(Partition([1,1]))
             t^2 - t
-
         """
         #Covert to the power sum
         p = sfa.SFAPower(QQqt)
@@ -920,7 +963,8 @@ class MacdonaldPolynomials_s(MacdonaldPolynomials_generic):
         Compute the change of basis and its inverse between the Macdonald
         polynomials on the S basis and the Schur functions.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: S = MacdonaldPolynomialsS(QQ)
             sage: S._s_cache(2)
             sage: l = lambda c: [ (i[0],[j for j in sorted(i[1].items())]) for i in sorted(c.items())]
@@ -928,7 +972,6 @@ class MacdonaldPolynomials_s(MacdonaldPolynomials_generic):
             [([1, 1], [([1, 1], 1/(t^3 - t^2 - t + 1)), ([2], t/(t^3 - t^2 - t + 1))]), ([2], [([1, 1], t/(t^3 - t^2 - t + 1)), ([2], (-1)/(-t^3 + t^2 + t - 1))])]
             sage: l( S._self_to_s_cache[2] )
             [([1, 1], [([1, 1], -t + 1), ([2], t^2 - t)]), ([2], [([1, 1], t^2 - t), ([2], -t + 1)])]
-
         """
         self._invert_morphism(n, QQqt, self._self_to_s_cache, \
                               self._s_to_self_cache, to_other_function = self._to_s)
@@ -937,7 +980,8 @@ class MacdonaldPolynomials_s(MacdonaldPolynomials_generic):
         """
         Coerce things into the S basis though the Schur functions.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: S = MacdonaldPolynomialsS(QQ)
             sage: J = MacdonaldPolynomialsJ(QQ)
             sage: S._coerce_start(J([2]))
@@ -956,25 +1000,26 @@ class MacdonaldPolynomials_s(MacdonaldPolynomials_generic):
 class MacdonaldPolynomial_s(MacdonaldPolynomial_generic):
     def omega_qt(self):
         """
-        Returns the image of self under the Frobenius / omega automorphism.
+        Returns the image of self under the Frobenius / omega
+        automorphism.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: S = MacdonaldPolynomialsS(QQ)
             sage: S([1,1]).omega_qt()
             (t/(t^3-t^2-t+1))*McdS[1, 1] + ((-1)/(-t^3+t^2+t-1))*McdS[2]
-
         """
         S = self.parent()
         return S( self._omega_qt_in_schurs() )
 
     def _creation_by_determinant_helper(self, k, part):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: S = MacdonaldPolynomialsS(QQ)
             sage: a = S([2,1])
             sage: a._creation_by_determinant_helper(2,[1])
             (q^3*t-q^2*t-q+1)*McdS[2, 1] + (q^3-q^2*t-q+t)*McdS[3]
-
         """
         S = self.parent()
         q,t = S.q, S.t
@@ -1005,7 +1050,8 @@ class MacdonaldPolynomial_s(MacdonaldPolynomial_generic):
 
     def _creation_by_determinant(self, k):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: S = MacdonaldPolynomialsS(QQ)
             sage: a = S(1)
             sage: a._creation_by_determinant(1)
@@ -1019,15 +1065,15 @@ class MacdonaldPolynomial_s(MacdonaldPolynomial_generic):
 
     def _omega_qt_in_schurs(self):
         """
-        Returns the image of self under the omega_qt automorphism in
-        the Schur basis.
+        Returns the image of self under the omega_qt automorphism in the
+        Schur basis.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: S = MacdonaldPolynomialsS(QQ)
             sage: a = S([2,1]) + S([1,1,1])
             sage: a._omega_qt_in_schurs()
             s[2, 1] + s[3]
-
         """
         S = self.parent()
         f = lambda part: S._s(part.conjugate())
@@ -1035,7 +1081,8 @@ class MacdonaldPolynomial_s(MacdonaldPolynomial_generic):
 
     def creation(self, k):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: S = MacdonaldPolynomialsS(QQ)
             sage: a = S(1)
             sage: a.creation(1)
@@ -1049,10 +1096,11 @@ class MacdonaldPolynomial_s(MacdonaldPolynomial_generic):
 _qt_kostka_cache = {}
 def qt_kostka(lam, mu):
     """
-    Returns the $K_{\lambda\mu}(q,t)$ by computing the change of
-    basis from the Macdonald H basis to the Schurs.
+    Returns the `K_{\lambda\mu}(q,t)` by computing the change
+    of basis from the Macdonald H basis to the Schurs.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: from sage.combinat.sf.macdonald import qt_kostka
         sage: qt_kostka([2,1,1],[1,1,1,1])
         t^3 + t^2 + t
@@ -1076,7 +1124,6 @@ def qt_kostka(lam, mu):
         q*t^2 + q*t + 1
         sage: qt_kostka([2,1],[1,1,1,1])
         0
-
     """
     lam = sage.combinat.partition.Partition(lam)
     mu = sage.combinat.partition.Partition(mu)
@@ -1102,18 +1149,17 @@ def qt_kostka(lam, mu):
 
 def _set_cache(c, self):
     """
-    Since the Macdonald polynomials could be called many ways,
-    this is a utility routine that adds those other ways to
-    the cache.
+    Since the Macdonald polynomials could be called many ways, this is
+    a utility routine that adds those other ways to the cache.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: S = MacdonaldPolynomialsS(QQ)
         sage: R = QQ['q,t'].fraction_field()
         sage: q,t = R.gens()
         sage: S2 = MacdonaldPolynomialsS(R,q,t)
         sage: S2 is S #indirect doctest
         True
-
     """
     br = self.base_ring()
     q,t = self.q, self.t

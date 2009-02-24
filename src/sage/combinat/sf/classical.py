@@ -54,7 +54,8 @@ def init():
     """
     Set up the conversion functions between the classical bases.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: from sage.combinat.sf.classical import init
         sage: sage.combinat.sf.classical.conversion_functions = {}
         sage: init()
@@ -78,7 +79,8 @@ init()
 class SymmetricFunctionAlgebra_classical(sfa.SymmetricFunctionAlgebra_generic):
     def __init__(self, R, basis, element_class, prefix):
         """
-        TESTS:
+        TESTS::
+
             sage: from sage.combinat.sf.classical import SymmetricFunctionAlgebra_classical
             sage: s = SFASchur(QQ)
             sage: isinstance(s, SymmetricFunctionAlgebra_classical)
@@ -102,13 +104,13 @@ class SymmetricFunctionAlgebra_classical(sfa.SymmetricFunctionAlgebra_generic):
         """
         Coerce x into self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: s = SFASchur(QQ)
             sage: s(2)
             2*s[]
             sage: s([2,1])
             s[2, 1]
-
         """
         R = self.base_ring()
         eclass = self._element_class
@@ -301,7 +303,8 @@ class SymmetricFunctionAlgebra_classical(sfa.SymmetricFunctionAlgebra_generic):
 
     def is_field(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: s = SFASchur(QQ)
             sage: s.is_field()
             False
@@ -312,7 +315,8 @@ class SymmetricFunctionAlgebra_classical(sfa.SymmetricFunctionAlgebra_generic):
         """
         Return True if this symmetric function algebra is commutative.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: s = SFASchur(QQ)
             sage: s.is_commutative()
             True
@@ -323,10 +327,10 @@ class SymmetricFunctionAlgebra_classical(sfa.SymmetricFunctionAlgebra_generic):
         """
         Text representation of this symmetric function algebra.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: SFASchur(QQ).__repr__()
             'Symmetric Function Algebra over Rational Field, Schur symmetric functions as basis'
-
         """
         return "Symmetric Function Algebra over %s, %s symmetric functions as basis"%(self.base_ring(), self._basis.capitalize())
 

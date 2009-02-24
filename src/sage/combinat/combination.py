@@ -25,14 +25,15 @@ from sage.misc.misc import uniq
 
 def Combinations(mset, k=None):
     """
-    Returns the combinatorial class of combinations of mset. If
-    k is specified, then it returns the combintorial class
-    of combinations of mset of size k.
+    Returns the combinatorial class of combinations of mset. If k is
+    specified, then it returns the combintorial class of combinations
+    of mset of size k.
 
-    The combinatorial classes correctly handle the cases where
-    mset has duplicate elements.
+    The combinatorial classes correctly handle the cases where mset has
+    duplicate elements.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: C = Combinations(range(4)); C
         Combinations of [0, 1, 2, 3]
         sage: C.list()
@@ -55,26 +56,30 @@ def Combinations(mset, k=None):
          sage: C.count()
          16
 
-         sage: C2 = Combinations(range(4),2); C2
-         Combinations of [0, 1, 2, 3] of length 2
-         sage: C2.list()
-         [[0, 1], [0, 2], [0, 3], [1, 2], [1, 3], [2, 3]]
-         sage: C2.count()
-         6
+    ::
 
-         sage: Combinations([1,2,2,3]).list()
-         [[],
-          [1],
-          [2],
-          [3],
-          [1, 2],
-          [1, 3],
-          [2, 2],
-          [2, 3],
-          [1, 2, 2],
-          [1, 2, 3],
-          [2, 2, 3],
-          [1, 2, 2, 3]]
+        sage: C2 = Combinations(range(4),2); C2
+        Combinations of [0, 1, 2, 3] of length 2
+        sage: C2.list()
+        [[0, 1], [0, 2], [0, 3], [1, 2], [1, 3], [2, 3]]
+        sage: C2.count()
+        6
+
+    ::
+
+        sage: Combinations([1,2,2,3]).list()
+        [[],
+         [1],
+         [2],
+         [3],
+         [1, 2],
+         [1, 3],
+         [2, 2],
+         [2, 3],
+         [1, 2, 2],
+         [1, 2, 3],
+         [2, 2, 3],
+         [1, 2, 2, 3]]
     """
 
     #Check to see if everything in mset is unique
@@ -101,7 +106,8 @@ def Combinations(mset, k=None):
 class Combinations_mset(CombinatorialClass):
     def __init__(self, mset):
         """
-        TESTS:
+        TESTS::
+
             sage: C = Combinations(range(4))
             sage: C == loads(dumps(C))
             True
@@ -110,7 +116,8 @@ class Combinations_mset(CombinatorialClass):
 
     def __contains__(self, x):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: c = Combinations(range(4))
             sage: all( i in c for i in c )
             True
@@ -129,7 +136,8 @@ class Combinations_mset(CombinatorialClass):
 
     def __repr__(self):
         """
-        TESTS:
+        TESTS::
+
             sage: repr(Combinations(range(4)))
             'Combinations of [0, 1, 2, 3]'
         """
@@ -137,7 +145,8 @@ class Combinations_mset(CombinatorialClass):
 
     def iterator(self):
         """
-        TESTS:
+        TESTS::
+
             sage: Combinations(['a','a','b']).list() #indirect doctest
             [[], ['a'], ['b'], ['a', 'a'], ['a', 'b'], ['a', 'a', 'b']]
         """
@@ -147,7 +156,8 @@ class Combinations_mset(CombinatorialClass):
 
     def count(self):
         """
-        TESTS:
+        TESTS::
+
             sage: Combinations([1,2,3]).count()
             8
             sage: Combinations(['a','a','b']).count()
@@ -161,7 +171,8 @@ class Combinations_mset(CombinatorialClass):
 class Combinations_set(Combinations_mset):
     def iterator(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Combinations([1,2,3]).list() #indirect doctest
             [[], [1], [2], [3], [1, 2], [1, 3], [2, 3], [1, 2, 3]]
         """
@@ -171,7 +182,8 @@ class Combinations_set(Combinations_mset):
 
     def unrank(self, r):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: c = Combinations([1,2,3])
             sage: c.list() == map(c.unrank, range(c.count()))
             True
@@ -188,7 +200,8 @@ class Combinations_set(Combinations_mset):
 
     def rank(self, x):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: c = Combinations([1,2,3])
             sage: range(c.count()) == map(c.rank, c)
             True
@@ -204,7 +217,8 @@ class Combinations_set(Combinations_mset):
 class Combinations_msetk(CombinatorialClass):
     def __init__(self, mset, k):
         """
-        TESTS:
+        TESTS::
+
             sage: C = Combinations([1,2,3],2)
             sage: C == loads(dumps(C))
             True
@@ -214,7 +228,8 @@ class Combinations_msetk(CombinatorialClass):
 
     def __contains__(self, x):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: c = Combinations(range(4),2)
             sage: all( i in c for i in c )
             True
@@ -235,7 +250,8 @@ class Combinations_msetk(CombinatorialClass):
 
     def __repr__(self):
         """
-        TESTS:
+        TESTS::
+
             sage: repr(Combinations([1,2,2,3],2))
             'Combinations of [1, 2, 2, 3] of length 2'
         """
@@ -243,7 +259,8 @@ class Combinations_msetk(CombinatorialClass):
 
     def iterator(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Combinations(['a','a','b'],2).list() # indirect doctest
             [['a', 'a'], ['a', 'b']]
         """
@@ -257,10 +274,11 @@ class Combinations_msetk(CombinatorialClass):
 
     def count(self):
         """
-        Returns the size of combinations(mset,k).
-        IMPLEMENTATION: Wraps GAP's NrCombinations.
+        Returns the size of combinations(mset,k). IMPLEMENTATION: Wraps
+        GAP's NrCombinations.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: mset = [1,1,2,3,4,4,5]
             sage: Combinations(mset,2).count()
             12
@@ -273,7 +291,8 @@ class Combinations_setk(Combinations_msetk):
         """
         An iterator for all the n-combinations of items.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: it = Combinations([1,2,3,4],3)._iterator([1,2,3,4],4,3)
             sage: list(it)
             [[1, 2, 3], [1, 2, 4], [1, 3, 4], [2, 3, 4]]
@@ -291,7 +310,8 @@ class Combinations_setk(Combinations_msetk):
         """
         An iterator which just returns the empty list.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: it = Combinations([1,2,3,4,5],3)._iterator_zero()
             sage: list(it)
             [[]]
@@ -301,9 +321,10 @@ class Combinations_setk(Combinations_msetk):
     def iterator(self):
         r"""
         Posted by Raymond Hettinger, 2006/03/23, to the Python Cookbook:
-        \url{http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/474124}
+        http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/474124
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Combinations([1,2,3,4,5],3).list() # indirect doctest
             [[1, 2, 3],
              [1, 2, 4],
@@ -323,7 +344,8 @@ class Combinations_setk(Combinations_msetk):
 
     def list(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Combinations([1,2,3,4,5],3).list()
             [[1, 2, 3],
              [1, 2, 4],
@@ -340,7 +362,8 @@ class Combinations_setk(Combinations_msetk):
 
     def unrank(self, r):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: c = Combinations([1,2,3], 2)
             sage: c.list() == map(c.unrank, range(c.count()))
             True
@@ -349,7 +372,8 @@ class Combinations_setk(Combinations_msetk):
 
     def rank(self, x):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: c = Combinations([1,2,3], 2)
             sage: range(c.count()) == map(c.rank, c.list())
             True

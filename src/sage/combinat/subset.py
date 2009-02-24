@@ -33,10 +33,10 @@ def Subsets(s, k=None):
     If s is a non-negative integer, it returns the subsets of
     range(1,s+1).
 
-    If k is specified, it returns the subsets of s of size
-    k.
+    If k is specified, it returns the subsets of s of size k.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: S = Subsets([1,2,3]); S
         Subsets of {1, 2, 3}
         sage: S.count()
@@ -50,15 +50,18 @@ def Subsets(s, k=None):
         sage: S.list()
         [{}, {1}, {2}, {3}, {1, 2}, {1, 3}, {2, 3}, {1, 2, 3}]
 
+    ::
+
         sage: S = Subsets(3)
         sage: S.list()
         [{}, {1}, {2}, {3}, {1, 2}, {1, 3}, {2, 3}, {1, 2, 3}]
+
+    ::
 
         sage: S = Subsets(3,2); S
         Subsets of {1, 2, 3} of size 2
         sage: S.list()
         [{1, 2}, {1, 3}, {2, 3}]
-
     """
     if isinstance(s, (int, sage.rings.integer.Integer)):
         if s < 0:
@@ -78,7 +81,8 @@ def Subsets(s, k=None):
 class Subsets_s(CombinatorialClass):
     def __init__(self, s):
         """
-        TESTS:
+        TESTS::
+
             sage: S = Subsets([1,2,3])
             sage: S == loads(dumps(S))
             True
@@ -87,7 +91,8 @@ class Subsets_s(CombinatorialClass):
 
     def __repr__(self):
         """
-        TESTS:
+        TESTS::
+
             sage: repr(Subsets([1,2,3]))
             'Subsets of {1, 2, 3}'
         """
@@ -97,9 +102,10 @@ class Subsets_s(CombinatorialClass):
         r"""
         Returns the number of subsets of the set s.
 
-        This is given by $2^{|s|}$.
+        This is given by `2^{|s|}`.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Subsets(Set([1,2,3])).count()
             8
             sage: Subsets([1,2,3,3]).count()
@@ -111,11 +117,11 @@ class Subsets_s(CombinatorialClass):
 
     def first(self):
         """
-        Returns the first subset of s.  Since we aren't restricted
-        to subsets of a certain size, this is always the empty
-        set.
+        Returns the first subset of s. Since we aren't restricted to
+        subsets of a certain size, this is always the empty set.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Subsets([1,2,3]).first()
             {}
             sage: Subsets(3).first()
@@ -125,11 +131,11 @@ class Subsets_s(CombinatorialClass):
 
     def last(self):
         """
-        Returns the last subset of s.  Since we aren't restricted
-        to subsets of a certain size, this is always the set s
-        itself.
+        Returns the last subset of s. Since we aren't restricted to subsets
+        of a certain size, this is always the set s itself.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Subsets([1,2,3]).last()
             {1, 2, 3}
             sage: Subsets(3).last()
@@ -141,7 +147,8 @@ class Subsets_s(CombinatorialClass):
         """
         An iterator for all the subsets of s.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: [sub for sub in Subsets(Set([1,2,3]))]
             [{}, {1}, {2}, {3}, {1, 2}, {1, 3}, {2, 3}, {1, 2, 3}]
             sage: [sub for sub in Subsets([1,2,3,3])]
@@ -158,10 +165,11 @@ class Subsets_s(CombinatorialClass):
 
     def random_element(self):
         """
-        Returns a random element of the class of subsets of s (in other words,
-        a random subset of s).
+        Returns a random element of the class of subsets of s (in other
+        words, a random subset of s).
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Subsets(3).random_element()
             {2}
             sage: Subsets([4,5,6]).random_element()
@@ -175,7 +183,8 @@ class Subsets_s(CombinatorialClass):
         """
         Returns the rank of sub as a subset of s.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Subsets(3).rank([])
             0
             sage: Subsets(3).rank([1,2])
@@ -206,7 +215,8 @@ class Subsets_s(CombinatorialClass):
         """
         Returns the subset of s that has rank k.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Subsets(3).unrank(0)
             {}
             sage: Subsets([2,4,5]).unrank(1)
@@ -230,7 +240,8 @@ class Subsets_s(CombinatorialClass):
 class Subsets_sk(CombinatorialClass):
     def __init__(self, s, k):
         """
-        TESTS:
+        TESTS::
+
             sage: S = Subsets(3,2)
             sage: S == loads(dumps(S))
             True
@@ -240,15 +251,17 @@ class Subsets_sk(CombinatorialClass):
 
     def __repr__(self):
         """
-        TESTS:
-           sage: repr(Subsets(3,2))
-           'Subsets of {1, 2, 3} of size 2'
+        TESTS::
+
+            sage: repr(Subsets(3,2))
+            'Subsets of {1, 2, 3} of size 2'
         """
         return "Subsets of %s of size %s"%(self.s, self.k)
 
     def count(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Subsets([1,2,3,3], 2).count()
             3
             sage: Subsets(Set([1,2,3]), 2).count()
@@ -275,7 +288,8 @@ class Subsets_sk(CombinatorialClass):
         """
         Returns the first subset of s of size k.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Subsets(Set([1,2,3]), 2).first()
             {1, 2}
             sage: Subsets([1,2,3,3], 2).first()
@@ -283,7 +297,6 @@ class Subsets_sk(CombinatorialClass):
             sage: Subsets(3,2).first()
             {1, 2}
             sage: Subsets(3,4).first()
-
         """
         if self.k not in range(len(self.s)+1):
             return None
@@ -294,7 +307,8 @@ class Subsets_sk(CombinatorialClass):
         """
         Returns the last subset of s of size k.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Subsets(Set([1,2,3]), 2).last()
             {2, 3}
             sage: Subsets([1,2,3,3], 2).last()
@@ -312,7 +326,8 @@ class Subsets_sk(CombinatorialClass):
         """
         An iterator for all the subsets of s of size k.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: [sub for sub in Subsets(Set([1,2,3]), 2)]
             [{1, 2}, {1, 3}, {2, 3}]
             sage: [sub for sub in Subsets([1,2,3,3], 2)]
@@ -331,10 +346,11 @@ class Subsets_sk(CombinatorialClass):
 
     def random_element(self):
         """
-        Returns a random element of the class of subsets of s of size k (in other words,
-        a random subset of s of size k).
+        Returns a random element of the class of subsets of s of size k (in
+        other words, a random subset of s of size k).
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Subsets(3, 2).random_element()
             {1, 2}
             sage: Subsets(3,4).random_element() is None
@@ -352,7 +368,8 @@ class Subsets_sk(CombinatorialClass):
         """
         Returns the rank of sub as a subset of s of size k.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Subsets(3,2).rank([1,2])
             0
             sage: Subsets([2,3,4],2).rank([3,4])
@@ -384,7 +401,8 @@ class Subsets_sk(CombinatorialClass):
         """
         Returns the subset of s that has rank k.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Subsets(3,2).unrank(0)
             {1, 2}
             sage: Subsets([2,4,5],2).unrank(0)

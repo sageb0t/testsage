@@ -34,10 +34,11 @@ def Tableau(t):
     """
     Returns the tableau object corresponding to t.
 
-    Note that Sage uses the English convention for
-    partitions and tableaux.
+    Note that Sage uses the English convention for partitions and
+    tableaux.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: t = Tableau([[1,2,3],[4,5]]); t
         [[1, 2, 3], [4, 5]]
         sage: t.shape()
@@ -54,7 +55,8 @@ def Tableau(t):
 class Tableau_class(CombinatorialObject):
     def __init__(self, t):
         """
-        TESTS:
+        TESTS::
+
             sage: t = Tableau([[1,2],[3,4]])
             sage: t == loads(dumps(t))
             True
@@ -65,7 +67,8 @@ class Tableau_class(CombinatorialObject):
         r"""
         Returns a LaTeX version of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: latex(Tableau([[1,1,2],[2,3],[3]]))
             {\def\lr#1{\multicolumn{1}{|@{\hspace{.6ex}}c@{\hspace{.6ex}}|}{\raisebox{-.3ex}{$#1$}}}
             \raisebox{-.6ex}{$\begin{array}[b]{ccc}
@@ -83,7 +86,8 @@ class Tableau_class(CombinatorialObject):
 
     def _tex_from_array(self):
         r"""
-        EXAMPLES:
+        EXAMPLES::
+
             sage: print Tableau([[1,2],[3,4]])._tex_from_array()
             {\def\lr#1{\multicolumn{1}{|@{\hspace{.6ex}}c@{\hspace{.6ex}}|}{\raisebox{-.3ex}{$#1$}}}
             \raisebox{-.6ex}{$\begin{array}[b]{cc}
@@ -103,7 +107,8 @@ class Tableau_class(CombinatorialObject):
         """
         Returns the skew partition self/t.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: t = Tableau([[1,2,3],[3,4],[5]])
             sage: t/[1,1]
             [[None, 2, 3], [None, 4], [5]]
@@ -131,7 +136,8 @@ class Tableau_class(CombinatorialObject):
         r"""
         Returns the shape of a tableau t.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Tableau([[1,2,3],[4,5],[6]]).shape()
             [3, 2, 1]
         """
@@ -142,12 +148,12 @@ class Tableau_class(CombinatorialObject):
         """
         Returns the size of the shape of the tableau t.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Tableau([[1, 4, 6], [2, 5], [3]]).size()
             6
             sage: Tableau([[1, 3], [2, 4]]).size()
             4
-
         """
         return sum([len(row) for row in self])
 
@@ -155,12 +161,12 @@ class Tableau_class(CombinatorialObject):
         """
         Returns the corners of the tableau t.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Tableau([[1, 4, 6], [2, 5], [3]]).corners()
             [[0, 2], [1, 1], [2, 0]]
             sage: Tableau([[1, 3], [2, 4]]).corners()
             [[1, 1]]
-
         """
         return self.shape().corners()
 
@@ -168,7 +174,8 @@ class Tableau_class(CombinatorialObject):
         """
         Returns the conjugate of the tableau t.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Tableau([[1,2],[3,4]]).conjugate()
             [[1, 3], [2, 4]]
         """
@@ -186,7 +193,8 @@ class Tableau_class(CombinatorialObject):
         """
         Returns a pretty print string of the tableau.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Tableau([[1,2,3],[3,4],[5]]).pp()
               1  2  3
               3  4
@@ -198,7 +206,8 @@ class Tableau_class(CombinatorialObject):
         """
         Returns a word obtained from a row reading of the tableau t.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Tableau([[1,2],[3,4]]).to_word_by_row()
             word: 3412
             sage: Tableau([[1, 4, 6], [2, 5], [3]]).to_word_by_row()
@@ -213,7 +222,8 @@ class Tableau_class(CombinatorialObject):
         """
         Returns the word obtained from a column reading of the tableau t.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Tableau([[1,2],[3,4]]).to_word_by_column()
             word: 3142
             sage: Tableau([[1, 4, 6], [2, 5], [3]]).to_word_by_column()
@@ -229,7 +239,8 @@ class Tableau_class(CombinatorialObject):
         """
         An alias for to_word_by_row.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Tableau([[1,2],[3,4]]).to_word()
             word: 3412
             sage: Tableau([[1, 4, 6], [2, 5], [3]]).to_word()
@@ -239,10 +250,11 @@ class Tableau_class(CombinatorialObject):
 
     def to_permutation(self):
         """
-        Returns a permutation with the entries of self obtained by
-        reading self in the reading order.
+        Returns a permutation with the entries of self obtained by reading
+        self in the reading order.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Tableau([[1,2],[3,4]]).to_permutation()
             [3, 4, 1, 2]
         """
@@ -250,15 +262,15 @@ class Tableau_class(CombinatorialObject):
 
     def descents(self):
         """
-        Returns a list of the boxes (i,j) such that
-        self[i][j] > self[i-1][j].
+        Returns a list of the boxes (i,j) such that self[i][j]
+        self[i-1][j].
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Tableau( [[1,4],[2,3]] ).descents()
             [(1, 0)]
             sage: Tableau( [[1,2],[3,4]] ).descents()
             [(1, 0), (1, 1)]
-
         """
         descents = []
         for i in range(1,len(self)):
@@ -269,11 +281,14 @@ class Tableau_class(CombinatorialObject):
 
     def major_index(self):
         """
-        Returns the major index of self.  The major index
-        is defined to be the sum of the number of descents
-        of self and the sum of their legs.
+        Returns the major index of self. The major index is defined to be
+        the sum of the number of descents of self and the sum of their
+        legs.
 
         EXAMPLES
+
+        ::
+
             sage: Tableau( [[1,4],[2,3]] ).major_index()
             1
             sage: Tableau( [[1,2],[3,4]] ).major_index()
@@ -285,15 +300,17 @@ class Tableau_class(CombinatorialObject):
 
     def attacking_pairs(self):
         """
-        Returns a list of the attacking pairs of self.  An pair of boxes
-        (c, d) is said to be attacking if one of the following
-        conditions hold:
+        Returns a list of the attacking pairs of self. An pair of boxes (c,
+        d) is said to be attacking if one of the following conditions
+        hold:
 
-            1) c and d lie in the same row with c to the west of d
-            2) c is in the row immediately to the south of d and c
-               lies strictly east of d.
+        1. c and d lie in the same row with c to the west of d
 
-        EXAMPLES:
+        2. c is in the row immediately to the south of d and c
+           lies strictly east of d.
+
+        EXAMPLES::
+
             sage: t = Tableau([[1,2,3],[2,5]])
             sage: t.attacking_pairs()
             [((0, 0), (0, 1)),
@@ -320,11 +337,12 @@ class Tableau_class(CombinatorialObject):
 
     def inversions(self):
         """
-        Returns a list of the inversions of self.  An inversion is an
+        Returns a list of the inversions of self. An inversion is an
         attacking pair (c,d) such that the entry of c in self is greater
         than the entry of d.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: t = Tableau([[1,2,3],[2,5]])
             sage: t.inversions()
             [((1, 1), (0, 0))]
@@ -339,10 +357,11 @@ class Tableau_class(CombinatorialObject):
         """
         Returns the inversion number of self.
 
-        The inversion number is defined to be the number of inversion of self
-        minus the sum of the arm lengths of the descents of self.
+        The inversion number is defined to be the number of inversion of
+        self minus the sum of the arm lengths of the descents of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: t = Tableau([[1,2,3],[2,5]])
             sage: t.inversion_number()
             0
@@ -352,10 +371,11 @@ class Tableau_class(CombinatorialObject):
 
     def entry(self, box):
         """
-        Returns the entry of box in self.  Box is a tuple (i,j)
-        of coordinates.
+        Returns the entry of box in self. Box is a tuple (i,j) of
+        coordinates.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: t = Tableau([[1,2],[3,4]])
             sage: t.entry( (0,0) )
             1
@@ -369,7 +389,8 @@ class Tableau_class(CombinatorialObject):
         """
         Returns the evaluation of the word from tableau t.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Tableau([[1,2],[3,4]]).evaluation()
             [1, 1, 1, 1]
         """
@@ -381,7 +402,8 @@ class Tableau_class(CombinatorialObject):
         """
         Returns True if t is a standard tableau and False otherwise.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Tableau([[1, 3], [2, 4]]).is_standard()
             True
             sage: Tableau([[1, 2], [2, 4]]).is_standard()
@@ -419,7 +441,8 @@ class Tableau_class(CombinatorialObject):
         """
         Returns True if the tableau t is rectangular and False otherwise.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Tableau([[1,2],[3,4]]).is_rectangular()
             True
             sage: Tableau([[1,2,3],[4,5],[6]]).is_rectangular()
@@ -436,7 +459,8 @@ class Tableau_class(CombinatorialObject):
         Returns the tableau obtained by vertically flipping the tableau t.
         This only works for rectangular tableau.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Tableau([[1,2],[3,4]]).vertical_flip()
             [[3, 4], [1, 2]]
         """
@@ -450,7 +474,8 @@ class Tableau_class(CombinatorialObject):
         """
         Returns the tableau obtained by rotating t by 180 degrees.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Tableau([[1,2],[3,4]]).rotate_180()
             [[4, 3], [2, 1]]
         """
@@ -463,7 +488,8 @@ class Tableau_class(CombinatorialObject):
         """
         Returns a list of the coordinates of the boxes of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Tableau([[1,2],[3,4]]).boxes()
             [(0, 0), (0, 1), (1, 0), (1, 1)]
         """
@@ -476,22 +502,23 @@ class Tableau_class(CombinatorialObject):
         """
         Returns the k-weight of self.
 
-        EXAMPLES:
-           sage: Tableau([[1,2],[2,3]]).k_weight(1)
-           [1, 1, 1]
-           sage: Tableau([[1,2],[2,3]]).k_weight(2)
-           [1, 2, 1]
-           sage: t = Tableau([[1,1,1,2,5],[2,3,6],[3],[4]])
-           sage: t.k_weight(1)
-           [2, 1, 1, 1, 1, 1]
-           sage: t.k_weight(2)
-           [3, 2, 2, 1, 1, 1]
-           sage: t.k_weight(3)
-           [3, 1, 2, 1, 1, 1]
-           sage: t.k_weight(4)
-           [3, 2, 2, 1, 1, 1]
-           sage: t.k_weight(5)
-           [3, 2, 2, 1, 1, 1]
+        EXAMPLES::
+
+            sage: Tableau([[1,2],[2,3]]).k_weight(1)
+            [1, 1, 1]
+            sage: Tableau([[1,2],[2,3]]).k_weight(2)
+            [1, 2, 1]
+            sage: t = Tableau([[1,1,1,2,5],[2,3,6],[3],[4]])
+            sage: t.k_weight(1)
+            [2, 1, 1, 1, 1, 1]
+            sage: t.k_weight(2)
+            [3, 2, 2, 1, 1, 1]
+            sage: t.k_weight(3)
+            [3, 1, 2, 1, 1, 1]
+            sage: t.k_weight(4)
+            [3, 2, 2, 1, 1, 1]
+            sage: t.k_weight(5)
+            [3, 2, 2, 1, 1, 1]
         """
         res = []
         w = self.weight()
@@ -513,7 +540,8 @@ class Tableau_class(CombinatorialObject):
         """
         Returns the restriction of the standard tableau to n.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Tableau([[1,2],[3],[4]]).restrict(3)
             [[1, 2], [3]]
             sage: Tableau([[1,2],[3],[4]]).restrict(2)
@@ -526,10 +554,11 @@ class Tableau_class(CombinatorialObject):
 
     def to_chain(self):
         """
-        Returns the chain of partitions corresponding to the
-        (semi)standard tableau.
+        Returns the chain of partitions corresponding to the (semi)standard
+        tableau.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Tableau([[1,2],[3],[4]]).to_chain()
             [[], [1], [2], [2, 1], [2, 1, 1]]
             sage: Tableau([[1,1],[2]]).to_chain()
@@ -546,10 +575,11 @@ class Tableau_class(CombinatorialObject):
 
     def anti_restrict(self, n):
         """
-        Returns the skew tableau formed by removing all of the boxes
-        from self that are filled with a number less than
+        Returns the skew tableau formed by removing all of the boxes from
+        self that are filled with a number less than
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: t = Tableau([[1,2,3],[4,5]]); t
             [[1, 2, 3], [4, 5]]
             sage: t.anti_restrict(1)
@@ -560,7 +590,6 @@ class Tableau_class(CombinatorialObject):
             [[None, None, None], [4, 5]]
             sage: t.anti_restrict(4)
             [[None, None, None], [None, 5]]
-
         """
         t = list(copy.deepcopy(self))
 
@@ -572,8 +601,9 @@ class Tableau_class(CombinatorialObject):
 
     def up(self):
         """
-        An iterator for all the tableaux that can be obtained from self by adding a box.
-        EXAMPLES:
+        An iterator for all the tableaux that can be obtained from self by
+        adding a box. EXAMPLES::
+
             sage: t = Tableau([[1,2]])
             sage: [x for x in t.up()]
             [[[1, 2, 3]], [[1, 2], [3]]]
@@ -597,9 +627,11 @@ class Tableau_class(CombinatorialObject):
 
     def up_list(self):
         """
-        Returns a list of all the tableaux that can be obtained from self by adding a box.
+        Returns a list of all the tableaux that can be obtained from self
+        by adding a box.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: t = Tableau([[1,2]])
             sage: t.up_list()
             [[[1, 2, 3]], [[1, 2], [3]]]
@@ -608,8 +640,10 @@ class Tableau_class(CombinatorialObject):
 
     def down(self):
         """
-        An iterator for all the tableaux that can be obtained from self by removing a box.  Note that this iterates just over a single tableaux.
-        EXAMPLES:
+        An iterator for all the tableaux that can be obtained from self by
+        removing a box. Note that this iterates just over a single
+        tableaux. EXAMPLES::
+
             sage: t = Tableau([[1,2],[3]])
             sage: [x for x in t.down()]
             [[[1, 2]]]
@@ -618,9 +652,11 @@ class Tableau_class(CombinatorialObject):
 
     def down_list(self):
         """
-        Returns a list of all the tableaux that can be obtained from self by removing a box.  Note that this is just a single tableaux.
+        Returns a list of all the tableaux that can be obtained from self
+        by removing a box. Note that this is just a single tableaux.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: t = Tableau([[1,2],[3]])
             sage: t.down_list()
             [[[1, 2]]]
@@ -629,7 +665,8 @@ class Tableau_class(CombinatorialObject):
 
     def to_list(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: t = Tableau([[1,2],[3,4]])
             sage: l = t.to_list(); l
             [[1, 2], [3, 4]]
@@ -643,7 +680,8 @@ class Tableau_class(CombinatorialObject):
         """
         Schensted's row-bumping (or row-insertion) algorithm.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: t = Tableau([[1,2],[3]])
             sage: t.bump(1)
             [[1, 1], [2], [3]]
@@ -658,7 +696,6 @@ class Tableau_class(CombinatorialObject):
             sage: t = Tableau([[1,2,2,3],[2,3,5,5],[4,4,6],[5,6]])
             sage: t.bump(2)
             [[1, 2, 2, 2], [2, 3, 3, 5], [4, 4, 5], [5, 6, 6]]
-
         """
         new_t = self.to_list()
         to_insert = x
@@ -693,7 +730,8 @@ class Tableau_class(CombinatorialObject):
 
     def schensted_insert(self, i, left=False):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: t = Tableau([[3,5],[7]])
             sage: t.schensted_insert(8)
             [[3, 5, 8], [7]]
@@ -707,7 +745,8 @@ class Tableau_class(CombinatorialObject):
 
     def _right_schensted_insert(self, letter):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: t = Tableau([[3,5],[7]])
             sage: t._right_schensted_insert(8)
             [[3, 5, 8], [7]]
@@ -739,7 +778,8 @@ class Tableau_class(CombinatorialObject):
 
     def _left_schensted_insert(self, letter):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: t = Tableau([[3,5],[7]])
             sage: t._left_schensted_insert(8)
             [[3, 5], [7], [8]]
@@ -786,7 +826,8 @@ class Tableau_class(CombinatorialObject):
 
     def insert_word(self, w, left=False):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: t0 = Tableau([])
             sage: w = [1,1,2,3,3,3,3]
             sage: t0.insert_word(w)
@@ -815,12 +856,12 @@ class Tableau_class(CombinatorialObject):
 
         Fulton, William. 'Young Tableaux' p11-12
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: t = Tableau([[1,2,2,3],[2,3,5,5],[4,4,6],[5,6]])
             sage: t2 = Tableau([[1,2],[3]])
             sage: t.bump_multiply(t2)
             [[1, 1, 2, 2, 3], [2, 2, 3, 5], [3, 4, 5], [4, 6, 6], [5]]
-
         """
         if not isinstance(right, Tableau_class):
             raise TypeError, "right must be a Tableau"
@@ -842,7 +883,8 @@ class Tableau_class(CombinatorialObject):
 
         Fulton, William. 'Young Tableaux' p15
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: t = Tableau([[1,2,2,3],[2,3,5,5],[4,4,6],[5,6]])
             sage: t2 = Tableau([[1,2],[3]])
             sage: t.slide_multiply(t2)
@@ -863,9 +905,11 @@ class Tableau_class(CombinatorialObject):
 
     def promotion_inverse(self, n):
 	"""
-	Inverse promotion operator defined on rectangular tableaux using jeu de taquin
+	Inverse promotion operator defined on rectangular tableaux using
+	jeu de taquin
 
-	EXAMPLES:
+	EXAMPLES::
+
 	    sage: t = Tableau([[1,2],[3,3]])
 	    sage: t.promotion_inverse(2)
 	    [[1, 2], [2, 3]]
@@ -891,9 +935,11 @@ class Tableau_class(CombinatorialObject):
 
     def promotion(self, n):
 	"""
-	Promotion operator defined on rectangular tableaux using jeu de taquin
+	Promotion operator defined on rectangular tableaux using jeu de
+	taquin
 
-	EXAMPLES:
+	EXAMPLES::
+
 	    sage: t = Tableau([[1,2],[3,3]])
 	    sage: t.promotion(2)
 	    [[1, 1], [2, 3]]
@@ -916,10 +962,11 @@ class Tableau_class(CombinatorialObject):
 
     def row_stabilizer(self):
         """
-        Return the PermutationGroup corresponding to the row stabilizer
-        of self.
+        Return the PermutationGroup corresponding to the row stabilizer of
+        self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: rs = Tableau([[1,2,3],[4,5]]).row_stabilizer()
             sage: rs.order() == factorial(3)*factorial(2)
             True
@@ -943,7 +990,8 @@ class Tableau_class(CombinatorialObject):
         Return the PermutationGroup corresponding to the column stabilizer
         of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: cs = Tableau([[1,2,3],[4,5]]).column_stabilizer()
             sage: cs.order() == factorial(2)*factorial(2)
             True
@@ -959,7 +1007,8 @@ class Tableau_class(CombinatorialObject):
         """
         Returns the height of the tableau.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Tableau([[1,2,3],[4,5]]).height()
             2
             sage: Tableau([[1,2,3]]).height()
@@ -971,8 +1020,8 @@ class Tableau_class(CombinatorialObject):
 
     def _heights(self):
         """
+        EXAMPLES::
 
-        EXAMPLES:
             sage: Tableau([[1,2,3,4],[5,6],[7],[8]])._heights()
             [1, 3, 4, 4]
             sage: Tableau([])._heights()
@@ -983,7 +1032,6 @@ class Tableau_class(CombinatorialObject):
             [1, 1]
             sage: Tableau([[1,2],[3],[4]])._heights()
             [1, 3]
-
         """
         cor = self.corners()
         ncor = len(cor)
@@ -1000,10 +1048,11 @@ class Tableau_class(CombinatorialObject):
 
     def last_letter_lequal(self, tab2):
         """
-        Returns True if self is less than or equal to tab2 in the
-        last letter ordering.
+        Returns True if self is less than or equal to tab2 in the last
+        letter ordering.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: st = StandardTableaux([3,2])
             sage: f = lambda b: 1 if b else 0
             sage: matrix( [ [ f(t1.last_letter_lequal(t2)) for t2 in st] for t1 in st] )
@@ -1012,7 +1061,6 @@ class Tableau_class(CombinatorialObject):
             [0 0 1 1 1]
             [0 0 0 1 1]
             [0 0 0 0 1]
-
         """
         n = self.size()
         if not isinstance(tab2, Tableau_class):
@@ -1047,7 +1095,8 @@ class Tableau_class(CombinatorialObject):
 
     def charge(self):
         """
-        EXAPMLES:
+        EXAPMLES::
+
             sage: Tableau([[1,1],[2,2],[3]]).charge()
             0
             sage: Tableau([[1,1,3],[2,2]]).charge()
@@ -1062,13 +1111,13 @@ class Tableau_class(CombinatorialObject):
             3
             sage: Tableau([[1,1,2,2,3]]).charge()
             4
-
         """
         return self.to_word().reversal().charge()
 
     def cocharge(self):
         """
-        EXAPMLES:
+        EXAPMLES::
+
             sage: Tableau([[1,1],[2,2],[3]]).cocharge()
             4
             sage: Tableau([[1,1,3],[2,2]]).cocharge()
@@ -1083,7 +1132,6 @@ class Tableau_class(CombinatorialObject):
             1
             sage: Tableau([[1,1,2,2,3]]).cocharge()
             0
-
         """
         return self.to_word().charge()
 
@@ -1093,7 +1141,8 @@ class Tableau_class(CombinatorialObject):
 
     def katabolism(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Tableau([]).katabolism()
             []
             sage: Tableau([[1,2,3,4,5]]).katabolism()
@@ -1112,7 +1161,8 @@ class Tableau_class(CombinatorialObject):
 
     def katabolism_sequence(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: t = Tableau([[1,2,3,4,5,6,8],[7,9]])
             sage: t.katabolism_sequence()
             [[[1, 2, 3, 4, 5, 6, 8], [7, 9]],
@@ -1129,7 +1179,8 @@ class Tableau_class(CombinatorialObject):
 
     def lambda_katabolism(self, part):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: t = Tableau([[1,1,3,3],[2,3],[3]])
             sage: t.lambda_katabolism([])
             [[1, 1, 3, 3], [2, 3], [3]]
@@ -1145,7 +1196,6 @@ class Tableau_class(CombinatorialObject):
             [[3, 3]]
             sage: t.lambda_katabolism([4,1])
             [[3, 3]]
-
         """
         #Reduce the partition if it is too big for the tableau
         part  = [ min(part[i],len(self[i])) for i in range(min(len(self), len(part))) ]
@@ -1171,7 +1221,8 @@ class Tableau_class(CombinatorialObject):
 
     def reduced_lambda_katabolism(self, part):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: t = Tableau([[1,1,3,3],[2,3],[3]])
             sage: t.reduced_lambda_katabolism([])
             [[1, 1, 3, 3], [2, 3], [3]]
@@ -1214,7 +1265,8 @@ class Tableau_class(CombinatorialObject):
 
     def katabolism_projector(self, parts):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: t = Tableau([[1,1,3,3],[2,3],[3]])
             sage: t.katabolism_projector([[4,2,1]])
             [[1, 1, 3, 3], [2, 3], [3]]
@@ -1238,7 +1290,8 @@ class Tableau_class(CombinatorialObject):
 
     def promotion_operator(self, i):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: t = Tableau([[1,2],[3]])
             sage: t.promotion_operator(1)
             [[[1, 2], [3], [4]], [[1, 2], [3, 4]], [[1, 2, 4], [3]]]
@@ -1255,12 +1308,12 @@ class Tableau_class(CombinatorialObject):
              [[1, 1, 1, 3], [2, 2]],
              [[1, 1, 1, 2, 3], [2]]]
 
-        TESTS:
+        TESTS::
+
             sage: Tableau([]).promotion_operator(2)
             [[[1, 1]]]
             sage: Tableau([]).promotion_operator(1)
             [[[1]]]
-
         """
         chain = self.to_chain()
         part = self.shape()
@@ -1275,7 +1328,8 @@ class Tableau_class(CombinatorialObject):
     ##################################
     def raise_action_from_words(self, f, *args):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.combinat.tableau import symmetric_group_action_on_values
             sage: import functools
             sage: t = Tableau([[1,1,3,3],[2,3],[3]])
@@ -1293,7 +1347,8 @@ class Tableau_class(CombinatorialObject):
 
     def symmetric_group_action_on_values(self, perm):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: t = Tableau([[1,1,3,3],[2,3],[3]])
             sage: t.symmetric_group_action_on_values([1,2,3])
             [[1, 1, 3, 3], [2, 3], [3]]
@@ -1309,7 +1364,8 @@ class Tableau_class(CombinatorialObject):
     #########
     def socle(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Tableau([[1,2],[3,4]]).socle()
             2
             sage: Tableau([[1,2,3,4]]).socle()
@@ -1328,12 +1384,12 @@ class Tableau_class(CombinatorialObject):
 
     def atom(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Tableau([[1,2],[3,4]]).atom()
             [2, 2]
             sage: Tableau([[1,2,3],[4,5],[6]]).atom()
             [3, 2, 1]
-
         """
         ll = [ t.socle() for t in self.katabolism_sequence() ]
         lres = ll[:]
@@ -1345,7 +1401,8 @@ def from_chain(chain):
     """
     Returns a semistandard tableau from a chain of partitions.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: from sage.combinat.tableau import from_chain
         sage: from_chain([[], [2], [2, 1], [3, 2, 1]])
         [[1, 1, 3], [2, 3], [3]]
@@ -1361,7 +1418,8 @@ def from_shape_and_word(shape, w):
     """
     Returns a tableau from a shape and word.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: from sage.combinat.tableau import from_shape_and_word
         sage: t = Tableau([[1, 3], [2], [4]])
         sage: shape = t.shape(); shape
@@ -1381,11 +1439,11 @@ def from_shape_and_word(shape, w):
 
 def Tableaux(n=None):
     """
-    Returns the combinatorial class of tableaux.  If n
-    is specified, then it returns the combinatoiral class
-    of all tableaux of size n.
+    Returns the combinatorial class of tableaux. If n is specified,
+    then it returns the combinatoiral class of all tableaux of size n.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: T = Tableaux(); T
         Tableaux
         sage: [[1,2],[3,4]] in T
@@ -1394,6 +1452,8 @@ def Tableaux(n=None):
         True
         sage: [1,2,3] in T
         False
+
+    ::
 
         sage: T = Tableaux(4); T
         Tableaux of size 4
@@ -1412,7 +1472,8 @@ def Tableaux(n=None):
 class Tableaux_all(CombinatorialClass):
     def __init__(self):
         """
-        TESTS:
+        TESTS::
+
             sage: T = Tableaux()
             sage: T == loads(dumps(T))
             True
@@ -1421,7 +1482,8 @@ class Tableaux_all(CombinatorialClass):
 
     def __contains__(self, x):
         """
-        TESTS:
+        TESTS::
+
             sage: T = Tableaux()
             sage: [[1,2],[3,4]] in T
             True
@@ -1447,7 +1509,8 @@ class Tableaux_all(CombinatorialClass):
 
     def __repr__(self):
         """
-        TESTS:
+        TESTS::
+
             sage: repr(Tableaux())
             'Tableaux'
         """
@@ -1455,7 +1518,8 @@ class Tableaux_all(CombinatorialClass):
 
     def list(self):
         """
-        TESTS:
+        TESTS::
+
             sage: Tableaux().list()
             Traceback (most recent call last):
             ...
@@ -1465,7 +1529,8 @@ class Tableaux_all(CombinatorialClass):
 
     def iterator(self):
         """
-        TESTS:
+        TESTS::
+
             sage: Tableaux().iterator()
             Traceback (most recent call last):
             ...
@@ -1476,7 +1541,8 @@ class Tableaux_all(CombinatorialClass):
 class Tableaux_n(CombinatorialClass):
     def __init__(self, n):
         """
-        TESTS:
+        TESTS::
+
             sage: T = Tableaux(3)
             sage: T == loads(dumps(T))
             True
@@ -1485,7 +1551,8 @@ class Tableaux_n(CombinatorialClass):
 
     def __repr__(self):
         """
-        TESTS:
+        TESTS::
+
             sage: repr(Tableaux(4))
             'Tableaux of size 4'
         """
@@ -1493,7 +1560,8 @@ class Tableaux_n(CombinatorialClass):
 
     def __contains__(self,x):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: [[2,4],[1,3]] in Tableaux(3)
             False
             sage: [[2,4], [1]] in Tableaux(3)
@@ -1503,7 +1571,8 @@ class Tableaux_n(CombinatorialClass):
 
     def list(self):
         """
-        TESTS:
+        TESTS::
+
             sage: Tableaux(3).list()
             Traceback (most recent call last):
             ...
@@ -1513,7 +1582,8 @@ class Tableaux_n(CombinatorialClass):
 
     def iterator(self):
         """
-        TESTS:
+        TESTS::
+
             sage: Tableaux(3).iterator()
             Traceback (most recent call last):
             ...
@@ -1523,13 +1593,13 @@ class Tableaux_n(CombinatorialClass):
 
 def StandardTableaux(n=None):
     """
-    Returns the combinatorial class of standard tableaux.
-    If n is specified abd is an integer, then it returns
-    the combinatorial class of all standard tableaux of
-    size n.  If n is a partition, then it returns the class
-    of all standard tableaux of shape n.
+    Returns the combinatorial class of standard tableaux. If n is
+    specified and is an integer, then it returns the combinatorial
+    class of all standard tableaux of size n. If n is a partition, then
+    it returns the class of all standard tableaux of shape n.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: ST = StandardTableaux(3); ST
         Standard tableaux of size 3
         sage: ST.first()
@@ -1540,6 +1610,8 @@ def StandardTableaux(n=None):
         4
         sage: ST.list()
         [[[1, 2, 3]], [[1, 3], [2]], [[1, 2], [3]], [[1], [2], [3]]]
+
+    ::
 
         sage: ST = StandardTableaux([2,2]); ST
         Standard tableaux of shape [2, 2]
@@ -1562,7 +1634,8 @@ def StandardTableaux(n=None):
 class StandardTableaux_all(CombinatorialClass):
     def __init__(self):
         """
-        TESTS:
+        TESTS::
+
             sage: ST = StandardTableaux()
             sage: ST == loads(dumps(ST))
             True
@@ -1571,7 +1644,8 @@ class StandardTableaux_all(CombinatorialClass):
 
     def __contains__(self, x):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: [[1,1],[2,3]] in StandardTableaux()
             False
             sage: [[1,2],[3,4]] in StandardTableaux()
@@ -1609,7 +1683,8 @@ class StandardTableaux_all(CombinatorialClass):
 
     def __repr__(self):
         """
-        TESTS:
+        TESTS::
+
             sage: repr(StandardTableaux())
             'Standard tableaux'
         """
@@ -1617,7 +1692,8 @@ class StandardTableaux_all(CombinatorialClass):
 
     def list(self):
         """
-        TESTS:
+        TESTS::
+
             sage: StandardTableaux().list()
             Traceback (most recent call last):
             ...
@@ -1628,7 +1704,8 @@ class StandardTableaux_all(CombinatorialClass):
 class StandardTableaux_n(CombinatorialClass):
     def __init__(self, n):
         """
-        TESTS:
+        TESTS::
+
             sage: ST = StandardTableaux(3)
             sage: ST == loads(dumps(ST))
             True
@@ -1639,7 +1716,8 @@ class StandardTableaux_n(CombinatorialClass):
 
     def __repr__(self):
         """
-        TESTS:
+        TESTS::
+
             sage: repr(StandardTableaux(3))
             'Standard tableaux of size 3'
         """
@@ -1647,7 +1725,8 @@ class StandardTableaux_n(CombinatorialClass):
 
     def __contains__(self, x):
         """
-        TESTS:
+        TESTS::
+
             sage: ST3 = StandardTableaux(3)
             sage: all([st in ST3 for st in ST3])
             True
@@ -1659,7 +1738,8 @@ class StandardTableaux_n(CombinatorialClass):
 
     def iterator(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: StandardTableaux(1).list()
             [[[1]]]
             sage: StandardTableaux(2).list()
@@ -1684,7 +1764,8 @@ class StandardTableaux_n(CombinatorialClass):
 
     def count(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: StandardTableaux(3).count()
             4
             sage: ns = [1,2,3,4,5,6]
@@ -1700,7 +1781,8 @@ class StandardTableaux_n(CombinatorialClass):
 class StandardTableaux_partition(CombinatorialClass):
     def __init__(self, p):
         """
-        TESTS:
+        TESTS::
+
             sage: ST = StandardTableaux([2,1,1])
             sage: ST == loads(dumps(ST))
             True
@@ -1709,7 +1791,8 @@ class StandardTableaux_partition(CombinatorialClass):
 
     def __contains__(self, x):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: ST = StandardTableaux([2,1,1])
             sage: all([st in ST for st in ST])
             True
@@ -1717,13 +1800,13 @@ class StandardTableaux_partition(CombinatorialClass):
             3
             sage: ST.count()
             3
-
         """
         return x in StandardTableaux() and map(len,x) == self.p
 
     def __repr__(self):
         """
-        TESTS:
+        TESTS::
+
             sage: repr(StandardTableaux([2,1,1]))
             'Standard tableaux of shape [2, 1, 1]'
         """
@@ -1731,25 +1814,33 @@ class StandardTableaux_partition(CombinatorialClass):
 
     def count(self):
         r"""
-        Returns the number of standard Young tableaux associated with
-        a partition pi
+        Returns the number of standard Young tableaux associated with a
+        partition pi
 
-        A formula for the number of Young tableaux associated with a given partition.
-        In each box, write the sum of one plus the number of boxes horizontally to the right
-        and vertically below the box (the hook length).
-        The number of tableaux is then n! divided by the product of all hook lengths.
+        A formula for the number of Young tableaux associated with a given
+        partition. In each box, write the sum of one plus the number of
+        boxes horizontally to the right and vertically below the box (the
+        hook length). The number of tableaux is then n! divided by the
+        product of all hook lengths.
 
-        For example, consider the partition [3,2,1] of 6 with Ferrers Diagram
-        * * *
-        * *
-        *
-        When we fill in the boxes with the hook lengths, we obtain
-        5 3 1
-        3 1
-        1
-        The hook length formula returns 6!/(5*3*1*3*1*1) = 16.
+        For example, consider the partition [3,2,1] of 6 with Ferrers
+        Diagram::
 
-        EXAMPLES:
+            # # #
+            # #
+            #
+
+        When we fill in the boxes with the hook
+        lengths, we obtain::
+
+            5 3 1
+            3 1
+            1
+
+        The hook length formula returns 6!/(5\*3\*1\*3\*1\*1) = 16.
+
+        EXAMPLES::
+
             sage: StandardTableaux([3,2,1]).count()
             16
             sage: StandardTableaux([2,2]).count()
@@ -1760,7 +1851,8 @@ class StandardTableaux_partition(CombinatorialClass):
             6651216
 
         REFERENCES:
-            http://mathworld.wolfram.com/HookLengthFormula.html
+
+        - http://mathworld.wolfram.com/HookLengthFormula.html
         """
         pi = self.p
 
@@ -1779,7 +1871,8 @@ class StandardTableaux_partition(CombinatorialClass):
         An iterator for the standard Young tableaux associated to the
         partition pi.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: [p for p in StandardTableaux([2,2])]
             [[[1, 3], [2, 4]], [[1, 2], [3, 4]]]
             sage: [p for p in StandardTableaux([3,2])]
@@ -1788,7 +1881,6 @@ class StandardTableaux_partition(CombinatorialClass):
              [[1, 3, 4], [2, 5]],
              [[1, 2, 4], [3, 5]],
              [[1, 2, 3], [4, 5]]]
-
         """
 
         pi = self.p
@@ -1896,7 +1988,8 @@ class StandardTableaux_partition(CombinatorialClass):
         Returns a list of the standard Young tableau associated with a
         partition p.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: StandardTableaux([2,2]).list()
             [[[1, 3], [2, 4]], [[1, 2], [3, 4]]]
             sage: StandardTableaux([5]).list()
@@ -1918,7 +2011,6 @@ class StandardTableaux_partition(CombinatorialClass):
              [[1, 3, 4], [2, 5], [6]],
              [[1, 2, 4], [3, 5], [6]],
              [[1, 2, 3], [4, 5], [6]]]
-
         """
         return [y for y in self]
 
@@ -1927,7 +2019,8 @@ class StandardTableaux_partition(CombinatorialClass):
         Returns a random standard tableau of shape p using the
         Green-Nijenhuis-Wilf Algorithm.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: StandardTableaux([2,2]).random_element()
             [[1, 2], [3, 4]]
         """
@@ -1979,17 +2072,17 @@ def SemistandardTableaux(p=None, mu=None):
     """
     Returns the combinatorial class of semistandard tableaux.
 
-    If p is specified and is a partition, then it returns the
-    class of semistandard tableaux of shape p (and max entry
-    sum(p))
+    If p is specified and is a partition, then it returns the class of
+    semistandard tableaux of shape p (and max entry sum(p))
 
-    If p is specified and is an integer, it returns the class
-    of semistandard tableaux of size p.
+    If p is specified and is an integer, it returns the class of
+    semistandard tableaux of size p.
 
-    If mu is also specified, then it returns the class of
-    semistandard tableaux with evaluation/content mu.
+    If mu is also specified, then it returns the class of semistandard
+    tableaux with evaluation/content mu.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: SST = SemistandardTableaux([2,1]); SST
         Semistandard tableaux of shape [2, 1]
         sage: SST.list()
@@ -2001,6 +2094,8 @@ def SemistandardTableaux(p=None, mu=None):
          [[1, 3], [3]],
          [[2, 2], [3]],
          [[2, 3], [3]]]
+
+    ::
 
         sage: SST = SemistandardTableaux(3); SST
         Semistandard tableaux of size 3
@@ -2051,7 +2146,8 @@ def SemistandardTableaux(p=None, mu=None):
 class SemistandardTableaux_all(CombinatorialClass):
     def __init__(self):
         """
-        TESTS:
+        TESTS::
+
             sage: SST = SemistandardTableaux()
             sage: SST == loads(dumps(SST))
             True
@@ -2059,7 +2155,8 @@ class SemistandardTableaux_all(CombinatorialClass):
 
     def __contains__(self, x):
         """
-        TESTS:
+        TESTS::
+
             sage: [[1,2],[1]] in SemistandardTableaux()
             False
             sage: SST = SemistandardTableaux()
@@ -2096,7 +2193,8 @@ class SemistandardTableaux_all(CombinatorialClass):
 
     def list(self):
         """
-        TESTS:
+        TESTS::
+
             sage: SemistandardTableaux().list()
             Traceback (most recent call last):
             ...
@@ -2107,7 +2205,8 @@ class SemistandardTableaux_all(CombinatorialClass):
 class SemistandardTableaux_n(CombinatorialClass):
     def __init__(self, n):
         """
-        TESTS:
+        TESTS::
+
             sage: SST = SemistandardTableaux(3)
             sage: SST == loads(dumps(SST))
             True
@@ -2116,7 +2215,8 @@ class SemistandardTableaux_n(CombinatorialClass):
 
     def __repr__(self):
         """
-        TESTS:
+        TESTS::
+
             sage: repr(SemistandardTableaux(3))
             'Semistandard tableaux of size 3'
         """
@@ -2124,7 +2224,8 @@ class SemistandardTableaux_n(CombinatorialClass):
 
     def __contains__(self, x):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: [[1,2],[3,3]] in SemistandardTableaux(3)
             False
             sage: [[1,2],[3,3]] in SemistandardTableaux(4)
@@ -2139,7 +2240,8 @@ class SemistandardTableaux_n(CombinatorialClass):
 
     def count(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: SemistandardTableaux(3).count()
             19
             sage: SemistandardTableaux(4).count()
@@ -2156,7 +2258,8 @@ class SemistandardTableaux_n(CombinatorialClass):
 
     def iterator(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: SemistandardTableaux(2).list()
             [[[1, 1]], [[1, 2]], [[2, 2]], [[1], [2]]]
             sage: SemistandardTableaux(3).list()
@@ -2179,7 +2282,6 @@ class SemistandardTableaux_n(CombinatorialClass):
              [[2, 2], [3]],
              [[2, 3], [3]],
              [[1], [2], [3]]]
-
         """
         for part in partition.Partitions(self.n):
             for sst in SemistandardTableaux(part):
@@ -2188,7 +2290,8 @@ class SemistandardTableaux_n(CombinatorialClass):
 class SemistandardTableaux_pmu(CombinatorialClass):
     def __init__(self, p, mu):
         """
-        TESTS:
+        TESTS::
+
             sage: SST = SemistandardTableaux([2,1], [2,1])
             sage: SST == loads(dumps(SST))
             True
@@ -2200,7 +2303,8 @@ class SemistandardTableaux_pmu(CombinatorialClass):
 
     def __repr__(self):
         """
-        TESTS:
+        TESTS::
+
             sage: repr(SemistandardTableaux([2,1],[2,1]))
             'Semistandard tableaux of shape [2, 1] and evaluation [2, 1]'
         """
@@ -2208,7 +2312,8 @@ class SemistandardTableaux_pmu(CombinatorialClass):
 
     def __contains__(self, x):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: SST = SemistandardTableaux([2,1], [2,1])
             sage: all([sst in SST for sst in SST])
             True
@@ -2240,7 +2345,8 @@ class SemistandardTableaux_pmu(CombinatorialClass):
 
     def count(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: SemistandardTableaux([2,2], [2, 1, 1]).count()
             1
             sage: SemistandardTableaux([2,2,2], [2, 2, 1,1]).count()
@@ -2254,7 +2360,8 @@ class SemistandardTableaux_pmu(CombinatorialClass):
 
     def list(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: SemistandardTableaux([2,2], [2, 1, 1]).list()
             [[[1, 1], [2, 3]]]
             sage: SemistandardTableaux([2,2,2], [2, 2, 1,1]).list()
@@ -2269,7 +2376,8 @@ class SemistandardTableaux_pmu(CombinatorialClass):
 class SemistandardTableaux_p(CombinatorialClass):
     def __init__(self, p):
         """
-        TESTS:
+        TESTS::
+
             sage: SST = SemistandardTableaux([2,1])
             sage: SST == loads(dumps(SST))
             True
@@ -2280,7 +2388,8 @@ class SemistandardTableaux_p(CombinatorialClass):
 
     def __contains__(self, x):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: SST = SemistandardTableaux([2,1])
             sage: all([sst in SST for sst in SST])
             True
@@ -2293,7 +2402,8 @@ class SemistandardTableaux_p(CombinatorialClass):
 
     def __repr__(self):
         """
-        TESTS:
+        TESTS::
+
             sage: repr(SemistandardTableaux([2,1]))
             'Semistandard tableaux of shape [2, 1]'
         """
@@ -2301,7 +2411,8 @@ class SemistandardTableaux_p(CombinatorialClass):
 
     def count(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: SemistandardTableaux([2,1]).count()
             8
             sage: SemistandardTableaux([2,2,1]).count()
@@ -2323,7 +2434,8 @@ class SemistandardTableaux_p(CombinatorialClass):
         """
         An iterator for the semistandard partitions of shape p.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: SemistandardTableaux([3]).list()
             [[[1, 1, 1]],
              [[1, 1, 2]],
@@ -2354,7 +2466,8 @@ class SemistandardTableaux_p(CombinatorialClass):
 class SemistandardTableaux_nmu(CombinatorialClass):
     def __init__(self, n, mu):
         """
-        TESTS:
+        TESTS::
+
             sage: SST = SemistandardTableaux(3, [2,1])
             sage: SST == loads(dumps(SST))
             True
@@ -2364,7 +2477,8 @@ class SemistandardTableaux_nmu(CombinatorialClass):
 
     def __repr__(self):
         """
-        TESTS:
+        TESTS::
+
             sage: repr(SemistandardTableaux(3, [2,1]))
             'Semistandard tableaux of size 3 and evaluation [2, 1]'
         """
@@ -2372,7 +2486,8 @@ class SemistandardTableaux_nmu(CombinatorialClass):
 
     def iterator(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: SemistandardTableaux(3, [2,1]).list()
             [[[1, 1, 2]], [[1, 1], [2]]]
             sage: SemistandardTableaux(4, [2,2]).list()
@@ -2384,7 +2499,8 @@ class SemistandardTableaux_nmu(CombinatorialClass):
 
     def count(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: SemistandardTableaux(3, [2,1]).count()
             2
             sage: SemistandardTableaux(4, [2,2]).count()
@@ -2397,7 +2513,8 @@ class SemistandardTableaux_nmu(CombinatorialClass):
 
     def __contains__(self, x):
         """
-        TESTS:
+        TESTS::
+
             sage: SST = SemistandardTableaux(6, [2,2,2])
             sage: all([sst in SST for sst in SST])
             True
@@ -2411,7 +2528,8 @@ class SemistandardTableaux_nmu(CombinatorialClass):
 ##########################
 def unmatched_places(w, open, close):
     """
-    EXAMPLES:
+    EXAMPLES::
+
         sage: from sage.combinat.tableau import unmatched_places
         sage: unmatched_places([2,2,2,1,1,1],2,1)
         ([], [])
@@ -2442,7 +2560,8 @@ def unmatched_places(w, open, close):
 
 def symmetric_group_action_on_values(word, perm):
     """
-    EXAMPLES:
+    EXAMPLES::
+
         sage: from sage.combinat.tableau import symmetric_group_action_on_values
         sage: symmetric_group_action_on_values([1,1,1],[1,3,2])
         [1, 1, 1]

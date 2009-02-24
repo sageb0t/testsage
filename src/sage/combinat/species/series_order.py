@@ -1,11 +1,13 @@
 """
 Series Order
 
-This file provides some utility classes which are useful when working with
-unknown, known, and infinite series orders for univarite power series.
+This file provides some utility classes which are useful when
+working with unknown, known, and infinite series orders for
+univarite power series.
 
-This code is based on the work of Ralf Hemmecke and Martin Rubey's Aldor-Combinat, which
-can be found at http://www.risc.uni-linz.ac.at/people/hemmecke/aldor/combinat/index.html.
+This code is based on the work of Ralf Hemmecke and Martin Rubey's
+Aldor-Combinat, which can be found at
+http://www.risc.uni-linz.ac.at/people/hemmecke/aldor/combinat/index.html.
 In particular, the relevent section for this file can be found at
 http://www.risc.uni-linz.ac.at/people/hemmecke/AldorCombinat/combinatsu30.html.
 """
@@ -17,7 +19,8 @@ class SeriesOrderElement:
 class InfiniteSeriesOrder(SeriesOrderElement):
     def __repr__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.combinat.species.series_order import *
             sage: o = InfiniteSeriesOrder(); o
             Infinite series order
@@ -26,7 +29,8 @@ class InfiniteSeriesOrder(SeriesOrderElement):
 
     def __add__(self, x):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.combinat.species.series_order import *
             sage: o = InfiniteSeriesOrder()
             sage: o + 2
@@ -34,11 +38,14 @@ class InfiniteSeriesOrder(SeriesOrderElement):
             sage: o + o
             Infinite series order
 
+        ::
+
             sage: u = UnknownSeriesOrder()
             sage: o + u
             Unknown series order
 
-        TESTS:
+        TESTS::
+
             sage: o + -1
             Traceback (most recent call last):
             ...
@@ -61,7 +68,8 @@ class InfiniteSeriesOrder(SeriesOrderElement):
 
     def __mul__(self, x):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.combinat.species.series_order import *
             sage: o = InfiniteSeriesOrder()
             sage: o * 2
@@ -69,11 +77,14 @@ class InfiniteSeriesOrder(SeriesOrderElement):
             sage: o * o
             Infinite series order
 
+        ::
+
             sage: u = UnknownSeriesOrder()
             sage: o * u
             Unknown series order
 
-        TESTS:
+        TESTS::
+
             sage: o * -1
             Traceback (most recent call last):
             ...
@@ -98,13 +109,16 @@ class InfiniteSeriesOrder(SeriesOrderElement):
 
     def __lt__(self, x):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.combinat.species.series_order import *
             sage: o = InfiniteSeriesOrder()
             sage: o < 2
             False
             sage: o < o
             False
+
+        ::
 
             sage: u = UnknownSeriesOrder()
             sage: o < u
@@ -125,7 +139,8 @@ class InfiniteSeriesOrder(SeriesOrderElement):
 
     def __gt__(self, x):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.combinat.species.series_order import *
             sage: o = InfiniteSeriesOrder()
             sage: o > 2
@@ -136,7 +151,8 @@ class InfiniteSeriesOrder(SeriesOrderElement):
 class UnknownSeriesOrder(SeriesOrderElement):
     def __repr__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.combinat.species.series_order import *
             sage: u = UnknownSeriesOrder(); u
             Unknown series order
@@ -145,7 +161,8 @@ class UnknownSeriesOrder(SeriesOrderElement):
 
     def __add__(self, x):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.combinat.species.series_order import *
             sage: u = UnknownSeriesOrder()
             sage: u + 2
@@ -168,7 +185,8 @@ class UnknownSeriesOrder(SeriesOrderElement):
 
     def __mul__(self, x):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.combinat.species.series_order import *
             sage: u = UnknownSeriesOrder()
             sage: u * 2
@@ -190,7 +208,8 @@ class UnknownSeriesOrder(SeriesOrderElement):
 
     def __lt__(self, x):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.combinat.species.series_order import *
             sage: u = UnknownSeriesOrder()
             sage: u < 2
@@ -211,7 +230,8 @@ class UnknownSeriesOrder(SeriesOrderElement):
 
     def __gt__(self, x):
         """
-         EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.combinat.species.series_order import *
             sage: u = UnknownSeriesOrder()
             sage: u > 2
@@ -221,7 +241,8 @@ class UnknownSeriesOrder(SeriesOrderElement):
 
 def bounded_decrement(x):
     """
-    EXAMPLES:
+    EXAMPLES::
+
         sage: from sage.combinat.species.series_order import *
         sage: u = UnknownSeriesOrder()
         sage: bounded_decrement(u)
@@ -243,7 +264,8 @@ def bounded_decrement(x):
 
 def increment(x):
     """
-    EXAMPLES:
+    EXAMPLES::
+
         sage: from sage.combinat.species.series_order import *
         sage: u = UnknownSeriesOrder()
         sage: increment(u)
