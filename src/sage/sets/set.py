@@ -2,9 +2,14 @@
 Sets
 
 AUTHORS:
-    -- William Stein (2005) -- first version
-    -- William Stein (2006-02-16) -- large number of documentation and examples; improved code
-    -- Mike Hansen (2007-3-25) -- added differences and symmetric differences; fixed operators
+
+- William Stein (2005) - first version
+
+- William Stein (2006-02-16) - large number of documentation and
+  examples; improved code
+
+- Mike Hansen (2007-3-25) - added differences and symmetric
+  differences; fixed operators
 """
 
 #*****************************************************************************
@@ -31,7 +36,7 @@ def Set(X):
     r"""
     Create the underlying set of $X$.
 
-    If $X$ is a list, tuple, Python set, or \code{X.is_finite()} is
+    If $X$ is a list, tuple, Python set, or ``X.is_finite()`` is
     true, this returns a wrapper around Python's enumerated immutable
     frozenset type with extra functionality.  Otherwise it returns a
     more formal wrapper.
@@ -39,7 +44,8 @@ def Set(X):
     If you need the functionality of mutable sets, use Python's
     builtin set type.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: X = Set(GF(9,'a'))
         sage: X
         {0, 1, 2, a, a + 1, a + 2, 2*a, 2*a + 1, 2*a + 2}
@@ -52,6 +58,9 @@ def Set(X):
         <class 'sage.sets.set.Set_object_union'>
 
     Usually sets can be used as dictionary keys.
+
+    ::
+
         sage: d={Set([2*I,1+I]):10}
         sage: d                  # key is randomly ordered
         {{I + 1, 2*I}: 10}
@@ -61,6 +70,9 @@ def Set(X):
         10
 
     The original object is often forgotten.
+
+    ::
+
         sage: v = [1,2,3]
         sage: X = Set(v)
         sage: X
@@ -72,6 +84,9 @@ def Set(X):
         False
 
     Set also accepts iterators, but be careful to only give *finite* sets.
+
+    ::
+
         sage: list(Set(iter([1, 2, 3, 4, 5])))
         [1, 2, 3, 4, 5]
 
@@ -101,7 +116,8 @@ def EnumeratedSet(X):
 
     The input object $X$ must be finite.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: EnumeratedSet([1,1,2,3])
         {1, 2, 3}
         sage: EnumeratedSet(ZZ)
@@ -121,7 +137,8 @@ def is_Set(x):
     Returns true if $x$ is a Sage Set (not to be confused with
     a Python 2.4 set).
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: from sage.sets.set import is_Set
         sage: is_Set([1,2,3])
         False
@@ -140,7 +157,8 @@ class Set_object(Set_generic):
     r"""
     A set attached to an almost arbitrary object.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: K = GF(19)
         sage: Set(K)
         {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}
@@ -161,7 +179,8 @@ class Set_object(Set_generic):
         This function is called by the Set function; users
         shouldn't call this directly.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: type(Set(QQ))
             <class 'sage.sets.set.Set_object'>
         """
@@ -177,12 +196,15 @@ class Set_object(Set_generic):
         This is often the same as the latex representation of this
         object when the object is infinite.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: latex(Set(QQ))
             \mathbf{Q}
 
         When the object is finite or a special set then the latex
         representation can be more interesting.
+
+        ::
 
             sage: print latex(Primes())
             \text{Set of all prime numbers: 2, 3, 5, 7, ...}
@@ -195,7 +217,8 @@ class Set_object(Set_generic):
         """
         Print representation of this set.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set(ZZ)
             sage: X
             Set of elements of Integer Ring
@@ -209,7 +232,8 @@ class Set_object(Set_generic):
         """
         Iterate over the elements of this set.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set(ZZ)
             sage: I = X.__iter__()
             sage: I.next()
@@ -227,7 +251,8 @@ class Set_object(Set_generic):
         """
         Return True if $x$ is in self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set(ZZ)
             sage: 5 in X
             True
@@ -264,9 +289,11 @@ class Set_object(Set_generic):
         If right is not a Set compare types.  If right is also a Set,
         returns comparison on the underlying objects.
 
-        \note{If $X < Y$ is true this does \emph{not} necessarily mean
-        that $X$ is a subset of $Y$.  Also, any two sets can be
-        compared, which is a general Python philosophy.}
+        .. note::
+
+           If `X < Y` is true this does *not* necessarily mean
+           that `X` is a subset of `Y`.  Also, any two sets can be
+           compared, which is a general Python philosophy.
 
         EXAMPLES:
             sage: Set(ZZ) == Set(QQ)
@@ -289,7 +316,8 @@ class Set_object(Set_generic):
         """
         Return the union of self and X.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Set(QQ).union(Set(ZZ))
             Set-theoretic union of Set of elements of Rational Field and Set of elements of Integer Ring
             sage: Set(QQ) + Set(ZZ)
@@ -315,7 +343,8 @@ class Set_object(Set_generic):
         """
         Return the union of self and X.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Set(RealField()) + Set(QQ^5)
              Set-theoretic union of Set of elements of Real Field with 53 bits of precision and Set of elements of Vector space of dimension 5 over Rational Field
             sage: Set(GF(3)) + Set(GF(2))
@@ -331,7 +360,8 @@ class Set_object(Set_generic):
         """
         Return the union of self and X.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Set([2,3]) | Set([3,4])
             {2, 3, 4}
             sage: Set(ZZ) | Set(QQ)
@@ -344,7 +374,8 @@ class Set_object(Set_generic):
         r"""
         Return the intersection of self and X.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set(ZZ).intersection(Primes())
             sage: 4 in X
             False
@@ -372,7 +403,8 @@ class Set_object(Set_generic):
         r"""
         Return the intersection of self and X.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set(ZZ).difference(Primes())
             sage: 4 in X
             True
@@ -400,7 +432,8 @@ class Set_object(Set_generic):
         r"""
         Returns the symmetric difference of self and X.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set([1,2,3]).symmetric_difference(Set([3,4]))
             sage: X
             {1, 2, 4}
@@ -416,7 +449,8 @@ class Set_object(Set_generic):
         """
         Return the difference of self and X.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set(ZZ).difference(Primes())
             sage: Y = Set(ZZ) - Primes()
             sage: X == Y
@@ -428,7 +462,8 @@ class Set_object(Set_generic):
         """
         Returns the intersection of self and X.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Set([2,3]) & Set([3,4])
             {3}
             sage: Set(ZZ) & Set(QQ)
@@ -447,7 +482,8 @@ class Set_object(Set_generic):
         """
         Return the cardinality of this set, which is either an integer or Infinity.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Set(ZZ).cardinality()
             +Infinity
             sage: Primes().cardinality()
@@ -469,7 +505,8 @@ class Set_object(Set_generic):
 
     def is_finite(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Set(QQ).is_finite()
             False
             sage: Set(GF(250037)).is_finite()
@@ -488,7 +525,8 @@ class Set_object(Set_generic):
         """
         Return underlying object.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set(QQ)
             sage: X.object()
             Rational Field
@@ -503,7 +541,8 @@ class Set_object(Set_generic):
         Return the Subset object representing the subsets of a set.  If size
         is specified, return the subsets of that size.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set([1,2,3])
             sage: list(X.subsets())
             [{}, {1}, {2}, {3}, {1, 2}, {1, 3}, {2, 3}, {1, 2, 3}]
@@ -520,7 +559,8 @@ class Set_object_enumerated(Set_object):
     """
     def __init__(self, X):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: S = EnumeratedSet(GF(19)); S
             {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}
             sage: print latex(S)
@@ -532,7 +572,8 @@ class Set_object_enumerated(Set_object):
 
     def cardinality(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Set([1,1]).cardinality()
             1
         """
@@ -540,7 +581,8 @@ class Set_object_enumerated(Set_object):
 
     def __len__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: len(Set([1,1]))
             1
         """
@@ -561,11 +603,12 @@ class Set_object_enumerated(Set_object):
         """
         Return the Python set object associated to this set.
 
-        Python has a notion of finite set, and often SAGE sets
+        Python has a notion of finite set, and often Sage sets
         have an associated Python set.  This function returns
         that set.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set(GF(8,'c'))
             sage: X
             {0, 1, c, c + 1, c^2, c^2 + 1, c^2 + c, c^2 + c + 1}
@@ -583,7 +626,8 @@ class Set_object_enumerated(Set_object):
         Return the Python frozenset object associated to this set,
         which is an immutable set (hence hashable).
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set(GF(8,'c'))
             sage: X
             {0, 1, c, c + 1, c^2, c^2 + 1, c^2 + c, c^2 + c + 1}
@@ -604,7 +648,7 @@ class Set_object_enumerated(Set_object):
         return frozenset(self.object())
 
     def __hash__(self):
- 	return hash(self.frozenset())
+        return hash(self.frozenset())
 
     def __cmp__(self, other):
         """
@@ -630,7 +674,8 @@ class Set_object_enumerated(Set_object):
         """
         Return the union of self and other.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set(GF(8,'c'))
             sage: Y = Set([GF(8,'c').0, 1, 2, 3])
             sage: X
@@ -648,7 +693,8 @@ class Set_object_enumerated(Set_object):
         """
         Return the intersection of self and other.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set(GF(8,'c'))
             sage: Y = Set([GF(8,'c').0, 1, 2, 3])
             sage: X.intersection(Y)
@@ -662,7 +708,8 @@ class Set_object_enumerated(Set_object):
         """
         Returns the set difference self-other.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set([1,2,3,4])
             sage: Y = Set([1,2])
             sage: X.difference(Y)
@@ -680,7 +727,8 @@ class Set_object_enumerated(Set_object):
         """
         Returns the set difference self-other.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set([1,2,3,4])
             sage: Y = Set([1,2])
             sage: X.symmetric_difference(Y)
@@ -710,7 +758,8 @@ class Set_object_union(Set_object):
     """
     def __init__(self, X, Y):
         r"""
-        EXAMPLES:
+        EXAMPLES::
+
             sage: S = Set(QQ^2)
             sage: T = Set(ZZ)
             sage: X = S.union(T); X
@@ -730,12 +779,15 @@ class Set_object_union(Set_object):
         r"""
         Try to compare self and right.
 
-        \note{Comparison is basically not implemented, or rather it
-        could say sets are not equal even though they are.  I don't
-        know how one could implement this for a generic union of sets
-        in a meaningful manner.  So be careful when using this.}
+        .. note::
 
-        EXAMPLES:
+           Comparison is basically not implemented, or rather it could
+           say sets are not equal even though they are.  I don't know
+           how one could implement this for a generic union of sets in
+           a meaningful manner.  So be careful when using this.
+
+        EXAMPLES::
+
             sage: Y = Set(ZZ^2).union(Set(ZZ^3))
             sage: X = Set(ZZ^3).union(Set(ZZ^2))
             sage: X == Y
@@ -745,6 +797,9 @@ class Set_object_union(Set_object):
 
         This illustrates that equality testing for formal unions
         can be misleading in general.
+
+        ::
+
             sage: Set(ZZ).union(Set(QQ)) == Set(QQ)
             False
         """
@@ -761,7 +816,8 @@ class Set_object_union(Set_object):
         r"""
         Return string representation of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Set(ZZ).union(Set(GF(5)))
             Set-theoretic union of Set of elements of Integer Ring and {0, 1, 2, 3, 4}
         """
@@ -772,7 +828,8 @@ class Set_object_union(Set_object):
         r"""
         Return latex representation of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: latex(Set(ZZ).union(Set(GF(5))))
             \mathbf{Z} \cup \left\{0, 1, 2, 3, 4\right\}
         """
@@ -782,7 +839,8 @@ class Set_object_union(Set_object):
         """
         Return iterator over the elements of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: [x for x in Set(GF(3)).union(Set(GF(2)))]
             [0, 1, 2, 0, 1]
         """
@@ -795,7 +853,8 @@ class Set_object_union(Set_object):
         """
         Returns True if x is an element of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set(GF(3)).union(Set(GF(2)))
             sage: GF(5)(1) in X
             False
@@ -812,7 +871,8 @@ class Set_object_union(Set_object):
         """
         Return the cardinality of this set.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set(GF(3)).union(Set(GF(2)))
             sage: X
             {0, 1, 2, 0, 1}
@@ -831,7 +891,8 @@ class Set_object_intersection(Set_object):
     """
     def __init__(self, X, Y):
         r"""
-        EXAMPLES:
+        EXAMPLES::
+
             sage: S = Set(QQ^2)
             sage: T = Set(ZZ)
             sage: X = S.intersection(T); X
@@ -850,11 +911,13 @@ class Set_object_intersection(Set_object):
         r"""
         Try to compare self and right.
 
-        \note{Comparison is basically not implemented, or rather it
-        could say sets are not equal even though they are.  I don't
-        know how one could implement this for a generic intersection
-        of sets in a meaningful manner.  So be careful when using
-        this.}
+        .. note::
+
+           Comparison is basically not implemented, or rather it could
+           say sets are not equal even though they are.  I don't know
+           how one could implement this for a generic intersection of
+           sets in a meaningful manner.  So be careful when using
+           this.
 
         EXAMPLES:
             sage: Y = Set(ZZ).intersection(Set(QQ))
@@ -866,6 +929,9 @@ class Set_object_intersection(Set_object):
 
         This illustrates that equality testing for formal unions
         can be misleading in general.
+
+        ::
+
             sage: Set(ZZ).intersection(Set(QQ)) == Set(QQ)
             False
         """
@@ -882,7 +948,8 @@ class Set_object_intersection(Set_object):
         """
         Return string representation of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set(ZZ).intersection(Set(QQ)); X
             Set-theoretic intersection of Set of elements of Integer Ring and Set of elements of Rational Field
             sage: X.rename('Z /\ Q')
@@ -896,7 +963,8 @@ class Set_object_intersection(Set_object):
         r"""
         Return latex representation of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set(ZZ).intersection(Set(QQ))
             sage: latex(X)
             \mathbf{Z} \cap \mathbf{Q}
@@ -911,7 +979,8 @@ class Set_object_intersection(Set_object):
         implemented by iterating through the elements of X and for
         each checking if it is in Y, and if yielding it.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set(ZZ).intersection(Primes())
             sage: I = X.__iter__()
             sage: I.next()
@@ -928,7 +997,8 @@ class Set_object_intersection(Set_object):
         Since self is a formal intersection of X and Y this function
         returns true if both X and Y contains x.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set(QQ).intersection(Set(RealField()))
             sage: 5 in X
             True
@@ -940,12 +1010,15 @@ class Set_object_intersection(Set_object):
             sage: RR(sqrt(2)) in X
             True
 
-        Real constants are not rational:
+        Real constants are not rational::
 
             sage: pi in X
             False
 
         pi is considered to be in RR, since it is a symbolic constant and can be cast into RR.
+
+        ::
+
             sage: pi in RR
             True
         """
@@ -958,7 +1031,8 @@ class Set_object_intersection(Set_object):
         Note that this is not likely to work in very much generality,
         and may just hang if either set involved is infinite.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set(GF(13)).intersection(Set(ZZ))
             sage: X.cardinality()
             13
@@ -971,7 +1045,8 @@ class Set_object_difference(Set_object):
     """
     def __init__(self, X, Y):
         r"""
-        EXAMPLES:
+        EXAMPLES::
+
             sage: S = Set(QQ)
             sage: T = Set(ZZ)
             sage: X = S.difference(T); X
@@ -990,13 +1065,16 @@ class Set_object_difference(Set_object):
         r"""
         Try to compare self and right.
 
-        \note{Comparison is basically not implemented, or rather it
-        could say sets are not equal even though they are.  I don't
-        know how one could implement this for a generic intersection
-        of sets in a meaningful manner.  So be careful when using
-        this.}
+        .. note::
 
-        EXAMPLES:
+           Comparison is basically not implemented, or rather it could
+           say sets are not equal even though they are.  I don't know
+           how one could implement this for a generic intersection of
+           sets in a meaningful manner.  So be careful when using
+           this.
+
+        EXAMPLES::
+
             sage: Y = Set(ZZ).difference(Set(QQ))
             sage: Y == Set([])
             False
@@ -1009,6 +1087,9 @@ class Set_object_difference(Set_object):
 
         This illustrates that equality testing for formal unions
         can be misleading in general.
+
+        ::
+
             sage: X == Set(QQ).difference(Set(ZZ))
             True
         """
@@ -1024,7 +1105,8 @@ class Set_object_difference(Set_object):
         """
         Return string representation of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set(QQ).difference(Set(ZZ)); X
             Set-theoretic difference between Set of elements of Rational Field and Set of elements of Integer Ring
             sage: X.rename('Q - Z')
@@ -1038,7 +1120,8 @@ class Set_object_difference(Set_object):
         r"""
         Return latex representation of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set(QQ).difference(Set(ZZ))
             sage: latex(X)
             \mathbf{Q} - \mathbf{Z}
@@ -1053,7 +1136,8 @@ class Set_object_difference(Set_object):
         implemented by iterating through the elements of X and for
         each checking if it is not in Y, and if yielding it.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set(ZZ).difference(Primes())
             sage: I = X.__iter__()
             sage: I.next()
@@ -1078,7 +1162,8 @@ class Set_object_difference(Set_object):
         Since self is a formal intersection of X and Y this function
         returns true if both X and Y contains x.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set(QQ).difference(Set(ZZ))
             sage: 5 in X
             False
@@ -1100,7 +1185,8 @@ class Set_object_difference(Set_object):
         Note that this is not likely to work in very much generality,
         and may just hang if either set involved is infinite.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set(GF(13)).difference(Set(Primes()))
             sage: X.cardinality()
             8
@@ -1113,7 +1199,8 @@ class Set_object_symmetric_difference(Set_object):
     """
     def __init__(self, X, Y):
         r"""
-        EXAMPLES:
+        EXAMPLES::
+
             sage: S = Set(QQ)
             sage: T = Set(ZZ)
             sage: X = S.symmetric_difference(T); X
@@ -1132,13 +1219,16 @@ class Set_object_symmetric_difference(Set_object):
         r"""
         Try to compare self and right.
 
-        \note{Comparison is basically not implemented, or rather it
-        could say sets are not equal even though they are.  I don't
-        know how one could implement this for a generic symmetric difference
-        of sets in a meaningful manner.  So be careful when using
-        this.}
+        .. note::
 
-        EXAMPLES:
+           Comparison is basically not implemented, or rather it could
+           say sets are not equal even though they are.  I don't know
+           how one could implement this for a generic symmetric
+           difference of sets in a meaningful manner.  So be careful
+           when using this.
+
+        EXAMPLES::
+
             sage: Y = Set(ZZ).symmetric_difference(Set(QQ))
             sage: X = Set(QQ).symmetric_difference(Set(ZZ))
             sage: X == Y
@@ -1160,7 +1250,8 @@ class Set_object_symmetric_difference(Set_object):
         """
         Return string representation of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set(ZZ).symmetric_difference(Set(QQ)); X
             Set-theoretic symmetric difference of Set of elements of Integer Ring and Set of elements of Rational Field
             sage: X.rename('Z symdif Q')
@@ -1174,7 +1265,8 @@ class Set_object_symmetric_difference(Set_object):
         r"""
         Return latex representation of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set(ZZ).symmetric_difference(Set(QQ))
             sage: latex(X)
             \mathbf{Z} \bigtriangleup \mathbf{Q}
@@ -1190,7 +1282,8 @@ class Set_object_symmetric_difference(Set_object):
         yielding it if it is not in Y.  Then it will iterate throw all
         the elements of Y and yielding it if it is not in X.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set(ZZ).symmetric_difference(Primes())
             sage: I = X.__iter__()
             sage: I.next()
@@ -1219,7 +1312,8 @@ class Set_object_symmetric_difference(Set_object):
         Since self is the formal symmetric difference of X and Y this function
         returns true if either X or Y (but now both) contains x.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set(QQ).symmetric_difference(Primes())
             sage: 4 in X
             True
@@ -1227,8 +1321,8 @@ class Set_object_symmetric_difference(Set_object):
             False
             sage: sqrt(2) in X      # since sqrt(2) is currently symbolic
             False
-	    sage: sqrt(RR(2)) in X # since sqrt(RR(2)) is currently approximated
-	    True
+            sage: sqrt(RR(2)) in X # since sqrt(RR(2)) is currently approximated
+            True
             sage: pi in X
             False
             sage: 5/2 in X
@@ -1246,7 +1340,8 @@ class Set_object_symmetric_difference(Set_object):
         Note that this is not likely to work in very much generality,
         and may just hang if either set involved is infinite.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: X = Set(GF(13)).symmetric_difference(Set(range(5)))
             sage: X.cardinality()
             8
