@@ -2,8 +2,11 @@
 Scheme morphism
 
 AUTHORS:
-    -- David Kohel, William Stein
-    -- William Stein (2006-02-11): fixed bug where P(0,0,0) was allowed as a projective point.
+
+- David Kohel, William Stein
+
+- William Stein (2006-02-11): fixed bug where P(0,0,0) was allowed as
+  a projective point.
 """
 
 #*****************************************************************************
@@ -97,9 +100,12 @@ class SchemeMorphism(PyMorphism):
         Assuming that self and other are open immersions with the same
         domain, return scheme obtained by gluing along the images.
 
-        EXAMPLES:
-        We construct a scheme isomorphic to the projective line over
-        $\Spec(\Q)$ by gluing two copies of $\A^1$ minus a point.
+        EXAMPLES: We construct a scheme isomorphic to the projective line
+        over `\mathrm{Spec}(\mathbb{Q})` by gluing two copies of
+        `\mathbb{A}^1` minus a point.
+
+        ::
+
             sage: R.<x,y> = PolynomialRing(QQ, 2)
             sage: S.<xbar, ybar> = R.quotient(x*y - 1)
             sage: Rx = PolynomialRing(QQ, 'x')
@@ -110,14 +116,17 @@ class SchemeMorphism(PyMorphism):
             sage: f1 = Sch(i1)
             sage: f2 = Sch(i2)
 
-        Now f1 and f2 have the same domain, which is a $\A^1$ minus a point.
-        We glue along the domain:
+        Now f1 and f2 have the same domain, which is a
+        `\mathbb{A}^1` minus a point. We glue along the domain::
+
             sage: P1 = f1.glue_along_domains(f2)
             sage: P1
             Scheme obtained by gluing X and Y along U, where
               X: Spectrum of Univariate Polynomial Ring in x over Rational Field
               Y: Spectrum of Univariate Polynomial Ring in y over Rational Field
               U: Spectrum of Quotient of Multivariate Polynomial Ring in x, y over Rational Field by the ideal (x*y - 1)
+
+        ::
 
             sage: a, b = P1.gluing_maps()
             sage: a
@@ -144,7 +153,8 @@ class SchemeMorphism_id(SchemeMorphism):
     """
     Return the identity morphism from X to itself.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: X = Spec(ZZ)
         sage: X.identity_morphism()
         Scheme endomorphism of Spectrum of Integer Ring
@@ -160,7 +170,9 @@ class SchemeMorphism_structure_map(SchemeMorphism):
     def __init__(self, parent):
         """
         INPUT:
-            parent -- homset with codomain equal to the base scheme of the domain.
+
+        -  ``parent`` - homset with codomain equal to the base
+           scheme of the domain.
         """
         SchemeMorphism.__init__(self, parent)
         if self.domain().base_scheme() != self.codomain():
@@ -173,13 +185,16 @@ class SchemeMorphism_spec(SchemeMorphism):
     """
     A morphism of spectrums of rings
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: R.<x> = PolynomialRing(QQ)
         sage: phi = R.hom([QQ(7)]); phi
         Ring morphism:
           From: Univariate Polynomial Ring in x over Rational Field
           To:   Rational Field
           Defn: x |--> 7
+
+    ::
 
         sage: X = Spec(QQ); Y = Spec(R)
         sage: f = X.hom(phi); f
@@ -190,6 +205,8 @@ class SchemeMorphism_spec(SchemeMorphism):
                   From: Univariate Polynomial Ring in x over Rational Field
                   To:   Rational Field
                   Defn: x |--> 7
+
+    ::
 
         sage: f.ring_homomorphism()
         Ring morphism:
@@ -237,8 +254,8 @@ class SchemeMorphism_on_points(SchemeMorphism):
     A morphism of schemes determined by rational functions that define
     what the morphism does on points in the ambient space.
 
-    EXAMPLES:
-    An example involving the affine plane:
+    EXAMPLES: An example involving the affine plane::
+
         sage: R.<x,y> = QQ[]
         sage: A2 = AffineSpace(R)
         sage: H = A2.Hom(A2)
@@ -246,7 +263,8 @@ class SchemeMorphism_on_points(SchemeMorphism):
         sage: f([0,1])
         (-1, 0)
 
-    An example involving the projective line:
+    An example involving the projective line::
+
         sage: R.<x,y> = QQ[]
         sage: P1 = ProjectiveSpace(R)
         sage: H = P1.Hom(P1)
@@ -343,10 +361,14 @@ class SchemeMorphism_affine_coordinates(SchemeMorphism_coordinates):
     A morphism determined by giving coordinates in a ring.
 
     INPUT:
-        X -- a subscheme of an ambient affine space over a ring R.
-        v -- a list or tuple of coordinates in R
 
-    EXAMPLES:
+    -  ``X`` - a subscheme of an ambient affine space over
+       a ring R.
+
+    -  ``v`` - a list or tuple of coordinates in R
+
+    EXAMPLES::
+
         sage: A = AffineSpace(2, QQ)
         sage: A(1,2)
         (1, 2)
@@ -375,7 +397,6 @@ class SchemeMorphism_affine_coordinates(SchemeMorphism_coordinates):
 class SchemeMorphism_projective_coordinates_ring(SchemeMorphism_coordinates):
     """
     A morphism determined by giving coordinates in a ring (how?).
-
     """
     def __init__(self, X, v, check=True):
         raise NotImplementedError
@@ -385,13 +406,19 @@ class SchemeMorphism_projective_coordinates_field(SchemeMorphism_projective_coor
     A morphism determined by giving coordinates in a field.
 
     INPUT:
-        X -- a subscheme of an ambient projective space over a field K
-        v -- a list or tuple of coordinates in K
 
-    EXAMPLES:
+    -  ``X`` - a subscheme of an ambient projective space
+       over a field K
+
+    -  ``v`` - a list or tuple of coordinates in K
+
+    EXAMPLES::
+
         sage: P = ProjectiveSpace(3, RR)
         sage: P(2,3,4,5)
         (0.400000000000000 : 0.600000000000000 : 0.800000000000000 : 1.00000000000000)
+
+    ::
 
         sage: P = ProjectiveSpace(3, QQ)
         sage: P(0,0,0,0)
