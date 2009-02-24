@@ -1,9 +1,9 @@
 r"""
 Mathematical constants
 
-The following standard mathematical constants are defined in \sage,
-along with support for coercing them into GAP, GP/PARI, KASH, Maxima,
-Mathematica, Maple, Octave, and Singular:
+The following standard mathematical constants are defined in Sage,
+along with support for coercing them into GAP, GP/PARI, KASH,
+Maxima, Mathematica, Maple, Octave, and Singular::
 
     sage: pi
     pi
@@ -29,9 +29,9 @@ Mathematica, Maple, Octave, and Singular:
     brun
 
 Support for coercion into the various systems means that if, e.g.,
-you want to create $\pi$ in Maxima and Singular, you don't have
-to figure out the special notation for each system.  You just
-type the following:
+you want to create `\pi` in Maxima and Singular, you don't
+have to figure out the special notation for each system. You just
+type the following::
 
     sage: pi.str()
     '3.14159265358979'
@@ -57,6 +57,9 @@ type the following:
 
 Arithmetic operations with constants also yield constants, which
 can be coerced into other systems or evaluated.
+
+::
+
     sage: a = pi + e*4/5; a
     pi + 4*e/5
     sage: maxima(a)
@@ -73,47 +76,70 @@ can be coerced into other systems or evaluated.
 
 EXAMPLES: Decimal expansions of constants
 
-We can obtain floating point approximations to each of these constants
-by coercing into the real field with given precision.  For example, to
-200 decimal places we have the following:
+We can obtain floating point approximations to each of these
+constants by coercing into the real field with given precision. For
+example, to 200 decimal places we have the following::
 
     sage: R = RealField(200); R
     Real Field with 200 bits of precision
 
+::
+
     sage: R(pi)
     3.1415926535897932384626433832795028841971693993751058209749
+
+::
 
     sage: R(e)
     2.7182818284590452353602874713526624977572470936999595749670
 
+::
+
     sage: R(NaN)
     NaN
+
+::
 
     sage: R(golden_ratio)
     1.6180339887498948482045868343656381177203091798057628621354
 
+::
+
     sage: R(log2)
     0.69314718055994530941723212145817656807550013436025525412068
+
+::
 
     sage: R(euler_gamma)
     0.57721566490153286060651209008240243104215933593992359880577
 
+::
+
     sage: R(catalan)
     0.91596559417721901505460351493238411077414937428167213426650
+
+::
 
     sage: R(khinchin)
     2.6854520010653064453097148354817956938203822939944629530512
 
 EXAMPLES: Arithmetic with constants
+
+::
+
     sage: f = I*(e+1); f
     (e + 1)*I
     sage: f^2
     -(e + 1)^2
 
+::
+
     sage: pp = pi+pi; pp
     2*pi
     sage: R(pp)
     6.2831853071795864769252867665590057683943387987502116419499
+
+::
 
     sage: s = (1 + e^pi); s
     e^pi + 1
@@ -122,10 +148,14 @@ EXAMPLES: Arithmetic with constants
     sage: R(s-1)
     23.140692632779269005729086367948547380266106242600211993445
 
+::
+
     sage: l = (1-log2)/(1+log2); l
     (1 - log(2))/(log(2) + 1)
     sage: R(l)
     0.18123221829928249948761381864650311423330609774776013488056
+
+::
 
     sage: pim = maxima(pi)
     sage: maxima.eval('fpprec : 100')
@@ -134,13 +164,21 @@ EXAMPLES: Arithmetic with constants
     3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117068b0
 
 AUTHORS:
-    -- Alex Clemesha  <aclemesh@ucsd.edu>, 2006-01-15
-    -- William Stein
-    -- Alex Clemesha & William Stein (2006-02-20): added new constants; removed todos
-    -- didier deshommes <dfdeshom@gmail.com> (2007-03-27): added constants from RQDF (deprecated)
+
+- Alex Clemesha (2006-01-15)
+
+- William Stein
+
+- Alex Clemesha, William Stein (2006-02-20): added new constants;
+  removed todos
+
+- Didier Deshommes (2007-03-27): added constants from RQDF (deprecated)
+
+TESTS:
 
 Coercing the sum of a bunch of the constants to many different
-floating point rings:
+floating point rings::
+
     sage: a = pi + e + golden_ratio + log2 + euler_gamma + catalan + khinchin + twinprime + merten; a
     twinprime + merten + khinchin + euler_gamma + catalan + log(2) + pi + e + (sqrt(5) + 1)/2
     sage: parent(a)
@@ -222,10 +260,11 @@ class Constant(Function):
 
     def number_of_arguments(self):
         """
-        Returns the number of arguments of this constant, viewed as a function.
-        This is of course always 0.
+        Returns the number of arguments of this constant, viewed as a
+        function. This is of course always 0.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: pi.number_of_arguments()
             0
         """
@@ -236,7 +275,8 @@ class Constant(Function):
         """
         Returns self as a maxima object.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: pi._maxima_()
             %pi
         """
@@ -248,10 +288,11 @@ class Constant(Function):
 
     def _has_op(self, x):
         """
-        Check whether or not self contains the operation x.  Since
-        self is a constant, this is always False.
+        Check whether or not self contains the operation x. Since self is a
+        constant, this is always False.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: pi._has_op(operator.add)
             False
         """
@@ -259,10 +300,11 @@ class Constant(Function):
 
     def number_of_arguments(self):
         """
-        Returns the number of arguments of self.  For constants,
-        this is just zero.
+        Returns the number of arguments of self. For constants, this is
+        just zero.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: type(pi)
             <class 'sage.functions.constants.Pi'>
             sage: pi.number_of_arguments()
@@ -274,26 +316,27 @@ class Constant(Function):
 
     def substitute(self, *args, **kwds):
         """
-        Substitute values into self.  For constants, this just returns
+        Substitute values into self. For constants, this just returns
         self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: pi.substitute(x=3)
             pi
             sage: pi.substitute(3)
             pi
             sage: pi.substitute(4, x=4)
             pi
-
         """
         return self
 
     def _recursive_sub(self, kwds):
         """
-        Recursively substitute values into self.  For constants, this just
+        Recursively substitute values into self. For constants, this just
         returns self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: pi._recursive_sub({x:3})
             pi
         """
@@ -301,10 +344,11 @@ class Constant(Function):
 
     def _recursive_sub_over_ring(self, kwds, ring):
         """
-        Recursively substitute values into self over a ring.
-        For constants, this just returns ring(self).
+        Recursively substitute values into self over a ring. For constants,
+        this just returns ring(self).
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: pi._recursive_sub_over_ring({x:3}, RDF)
             3.14159265359
         """
@@ -312,10 +356,11 @@ class Constant(Function):
 
     def variables(self):
         """
-        Return a list of the variables of self.  For constants, this
-        is the empty list.
+        Return a list of the variables of self. For constants, this is the
+        empty list.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: pi.variables()
             []
             sage: e.variables()
@@ -327,7 +372,8 @@ class Constant(Function):
         """
         Returns self as an element of SymbolicRing.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: s = pi._ser(); s
             pi
             sage: type(s)
@@ -345,9 +391,10 @@ class Constant(Function):
         """
         Returns the absolute value of self.
 
-        EXAMPLES:
-           sage: abs(pi)
-           pi
+        EXAMPLES::
+
+            sage: abs(pi)
+            pi
         """
         if self.str()[0] != '-':
             return self
@@ -357,7 +404,8 @@ class Constant(Function):
         """
         Returns the negation of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: -pi
             -1*pi
             sage: -e
@@ -367,10 +415,11 @@ class Constant(Function):
 
     def __call__(self, *args, **kwargs):
         """
-        Call self as a function.  Since self is a constant function,
-        this just returns self.
+        Call self as a function. Since self is a constant function, this
+        just returns self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: pi(2,3,4)
             pi
             sage: pi(pi)
@@ -386,7 +435,8 @@ class Constant(Function):
         """
         Returns the floor of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: pi.floor()
             3
             sage: e.floor()
@@ -400,9 +450,10 @@ class Constant(Function):
 
     def _latex_(self):
         r"""
-        Return the \LaTeX representation of self.
+        Return the LaTeX representation of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: catalan._latex_()
             '\\text{catalan}'
         """
@@ -410,7 +461,8 @@ class Constant(Function):
 
     def _complex_mpfr_field_(self, R):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: pi._complex_mpfr_field_(ComplexField(53))
             3.14159265358979
             sage: pi._complex_mpfr_field_(ComplexField(200))
@@ -420,15 +472,17 @@ class Constant(Function):
 
     def _real_double_(self, R):
         """
-        EXAMPLES:
-           sage: pi._real_double_(RDF)
-           3.14159265359
+        EXAMPLES::
+
+            sage: pi._real_double_(RDF)
+            3.14159265359
         """
         return R(float(self))
 
     def _complex_double_(self, R):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: pi._complex_double_(CDF)
             3.14159265359
         """
@@ -437,7 +491,8 @@ class Constant(Function):
     # The following adds formal arithmetic support for generic constant
     def _add_(self, right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: I + 2
             I + 2
             sage: a = I+I
@@ -449,7 +504,8 @@ class Constant(Function):
 
     def _sub_(self, right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: a = I - pi; a
             I - pi
             sage: map(type, a._operands)
@@ -460,7 +516,8 @@ class Constant(Function):
 
     def _mul_(self, right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: a = I * pi; a
             I*pi
             sage: map(type, a._operands)
@@ -471,19 +528,20 @@ class Constant(Function):
 
     def _div_(self, right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: a = I / pi; a
             I/pi
             sage: map(type, a._operands)
             [<class 'sage.calculus.calculus.SymbolicConstant'>,
              <class 'sage.calculus.calculus.SymbolicConstant'>]
-
         """
         return self._ser() / SR(right)
 
     def __pow__(self, right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: a = pi^pi; a
             pi^pi
             sage: map(type, a._operands)
@@ -494,13 +552,14 @@ class Constant(Function):
 
     def _interface_is_cached_(self):
         """
-        Return False, since coercion of functions to interfaces
-        is not cached.
+        Return False, since coercion of functions to interfaces is not
+        cached.
 
-        We do not cache coercions of functions to interfaces, since
-        the precision of the interface may change.
+        We do not cache coercions of functions to interfaces, since the
+        precision of the interface may change.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: gp(pi)
             3.141592653589793238462643383              # 32-bit
             3.1415926535897932384626433832795028842    # 64-bit
@@ -516,7 +575,8 @@ class Constant(Function):
 
     def __lt__(self, right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: pi < 3
             pi < 3
             sage: type(pi<3)
@@ -528,7 +588,8 @@ class Constant(Function):
 
     def __le__(self, right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: pi <= 3
             pi <= 3
             sage: type(pi<=3)
@@ -540,7 +601,8 @@ class Constant(Function):
 
     def __eq__(self, right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: solve(pi == 2*x)
             [x == pi/2]
             sage: solve(cos(x^2) == pi)
@@ -550,7 +612,8 @@ class Constant(Function):
 
     def __ne__(self, right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: type(pi != 3)
             <class 'sage.calculus.equations.SymbolicEquation'>
             sage: bool(pi != 3)
@@ -560,7 +623,8 @@ class Constant(Function):
 
     def __ge__(self, right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: type(pi>=3)
             <class 'sage.calculus.equations.SymbolicEquation'>
             sage: bool(pi>=3)
@@ -570,7 +634,8 @@ class Constant(Function):
 
     def __gt__(self, right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: type(pi>3)
             <class 'sage.calculus.equations.SymbolicEquation'>
             sage: bool(pi>3)
@@ -598,7 +663,8 @@ class Pi(Constant):
     """
     The ratio of a circle's circumference to its diameter.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: pi
         pi
         sage: float(pi)
@@ -623,7 +689,8 @@ class Pi(Constant):
     """
     def __init__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: bool(pi == loads(dumps(pi)))
             True
         """
@@ -634,7 +701,8 @@ class Pi(Constant):
 
     def _repr_(self, simplify=True):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: repr(pi)
             'pi'
         """
@@ -642,7 +710,8 @@ class Pi(Constant):
 
     def _latex_(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: pi._latex_()
             '\\pi'
             sage: latex(pi)
@@ -652,7 +721,8 @@ class Pi(Constant):
 
     def _mathml_(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: pi._mathml_()
             '<mi>&pi;</mi>'
             sage: mathml(pi)
@@ -662,7 +732,8 @@ class Pi(Constant):
 
     def __float__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: float(pi)
             3.1415926535897931
         """
@@ -670,7 +741,8 @@ class Pi(Constant):
 
     def _mpfr_(self, R):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: pi._mpfr_(RealField(100))
             3.1415926535897932384626433833
         """
@@ -678,9 +750,10 @@ class Pi(Constant):
 
     def _real_double_(self, R):
         """
-        EXAMPLES:
-            sage: pi._real_double_(RDF)
-            3.14159265359
+         EXAMPLES::
+
+             sage: pi._real_double_(RDF)
+             3.14159265359
          """
         return R.pi()
 
@@ -688,7 +761,8 @@ class Pi(Constant):
         """
         Returns the floor of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: pi.floor()
             3
         """
@@ -698,7 +772,8 @@ class Pi(Constant):
         """
         Converts pi to sympy pi.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: import sympy
             sage: sympy.pi == pi # indirect doctest
             True
@@ -720,7 +795,8 @@ class I_class(Constant):
     """
     The formal square root of -1.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: I
         I
         sage: I^2
@@ -750,7 +826,8 @@ class I_class(Constant):
     """
     def __init__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: bool(I == loads(dumps(I)))
             True
         """
@@ -761,7 +838,8 @@ class I_class(Constant):
 
     def _repr_(self, simplify=True):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: repr(I)
             'I'
         """
@@ -769,7 +847,8 @@ class I_class(Constant):
 
     def _latex_(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: I._latex_()
             'i'
             sage: latex(I)
@@ -779,7 +858,8 @@ class I_class(Constant):
 
     def minpoly(self, bits=None, degree=None, epsilon=0):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: I.minpoly()
             x^2 + 1
         """
@@ -787,7 +867,8 @@ class I_class(Constant):
 
     def _mathml_(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: I._mathml_()
             '<mi>&i;</mi>'
             sage: mathml(I)
@@ -797,7 +878,8 @@ class I_class(Constant):
 
     def __float__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: float(I)
             Traceback (most recent call last):
             ...
@@ -807,7 +889,8 @@ class I_class(Constant):
 
     def _mpfr_(self, R):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: I._mpfr_(RealField(53))
             Traceback (most recent call last):
             ...
@@ -817,7 +900,8 @@ class I_class(Constant):
 
     def _complex_mpfr_field_(self, R):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: I._complex_mpfr_field_(ComplexField(53))
             1.00000000000000*I
         """
@@ -825,7 +909,8 @@ class I_class(Constant):
 
     def _complex_double_(self, C):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: I._complex_double_(CDF)
             1.0*I
         """
@@ -833,7 +918,8 @@ class I_class(Constant):
 
     def __complex__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: complex(I)
             1j
         """
@@ -841,7 +927,8 @@ class I_class(Constant):
 
     def _real_double_(self, R):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: I._mpfr_(RealField(53))
             Traceback (most recent call last):
             ...
@@ -851,7 +938,8 @@ class I_class(Constant):
 
     def _algebraic_(self, field):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: QQbar(I)
             1*I
         """
@@ -860,7 +948,8 @@ class I_class(Constant):
 
     def __abs__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: abs(I)
             1
             sage: I.__abs__()
@@ -870,7 +959,8 @@ class I_class(Constant):
 
     def floor(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: I.floor()
             Traceback (most recent call last):
             ...
@@ -884,7 +974,8 @@ class E(Constant):
     """
     The base of the natural logarithm.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: RR(e)
         2.71828182845905
         sage: R = RealField(200); R
@@ -905,7 +996,8 @@ class E(Constant):
     """
     def __init__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: bool( e == loads(dumps(e)) )
             True
         """
@@ -921,7 +1013,8 @@ class E(Constant):
 
     def _repr_(self, simplify=True):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: repr(e)
             'e'
             sage: e._repr_()
@@ -931,7 +1024,8 @@ class E(Constant):
 
     def _latex_(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: e._latex_()
             'e'
             sage: latex(e)
@@ -941,7 +1035,8 @@ class E(Constant):
 
     def __float__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: float(e)
             2.7182818284590451
             sage: e.__float__()
@@ -951,7 +1046,8 @@ class E(Constant):
 
     def _mpfr_(self, R):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: e._mpfr_(RealField(100))
             2.7182818284590452353602874714
         """
@@ -961,7 +1057,8 @@ class E(Constant):
         """
         Returns the floor of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: e.floor()
             2
         """
@@ -969,7 +1066,8 @@ class E(Constant):
 
     def _real_double_(self, R):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: e._real_double_(RDF)
             2.71828182846
         """
@@ -979,7 +1077,8 @@ class E(Constant):
         """
         Converts e to sympy E.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: import sympy
             sage: sympy.E == e # indirect doctest
             True
@@ -1002,7 +1101,8 @@ class NotANumber(Constant):
     """
     def __init__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: loads(dumps(NaN))
             NaN
         """
@@ -1011,7 +1111,8 @@ class NotANumber(Constant):
 
     def _repr_(self, simplify=True):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: repr(NaN)
             'NaN'
             sage: NaN._repr_()
@@ -1021,7 +1122,8 @@ class NotANumber(Constant):
 
     def _mpfr_(self,R):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: NaN._mpfr_(RealField(53))
             NaN
             sage: type(_)
@@ -1031,7 +1133,8 @@ class NotANumber(Constant):
 
     def _real_double_(self, R):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: RDF(NaN)
             nan
         """
@@ -1041,7 +1144,8 @@ class NotANumber(Constant):
         """
         Converts NaN to SymPy NaN.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: import sympy
             sage: sympy.nan == NaN # indirect doctest
             True
@@ -1055,7 +1159,8 @@ class GoldenRatio(Constant):
     """
     The number (1+sqrt(5))/2
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: gr = golden_ratio
         sage: RR(gr)
         1.61803398874989
@@ -1071,7 +1176,8 @@ class GoldenRatio(Constant):
     """
     def __init__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: loads(dumps(golden_ratio))
             golden_ratio
         """
@@ -1081,7 +1187,8 @@ class GoldenRatio(Constant):
 				'kash':'(1+Sqrt(5))/2'})
     def _repr_(self, simplify=True):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: repr(golden_ratio)
             'golden_ratio'
             sage: golden_ratio._repr_()
@@ -1091,7 +1198,8 @@ class GoldenRatio(Constant):
 
     def _latex_(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: latex(golden_ratio)
             \phi
             sage: golden_ratio._latex_()
@@ -1101,7 +1209,8 @@ class GoldenRatio(Constant):
 
     def minpoly(self, bits=None, degree=None, epsilon=0):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: golden_ratio.minpoly()
             x^2 - x - 1
         """
@@ -1110,7 +1219,8 @@ class GoldenRatio(Constant):
 
     def __float__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: float(golden_ratio)
             1.6180339887498949
             sage: golden_ratio.__float__()
@@ -1120,7 +1230,8 @@ class GoldenRatio(Constant):
 
     def _real_double_(self, R):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: RDF(golden_ratio)
             1.61803398875
         """
@@ -1128,7 +1239,8 @@ class GoldenRatio(Constant):
 
     def _mpfr_(self,R):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: golden_ratio._mpfr_(RealField(100))
             1.6180339887498948482045868344
             sage: RealField(100)(golden_ratio)
@@ -1138,7 +1250,8 @@ class GoldenRatio(Constant):
 
     def _algebraic_(self, field):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: golden_ratio._algebraic_(QQbar)
             1.618033988749895?
             sage: QQbar(golden_ratio)
@@ -1151,7 +1264,8 @@ class GoldenRatio(Constant):
         """
         Converts golden_ratio to SymPy GoldenRation.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: import sympy
             sage: sympy.GoldenRatio == golden_ratio # indirect doctest
             True
@@ -1165,7 +1279,8 @@ class Log2(Constant):
     """
     The natural logarithm of the real number 2.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: log2
         log2
         sage: float(log2)
@@ -1190,7 +1305,8 @@ class Log2(Constant):
     """
     def __init__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: loads(dumps(log2))
             log2
         """
@@ -1200,7 +1316,8 @@ class Log2(Constant):
 
     def _repr_(self, simplify=True):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: repr(log2)
             'log2'
             sage: log2._repr_()
@@ -1210,7 +1327,8 @@ class Log2(Constant):
 
     def _latex_(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: log2._latex_()
             '\\log(2)'
             sage: latex(log2)
@@ -1220,7 +1338,8 @@ class Log2(Constant):
 
     def __float__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: float(log2)
             0.69314718055994529
             sage: log2.__float__()
@@ -1230,7 +1349,8 @@ class Log2(Constant):
 
     def _real_double_(self, R):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: RDF(log2)
             0.69314718056
         """
@@ -1238,7 +1358,8 @@ class Log2(Constant):
 
     def _mpfr_(self,R):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: RealField(100)(log2)
             0.69314718055994530941723212146
             sage: log2._mpfr_(RealField(100))
@@ -1250,7 +1371,8 @@ class Log2(Constant):
         """
         Returns the floor of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: log2.floor()
             0
         """
@@ -1260,9 +1382,11 @@ log2 = Log2()
 
 class EulerGamma(Constant):
     """
-    The limiting difference between the harmonic series and the natural logarithm.
+    The limiting difference between the harmonic series and the natural
+    logarithm.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: R = RealField()
         sage: R(euler_gamma)
         0.577215664901533
@@ -1277,7 +1401,8 @@ class EulerGamma(Constant):
     """
     def __init__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: loads(dumps(euler_gamma))
             euler_gamma
         """
@@ -1288,7 +1413,8 @@ class EulerGamma(Constant):
 
     def _repr_(self, simplify=True):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: repr(euler_gamma)
             'euler_gamma'
             sage: euler_gamma._repr_()
@@ -1298,7 +1424,8 @@ class EulerGamma(Constant):
 
     def _latex_(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: euler_gamma._latex_()
             '\\gamma'
             sage: latex(euler_gamma)
@@ -1308,7 +1435,8 @@ class EulerGamma(Constant):
 
     def _mpfr_(self,R):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: RealField(100)(euler_gamma)
             0.57721566490153286060651209008
             sage: euler_gamma._mpfr_(RealField(100))
@@ -1318,7 +1446,8 @@ class EulerGamma(Constant):
 
     def _real_double_(self, R):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: RDF(euler_gamma)
             0.577215664902
         """
@@ -1328,7 +1457,8 @@ class EulerGamma(Constant):
         """
         Return the floor of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: euler_gamma.floor()
             0
         """
@@ -1338,7 +1468,8 @@ class EulerGamma(Constant):
         """
         Converts euler_gamma to SymPy EulerGamma.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: import sympy
             sage: sympy.EulerGamma == euler_gamma # indirect doctest
             True
@@ -1353,13 +1484,15 @@ class Catalan(Constant):
     A number appaering in combinatorics defined as the Dirichlet beta
     function evaluated at the number 2.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: catalan^2 + merten
         merten + catalan^2
     """
     def __init__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: loads(dumps(catalan))
             catalan
         """
@@ -1369,7 +1502,8 @@ class Catalan(Constant):
 
     def _repr_(self, simplify=True):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: repr(catalan)
             'catalan'
             sage: catalan._repr_(catalan)
@@ -1379,7 +1513,8 @@ class Catalan(Constant):
 
     def _mpfr_(self, R):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: RealField(100)(catalan)
             0.91596559417721901505460351493
             sage: catalan._mpfr_(RealField(100))
@@ -1389,8 +1524,8 @@ class Catalan(Constant):
 
     def _real_double_(self, R):
         """
-        EXAMPLES:
-        We coerce to the real double field:
+        EXAMPLES: We coerce to the real double field::
+
             sage: RDF(catalan)
             0.915965594177
         """
@@ -1398,7 +1533,8 @@ class Catalan(Constant):
 
     def __float__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: float(catalan)
             0.91596559417721901
         """
@@ -1408,7 +1544,8 @@ class Catalan(Constant):
         """
         Return the floor of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: catalan.floor()
             0
         """
@@ -1418,7 +1555,8 @@ class Catalan(Constant):
         """
         Converts catalan to SymPy Catalan.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: import sympy
             sage: sympy.Catalan == catalan # indirect doctest
             True
@@ -1430,10 +1568,11 @@ catalan = Catalan()
 
 class Khinchin(Constant):
     """
-    The geometric mean of the continued fraction expansion
-    of any (almost any) real number.
+    The geometric mean of the continued fraction expansion of any
+    (almost any) real number.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: float(khinchin)
         2.6854520010653062
         sage: khinchin.str(100)
@@ -1446,7 +1585,8 @@ class Khinchin(Constant):
     """
     def __init__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: loads(dumps(khinchin))
             khinchin
         """
@@ -1459,7 +1599,8 @@ class Khinchin(Constant):
 
     def _repr_(self, simplify=True):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: repr(khinchin)
             'khinchin'
             sage: khinchin._repr_()
@@ -1469,7 +1610,8 @@ class Khinchin(Constant):
 
     def _mpfr_(self, R):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: RealField(100)(khinchin)
             2.6854520010653064453097148355
             sage: RealField(20000)(khinchin)
@@ -1483,7 +1625,8 @@ class Khinchin(Constant):
 
     def _real_double_(self, R):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: RDF(khinchin)
             2.68545200107
         """
@@ -1491,7 +1634,8 @@ class Khinchin(Constant):
 
     def __float__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: float(khinchin)
             2.6854520010653062
         """
@@ -1501,7 +1645,8 @@ class Khinchin(Constant):
         """
         Returns the floor of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: khinchin.floor()
             2
         """
@@ -1511,20 +1656,22 @@ khinchin  = Khinchin()
 
 class TwinPrime(Constant):
     r"""
-    The Twin Primes constant is defined as $\prod 1 - 1/(p-1)^2$
-    for primes $p > 2$.
+    The Twin Primes constant is defined as
+    `\prod 1 - 1/(p-1)^2` for primes `p > 2`.
 
-    EXAMPLES:
-	sage: float(twinprime)
-        0.66016181584686962
-        sage: R=RealField(200);R
-        Real Field with 200 bits of precision
-        sage: R(twinprime)
-        0.66016181584686957392781211001455577843262336028473341331945
+    EXAMPLES::
+
+        sage: float(twinprime)
+               0.66016181584686962
+               sage: R=RealField(200);R
+               Real Field with 200 bits of precision
+               sage: R(twinprime)
+               0.66016181584686957392781211001455577843262336028473341331945
     """
     def __init__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: loads(dumps(twinprime))
             twinprime
         """
@@ -1540,7 +1687,8 @@ class TwinPrime(Constant):
         """
         Returns the floor of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: twinprime.floor()
             0
         """
@@ -1548,7 +1696,8 @@ class TwinPrime(Constant):
 
     def _repr_(self, simplify=True):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: repr(twinprime)
             'twinprime'
             sage: twinprime._repr_()
@@ -1558,7 +1707,8 @@ class TwinPrime(Constant):
 
     def _mpfr_(self, R):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: RealField(100)(twinprime)
             0.66016181584686957392781211001
             sage: RealField(20000)(twinprime)
@@ -1572,7 +1722,8 @@ class TwinPrime(Constant):
 
     def _real_double_(self, R):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: RDF(twinprime)
             0.660161815847
         """
@@ -1580,7 +1731,8 @@ class TwinPrime(Constant):
 
     def __float__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: float(twinprime)
             0.66016181584686962
         """
@@ -1590,10 +1742,11 @@ twinprime = TwinPrime()
 
 class Merten(Constant):
     """
-    The Merten constant is related to the Twin Primes constant
-    and appears in Merten's second theorem.
+    The Merten constant is related to the Twin Primes constant and
+    appears in Merten's second theorem.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: float(merten)
         0.26149721284764277
         sage: R=RealField(200);R
@@ -1603,7 +1756,8 @@ class Merten(Constant):
     """
     def __init__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: loads(dumps(merten))
             merten
         """
@@ -1619,7 +1773,8 @@ class Merten(Constant):
         """
         Returns the floor of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: merten.floor()
             0
         """
@@ -1627,7 +1782,8 @@ class Merten(Constant):
 
     def _repr_(self, simplify=True):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: merten._repr_()
             'merten'
             sage: repr(merten)
@@ -1637,7 +1793,8 @@ class Merten(Constant):
 
     def _mpfr_(self, R):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: RealField(1000)(merten)
             Traceback (most recent call last):
             ...
@@ -1651,7 +1808,8 @@ class Merten(Constant):
 
     def _real_double_(self, R):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: RDF(merten)
             0.261497212848
         """
@@ -1659,7 +1817,8 @@ class Merten(Constant):
 
     def __float__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: float(merten)
             0.26149721284764277
         """
@@ -1672,20 +1831,22 @@ class Brun(Constant):
     Brun's constant is the sum of reciprocals of odd twin primes.
 
     It is not known to very high precision; calculating the number
-    using twin primes up to $10^{16}$ (Sebah 2002) gives the number
-    $1.9021605831040$.
+    using twin primes up to `10^{16}` (Sebah 2002) gives the
+    number `1.9021605831040`.
 
-    EXAMPLES:
-	sage: float(brun)
-        1.902160583104
-        sage: R = RealField(41); R
-        Real Field with 41 bits of precision
-        sage: R(brun)
-        1.90216058310
+    EXAMPLES::
+
+        sage: float(brun)
+               1.902160583104
+               sage: R = RealField(41); R
+               Real Field with 41 bits of precision
+               sage: R(brun)
+               1.90216058310
     """
     def __init__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: loads(dumps(brun))
             brun
         """
@@ -1701,7 +1862,8 @@ class Brun(Constant):
         """
         Return the floor of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: brun.floor()
             1
         """
@@ -1709,7 +1871,8 @@ class Brun(Constant):
 
     def _repr_(self, simplify=True):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: brun._repr_()
             'brun'
             sage: repr(brun)
@@ -1719,7 +1882,8 @@ class Brun(Constant):
 
     def _mpfr_(self, R):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: RealField(53)(brun)
             Traceback (most recent call last):
             ...
@@ -1733,7 +1897,8 @@ class Brun(Constant):
 
     def _real_double_(self, R):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: RDF(brun)
             1.9021605831
         """
@@ -1741,7 +1906,8 @@ class Brun(Constant):
 
     def __float__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: float(brun)
             1.902160583104
         """
