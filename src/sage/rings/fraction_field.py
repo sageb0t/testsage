@@ -1,18 +1,27 @@
 """
 Fraction Field of Integral Domains
 
-AUTHOR: William Stein (with input from David Joyner, David Kohel, and
-        Joe Wetherell)
+AUTHORS:
 
-EXAMPLES:
-Quotienting is a constructor for an element of the fraction field:
+- William Stein (with input from David Joyner, David Kohel, and Joe
+  Wetherell)
+
+- Burcin Erocal
+
+EXAMPLES: Quotienting is a constructor for an element of the
+fraction field::
+
     sage: R.<x> = QQ[]
     sage: (x^2-1)/(x+1)
     x - 1
     sage: parent((x^2-1)/(x+1))
     Fraction Field of Univariate Polynomial Ring in x over Rational Field
 
-The GCD is not taken (since it doesn't converge sometimes) in the inexact case.
+The GCD is not taken (since it doesn't converge sometimes) in the
+inexact case.
+
+::
+
     sage: Z.<z> = CC[]
     sage: I = CC.gen()
     sage: (1+I+z)/(z+0.1*I)
@@ -20,23 +29,29 @@ The GCD is not taken (since it doesn't converge sometimes) in the inexact case.
     sage: (1+I*z)/(z+1.1)
     (1.00000000000000*I*z + 1.00000000000000)/(1.00000000000000*z + 1.10000000000000)
 
-TESTS:
+TESTS::
+
     sage: F = FractionField(IntegerRing())
     sage: F == loads(dumps(F))
     True
+
+::
 
     sage: F = FractionField(PolynomialRing(RationalField(),'x'))
     sage: F == loads(dumps(F))
     True
 
+::
+
     sage: F = FractionField(PolynomialRing(IntegerRing(),'x'))
     sage: F == loads(dumps(F))
     True
 
+::
+
     sage: F = FractionField(PolynomialRing(RationalField(),2,'x'))
     sage: F == loads(dumps(F))
     True
-
 """
 
 #*****************************************************************************
@@ -71,11 +86,15 @@ def FractionField(R, names=None):
     Create the fraction field of the integral domain R.
 
     INPUT:
-        R -- an integral domain
-        names -- ignored
 
-    EXAMPLES:
-    We create some example fraction fields.
+    -  ``R`` - an integral domain
+
+    -  ``names`` - ignored
+
+    EXAMPLES: We create some example fraction fields.
+
+    ::
+
         sage: FractionField(IntegerRing())
         Rational Field
         sage: FractionField(PolynomialRing(RationalField(),'x'))
@@ -85,7 +104,11 @@ def FractionField(R, names=None):
         sage: FractionField(PolynomialRing(RationalField(),2,'x'))
         Fraction Field of Multivariate Polynomial Ring in x0, x1 over Rational Field
 
-    Dividing elements often implicitly creates elements of the fraction field.
+    Dividing elements often implicitly creates elements of the fraction
+    field.
+
+    ::
+
         sage: x = PolynomialRing(RationalField(), 'x').gen()
         sage: f = x/(x+1)
         sage: g = x**3/(x+1)
@@ -95,6 +118,9 @@ def FractionField(R, names=None):
         x^2
 
     The input must be an integral domain.
+
+    ::
+
         sage: Frac(Integers(4))
         Traceback (most recent call last):
         ...
@@ -110,7 +136,8 @@ def is_FractionField(x):
     """
     Tests whether or not x inherits from FractionField_generic.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: from sage.rings.fraction_field import is_FractionField
         sage: is_FractionField(Frac(ZZ['x']))
         True
@@ -129,9 +156,11 @@ class FractionField_generic(field.Field):
         Create the fraction field of the integral domain R.
 
         INPUT:
-            R -- an integral domain
 
-        EXAMPLES:
+        -  ``R`` - an integral domain
+
+        EXAMPLES::
+
             sage: Frac(QQ['x'])
             Fraction Field of Univariate Polynomial Ring in x over Rational Field
             sage: Frac(QQ['x,y']).variable_names()
@@ -144,7 +173,8 @@ class FractionField_generic(field.Field):
 
     def __reduce__(self):
         """
-        TESTS:
+        TESTS::
+
             sage: K = Frac(QQ['x'])
             sage: loads(dumps(K)) is K
             True
@@ -153,35 +183,52 @@ class FractionField_generic(field.Field):
 
     def _coerce_map_from_(self, S):
         """
-        Returns True if elements of S can be coerced into this fraction field.
+        Returns True if elements of S can be coerced into this fraction
+        field.
 
         This fraction field has coercions from:
-         * itself
-         * any fraction field where the base ring coerces to the base ring
-         of this fraction field
-         * any ring that coerces to the base ring of this fraction field
 
-        EXAMPLES:
+        - itself
+
+        - any fraction field where the base ring coerces to the base
+          ring of this fraction field
+
+        - any ring that coerces to the base ring of this fraction
+          field
+
+        EXAMPLES::
+
             sage: F = QQ['x,y'].fraction_field()
             sage: F.has_coerce_map_from(F)
             True
 
+        ::
+
             sage: F.has_coerce_map_from(ZZ['x,y'].fraction_field())
             True
 
+        ::
+
             sage: F.has_coerce_map_from(ZZ['x,y,z'].fraction_field())
             False
+
+        ::
 
             sage: F.has_coerce_map_from(ZZ)
             True
 
         Test coercions:
+
+        ::
+
             sage: F.coerce(1)
             1
             sage: F.coerce(int(1))
             1
             sage: F.coerce(1/2)
             1/2
+
+        ::
 
             sage: K = ZZ['x,y'].fraction_field()
             sage: x,y = K.gens()
@@ -209,7 +256,8 @@ class FractionField_generic(field.Field):
         """
         Returns True, since the fraction field is a field.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Frac(ZZ).is_field()
             True
         """
@@ -217,10 +265,11 @@ class FractionField_generic(field.Field):
 
     def base_ring(self):
         """
-        Return the base ring of self; this is the base ring of the ring which
-        this fraction field is the fraction field of.
+        Return the base ring of self; this is the base ring of the ring
+        which this fraction field is the fraction field of.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R = Frac(ZZ['t'])
             sage: R.base_ring()
             Integer Ring
@@ -231,7 +280,8 @@ class FractionField_generic(field.Field):
         """
         Return the characteristic of this fraction field.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R = Frac(ZZ['t'])
             sage: R.base_ring()
             Integer Ring
@@ -244,7 +294,8 @@ class FractionField_generic(field.Field):
 
     def _repr_(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: str(Frac(ZZ['x']))
             'Fraction Field of Univariate Polynomial Ring in x over Integer Ring'
         """
@@ -252,7 +303,8 @@ class FractionField_generic(field.Field):
 
     def _latex_(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: latex(Frac(GF(7)['x,y,z']))
             \mbox{\rm Frac}(\mathbf{F}_{7}[x, y, z])
         """
@@ -260,15 +312,20 @@ class FractionField_generic(field.Field):
 
     def _magma_init_(self, magma):
         """
-        Return a string representation of self in the given magma instance.
+        Return a string representation of self in the given magma
+        instance.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: QQ['x'].fraction_field()._magma_init_(magma)            # optional - magma
             'SageCreateWithNames(FieldOfFractions(SageCreateWithNames(PolynomialRing(_sage_ref...),["x"])),["x"])'
             sage: GF(9,'a')['x,y,z'].fraction_field()._magma_init_(magma) # optional - magma
             'SageCreateWithNames(FieldOfFractions(SageCreateWithNames(PolynomialRing(_sage_ref...,3,"grevlex"),["x","y","z"])),["x","y","z"])'
 
         _magma_init_ gets called implicitly below.
+
+        ::
+
             sage: magma(QQ['x,y'].fraction_field())                  # optional - magma
             Multivariate rational function field of rank 2 over Rational Field
             Variables: x, y
@@ -276,7 +333,8 @@ class FractionField_generic(field.Field):
             Univariate rational function field over Integer Ring
             Variables: x
 
-        Verify that conversion is being properly cached:
+        Verify that conversion is being properly cached::
+
             sage: k = Frac(QQ['x,z'])                                # optional - magma
             sage: magma(k) is magma(k)                               # optional - magma
             True
@@ -288,7 +346,8 @@ class FractionField_generic(field.Field):
         """
         Return the ring that this is the fraction field of.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R = Frac(QQ['x,y'])
             sage: R
             Fraction Field of Multivariate Polynomial Ring in x, y over Rational Field
@@ -299,7 +358,8 @@ class FractionField_generic(field.Field):
 
     def is_exact(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Frac(ZZ['x']).is_exact()
             True
             sage: Frac(CDF['x']).is_exact()
@@ -316,19 +376,23 @@ class FractionField_generic(field.Field):
         """
         Construct an element of this fraction field.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: F = QQ['x,y'].fraction_field()
             sage: F._element_constructor_(1)
             1
             sage: F._element_constructor_(F.gen(0)/F.gen(1))
             x/y
 
+        ::
+
             sage: K = ZZ['x,y'].fraction_field()
             sage: x,y = K.gens()
 
+        ::
+
             sage: F._element_constructor_(x/y)
             x/y
-
         """
         if isinstance(x, self._element_class):
             if x.parent() is self:
@@ -340,7 +404,8 @@ class FractionField_generic(field.Field):
 
     def construction(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Frac(ZZ['x']).construction()
             (FractionField, Univariate Polynomial Ring in x over Integer Ring)
             sage: K = Frac(GF(3)['t'])
@@ -355,7 +420,8 @@ class FractionField_generic(field.Field):
 
     def __cmp__(self, other):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Frac(ZZ['x']) == Frac(ZZ['x'])
             True
             sage: Frac(ZZ['x']) == Frac(QQ['x'])
@@ -373,7 +439,8 @@ class FractionField_generic(field.Field):
         """
         This is the same as for the parent object.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R = Frac(PolynomialRing(QQ,'z',10)); R
             Fraction Field of Multivariate Polynomial Ring in z0, z1, z2, z3, z4, z5, z6, z7, z8, z9 over Rational Field
             sage: R.ngens()
@@ -385,7 +452,8 @@ class FractionField_generic(field.Field):
         """
         Return the ith generator of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R = Frac(PolynomialRing(QQ,'z',10)); R
             Fraction Field of Multivariate Polynomial Ring in z0, z1, z2, z3, z4, z5, z6, z7, z8, z9 over Rational Field
             sage: R.0
@@ -405,7 +473,8 @@ class FractionField_generic(field.Field):
         Check if the homomorphism defined by sending generators of this
         fraction field to im_gens in codomain is valid.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: F = QQ['x,y'].fraction_field()
             sage: x,y = F.gens()
             sage: F._is_valid_homomorphism_(F, [y,x])
@@ -414,11 +483,15 @@ class FractionField_generic(field.Field):
             sage: F._is_valid_homomorphism_(R, [x, x])
             False
 
-        TESTS:
+        TESTS::
+
             sage: F._is_valid_homomorphism_(ZZ, [])
             False
 
         Test homomorphisms:
+
+        ::
+
             sage: phi = F.hom([2*y, x])
             sage: phi(x+y)
             x + 2*y
@@ -437,10 +510,13 @@ class FractionField_generic(field.Field):
         """
         Returns a random element in this fraction field.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: F = ZZ['x'].fraction_field()
             sage: F.random_element()
             (2*x - 8)/(-x^2 + x)
+
+        ::
 
             sage: F.random_element(degree=5)
             (-12*x^5 - 2*x^4 - x^3 - 95*x^2 + x + 2)/(-x^5 + x^4 - x^3 + x^2)

@@ -1,35 +1,45 @@
 r"""
-Elements of $\Z/n\Z$
+Elements of `\mathbb{Z}/n\mathbb{Z}`
 
-An element of the integers modulo $n$.
+An element of the integers modulo `n`.
 
 There are three types of integer_mod classes, depending on the
 size of the modulus.
 
-\begin{itemize}
-\item \class{IntegerMod_int} stores its value in a \code{int_fast32_t} (typically an \code{int});
-this is used if the modulus is less than $\sqrt{2^{31}-1}$.
-\item \class{IntegerMod_int64} stores its value in a \code{int_fast64_t}
-(typically a \code{long long}); this is used if the modulus is less than
-$2^{31}-1$.
-\item \class{IntegerMod_gmp} stores its value in a \code{mpz_t}; this can be used for an
-arbitrarily large modulus.
-\end{itemize}
+-  ``IntegerMod_int`` stores its value in a
+   ``int_fast32_t`` (typically an ``int``);
+   this is used if the modulus is less than
+   `\sqrt{2^{31}-1}`.
 
-All extend \class{IntegerMod_abstract}.
+-  ``IntegerMod_int64`` stores its value in a
+   ``int_fast64_t`` (typically a ``long
+   long``); this is used if the modulus is less than
+   `2^{31}-1`.
 
-For efficency reasons, it stores the modulus (in all three forms, if
-possible) in a common (cdef) class \class{NativeIntStruct} rather than
-in the parent.
+-  ``IntegerMod_gmp`` stores its value in a
+   ``mpz_t``; this can be used for an arbitrarily large
+   modulus.
+
+All extend ``IntegerMod_abstract``.
+
+For efficency reasons, it stores the modulus (in all three forms,
+if possible) in a common (cdef) class
+``NativeIntStruct`` rather than in the parent.
 
 AUTHORS:
-    -- Robert Bradshaw (most of the work)
-    -- Didier Deshommes (bit shifting)
-    -- William Stein (editing and polishing; new arith architecture)
-    -- Robert Bradshaw (implement native is_square and square_root)
-    -- William Stein (sqrt)
 
-TESTS:
+-  Robert Bradshaw: most of the work
+
+-  Didier Deshommes: bit shifting
+
+-  William Stein: editing and polishing; new arith architecture
+
+-  Robert Bradshaw: implement native is_square and square_root
+
+-  William Stein: sqrt
+
+TESTS::
+
     sage: R = Integers(101^3)
     sage: a = R(824362); b = R(205942)
     sage: a * b
@@ -80,17 +90,19 @@ cdef Integer one_Z = Integer(1)
 
 def Mod(n, m, parent=None):
     """
-    Return the equivalence class of $n$ modulo $m$ as an element of
-    $\Z/m\Z$.
+    Return the equivalence class of `n` modulo `m` as
+    an element of `\mathbb{Z}/m\mathbb{Z}`.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: x = Mod(12345678, 32098203845329048)
         sage: x
         12345678
         sage: x^100
         1017322209155072
 
-    You can also use the lowercase version:
+    You can also use the lowercase version::
+
         sage: mod(12,5)
         2
     """
@@ -105,7 +117,7 @@ mod = Mod
 
 def IntegerMod(parent, value):
     """
-    Create an integer modulo $n$ with the given parent.
+    Create an integer modulo `n` with the given parent.
 
     This is mainly for internal use.
     """
@@ -131,9 +143,11 @@ def IntegerMod(parent, value):
 
 def is_IntegerMod(x):
     """
-    Return \code{True} if and only if x is an integer modulo $n$.
+    Return ``True`` if and only if x is an integer modulo
+    `n`.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: from sage.rings.integer_mod import is_IntegerMod
         sage: is_IntegerMod(5)
         False
@@ -146,7 +160,10 @@ def makeNativeIntStruct(sage.rings.integer.Integer z):
     """
     Function to convert a Sage Integer into class NativeIntStruct.
 
-    NOTE: This function seems completely redundant, and is not used anywhere.
+    .. note::
+
+       This function seems completely redundant, and is not used
+       anywhere.
     """
     return NativeIntStruct(z)
 
@@ -155,8 +172,8 @@ cdef class NativeIntStruct:
     We store the various forms of the modulus here rather than in the
     parent for efficiency reasons.
 
-    We may also store a cached table of all elements of a given
-    ring in this class.
+    We may also store a cached table of all elements of a given ring in
+    this class.
     """
     def __init__(NativeIntStruct self, sage.rings.integer.Integer z):
         self.int64 = -1
@@ -175,8 +192,8 @@ cdef class NativeIntStruct:
         """
         Function to compute and cache all elements of this class.
 
-        If inverses==True, also computes and caches the inverses of
-        the invertible elments
+        If inverses==True, also computes and caches the inverses of the
+        invertible elments
         """
         self.table = PyList_New(self.int64)
         cdef Py_ssize_t i
@@ -208,7 +225,8 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
 
     def __init__(self, parent):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: a = Mod(10,30^10); a
             10
             sage: loads(a.dumps()) == a
@@ -235,10 +253,11 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
 
     def __abs__(self):
         """
-        Raise an error message, since \code{abs(x)} makes no sense when \code{x} is an
-        integer modulo $n$.
+        Raise an error message, since ``abs(x)`` makes no sense
+        when ``x`` is an integer modulo `n`.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: abs(Mod(2,3))
             Traceback (most recent call last):
             ...
@@ -248,7 +267,8 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
 
     def __reduce__(IntegerMod_abstract self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: a = Mod(4,5); a
             4
             sage: loads(a.dumps()) == a
@@ -261,9 +281,11 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
 
     def is_nilpotent(self):
         r"""
-        Return \code{True} if \code{self} is nilpotent, i.e., some power of \code{self} is zero.
+        Return ``True`` if ``self`` is nilpotent,
+        i.e., some power of ``self`` is zero.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: a = Integers(90384098234^3)
             sage: factor(a.order())
             2^3 * 191^3 * 236607587^3
@@ -274,14 +296,16 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
             sage: b.is_nilpotent()
             True
 
-        ALGORITHM: Let $m \geq  \log_2(n)$, where $n$ is the modulus.
-        Then $x \in \ZZ/n\ZZ$ is nilpotent if and only if $x^m = 0$.
+        ALGORITHM: Let `m \geq  \log_2(n)`, where `n` is
+        the modulus. Then `x \in \mathbb{Z}/n\mathbb{Z}` is
+        nilpotent if and only if `x^m = 0`.
 
-        PROOF: This is clear if you reduce to the prime power case,
-        which you can do via the Chinese Remainder Theorem.
+        PROOF: This is clear if you reduce to the prime power case, which
+        you can do via the Chinese Remainder Theorem.
 
-        We could alternatively factor $n$ and check to see if the prime
-        divisors of $n$ all divide $x$.  This is asymptotically slower :-).
+        We could alternatively factor `n` and check to see if the
+        prime divisors of `n` all divide `x`. This is
+        asymptotically slower :-).
         """
         if self.is_zero():
             return True
@@ -302,14 +326,17 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
         Return string representation of corresponding GAP object.
 
         This can be slow since non-prime GAP finite field elements are
-        represented as powers of a generator for the multiplicative
-        group, so the discrete log problem must be solved.
+        represented as powers of a generator for the multiplicative group,
+        so the discrete log problem must be solved.
 
-        \note{This function will create a meaningless GAP object if the
-        modulus is not a power of a prime.  Also, the modulus must
-        be $\leq 65536$.}
+        .. note::
 
-        EXAMPLES:
+           This function will create a meaningless GAP object if the
+           modulus is not a power of a prime. Also, the modulus must
+           be `\leq 65536`.
+
+        EXAMPLES::
+
             sage: a = Mod(2,19)
             sage: gap(a)
             Z(19)
@@ -346,7 +373,8 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
         """
         Coercion to Magma.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: a = Integers(15)(4)
             sage: b = magma(a)                # optional - magma
             sage: b.Type()                    # optional - magma
@@ -358,9 +386,11 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
 
     def _sage_input_(self, sib, coerced):
         r"""
-        Produce an expression which will reproduce this value when evaluated.
+        Produce an expression which will reproduce this value when
+        evaluated.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: K = GF(7)
             sage: sage_input(K(5), verify=True)
             # Verified
@@ -383,21 +413,27 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
 
     def log(self, b=None):
         r"""
-        Return an integer $x$ such that $b^x = a$, where $a$ is \code{self}.
+        Return an integer `x` such that `b^x = a`, where
+        `a` is ``self``.
 
         INPUT:
-            self -- unit modulo $n$
-            b -- a \strong{generator} of the multiplicative group modulo $n$.
-            If \var{b} is not given, \code{R.multiplicative_generator()} is used,
-            where \code{R} is the parent of \code{self}.
 
-        OUTPUT:
-            Integer $x$ such that $b^x = a$.
+        -  ``self`` - unit modulo `n`
 
-        NOTE: The base must not be too big or the current
-        implementation, which is in PARI, will fail.
+        -  ``b`` - a **generator** of the multiplicative group
+           modulo `n`. If ``b`` is not given,
+           ``R.multiplicative_generator()`` is used, where
+           ``R`` is the parent of ``self``.
 
-        EXAMPLES:
+        OUTPUT: Integer `x` such that `b^x = a`.
+
+        .. note::
+
+           The base must not be too big or the current implementation,
+           which is in PARI, will fail.
+
+        EXAMPLES::
+
             sage: r = Integers(125)
             sage: b = r.multiplicative_generator()^3
             sage: a = b^17
@@ -407,6 +443,9 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
             63
 
         A bigger example.
+
+        ::
+
             sage: FF = FiniteField(2^32+61)
             sage: c = FF(4294967356)
             sage: x = FF(2)
@@ -416,9 +455,11 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
             sage: x^a
             4294967356
 
-        Things that can go wrong.  E.g., if the base is not a
-        generator for the multiplicative group, or not even a unit.
-        You can also use the generic function \code{discrete_log}.
+        Things that can go wrong. E.g., if the base is not a generator for
+        the multiplicative group, or not even a unit. You can also use the
+        generic function ``discrete_log``.
+
+        ::
 
             sage: a = Mod(9, 100); b = Mod(3,100)
             sage: a.log(b)
@@ -436,12 +477,14 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
             sage: sage.groups.generic.discrete_log(a,b)
             Traceback (most recent call last):
             ...
-	    ZeroDivisionError: Inverse does not exist.
+            ZeroDivisionError: Inverse does not exist.
 
-        AUTHOR:
-            -- David Joyner and William Stein (2005-11)
-            -- William Stein (2007-01-27): update to use PARI as requested by
-               David Kohel.
+        AUTHORS:
+
+        - David Joyner and William Stein (2005-11)
+
+        - William Stein (2007-01-27): update to use PARI as requested
+          by David Kohel.
         """
         if b is None:
             b = self._parent.multiplicative_generator()
@@ -459,7 +502,8 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
 
     def modulus(IntegerMod_abstract self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Mod(3,17).modulus()
             17
         """
@@ -469,7 +513,8 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
         """
         Returns the characteristic polynomial of this element.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: k = GF(3)
             sage: a = k.gen()
             sage: a.charpoly('x')
@@ -477,8 +522,9 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
             sage: a + 2
             0
 
-        AUTHOR:
-         -- Craig Citro
+        AUTHORS:
+
+        - Craig Citro
         """
         R = self.parent()[var]
         return R([-self,1])
@@ -507,7 +553,8 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
         """
         Returns a constant polynomial representing this value.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: k = GF(7)
             sage: a = k.gen(); a
             1
@@ -521,33 +568,37 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
 
     def norm(self):
         """
-        Returns the norm of this element, which is itself. (This
-        is here for compatibility with higher order finite fields.)
+        Returns the norm of this element, which is itself. (This is here
+        for compatibility with higher order finite fields.)
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: k = GF(691)
             sage: a = k(389)
             sage: a.norm()
             389
 
-        AUTHOR:
-         -- Craig Citro
+        AUTHORS:
+
+        - Craig Citro
         """
         return self
 
     def trace(self):
         """
-        Returns the trace of this element, which is itself. (This
-        is here for compatibility with higher order finite fields.)
+        Returns the trace of this element, which is itself. (This is here
+        for compatibility with higher order finite fields.)
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: k = GF(691)
             sage: a = k(389)
             sage: a.trace()
             389
 
-        AUTHOR:
-         -- Craig Citro
+        AUTHORS:
+
+        - Craig Citro
         """
         return self
 
@@ -559,7 +610,8 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
 
     def is_square(self):
         r"""
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Mod(3,17).is_square()
             False
             sage: Mod(9,17).is_square()
@@ -573,21 +625,25 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
             sage: Mod(1/25, next_prime(2^90)).is_square()
             True
 
-        TESTS:
+        TESTS::
+
             sage: Mod(1/25, 2^8).is_square()
             True
             sage: Mod(1/25, 2^40).is_square()
             True
 
-        ALGORITHM:
-            Calculate the Jacobi symbol $(\code{self}/p)$ at each prime $p$ dividing $n$.
-            It must be 1 or 0 for each prime, and if it is 0 mod $p$,
-            where $p^k || n$, then $ord_p(\code{self})$ must be even or greater than $k$.
+        ALGORITHM: Calculate the Jacobi symbol
+        `(\mathtt{self}/p)` at each prime `p`
+        dividing `n`. It must be 1 or 0 for each prime, and if it
+        is 0 mod `p`, where `p^k || n`, then
+        `ord_p(\mathtt{self})` must be even or greater than
+        `k`.
 
-            The case $p = 2$ is handled separately.
+        The case `p = 2` is handled separately.
 
-        AUTHOR:
-            -- Robert Bradshaw
+        AUTHORS:
+
+        - Robert Bradshaw
         """
         return self.is_square_c()
 
@@ -623,25 +679,31 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
 
     def sqrt(self, extend=True, all=False):
         r"""
-        Returns square root or square roots of \code{self} modulo $n$.
+        Returns square root or square roots of ``self`` modulo
+        `n`.
 
         INPUT:
-            extend -- bool (default: \code{True}); if \code{True}, return a square
-                 root in an extension ring, if necessary. Otherwise,
-                 raise a \class{ValueError} if the square root is not
-                 in the base ring.
-            all -- bool (default: \code{False}); if \code{True}, return \strong{all} square
-                   roots of self, instead of just one.
 
-        ALGORITHM: Calculates the square roots mod $p$ for each of the
-        primes $p$ dividing the order of the ring, then lifts them
-        $p$-adically and uses the CRT to find a square root mod $n$.
+        -  ``extend`` - bool (default: ``True``);
+           if ``True``, return a square root in an extension ring,
+           if necessary. Otherwise, raise a ``ValueError`` if the
+           square root is not in the base ring.
 
-        See also \code{square_root_mod_prime_power} and
-        \code{square_root_mod_prime} (in this module) for more
+        -  ``all`` - bool (default: ``False``); if
+           ``True``, return {all} square roots of self, instead of
+           just one.
+
+        ALGORITHM: Calculates the square roots mod `p` for each of
+        the primes `p` dividing the order of the ring, then lifts
+        them `p`-adically and uses the CRT to find a square root
+        mod `n`.
+
+        See also ``square_root_mod_prime_power`` and
+        ``square_root_mod_prime`` (in this module) for more
         algorithmic details.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: mod(-1, 17).sqrt()
             4
             sage: mod(5, 389).sqrt()
@@ -660,6 +722,8 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
             sage: Mod(1/25, next_prime(2^90)).sqrt()^(-2)
             25
 
+        ::
+
             sage: a = Mod(3,5); a
             3
             sage: x = Mod(-1, 360)
@@ -674,7 +738,8 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
             sage: y^2
             359
 
-        We compute all square roots in several cases:
+        We compute all square roots in several cases::
+
             sage: R = Integers(5*2^3*3^2); R
             Ring of integers modulo 360
             sage: R(40).sqrt(all=True)
@@ -685,6 +750,8 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
             [1, 19, 71, 89, 91, 109, 161, 179, 181, 199, 251, 269, 271, 289, 341, 359]
             sage: R(0).sqrt(all=True)
             [0, 60, 120, 180, 240, 300]
+
+        ::
 
             sage: R = Integers(5*13^3*37); R
             Ring of integers modulo 406445
@@ -697,7 +764,8 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
             sage: all([x^2==169 for x in v])
             True
 
-        Modulo a power of 2:
+        Modulo a power of 2::
+
             sage: R = Integers(2^7); R
             Ring of integers modulo 128
             sage: a = R(17)
@@ -707,7 +775,6 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
             [23, 41, 87, 105]
             sage: [x for x in R if x^2==17]
             [23, 41, 87, 105]
-
         """
         if self.is_one():
             if all:
@@ -820,31 +887,38 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
 
     def nth_root(self, int n, extend = False, all = False):
         r"""
-        Returns an $n$th root of \code{self}.
+        Returns an `n`\th root of ``self``.
 
         INPUT:
-            n -- integer $\geq 1$ (must fit in C \code{int} type)
-            all -- bool (default: \code{False}); if \code{True}, return all $n$th
-                 roots of \code{self}, instead of just one.
 
-        OUTPUT:
-           If self has an $n$th root, returns one (if \var{all} is false) or a list of
-           all of them (if \var{all} is true).  Otherwise, raises a \class{ValueError}.
+        -  ``n`` - integer `\geq 1` (must fit in C
+           ``int`` type)
 
-        AUTHOR:
-           -- David Roe (2007-10-3)
+        -  ``all`` - bool (default: ``False``); if
+           ``True``, return all `n`\th roots of
+           ``self``, instead of just one.
 
-        EXAMPLES:
-        sage: k.<a> = GF(29)
-        sage: b = a^2 + 5*a + 1
-        sage: b.nth_root(5)
-        24
-        sage: b.nth_root(7)
-        Traceback (most recent call last):
-        ...
-        ValueError: no nth root
-        sage: b.nth_root(4, all=True)
-        [21, 20, 9, 8]
+        OUTPUT: If self has an `n`\th root, returns one (if
+        ``all`` is false) or a list of all of them (if
+        ``all`` is true). Otherwise, raises a
+        ``ValueError``.
+
+        AUTHORS:
+
+        - David Roe (2007-10-3)
+
+        EXAMPLES::
+
+            sage: k.<a> = GF(29)
+            sage: b = a^2 + 5*a + 1
+            sage: b.nth_root(5)
+            24
+            sage: b.nth_root(7)
+            Traceback (most recent call last):
+            ...
+            ValueError: no nth root
+            sage: b.nth_root(4, all=True)
+            [21, 20, 9, 8]
         """
 
         # I removed the following text from the docstring, because
@@ -873,8 +947,8 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
 
     def _balanced_abs(self):
         """
-        This function returns $x$ or $-x$, whichever has a positive
-        representative in $-n/2 < x \leq n/2$.
+        This function returns `x` or `-x`, whichever has a
+        positive representative in `-n/2 < x \leq n/2`.
 
         This is used so that the same square root is always returned,
         despite the possibly probabalistic nature of the underlying
@@ -887,7 +961,8 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
 
     def rational_reconstruction(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R = IntegerModRing(97)
             sage: a = R(2) / R(3)
             sage: a
@@ -900,19 +975,26 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
     def crt(IntegerMod_abstract self, IntegerMod_abstract other):
         r"""
         Use the Chinese Remainder Theorem to find an element of the
-        integers modulo the product of the moduli that reduces to \code{self}
-        and to \var{other}.  The modulus of \var{other} must be coprime to the
-        modulus of \code{self}.
-        EXAMPLES:
+        integers modulo the product of the moduli that reduces to
+        ``self`` and to ``other``. The modulus of
+        ``other`` must be coprime to the modulus of
+        ``self``.
+
+	EXAMPLES::
+
             sage: a = mod(3,5)
             sage: b = mod(2,7)
             sage: a.crt(b)
             23
 
+        ::
+
             sage: a = mod(37,10^8)
             sage: b = mod(9,3^8)
             sage: a.crt(b)
             125900000037
+
+        ::
 
             sage: b = mod(0,1)
             sage: a.crt(b) == a
@@ -920,8 +1002,9 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
             sage: a.crt(b).modulus()
             100000000
 
-        AUTHOR:
-            -- Robert Bradshaw
+        AUTHORS:
+
+        - Robert Bradshaw
         """
         cdef int_fast64_t new_modulus
         if not PY_TYPE_CHECK(self, IntegerMod_gmp) and not PY_TYPE_CHECK(other, IntegerMod_gmp):
@@ -953,9 +1036,10 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
         r"""
         Returns the additive order of self.
 
-        This is the same as \code{self.order()}.
+        This is the same as ``self.order()``.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Integers(20)(2).additive_order()
             10
             sage: Integers(20)(7).additive_order()
@@ -970,7 +1054,8 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
         """
         Returns the multiplicative order of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Mod(-1,5).multiplicative_order()
             2
             sage: Mod(1,5).multiplicative_order()
@@ -1020,15 +1105,18 @@ cdef class IntegerMod_abstract(sage.structure.element.CommutativeRingElement):
 
 cdef class IntegerMod_gmp(IntegerMod_abstract):
     """
-    Elements of $\Z/n\Z$ for n not small enough to be operated on in word size.
+    Elements of `\mathbb{Z}/n\mathbb{Z}` for n not small enough
+    to be operated on in word size.
 
     AUTHORS:
-        -- Robert Bradshaw (2006-08-24)
+
+    - Robert Bradshaw (2006-08-24)
     """
 
     def __init__(IntegerMod_gmp self, parent, value, empty=False):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: a = mod(5,14^20)
             sage: type(a)
             <type 'sage.rings.integer_mod.IntegerMod_gmp'>
@@ -1081,10 +1169,11 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
 
     def __lshift__(IntegerMod_gmp self, int right):
         r"""
-        Multiply self by $2^\text{right}$ quickly via bit shifting
+        Multiply self by `2^\text{right}` quickly via bit shifting
         and modulus.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: e = Mod(19, 10^10)
             sage: e << 102
             9443608576
@@ -1097,7 +1186,8 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
 
     cdef int _cmp_c_impl(left, Element right) except -2:
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: mod(5,13^20) == mod(5,13^20)
             True
             sage: mod(5,13^20) == mod(-5,13^20)
@@ -1119,9 +1209,11 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
 
     cpdef bint is_one(IntegerMod_gmp self):
         """
-        Returns \code{True} if this is $1$, otherwise \code{False}.
+        Returns ``True`` if this is `1`, otherwise
+        ``False``.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: mod(1,5^23).is_one()
             True
             sage: mod(0,5^23).is_one()
@@ -1131,9 +1223,11 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
 
     def __nonzero__(IntegerMod_gmp self):
         """
-        Returns \code{True} if this is not $0$, otherwise \code{False}.
+        Returns ``True`` if this is not `0`, otherwise
+        ``False``.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: mod(13,5^23).is_zero()
             False
             sage: (mod(25,5^23)^23).is_zero()
@@ -1145,7 +1239,8 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
         """
         Return True iff this element is a unit.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: mod(13, 5^23).is_unit()
             True
             sage: mod(25, 5^23).is_unit()
@@ -1181,7 +1276,8 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
 
     cpdef ModuleElement _add_(self, ModuleElement right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R = Integers(10^10)
             sage: R(7) + R(8)
             15
@@ -1195,7 +1291,8 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
 
     cpdef ModuleElement _iadd_(self, ModuleElement right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R = Integers(10^10)
             sage: R(7) + R(8)
             15
@@ -1207,7 +1304,8 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
 
     cpdef ModuleElement _sub_(self, ModuleElement right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R = Integers(10^10)
             sage: R(7) - R(8)
             9999999999
@@ -1221,7 +1319,8 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
 
     cpdef ModuleElement _isub_(self, ModuleElement right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R = Integers(10^10)
             sage: R(7) - R(8)
             9999999999
@@ -1233,7 +1332,8 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
 
     cpdef ModuleElement _neg_(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: -mod(5,10^10)
             9999999995
             sage: -mod(0,10^10)
@@ -1248,7 +1348,8 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
 
     cpdef RingElement _mul_(self, RingElement right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R = Integers(10^11)
             sage: R(700000) * R(800000)
             60000000000
@@ -1261,7 +1362,8 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
 
     cpdef RingElement _imul_(self, RingElement right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R = Integers(10^11)
             sage: R(700000) * R(800000)
             60000000000
@@ -1272,7 +1374,8 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
 
     cpdef RingElement _div_(self, RingElement right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R = Integers(10^11)
             sage: R(3) / R(7)
             71428571429
@@ -1284,9 +1387,10 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
 
     def __index__(self):
         """
-        Needed so integers modulo $n$ can be used as list indices.
+        Needed so integers modulo `n` can be used as list indices.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: v = [1,2,3,4,5]
             sage: v[Mod(3,10^20)]
             4
@@ -1334,10 +1438,12 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
 
     def __rshift__(IntegerMod_gmp self, int right):
         r"""
-        Return \code{self} shifted right by \var{right} bits.  (In $\Z/n\Z$,
-        this is nothing like division.)
+        Return ``self`` shifted right by ``right``
+        bits. (In `\mathbb{Z}/n\mathbb{Z}`, this is nothing like
+        division.)
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: e = Mod(1000001, 2^32-1)
             sage: e >> 5
             31250
@@ -1356,7 +1462,8 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
         """
         Return the multiplicative inverse of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: a = mod(3,10^100); type(a)
             <type 'sage.rings.integer_mod.IntegerMod_gmp'>
             sage: ~a
@@ -1378,9 +1485,10 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
 
     def lift(IntegerMod_gmp self):
         """
-        Lift an integer modulo $n$ to the integers.
+        Lift an integer modulo `n` to the integers.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: a = Mod(8943, 2^70); type(a)
             <type 'sage.rings.integer_mod.IntegerMod_gmp'>
             sage: lift(a)
@@ -1398,7 +1506,8 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
 
     def __hash__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: a = Mod(8943, 2^100)
             sage: hash(a)
             8943
@@ -1412,15 +1521,18 @@ cdef class IntegerMod_gmp(IntegerMod_abstract):
 
 cdef class IntegerMod_int(IntegerMod_abstract):
     """
-    Elements of $\Z/n\Z$ for n small enough to be operated on in 32 bits
+    Elements of `\mathbb{Z}/n\mathbb{Z}` for n small enough to
+    be operated on in 32 bits
 
     AUTHORS:
-        -- Robert Bradshaw (2006-08-24)
+
+    - Robert Bradshaw (2006-08-24)
     """
 
     def __init__(self, parent, value, empty=False):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: a = Mod(10,30); a
             10
             sage: loads(a.dumps()) == a
@@ -1486,7 +1598,8 @@ cdef class IntegerMod_int(IntegerMod_abstract):
 
     cdef int _cmp_c_impl(self, Element right) except -2:
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: mod(5,13) == mod(-8,13)
             True
             sage: mod(5,13) == mod(8,13)
@@ -1510,9 +1623,11 @@ cdef class IntegerMod_int(IntegerMod_abstract):
 
     cpdef bint is_one(IntegerMod_int self):
         """
-        Returns \code{True} if this is $1$, otherwise \code{False}.
+        Returns ``True`` if this is `1`, otherwise
+        ``False``.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: mod(6,5).is_one()
             True
             sage: mod(0,5).is_one()
@@ -1522,9 +1637,11 @@ cdef class IntegerMod_int(IntegerMod_abstract):
 
     def __nonzero__(IntegerMod_int self):
         """
-        Returns \code{True} if this is not $0$, otherwise \code{False}.
+        Returns ``True`` if this is not `0`, otherwise
+        ``False``.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: mod(13,5).is_zero()
             False
             sage: mod(25,5).is_zero()
@@ -1536,7 +1653,8 @@ cdef class IntegerMod_int(IntegerMod_abstract):
         """
         Return True iff this element is a unit
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: a=Mod(23,100)
             sage: a.is_unit()
             True
@@ -1549,17 +1667,20 @@ cdef class IntegerMod_int(IntegerMod_abstract):
     def __crt(IntegerMod_int self, IntegerMod_int other):
         """
         Use the Chinese Remainder Theorem to find an element of the
-        integers modulo the product of the moduli that reduces to self
-        and to other.  The modulus of other must be coprime to the
-        modulus of self.
-        EXAMPLES:
+        integers modulo the product of the moduli that reduces to self and
+        to other. The modulus of other must be coprime to the modulus of
+        self.
+
+	EXAMPLES::
+
             sage: a = mod(3,5)
             sage: b = mod(2,7)
             sage: a.crt(b)
             23
 
-        AUTHOR:
-            -- Robert Bradshaw
+        AUTHORS:
+
+        - Robert Bradshaw
         """
         cdef IntegerMod_int lift
         cdef int_fast32_t x
@@ -1582,7 +1703,8 @@ cdef class IntegerMod_int(IntegerMod_abstract):
 
     cpdef ModuleElement _add_(self, ModuleElement right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R = Integers(10)
             sage: R(7) + R(8)
             5
@@ -1595,7 +1717,8 @@ cdef class IntegerMod_int(IntegerMod_abstract):
 
     cpdef ModuleElement _iadd_(self, ModuleElement right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R = Integers(10)
             sage: R(7) + R(8)
             5
@@ -1609,7 +1732,8 @@ cdef class IntegerMod_int(IntegerMod_abstract):
 
     cpdef ModuleElement _sub_(self, ModuleElement right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R = Integers(10)
             sage: R(7) - R(8)
             9
@@ -1622,7 +1746,8 @@ cdef class IntegerMod_int(IntegerMod_abstract):
 
     cpdef ModuleElement _isub_(self, ModuleElement right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R = Integers(10)
             sage: R(7) - R(8)
             9
@@ -1636,7 +1761,8 @@ cdef class IntegerMod_int(IntegerMod_abstract):
 
     cpdef ModuleElement _neg_(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: -mod(7,10)
             3
             sage: -mod(0,10)
@@ -1648,7 +1774,8 @@ cdef class IntegerMod_int(IntegerMod_abstract):
 
     cpdef RingElement _mul_(self, RingElement right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R = Integers(10)
             sage: R(7) * R(8)
             6
@@ -1657,7 +1784,8 @@ cdef class IntegerMod_int(IntegerMod_abstract):
 
     cpdef RingElement _imul_(self, RingElement right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R = Integers(10)
             sage: R(7) * R(8)
             6
@@ -1667,7 +1795,8 @@ cdef class IntegerMod_int(IntegerMod_abstract):
 
     cpdef RingElement _div_(self, RingElement right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R = Integers(10)
             sage: R(2)/3
             4
@@ -1688,9 +1817,10 @@ cdef class IntegerMod_int(IntegerMod_abstract):
 
     def __index__(self):
         """
-        Needed so integers modulo $n$ can be used as list indices.
+        Needed so integers modulo `n` can be used as list indices.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: v = [1,2,3,4,5]
             sage: v[Mod(10,7)]
             4
@@ -1708,9 +1838,11 @@ cdef class IntegerMod_int(IntegerMod_abstract):
 
     def __lshift__(IntegerMod_int self, int right):
         r"""
-        Multiply self by $2^\text{right}$ very quickly via bit shifting.
+        Multiply self by `2^\text{right}` very quickly via bit
+        shifting.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: e = Mod(5, 2^10 - 1)
             sage: e<<5
             160
@@ -1721,9 +1853,11 @@ cdef class IntegerMod_int(IntegerMod_abstract):
 
     def __rshift__(IntegerMod_int self, int right):
         """
-        Divide self by $2^{\text{right}}$ and take floor via bit shifting.
+        Divide self by `2^{\text{right}}` and take floor via bit
+        shifting.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: e = Mod(8, 2^5 - 1)
             sage: e >> 3
             1
@@ -1768,7 +1902,8 @@ cdef class IntegerMod_int(IntegerMod_abstract):
         """
         Return the multiplicative inverse of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: ~mod(7,100)
             43
         """
@@ -1783,9 +1918,10 @@ cdef class IntegerMod_int(IntegerMod_abstract):
 
     def lift(IntegerMod_int self):
         """
-        Lift an integer modulo $n$ to the integers.
+        Lift an integer modulo `n` to the integers.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: a = Mod(8943, 2^10); type(a)
             <type 'sage.rings.integer_mod.IntegerMod_int'>
             sage: lift(a)
@@ -1803,7 +1939,8 @@ cdef class IntegerMod_int(IntegerMod_abstract):
 
     def __hash__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: a = Mod(89, 2^10)
             sage: hash(a)
             89
@@ -1844,25 +1981,31 @@ cdef class IntegerMod_int(IntegerMod_abstract):
 
     def sqrt(self, extend=True, all=False):
         r"""
-        Returns square root or square roots of \code{self} modulo $n$.
+        Returns square root or square roots of ``self`` modulo
+        `n`.
 
         INPUT:
-            extend -- bool (default: \code{True}); if \code{True}, return a square
-                 root in an extension ring, if necessary. Otherwise,
-                 raise a \class{ValueError} if the square root is not
-                 in the base ring.
-            all -- bool (default: \code{False}); if \code{True}, return \strong{all} square
-                   roots of self, instead of just one.
 
-        ALGORITHM: Calculates the square roots mod $p$ for each of the
-        primes $p$ dividing the order of the ring, then lifts them
-        $p$-adically and uses the CRT to find a square root mod $n$.
+        -  ``extend`` - bool (default: ``True``);
+           if ``True``, return a square root in an extension ring,
+           if necessary. Otherwise, raise a ``ValueError`` if the
+           square root is not in the base ring.
 
-        See also \code{square_root_mod_prime_power} and
-        \code{square_root_mod_prime} (in this module) for more
+        -  ``all`` - bool (default: ``False``); if
+           ``True``, return {all} square roots of self, instead of
+           just one.
+
+        ALGORITHM: Calculates the square roots mod `p` for each of
+        the primes `p` dividing the order of the ring, then lifts
+        them `p`-adically and uses the CRT to find a square root
+        mod `n`.
+
+        See also ``square_root_mod_prime_power`` and
+        ``square_root_mod_prime`` (in this module) for more
         algorithmic details.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: mod(-1, 17).sqrt()
             4
             sage: mod(5, 389).sqrt()
@@ -1881,6 +2024,8 @@ cdef class IntegerMod_int(IntegerMod_abstract):
             sage: Mod(1/25, next_prime(2^90)).sqrt()^(-2)
             25
 
+        ::
+
             sage: a = Mod(3,5); a
             3
             sage: x = Mod(-1, 360)
@@ -1895,7 +2040,8 @@ cdef class IntegerMod_int(IntegerMod_abstract):
             sage: y^2
             359
 
-        We compute all square roots in several cases:
+        We compute all square roots in several cases::
+
             sage: R = Integers(5*2^3*3^2); R
             Ring of integers modulo 360
             sage: R(40).sqrt(all=True)
@@ -1906,6 +2052,8 @@ cdef class IntegerMod_int(IntegerMod_abstract):
             [1, 19, 71, 89, 91, 109, 161, 179, 181, 199, 251, 269, 271, 289, 341, 359]
             sage: R(0).sqrt(all=True)
             [0, 60, 120, 180, 240, 300]
+
+        ::
 
             sage: R = Integers(5*13^3*37); R
             Ring of integers modulo 406445
@@ -1918,7 +2066,8 @@ cdef class IntegerMod_int(IntegerMod_abstract):
             sage: all([x^2==169 for x in v])
             True
 
-        Modulo a power of 2:
+        Modulo a power of 2::
+
             sage: R = Integers(2^7); R
             Ring of integers modulo 128
             sage: a = R(17)
@@ -1928,7 +2077,6 @@ cdef class IntegerMod_int(IntegerMod_abstract):
             [23, 41, 87, 105]
             sage: [x for x in R if x^2==17]
             [23, 41, 87, 105]
-
         """
         cdef int_fast32_t i, n = self.__modulus.int32
         if n > 100:
@@ -1966,8 +2114,8 @@ cdef class IntegerMod_int(IntegerMod_abstract):
 
     def _balanced_abs(self):
         """
-        This function returns $x$ or $-x$, whichever has a positive
-        representative in $-n/2 < x \leq n/2$.
+        This function returns `x` or `-x`, whichever has a
+        positive representative in `-n/2 < x \leq n/2`.
         """
         if self.ivalue > self.__modulus.int32 / 2:
             return -self
@@ -1979,10 +2127,12 @@ cdef class IntegerMod_int(IntegerMod_abstract):
 cdef int_fast32_t gcd_int(int_fast32_t a, int_fast32_t b):
     """
     Returns the gcd of a and b
+
     For use with IntegerMod_int
 
-    AUTHOR:
-      -- Robert Bradshaw
+    AUTHORS:
+
+    - Robert Bradshaw
     """
     cdef int_fast32_t tmp
     if a < b:
@@ -1998,10 +2148,12 @@ cdef int_fast32_t gcd_int(int_fast32_t a, int_fast32_t b):
 cdef int_fast32_t mod_inverse_int(int_fast32_t x, int_fast32_t n) except 0:
     """
     Returns y such that xy=1 mod n
+
     For use in IntegerMod_int
 
-    AUTHOR:
-      -- Robert Bradshaw
+    AUTHORS:
+
+    - Robert Bradshaw
     """
     cdef int_fast32_t tmp, a, b, last_t, t, next_t, q
     a = n
@@ -2027,15 +2179,18 @@ cdef int_fast32_t mod_inverse_int(int_fast32_t x, int_fast32_t n) except 0:
 cdef int_fast32_t mod_pow_int(int_fast32_t base, int_fast32_t exp, int_fast32_t n):
     """
     Returns base^exp mod n
+
     For use in IntegerMod_int
 
-    EXAMPLES:
-       sage: z = Mod(2, 256)
-       sage: z^8
-       0
+    EXAMPLES::
 
-    AUTHOR:
-      -- Robert Bradshaw
+        sage: z = Mod(2, 256)
+        sage: z^8
+        0
+
+    AUTHORS:
+
+    - Robert Bradshaw
     """
     cdef int_fast32_t prod, pow2
     if exp <= 5:
@@ -2065,10 +2220,12 @@ cdef int_fast32_t mod_pow_int(int_fast32_t base, int_fast32_t exp, int_fast32_t 
 cdef int jacobi_int(int_fast32_t a, int_fast32_t m) except -2:
     """
     Calculates the jacobi symbol (a/n)
+
     For use in IntegerMod_int
 
-    AUTHOR:
-      -- Robert Bradshaw
+    AUTHORS:
+
+    - Robert Bradshaw
     """
     cdef int s, jacobi = 1
     cdef int_fast32_t b
@@ -2114,15 +2271,18 @@ cdef int jacobi_int(int_fast32_t a, int_fast32_t m) except -2:
 
 cdef class IntegerMod_int64(IntegerMod_abstract):
     """
-    Elements of $\Z/n\Z$ for n small enough to be operated on in 64 bits
+    Elements of `\mathbb{Z}/n\mathbb{Z}` for n small enough to
+    be operated on in 64 bits
 
     AUTHORS:
-        -- Robert Bradshaw (2006-09-14)
+
+    - Robert Bradshaw (2006-09-14)
     """
 
     def __init__(self, parent, value, empty=False):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: a = Mod(10,3^10); a
             10
             sage: type(a)
@@ -2181,7 +2341,8 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
 
     cdef int _cmp_c_impl(self, Element right) except -2:
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: mod(5,13^5) == mod(13^5+5,13^5)
             True
             sage: mod(5,13^5) == mod(8,13^5)
@@ -2202,9 +2363,11 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
 
     cpdef bint is_one(IntegerMod_int64 self):
         """
-        Returns \code{True} if this is $1$, otherwise \code{False}.
+        Returns ``True`` if this is `1`, otherwise
+        ``False``.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: (mod(-1,5^10)^2).is_one()
             True
             sage: mod(0,5^10).is_one()
@@ -2214,9 +2377,11 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
 
     def __nonzero__(IntegerMod_int64 self):
         """
-        Returns \code{True} if this is not $0$, otherwise \code{False}.
+        Returns ``True`` if this is not `0`, otherwise
+        ``False``.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: mod(13,5^10).is_zero()
             False
             sage: mod(5^12,5^10).is_zero()
@@ -2228,7 +2393,8 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
         """
         Return True iff this element is a unit.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: mod(13, 5^10).is_unit()
             True
             sage: mod(25, 5^10).is_unit()
@@ -2239,16 +2405,20 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
     def __crt(IntegerMod_int64 self, IntegerMod_int64 other):
         """
         Use the Chinese Remainder Theorem to find an element of the
-        integers modulo the product of the moduli that reduces to self
-        and to other.  The modulus of other must be coprime to the
-        modulus of self.
-        EXAMPLES:
+        integers modulo the product of the moduli that reduces to self and
+        to other. The modulus of other must be coprime to the modulus of
+        self.
+
+	EXAMPLES::
+
             sage: a = mod(3,5^10)
             sage: b = mod(2,7)
             sage: a.crt(b)
             29296878
             sage: type(a.crt(b)) == type(b.crt(a)) and type(a.crt(b)) == type(mod(1, 7 * 5^10))
             True
+
+        ::
 
             sage: a = mod(3,10^10)
             sage: b = mod(2,9)
@@ -2257,8 +2427,9 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
             sage: type(a.crt(b)) == type(b.crt(a)) and type(a.crt(b)) == type(mod(1, 9 * 10^10))
             True
 
-        AUTHOR:
-            -- Robert Bradshaw
+        AUTHORS:
+
+        - Robert Bradshaw
         """
         cdef IntegerMod_int64 lift
         cdef int_fast64_t x
@@ -2277,7 +2448,8 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
 
     cpdef ModuleElement _add_(self, ModuleElement right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R = Integers(10^5)
             sage: R(7) + R(8)
             15
@@ -2290,7 +2462,8 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
 
     cpdef ModuleElement _iadd_(self, ModuleElement right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R = Integers(10^5)
             sage: R(7) + R(8)
             15
@@ -2304,7 +2477,8 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
 
     cpdef ModuleElement _sub_(self, ModuleElement right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R = Integers(10^5)
             sage: R(7) - R(8)
             99999
@@ -2317,7 +2491,8 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
 
     cpdef ModuleElement _isub_(self, ModuleElement right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R = Integers(10^5)
             sage: R(7) - R(8)
             99999
@@ -2331,7 +2506,8 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
 
     cpdef ModuleElement _neg_(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: -mod(7,10^5)
             99993
             sage: -mod(0,10^6)
@@ -2343,7 +2519,8 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
 
     cpdef RingElement _mul_(self, RingElement right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R = Integers(10^5)
             sage: R(700) * R(800)
             60000
@@ -2352,7 +2529,8 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
 
     cpdef RingElement _imul_(self, RingElement right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R = Integers(10^5)
             sage: R(700) * R(800)
             60000
@@ -2362,7 +2540,8 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
 
     cpdef RingElement _div_(self, RingElement right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R = Integers(10^5)
             sage: R(2)/3
             33334
@@ -2375,9 +2554,10 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
 
     def __index__(self):
         """
-        Needed so integers modulo $n$ can be used as list indices.
+        Needed so integers modulo `n` can be used as list indices.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: v = [1,2,3,4,5]
             sage: v[Mod(3, 2^20)]
             4
@@ -2395,7 +2575,8 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
 
     def __lshift__(IntegerMod_int64 self, int right):
         r"""
-        EXAMPLES:
+        EXAMPLES::
+
             sage: e = Mod(5, 2^31 - 1)
             sage: e<<32
             10
@@ -2406,9 +2587,11 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
 
     def __rshift__(IntegerMod_int64 self, int right):
         """
-        Divide self by $2^{\text{right}}$ and take floor via bit shifting.
+        Divide self by `2^{\text{right}}` and take floor via bit
+        shifting.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: e = Mod(8, 2^31 - 1)
             sage: e >> 3
             1
@@ -2457,7 +2640,8 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
         """
         Return the multiplicative inverse of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: a = mod(7,2^40); type(a)
             <type 'sage.rings.integer_mod.IntegerMod_gmp'>
             sage: ~a
@@ -2469,9 +2653,10 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
 
     def lift(IntegerMod_int64 self):
         """
-        Lift an integer modulo $n$ to the integers.
+        Lift an integer modulo `n` to the integers.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: a = Mod(8943, 2^25); type(a)
             <type 'sage.rings.integer_mod.IntegerMod_int64'>
             sage: lift(a)
@@ -2488,7 +2673,8 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
         """
         Coerce self to a float.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: a = Mod(8943, 2^35)
             sage: float(a)
             8943.0
@@ -2499,7 +2685,8 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
         """
         Compute hash of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: a = Mod(8943, 2^35)
             sage: hash(a)
             8943
@@ -2509,8 +2696,8 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
 
     def _balanced_abs(self):
         """
-        This function returns $x$ or $-x$, whichever has a positive
-        representative in $-n/2 < x \leq n/2$.
+        This function returns `x` or `-x`, whichever has a
+        positive representative in `-n/2 < x \leq n/2`.
         """
         if self.ivalue > self.__modulus.int64 / 2:
             return -self
@@ -2522,10 +2709,12 @@ cdef class IntegerMod_int64(IntegerMod_abstract):
 cdef int_fast64_t gcd_int64(int_fast64_t a, int_fast64_t b):
     """
     Returns the gcd of a and b
+
     For use with IntegerMod_int64
 
-    AUTHOR:
-      -- Robert Bradshaw
+    AUTHORS:
+
+    - Robert Bradshaw
     """
     cdef int_fast64_t tmp
     if a < b:
@@ -2541,10 +2730,12 @@ cdef int_fast64_t gcd_int64(int_fast64_t a, int_fast64_t b):
 cdef int_fast64_t mod_inverse_int64(int_fast64_t x, int_fast64_t n) except 0:
     """
     Returns y such that xy=1 mod n
+
     For use in IntegerMod_int64
 
-    AUTHOR:
-      -- Robert Bradshaw
+    AUTHORS:
+
+    - Robert Bradshaw
     """
     cdef int_fast64_t tmp, a, b, last_t, t, next_t, q
     a = n
@@ -2570,10 +2761,12 @@ cdef int_fast64_t mod_inverse_int64(int_fast64_t x, int_fast64_t n) except 0:
 cdef int_fast64_t mod_pow_int64(int_fast64_t base, int_fast64_t exp, int_fast64_t n):
     """
     Returns base^exp mod n
+
     For use in IntegerMod_int64
 
-    AUTHOR:
-      -- Robert Bradshaw
+    AUTHORS:
+
+    - Robert Bradshaw
     """
     cdef int_fast64_t prod, pow2
     if exp <= 5:
@@ -2603,10 +2796,12 @@ cdef int_fast64_t mod_pow_int64(int_fast64_t base, int_fast64_t exp, int_fast64_
 cdef int jacobi_int64(int_fast64_t a, int_fast64_t m) except -2:
     """
     Calculates the jacobi symbol (a/n)
+
     For use in IntegerMod_int64
 
-    AUTHOR:
-      -- Robert Bradshaw
+    AUTHORS:
+
+    - Robert Bradshaw
     """
     cdef int s, jacobi = 1
     cdef int_fast64_t b
@@ -2643,21 +2838,26 @@ cdef int jacobi_int64(int_fast64_t a, int_fast64_t m) except -2:
 
 def square_root_mod_prime_power(IntegerMod_abstract a, p, e):
     r"""
-    Calculates the square root of $a$, where $a$ is an integer mod $p^e$.
+    Calculates the square root of `a`, where `a` is an
+    integer mod `p^e`.
 
-    ALGORITHM:
-        Perform $p$-adically by stripping off even powers of $p$ to get
-        a unit and lifting $\sqrt{unit} \bmod p$ via Newton's method.
+    ALGORITHM: Perform `p`-adically by stripping off even
+    powers of `p` to get a unit and lifting
+    `\sqrt{unit} \bmod p` via Newton's method.
 
-    AUTHOR:
-        -- Robert Bradshaw
+    AUTHORS:
 
-    EXAMPLES:
+    - Robert Bradshaw
+
+    EXAMPLES::
+
         sage: from sage.rings.integer_mod import square_root_mod_prime_power
         sage: a=Mod(17,2^20)
         sage: b=square_root_mod_prime_power(a,2,20)
         sage: b^2 == a
         True
+
+    ::
 
         sage: a=Mod(72,97^10)
         sage: b=square_root_mod_prime_power(a,97,10)
@@ -2700,39 +2900,50 @@ def square_root_mod_prime_power(IntegerMod_abstract a, p, e):
 
 cpdef square_root_mod_prime(IntegerMod_abstract a, p=None):
     r"""
-    Calculates the square root of $a$, where $a$ is an integer mod $p$;
-    if $a$ is not a perfect square, this returns an (incorrect) answer
-    without checking.
+    Calculates the square root of `a`, where `a` is an
+    integer mod `p`; if `a` is not a perfect square,
+    this returns an (incorrect) answer without checking.
 
-    ALGORITHM:
-        Several cases based on residue class of $p \bmod 16$.
+    ALGORITHM: Several cases based on residue class of
+    `p \bmod 16`.
 
-    \begin{itemize}
-    \item $p \bmod 2 = 0$: $p = 2$ so $\sqrt{a} = a$.
-    \item $p \bmod 4 = 3$: $\sqrt{a} = a^{(p+1)/4}$.
-    \item $p \bmod 8 = 5$: $\sqrt{a} = \zeta i a$ where $\zeta = (2a)^{(p-5)/8}$, $i=\sqrt{-1}$.
-    \item $p \bmod 16 = 9$: Similar, work in a bi-quadratic extension of $\FF_p$ for
-                            small $p$, Tonelli and Shanks for large $p$.
-    \item $p \bmod 16 = 1$: Tonelli and Shanks.
-    \end{itemize}
+    -  `p \bmod 2 = 0`: `p = 2` so
+       `\sqrt{a} = a`.
+
+    -  `p \bmod 4 = 3`: `\sqrt{a} = a^{(p+1)/4}`.
+
+    -  `p \bmod 8 = 5`: `\sqrt{a} = \zeta i a` where
+       `\zeta = (2a)^{(p-5)/8}`, `i=\sqrt{-1}`.
+
+    -  `p \bmod 16 = 9`: Similar, work in a bi-quadratic
+       extension of `\mathbb{F}_p` for small `p`, Tonelli
+       and Shanks for large `p`.
+
+    -  `p \bmod 16 = 1`: Tonelli and Shanks.
 
     REFERENCES:
-        Siguna M\"uller. `On the Computation of Square Roots in Finite Fields'
-            Designs, Codes and Cryptography, Volume 31,  Issue 3 (March 2004)
 
-        A. Oliver L. Atkin. `Probabilistic primality testing' (Chapter 30, Section 4)
-            In Ph. Flajolet and P. Zimmermann, editors, Algorithms Seminar, 1991-1992. INRIA Research Report 1779, 1992, \url{http://www.inria.fr/rrrt/rr-1779.html}.
-            Summary by F. Morain.
-            \url{http://citeseer.ist.psu.edu/atkin92probabilistic.html}
+    - Siguna Muller.  'On the Computation of Square Roots in Finite
+      Fields' Designs, Codes and Cryptography, Volume 31, Issue 3
+      (March 2004)
 
-        H. Postl. `Fast evaluation of Dickson Polynomials'
-            Contrib. to General Algebra, Vol. 6 (1988) pp. 223--225
+    - A. Oliver L. Atkin. 'Probabilistic primality testing' (Chapter
+      30, Section 4) In Ph. Flajolet and P. Zimmermann, editors,
+      Algorithms Seminar, 1991-1992. INRIA Research Report 1779, 1992,
+      http://www.inria.fr/rrrt/rr-1779.html. Summary by F. Morain.
+      http://citeseer.ist.psu.edu/atkin92probabilistic.html
 
-    AUTHOR:
-        Robert Bradshaw
+    - H. Postl. 'Fast evaluation of Dickson Polynomials' Contrib. to
+      General Algebra, Vol. 6 (1988) pp. 223-225
 
-    TESTS:
-        Every case appears in the first hundred primes.
+    AUTHORS:
+
+    - Robert Bradshaw
+
+    TESTS: Every case appears in the first hundred primes.
+
+    ::
+
         sage: from sage.rings.integer_mod import square_root_mod_prime   # sqrt() uses brute force for small p
         sage: all([square_root_mod_prime(a*a)^2 == a*a
         ...        for p in prime_range(100)
@@ -2801,21 +3012,24 @@ cpdef square_root_mod_prime(IntegerMod_abstract a, p=None):
 
 def fast_lucas(mm, IntegerMod_abstract P):
     """
-    Return $V_k(P, 1)$ where $V_k$ is the Lucas function
-    defined by the recursive relation
+    Return `V_k(P, 1)` where `V_k` is the Lucas
+    function defined by the recursive relation
 
-    $V_k(P, Q) = PV_{k-1}(P, Q) -  QV_{k-2}(P, Q)$
+    `V_k(P, Q) = PV_{k-1}(P, Q) -  QV_{k-2}(P, Q)`
 
-    with $V_0 = 2, V_1(P_Q) = P$.
+    with `V_0 = 2, V_1(P_Q) = P`.
 
     REFERENCES:
-        H. Postl. `Fast evaluation of Dickson Polynomials'
-            Contrib. to General Algebra, Vol. 6 (1988) pp. 223--225
 
-    AUTHOR:
-        Robert Bradshaw
+    - H. Postl. 'Fast evaluation of Dickson Polynomials' Contrib. to
+      General Algebra, Vol. 6 (1988) pp. 223-225
 
-    TESTS:
+    AUTHORS:
+
+    - Robert Bradshaw
+
+    TESTS::
+
         sage: from sage.rings.integer_mod import fast_lucas, slow_lucas
         sage: all([fast_lucas(k, a) == slow_lucas(k, a)
         ...        for a in Integers(23)
@@ -2876,7 +3090,8 @@ cdef class IntegerMod_to_IntegerMod(IntegerMod_hom):
     """
     Very fast IntegerMod to IntegerMod homomorphism.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: from sage.rings.integer_mod import IntegerMod_to_IntegerMod
         sage: Rs = [Integers(3**k) for k in range(1,30,5)]
         sage: [type(R(0)) for R in Rs]
@@ -2909,10 +3124,15 @@ cdef class IntegerMod_to_IntegerMod(IntegerMod_hom):
 
 cdef class Integer_to_IntegerMod(IntegerMod_hom):
     r"""
-    Fast $\Z \rightarrow \Z/n\Z$ morphism.
+    Fast `\mathbb{Z} \rightarrow \mathbb{Z}/n\mathbb{Z}`
+    morphism.
 
     EXAMPLES:
+
     We make sure it works for every type.
+
+    ::
+
         sage: from sage.rings.integer_mod import Integer_to_IntegerMod
         sage: Rs = [Integers(10), Integers(10^5), Integers(10^10)]
         sage: [type(R(0)) for R in Rs]
@@ -2948,7 +3168,11 @@ cdef class Integer_to_IntegerMod(IntegerMod_hom):
 cdef class Int_to_IntegerMod(IntegerMod_hom):
     """
     EXAMPLES:
+
     We make sure it works for every type.
+
+    ::
+
         sage: from sage.rings.integer_mod import Int_to_IntegerMod
         sage: Rs = [Integers(2**k) for k in range(1,50,10)]
         sage: [type(R(0)) for R in Rs]

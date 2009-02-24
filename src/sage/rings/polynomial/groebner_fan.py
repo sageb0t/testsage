@@ -1,52 +1,49 @@
 r"""
 Groebner Fans
 
-\SAGE provides much of the functionality of gfan, which is a software
-package whose main function is to enumerate all reduced Gr\"obner
-bases of a polynomial ideal. The reduced Gr\"obner bases yield the
-maximal cones in the Gr\"obner fan of the ideal. Several
-subcomputations can be issued and additional tools are included. Among
-these the highlights are:
+Sage provides much of the functionality of gfan, which is a
+software package whose main function is to enumerate all reduced
+Groebner bases of a polynomial ideal. The reduced Groebner bases
+yield the maximal cones in the Groebner fan of the ideal. Several
+subcomputations can be issued and additional tools are included.
+Among these the highlights are:
 
-\begin{itemize}
+-  Commands for computing tropical varieties.
 
-\item Commands for computing tropical varieties.
+-  Interactive walks in the Groebner fan of an ideal.
 
-\item Interactive walks in the Gr\"obner fan of an ideal.
-
-\item Commands for graphical renderings of Gr\"obner fans
-      and monomial ideals.
-
-\end{itemize}
+-  Commands for graphical renderings of Groebner fans and monomial
+   ideals.
 
 AUTHORS:
 
-   -- Anders Nedergaard Jensen: Wrote the gfan C++ program, which
-      implements algorithms many of which were invented by Jensen,
-      Komei Fukuda, and Rekha Thomas. All the underlying hard work of
-      the Gr\"obner fans functionality of \sage depends on this C++
-      program.
+- Anders Nedergaard Jensen: Wrote the gfan C++ program, which
+  implements algorithms many of which were invented by Jensen, Komei
+  Fukuda, and Rekha Thomas. All the underlying hard work of the
+  Groebner fans functionality of Sage depends on this C++ program.
 
-   -- William Stein (2006-04-20): Wrote first version of the \SAGE
-      code for working with Groebner fans.
+- William Stein (2006-04-20): Wrote first version of the Sage code
+  for working with Groebner fans.
 
-   -- Tristram Bogart (bogart@math): the design of the \SAGE interface
-      to gfan is joint work with Tristram Bogart, who also supplied
-      numerous examples.
+- Tristram Bogart: the design of the Sage interface
+  to gfan is joint work with Tristram Bogart, who also supplied
+  numerous examples.
 
-   -- Marshall Hampton (2008-03-25): Rewrote various functions to use
-      gfan-0.3.
-      This is still a work in progress, comments are appreciated on
-      sage-devel@googlegroups.com (or personally at hamptonio@gmail.com).
+- Marshall Hampton (2008-03-25): Rewrote various functions to use
+  gfan-0.3. This is still a work in progress, comments are
+  appreciated on sage-devel@googlegroups.com (or personally at
+  hamptonio@gmail.com).
 
-EXAMPLES:
+EXAMPLES::
+
     sage: x,y = QQ['x,y'].gens()
     sage: i = ideal(x^2 - y^2 + 1)
     sage: g = i.groebner_fan()
     sage: g.reduced_groebner_bases()
     [[x^2 - y^2 + 1], [-x^2 + y^2 - 1]]
 
-TESTS:
+TESTS::
+
     sage: x,y = QQ['x,y'].gens()
     sage: i = ideal(x^2 - y^2 + 1)
     sage: g = i.groebner_fan()
@@ -54,9 +51,10 @@ TESTS:
     True
 
 REFERENCES:
-     Anders N. Jensen; Gfan, a software system for Gr\"obner fans;
-     available at
-     \url{http://www.math.tu-berlin.de/~jensen/software/gfan/gfan.html}
+
+- Anders N. Jensen; Gfan, a software system for Groebner fans;
+  available at
+  http://www.math.tu-berlin.de/~jensen/software/gfan/gfan.html
 """
 
 import os
@@ -85,7 +83,8 @@ def prefix_check(str_list):
     Checks if any strings in a list are prefixes of another string in
     the list.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: from sage.rings.polynomial.groebner_fan import prefix_check
         sage: prefix_check(['z1','z1z1'])
         False
@@ -104,7 +103,8 @@ def max_degree(list_of_polys):
     """
     Computes the maximum degree of a list of polynomials
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: from sage.rings.polynomial.groebner_fan import max_degree
         sage: R.<x,y> = PolynomialRing(QQ,2)
         sage: p_list = [x^2-y,x*y^10-x]
@@ -115,13 +115,16 @@ def max_degree(list_of_polys):
 
 def _cone_parse(fan_dict_cone):
     """
-    Utility funtion that parses cone information into a dict indexed
-    by dimension.
+    Utility funtion that parses cone information into a dict indexed by
+    dimension.
 
     INPUT:
-        fan_dict_cone -- the value of a fan_dict with key 'CONES'
 
-    EXAMPLES:
+    -  ``fan_dict_cone`` - the value of a fan_dict with
+       key 'CONES'
+
+    EXAMPLES::
+
         sage: R.<x,y,z,w> = PolynomialRing(QQ,4)
         sage: ts = R.ideal([x^2+y^2+z^2-1,x^4-y^2-z-1,x+y+z,w+x+y])
         sage: tsg = ts.groebner_fan()
@@ -151,10 +154,11 @@ class PolyhedralCone(SageObject):
 
     def __init__(self, gfan_polyhedral_cone, ring = QQ):
         """
-        Converts polymake/gfan data on a polyhedral cone into a sage
-        class.  Currently (18-03-2008) needs a lot of work.
+        Converts polymake/gfan data on a polyhedral cone into a sage class.
+        Currently (18-03-2008) needs a lot of work.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R3.<x,y,z> = PolynomialRing(QQ,3)
             sage: gf = R3.ideal([x^8-y^4,y^4-z^2,z^2-2]).groebner_fan()
             sage: a = gf[0].groebner_cone()
@@ -188,7 +192,8 @@ class PolyhedralCone(SageObject):
         """
         Returns a basic description of the polyhedral cone.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R3.<x,y,z> = PolynomialRing(QQ,3)
             sage: gf = R3.ideal([x^8-y^4,y^4-z^2,z^2-2]).groebner_fan()
             sage: a = gf[0].groebner_cone()
@@ -201,7 +206,8 @@ class PolyhedralCone(SageObject):
         """
         Returns the inward facet normals of the Groebner cone.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R3.<x,y,z> = PolynomialRing(QQ,3)
             sage: gf = R3.ideal([x^8-y^4,y^4-z^2,z^2-2]).groebner_fan()
             sage: a = gf[0].groebner_cone()
@@ -214,7 +220,8 @@ class PolyhedralCone(SageObject):
         """
         Returns the ambient dimension of the Groebner cone.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R3.<x,y,z> = PolynomialRing(QQ,3)
             sage: gf = R3.ideal([x^8-y^4,y^4-z^2,z^2-2]).groebner_fan()
             sage: a = gf[0].groebner_cone()
@@ -227,7 +234,8 @@ class PolyhedralCone(SageObject):
         """
         Returns the dimension of the Groebner cone.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R3.<x,y,z> = PolynomialRing(QQ,3)
             sage: gf = R3.ideal([x^8-y^4,y^4-z^2,z^2-2]).groebner_fan()
             sage: a = gf[0].groebner_cone()
@@ -238,11 +246,12 @@ class PolyhedralCone(SageObject):
 
     def lineality_dim(self):
         """
-        Returns the lineality dimension of the Groebner cone.  This is
-        the just the difference between the ambient dimension and the
-        dimension of the cone.
+        Returns the lineality dimension of the Groebner cone. This is the
+        just the difference between the ambient dimension and the dimension
+        of the cone.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R3.<x,y,z> = PolynomialRing(QQ,3)
             sage: gf = R3.ideal([x^8-y^4,y^4-z^2,z^2-2]).groebner_fan()
             sage: a = gf[0].groebner_cone()
@@ -255,7 +264,8 @@ class PolyhedralCone(SageObject):
         """
         Returns a point in the relative interior of the Groebner cone.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R3.<x,y,z> = PolynomialRing(QQ,3)
             sage: gf = R3.ideal([x^8-y^4,y^4-z^2,z^2-2]).groebner_fan()
             sage: a = gf[0].groebner_cone()
@@ -267,13 +277,16 @@ class PolyhedralCone(SageObject):
 class PolyhedralFan(SageObject):
     def __init__(self, gfan_polyhedral_fan):
         """
-        Converts polymake/gfan data on a polyhedral fan into a sage
-        class.  Currently (18-03-2008) needs a lot of work.
+        Converts polymake/gfan data on a polyhedral fan into a sage class.
+        Currently (18-03-2008) needs a lot of work.
 
         INPUT:
-            gfan_polyhedral_fan -- output from gfan of a polyhedral fan.
 
-        EXAMPLES:
+        -  ``gfan_polyhedral_fan`` - output from gfan of a
+           polyhedral fan.
+
+        EXAMPLES::
+
             sage: R.<x,y,z> = PolynomialRing(QQ,3)
             sage: i2 = ideal(x*z + 6*y*z - z^2, x*y + 6*x*z + y*z - z^2, y^2 + x*z + y*z)
             sage: gf2 = i2.groebner_fan(verbose = False)
@@ -310,7 +323,8 @@ class PolyhedralFan(SageObject):
         """
         Returns a basic description of the polyhedral fan.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R3.<x,y,z> = PolynomialRing(QQ,3)
             sage: gf = R3.ideal([x^8-y^4,y^4-z^2,z^2-2]).groebner_fan()
             sage: pf = gf.polyhedralfan()
@@ -321,11 +335,12 @@ class PolyhedralFan(SageObject):
 
     def _str_(self):
         r"""
-        Returns the raw output of gfan as a string.  This should only
-        be needed internally as all relevant output is converted to
-        sage objects.
+        Returns the raw output of gfan as a string. This should only be
+        needed internally as all relevant output is converted to sage
+        objects.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R3.<x,y,z> = PolynomialRing(QQ,3)
             sage: gf = R3.ideal([x^8-y^4,y^4-z^2,z^2-2]).groebner_fan()
             sage: pf = gf.polyhedralfan()
@@ -338,7 +353,8 @@ class PolyhedralFan(SageObject):
         """
         Returns the ambient dimension of the Groebner fan.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R3.<x,y,z> = PolynomialRing(QQ,3)
             sage: gf = R3.ideal([x^8-y^4,y^4-z^2,z^2-2]).groebner_fan()
             sage: a = gf.polyhedralfan()
@@ -351,7 +367,8 @@ class PolyhedralFan(SageObject):
         """
         Returns the dimension of the Groebner fan.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R3.<x,y,z> = PolynomialRing(QQ,3)
             sage: gf = R3.ideal([x^8-y^4,y^4-z^2,z^2-2]).groebner_fan()
             sage: a = gf.polyhedralfan()
@@ -362,11 +379,12 @@ class PolyhedralFan(SageObject):
 
     def lineality_dim(self):
         """
-        Returns the lineality dimension of the Groebner fan.
-        This is the just the difference between the ambient dimension
-        and the dimension of the cone.
+        Returns the lineality dimension of the Groebner fan. This is the
+        just the difference between the ambient dimension and the dimension
+        of the cone.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R3.<x,y,z> = PolynomialRing(QQ,3)
             sage: gf = R3.ideal([x^8-y^4,y^4-z^2,z^2-2]).groebner_fan()
             sage: a = gf.polyhedralfan()
@@ -379,7 +397,8 @@ class PolyhedralFan(SageObject):
         """
         Returns a list of rays of the polyhedral fan.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x,y,z> = PolynomialRing(QQ,3)
             sage: i2 = ideal(x*z + 6*y*z - z^2, x*y + 6*x*z + y*z - z^2, y^2 + x*z + y*z)
             sage: gf2 = i2.groebner_fan(verbose = False)
@@ -394,17 +413,21 @@ class GroebnerFan(SageObject):
     def __init__(self, I, is_groebner_basis=False, symmetry=None, verbose=False):
         """
         INPUT:
-            I -- ideal in a multivariate polynomial ring
-            is_groebner_basis -- bool (default False).  if True, then
-                         I.gens() must be a Groebner basis with
-                         respect to the standard degree lexicographic
-                         term order.
-            symmetry -- default: None; if not None, describes symmetries
-                        of the ideal
-            verbose  -- default: False; if True, printout useful info
-                        during computations
 
-        EXAMPLES:
+        -  ``I`` - ideal in a multivariate polynomial ring
+
+        -  ``is_groebner_basis`` - bool (default False). if
+           True, then I.gens() must be a Groebner basis with respect to the
+           standard degree lexicographic term order.
+
+        -  ``symmetry`` - default: None; if not None, describes
+           symmetries of the ideal
+
+        -  ``verbose`` - default: False; if True, printout
+           useful info during computations
+
+        EXAMPLES::
+
             sage: R.<x,y,z> = PolynomialRing(QQ, 3, order='lex')
             sage: I = R.ideal([x^2*y - z, y^2*z - x, z^2*x - y])
             sage: G = I.groebner_fan(); G
@@ -438,13 +461,13 @@ class GroebnerFan(SageObject):
         """
         Describes the Groebner fan and its corresponding ideal.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<q,u> = PolynomialRing(QQ,2)
             sage: gf = R.ideal([q-u,u^2-1]).groebner_fan()
             sage: gf # indirect doctest
             Groebner fan of the ideal:
             Ideal (q - u, u^2 - 1) of Multivariate Polynomial Ring in q, u over Rational Field
-
         """
         return "Groebner fan of the ideal:\n%s"%self.__ideal
 
@@ -452,7 +475,8 @@ class GroebnerFan(SageObject):
         """
         Tests equality of Groeber fan objects.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<q,u> = PolynomialRing(QQ,2)
             sage: gf = R.ideal([q^2-u,u^2-q]).groebner_fan()
             sage: gf2 = R.ideal([u^2-q,q^2-u]).groebner_fan()
@@ -465,7 +489,8 @@ class GroebnerFan(SageObject):
         """
         Return the ideal the was used to define this Groebner fan.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x1,x2> = PolynomialRing(QQ,2)
             sage: gf = R.ideal([x1^3-x2,x2^3-2*x1-2]).groebner_fan()
             sage: gf.ideal()
@@ -475,13 +500,16 @@ class GroebnerFan(SageObject):
 
     def _gfan_maps(self):
         """
-        INPUT:
-            none
-        OUTPUT:
-            -- map from SAGE ring to gfan ring
-            -- map from gfan ring to SAGE ring
+        INPUT: none
 
-        EXAMPLES:
+        OUTPUT:
+
+        - map from Sage ring to gfan ring
+
+        - map from gfan ring to Sage ring
+
+        EXAMPLES::
+
             sage: R.<x,y,z> = PolynomialRing(QQ,3)
             sage: G = R.ideal([x^2*y - z, y^2*z - x, z^2*x - y]).groebner_fan()
             sage: G._gfan_maps()
@@ -523,7 +551,8 @@ class GroebnerFan(SageObject):
         """
         Return the ring in gfan's notation
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x,y,z> = PolynomialRing(QQ,3)
             sage: G = R.ideal([x^2*y - z, y^2*z - x, z^2*x - y]).groebner_fan()
             sage: G._gfan_ring()
@@ -539,7 +568,8 @@ class GroebnerFan(SageObject):
         """
         Return the ideal in gfan's notation.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x,y,z> = PolynomialRing(QQ,3)
             sage: G = R.ideal([x^2*y - z, y^2*z - x, z^2*x - y]).groebner_fan()
             sage: G._gfan_ideal()
@@ -555,9 +585,11 @@ class GroebnerFan(SageObject):
 
     def weight_vectors(self):
         """
-        Returns the weight vectors corresponding to the reduced Groebner bases.
+        Returns the weight vectors corresponding to the reduced Groebner
+        bases.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: r3.<x,y,z> = PolynomialRing(QQ,3)
             sage: g = r3.ideal([x^3+y,y^3-z,z^2-x]).groebner_fan()
             sage: g.weight_vectors()
@@ -566,7 +598,6 @@ class GroebnerFan(SageObject):
             sage: g4 = r4.ideal([x^3+y,y^3-z,z^2-x,z^3 - w]).groebner_fan()
             sage: len(g4.weight_vectors())
             23
-
         """
         gfan_processes = Popen(['gfan','_weightvector','-m'], stdin = PIPE, stdout=PIPE, stderr=PIPE)
         ans, err = gfan_processes.communicate(input = self.gfan())
@@ -578,7 +609,8 @@ class GroebnerFan(SageObject):
         """
         Return the multivariate polynomial ring.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x1,x2> = PolynomialRing(QQ,2)
             sage: gf = R.ideal([x1^3-x2,x2^3-x1-2]).groebner_fan()
             sage: gf.ring()
@@ -588,9 +620,11 @@ class GroebnerFan(SageObject):
 
     def _gfan_reduced_groebner_bases(self):
         """
-        A string of the reduced Groebner bases of the ideal as output by gfan.
+        A string of the reduced Groebner bases of the ideal as output by
+        gfan.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<a,b> = PolynomialRing(QQ,2)
             sage: gf = R.ideal([a^3-b^2,b^2-a-1]).groebner_fan()
             sage: gf._gfan_reduced_groebner_bases()
@@ -608,7 +642,8 @@ class GroebnerFan(SageObject):
         """
         Return the characteristic of the base ring.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x,y,z> = PolynomialRing(QQ,3)
             sage: i1 = ideal(x*z + 6*y*z - z^2, x*y + 6*x*z + y*z - z^2, y^2 + x*z + y*z)
             sage: gf = i1.groebner_fan()
@@ -619,7 +654,8 @@ class GroebnerFan(SageObject):
 
     def reduced_groebner_bases(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x,y,z> = PolynomialRing(QQ, 3, order='lex')
             sage: G = R.ideal([x^2*y - z, y^2*z - x, z^2*x - y]).groebner_fan()
             sage: X = G.reduced_groebner_bases()
@@ -659,11 +695,12 @@ class GroebnerFan(SageObject):
 
     def _gfan_mod(self):
         """
-        Return the extra options to the gfan command that are used by
-        this object to account for working modulo a prime or in the
-        presence of extra symmetries.
+        Return the extra options to the gfan command that are used by this
+        object to account for working modulo a prime or in the presence of
+        extra symmetries.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x,y> = PolynomialRing(QQ,2)
             sage: gf = R.ideal([x^3-y,y^3-x-1]).groebner_fan()
             sage: gf._gfan_mod()
@@ -689,12 +726,12 @@ class GroebnerFan(SageObject):
             return self.__gfan_mod
 
     def gfan(self, cmd='', I=None, format=True):
-        """
-        Returns the gfan output as a string given an input cmd; the
-        default is to produce the list of reduced Groebner bases in
-        gfan format.
+        r"""
+        Returns the gfan output as a string given an input cmd; the default
+        is to produce the list of reduced Groebner bases in gfan format.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x,y> = PolynomialRing(QQ,2)
             sage: gf = R.ideal([x^3-y,y^3-x-1]).groebner_fan()
             sage: gf.gfan()
@@ -713,7 +750,8 @@ class GroebnerFan(SageObject):
         """
         Returns an iterator for the reduced Groebner bases.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x,y> = PolynomialRing(QQ,2)
             sage: gf = R.ideal([x^3-y,y^3-x-1]).groebner_fan()
             sage: a = gf.__iter__()
@@ -728,6 +766,9 @@ class GroebnerFan(SageObject):
         Gets a reduced groebner basis
 
         EXAMPLES;
+
+        ::
+
             sage: R4.<w1,w2,w3,w4> = PolynomialRing(QQ,4)
             sage: gf = R4.ideal([w1^2-w2,w2^3-1,2*w3-w4^2,w4^2-w1]).groebner_fan()
             sage: gf[0]
@@ -737,10 +778,11 @@ class GroebnerFan(SageObject):
 
     def buchberger(self):
         """
-        Computes and returns a lexicographic reduced Groebner basis
-        for the ideal.
+        Computes and returns a lexicographic reduced Groebner basis for the
+        ideal.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x,y,z> = PolynomialRing(QQ,3)
             sage: G = R.ideal([x - z^3, y^2 - x + x^2 - z^3*x]).groebner_fan()
             sage: G.buchberger()
@@ -763,7 +805,8 @@ class GroebnerFan(SageObject):
         Returns a polyhedral fan object corresponding to the reduced
         Groebner bases.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R3.<x,y,z> = PolynomialRing(QQ,3)
             sage: gf = R3.ideal([x^8-y^4,y^4-z^2,z^2-1]).groebner_fan()
             sage: pf = gf.polyhedralfan()
@@ -782,7 +825,8 @@ class GroebnerFan(SageObject):
         Return the homogeneity space of a the list of polynomials that
         define this Groebner fan.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x,y> = PolynomialRing(QQ,2)
             sage: G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
             sage: H = G.homogeneity_space()
@@ -796,37 +840,46 @@ class GroebnerFan(SageObject):
 
     def render(self, file = None, larger=False, shift=0, rgbcolor = (0,0,0), polyfill = max_degree, scale_colors = True):
         """
-        Render a Groebner fan as sage graphics or save as an xfig
-        file.
+        Render a Groebner fan as sage graphics or save as an xfig file.
 
         More precisely, the output is a drawing of the Groebner fan
-        intersected with a triangle.  The corners of the triangle are
-        (1,0,0) to the right, (0,1,0) to the left and (0,0,1) at the
-        top.  If there are more than three variables in the ring we
-        extend these coordinates with zeros.
+        intersected with a triangle. The corners of the triangle are
+        (1,0,0) to the right, (0,1,0) to the left and (0,0,1) at the top.
+        If there are more than three variables in the ring we extend these
+        coordinates with zeros.
 
         INPUT:
-	    file  -- a filename if you prefer the output saved to a file.
-	             This will be in xfig format.
-            shift -- shift the positions of the variables in
-                     the drawing.  For example, with shift=1,
-                     the corners will be b (right), c (left),
-                     and d (top).  The shifting is done modulo
-                     the number of variables in the polynomial
-                     ring.   The default is 0.
-            larger -- bool (default: False); if True, make
-                     the triangle larger so that the shape of
-                     of the Groebner region appears.  Affects the xfig file
-		     but probably not the sage graphics (?)
-            rgbcolor -- This will not affect the saved xfig file, only the sage graphics
-                     produced.
-            polyfill -- Whether or not to fill the cones with a color determined by the highest degree in each reduced Groebner basis for that cone.
-            scale_colors -- if True, this will normalize color values to try to maximize the range
 
-        EXAMPLES:
+        -  ``file`` - a filename if you prefer the output
+           saved to a file. This will be in xfig format.
+
+        -  ``shift`` - shift the positions of the variables in
+           the drawing. For example, with shift=1, the corners will be b
+           (right), c (left), and d (top). The shifting is done modulo the
+           number of variables in the polynomial ring. The default is 0.
+
+        -  ``larger`` - bool (default: False); if True, make
+           the triangle larger so that the shape of of the Groebner region
+           appears. Affects the xfig file but probably not the sage graphics
+           (?)
+
+        -  ``rgbcolor`` - This will not affect the saved xfig
+           file, only the sage graphics produced.
+
+        -  ``polyfill`` - Whether or not to fill the cones with
+           a color determined by the highest degree in each reduced Groebner
+           basis for that cone.
+
+        -  ``scale_colors`` - if True, this will normalize
+           color values to try to maximize the range
+
+        EXAMPLES::
+
             sage: R.<x,y> = PolynomialRing(QQ,2)
             sage: G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
             sage: G.render()
+
+        ::
 
             sage: R.<x,y,z> = PolynomialRing(QQ,3)
             sage: G = R.ideal([x^2*y - z, y^2*z - x, z^2*x - y]).groebner_fan()
@@ -892,7 +945,8 @@ class GroebnerFan(SageObject):
         A simple utility function for converting a facet normal to an
         inequality form.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x,y> = PolynomialRing(QQ,2) # dummy stuff to get a gfan object
             sage: gf = R.ideal([x^2+y,y^2]).groebner_fan()
             sage: gf._cone_to_ieq([[1,2,3,4]])
@@ -905,14 +959,16 @@ class GroebnerFan(SageObject):
 
     def _embed_tetra(self, fpoint):
         """
-        Takes a 4-d vector and projects it onto the plane perpendicular
-        to (1,1,1,1).  Stretches by a factor of 2 as well, since this is
-        only for graphical display purposes.
+        Takes a 4-d vector and projects it onto the plane perpendicular to
+        (1,1,1,1). Stretches by a factor of 2 as well, since this is only
+        for graphical display purposes.
 
         INPUT:
-            fpoint -- a list of four numbers
 
-        EXAMPLES:
+        -  ``fpoint`` - a list of four numbers
+
+        EXAMPLES::
+
             sage: R.<x> = PolynomialRing(QQ,1) # dummy stuff to get a gfan object
             sage: gf = R.ideal([x^2]).groebner_fan()
             sage: gf._embed_tetra([1/2,1/2,1/2,1/2])
@@ -928,16 +984,21 @@ class GroebnerFan(SageObject):
 
     def _4d_to_3d(self, polyhedral_data):
         """
-        A utility function that takes a list of 4d polytopes, projects
-        them to 3d, and returns a list of edges.
+        A utility function that takes a list of 4d polytopes, projects them
+        to 3d, and returns a list of edges.
 
         INPUT:
-            polyhedral_data -- an object with 4d vertex and adjacency information
+
+        -  ``polyhedral_data`` - an object with 4d vertex and
+           adjacency information
 
         OUTPUT:
-            edges -- a list of edges in 3d - each list item is a pair of points
 
-        EXAMPLES:
+        -  ``edges`` - a list of edges in 3d - each list item
+           is a pair of points
+
+        EXAMPLES::
+
             sage: R4.<w,x,y,z> = PolynomialRing(QQ,4)
             sage: gf = R4.ideal([w^2-x,x^2-y,y^2-z,z^2-1]).groebner_fan()
             sage: g_cone = gf[0].groebner_cone()
@@ -970,13 +1031,14 @@ class GroebnerFan(SageObject):
 
     def render3d(self, verbose = False):
         """
-        For a Groebner fan of an ideal in a ring with four variables,
-        this function intersects the fan with the standard simplex
-        perpendicular to (1,1,1,1), creating a 3d polytope, which is
-        then projected into 3 dimensions.  The edges of this projected
-        polytope are returned as lines.
+        For a Groebner fan of an ideal in a ring with four variables, this
+        function intersects the fan with the standard simplex perpendicular
+        to (1,1,1,1), creating a 3d polytope, which is then projected into
+        3 dimensions. The edges of this projected polytope are returned as
+        lines.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R4.<w,x,y,z> = PolynomialRing(QQ,4)
             sage: gf = R4.ideal([w^2-x,x^2-y,y^2-z,z^2-x]).groebner_fan()
             sage: three_d = gf.render3d()
@@ -1007,7 +1069,8 @@ class GroebnerFan(SageObject):
         """
         Return various statistics about this Groebner fan.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x,y> = PolynomialRing(QQ)
             sage: G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
             sage: G._gfan_stats()
@@ -1033,7 +1096,8 @@ class GroebnerFan(SageObject):
         """
         Return the dimension of the homogeneity space.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x,y> = PolynomialRing(QQ,2)
             sage: G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
             sage: G.dimension_of_homogeneity_space()
@@ -1045,7 +1109,8 @@ class GroebnerFan(SageObject):
         """
         Return the maximal total degree of any Groebner basis.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x,y> = PolynomialRing(QQ,2)
             sage: G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
             sage: G.maximal_total_degree_of_a_groebner_basis()
@@ -1057,7 +1122,8 @@ class GroebnerFan(SageObject):
         """
         Return the minimal total degree of any Groebner basis.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x,y> = PolynomialRing(QQ,2)
             sage: G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
             sage: G.minimal_total_degree_of_a_groebner_basis()
@@ -1069,7 +1135,8 @@ class GroebnerFan(SageObject):
         """
         Return the number of reduced Groebner bases.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x,y> = PolynomialRing(QQ,2)
             sage: G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
             sage: G.number_of_reduced_groebner_bases()
@@ -1081,11 +1148,14 @@ class GroebnerFan(SageObject):
         """
         Return the number of variables.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x,y> = PolynomialRing(QQ,2)
             sage: G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
             sage: G.number_of_variables()
             2
+
+        ::
 
             sage: R = PolynomialRing(QQ,'x',10)
             sage: R.inject_variables(globals())
@@ -1098,16 +1168,18 @@ class GroebnerFan(SageObject):
 
     def tropical_basis(self, check=True, verbose = False):
         """
-        Return a tropical basis for the tropical curve associated to
-        this ideal.
+        Return a tropical basis for the tropical curve associated to this
+        ideal.
 
         INPUT:
-            check -- bool (default: True); if True raises a ValueError
-                     exception if this ideal does not define a tropical curve
-                     (i.e., the condition that R/I has dimension equal
-                     to 1 + the dimension of the homogeneity space is
-                     not satisfied).
-        EXAMPLES:
+
+        -  ``check`` - bool (default: True); if True raises a
+           ValueError exception if this ideal does not define a tropical curve
+           (i.e., the condition that R/I has dimension equal to 1 + the
+           dimension of the homogeneity space is not satisfied).
+
+        EXAMPLES::
+
             sage: R.<x,y,z> = PolynomialRing(QQ,3, order='lex')
             sage: G = R.ideal([y^3-3*x^2, z^3-x-y-2*y^3+2*x^2]).groebner_fan()
             sage: G
@@ -1143,10 +1215,11 @@ class GroebnerFan(SageObject):
 
     def interactive(self, *args, **kwds):
         """
-        See the documentation for self[0].interative()
-        This does not work with the notebook.
+        See the documentation for self[0].interative() This does not work
+        with the notebook.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: print "This is not easily doc-testable; please write a good one!"
             This is not easily doc-testable; please write a good one!
         """
@@ -1155,15 +1228,16 @@ class GroebnerFan(SageObject):
     def tropical_intersection(self, ideal_arg = False, *args, **kwds):
 	"""
 	Returns information about the tropical intersection of the
-        polynomials defining the ideal.
+	polynomials defining the ideal.
 
-        EXAMPLES:
-            sage: R.<x,y,z> = PolynomialRing(QQ,3)
-            sage: i1 = ideal(x*z + 6*y*z - z^2, x*y + 6*x*z + y*z - z^2, y^2 + x*z + y*z)
-            sage: gf = i1.groebner_fan()
-            sage: pf = gf.tropical_intersection()
-            sage: pf.rays()
-            [[-1, 0, 0]]
+	EXAMPLES::
+
+	    sage: R.<x,y,z> = PolynomialRing(QQ,3)
+	    sage: i1 = ideal(x*z + 6*y*z - z^2, x*y + 6*x*z + y*z - z^2, y^2 + x*z + y*z)
+	    sage: gf = i1.groebner_fan()
+	    sage: pf = gf.tropical_intersection()
+	    sage: pf.rays()
+	    [[-1, 0, 0]]
 	"""
         try:
             return self.__tropical_intersection
@@ -1176,14 +1250,20 @@ class GroebnerFan(SageObject):
 class ReducedGroebnerBasis(SageObject, list):
     def __init__(self, groebner_fan, gens, gfan_gens):
         """
-        A class for representing reduced Groebner bases as produced by gfan.
+        A class for representing reduced Groebner bases as produced by
+        gfan.
 
         INPUT:
-            groebner_fan -- a GroebnerFan object from an ideal
-            gens -- the generators of the ideal
-            gfan_gens -- the generators as a gfan string
 
-        EXAMPLES:
+        -  ``groebner_fan`` - a GroebnerFan object from an
+           ideal
+
+        -  ``gens`` - the generators of the ideal
+
+        -  ``gfan_gens`` - the generators as a gfan string
+
+        EXAMPLES::
+
             sage: R.<a,b> = PolynomialRing(QQ,2)
             sage: gf = R.ideal([a^2-b^2,b-a-1]).groebner_fan()
             sage: from sage.rings.polynomial.groebner_fan import ReducedGroebnerBasis
@@ -1199,7 +1279,8 @@ class ReducedGroebnerBasis(SageObject, list):
         """
         Returns the reduced Groebner basis as a string.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<z1,zz1> = PolynomialRing(QQ,2)
             sage: gf = R.ideal([z1^2*zz1-1,zz1-2]).groebner_fan()
             sage: rgb1 = gf.reduced_groebner_bases()[0]
@@ -1212,7 +1293,8 @@ class ReducedGroebnerBasis(SageObject, list):
         """
         Returns the reduced Groebner basis as a string in gfan format.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<z1,zz1> = PolynomialRing(QQ,2)
             sage: gf = R.ideal([z1^2*zz1-1,zz1-2]).groebner_fan()
             sage: rgb1 = gf.reduced_groebner_bases()[0]
@@ -1223,9 +1305,11 @@ class ReducedGroebnerBasis(SageObject, list):
 
     def _gfan(self):
         """
-        Returns a description of the Groebner fan this basis was derived from.
+        Returns a description of the Groebner fan this basis was derived
+        from.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<z1,zz1> = PolynomialRing(QQ,2)
             sage: gf = R.ideal([z1^2*zz1-1,zz1-2]).groebner_fan()
             sage: rgb1 = gf.reduced_groebner_bases()[0]
@@ -1238,16 +1322,17 @@ class ReducedGroebnerBasis(SageObject, list):
     def interactive(self, latex=False, flippable=False, wall=False,
                     inequalities=False, weight=False):
         """
-        Do an interactive walk of the Groebner fan starting at this
-        reduced Groebner basis.
+        Do an interactive walk of the Groebner fan starting at this reduced
+        Groebner basis.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x,y> = PolynomialRing(QQ,2)
             sage: G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
             sage: G[0].interactive()      # not tested
             Initializing gfan interactive mode
             *********************************************
-            *     Press control-C to return to SAGE     *
+            *     Press control-C to return to Sage     *
             *********************************************
             ....
         """
@@ -1277,19 +1362,19 @@ class ReducedGroebnerBasis(SageObject, list):
 
     def groebner_cone(self, restrict=False):
         """
-        Return defining inequalities for the full-dimensional
-        Groebner cone associated to this marked minimal reduced
-        Groebner basis.
+        Return defining inequalities for the full-dimensional Groebner cone
+        associated to this marked minimal reduced Groebner basis.
 
         INPUT:
-            restrict -- bool (default: False); if True, add an inequality for
-                        each coordinate, so that the cone is restricted to
-                        the positive orthant.
 
-        OUTPUT:
-            tuple of integer vectors
+        -  ``restrict`` - bool (default: False); if True, add
+           an inequality for each coordinate, so that the cone is restricted
+           to the positive orthant.
 
-        EXAMPLES:
+        OUTPUT: tuple of integer vectors
+
+        EXAMPLES::
+
             sage: R.<x,y> = PolynomialRing(QQ,2)
             sage: G = R.ideal([y^3 - x^2, y^2 - 13*x]).groebner_fan()
             sage: poly_cone = G[1].groebner_cone()
@@ -1317,7 +1402,8 @@ class ReducedGroebnerBasis(SageObject, list):
         """
         Return the ideal generated by this basis.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x,y,z> = PolynomialRing(QQ,3)
             sage: G = R.ideal([x - z^3, y^2 - 13*x]).groebner_fan()
             sage: G[0].ideal()
