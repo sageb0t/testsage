@@ -2,27 +2,30 @@ r"""
 Dimensions of spaces of modular forms
 
 AUTHORS:
-    -- William Stein
-    -- Jordi Quer
 
-ACKNOWLEDGEMENT:
-    The dimension formulas and implementations in this module grew out
-    of a program that Bruce Kaskel wrote (around 1996) in PARI, which
-    Kevin Buzzard subsequently extended.  I (William Stein) then
-    implemented it in C++ for Hecke.  I also implemented it in Magma.
-    Also, the functions for dimensions of spaces with nontrivial
-    character are based on a paper (that has no proofs) by Cohen and
-    Oesterle (Springer Lecture notes in math, volume 627, pages
-    69--78).  The formulas for $\Gamma_H(N)$ were found and implemented by
-    Jordi Quer.
+- William Stein
+
+-Jordi Quer
+
+ACKNOWLEDGEMENT: The dimension formulas and implementations in this
+module grew out of a program that Bruce Kaskel wrote (around 1996)
+in PARI, which Kevin Buzzard subsequently extended. I (William
+Stein) then implemented it in C++ for Hecke. I also implemented it
+in Magma. Also, the functions for dimensions of spaces with
+nontrivial character are based on a paper (that has no proofs) by
+Cohen and Oesterle (Springer Lecture notes in math, volume 627,
+pages 69-78). The formulas for `\Gamma_H(N)` were found
+and implemented by Jordi Quer.
 
 The formulas here are more complete than in Hecke or Magma.
 
-Currently the input to each function below is an integer and either a
-Dirichlet character $\eps$ or a congruence subgroup, which must be
-either $\Gamma_0(N)$ or $\Gamma_1(N)$.  If the input is a Dirichlet
-character $\eps$, the dimensions are for subspaces of
-$M_k(\Gamma_1(N), \eps)$, where $N$ is the modulus of $\eps$.
+Currently the input to each function below is an integer and either
+a Dirichlet character `\varepsilon` or a congruence
+subgroup, which must be either `\Gamma_0(N)` or
+`\Gamma_1(N)`. If the input is a Dirichlet character
+`\varepsilon`, the dimensions are for subspaces of
+`M_k(\Gamma_1(N), \varepsilon)`, where `N` is the
+modulus of `\varepsilon`.
 """
 
 ##########################################################################
@@ -53,19 +56,22 @@ Z = ZZ  # useful abbreviation.
 def mu0(n):
     r"""
     Return value of the combinatorial function
-    $$
-       \mu_0(n) = \prod_{p^r|n} (p+1)p^{r-1},
-    $$
-    where the product is over the maximal prime power
-    divisors of $n$.
+
+    .. math::
+
+                \mu_0(n) = \prod_{p^r|n} (p+1)p^{r-1},
+
+    where the product is over the maximal prime power divisors of
+    `n`.
 
     INPUT:
-        n -- an integer
 
-    OUTPUT:
-        Integer
+    -  ``n`` - an integer
 
-    EXAMPLES:
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: [sage.modular.dims.mu0(n) for n in [1..19]]
         [1, 3, 4, 6, 6, 12, 8, 12, 12, 18, 12, 24, 14, 24, 24, 24, 18, 36, 20]
     """
@@ -73,19 +79,24 @@ def mu0(n):
 
 def mu20(n):
     r"""
-    Return value of the arithmetic function $\mu_{2,0}(n)$,
-    where $\mu_{2,0}(n) = 0$ if $n$ is divisible by 4, and
-    $$
-     \mu_{2,0}(n) = \prod_{p|n} \left(1 + \left(\frac{-4}{p}\right)\right)
-    $$
+    Return value of the arithmetic function `\mu_{2,0}(n)`,
+    where `\mu_{2,0}(n) = 0` if `n` is divisible by 4,
+    and
+
+    .. math::
+
+              \mu_{2,0}(n) = \prod_{p|n} \left(1 + \left(\frac{-4}{p}\right)\right)
+
     otherwise.
 
     INPUT:
-        n -- an integer
-    OUTPUT:
-        Integer
 
-    EXAMPLES:
+    -  ``n`` - an integer
+
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: [sage.modular.dims.mu20(n) for n in [1..19]]
         [1, 1, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 2, 0, 0]
     """
@@ -95,20 +106,24 @@ def mu20(n):
 
 def mu30(n):
     r"""
-    Return value of the arithmetic function $\mu_{3,0}(n)$,
-    where $\mu_{3,0}(n) = 0$ if $n$ is divisible by 2 or 9,
-    and
-    $$
-     \mu_{3,0}(n) = \prod_{p|n} \left(1 + \left(\frac{-3}{p}\right)\right)
-    $$
+    Return value of the arithmetic function `\mu_{3,0}(n)`,
+    where `\mu_{3,0}(n) = 0` if `n` is divisible by 2
+    or 9, and
+
+    .. math::
+
+              \mu_{3,0}(n) = \prod_{p|n} \left(1 + \left(\frac{-3}{p}\right)\right)
+
     otherwise.
 
     INPUT:
-        n -- an integer
-    OUTPUT:
-        Integer
 
-    EXAMPLES:
+    -  ``n`` - an integer
+
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: [sage.modular.dims.mu30(n) for n in [1..19]]
         [1, 0, 1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2]
     """
@@ -118,14 +133,16 @@ def mu30(n):
 
 def c0(n):
     """
-    Return the number of cusps of the modular curve $X_0(n)$.
+    Return the number of cusps of the modular curve `X_0(n)`.
 
     INPUT:
-        n -- an integer
-    OUTPUT:
-        Integer
 
-    EXAMPLES:
+    -  ``n`` - an integer
+
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: [sage.modular.dims.c0(n) for n in [1..19]]
         [1, 2, 2, 3, 2, 4, 2, 4, 4, 4, 2, 6, 2, 4, 4, 6, 2, 8, 2]
         sage: [sage.modular.dims.c0(n) for n in prime_range(2,100)]
@@ -135,14 +152,16 @@ def c0(n):
 
 def g0(n):
     """
-    Return the genus of the modular curve $X_0(n)$.
+    Return the genus of the modular curve `X_0(n)`.
 
     INPUT:
-        n -- an integer
-    OUTPUT:
-        Integer
 
-    EXAMPLES:
+    -  ``n`` - an integer
+
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: [sage.modular.dims.g0(n) for n in [1..23]]
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 2, 2]
         sage: [n for n in [1..200] if sage.modular.dims.g0(n) == 1]
@@ -153,19 +172,22 @@ def g0(n):
 
 def mu1(n):
     r"""
-    Return value of the combinatorial function $\mu_1(n)$,
-    where for $n = 1,2$, $\mu_1(n) = \mu_0(n)$, and for
-    $n > 2$,
-    $$
-     \mu_{1}(n) = \frac{\phi(n) \cdot \mu_0(n)}{2}.
-    $$
+    Return value of the combinatorial function `\mu_1(n)`,
+    where for `n = 1,2`, `\mu_1(n) = \mu_0(n)`, and
+    for `n > 2`,
+
+    .. math::
+
+              \mu_{1}(n) = \frac{\phi(n) \cdot \mu_0(n)}{2}.
 
     INPUT:
-        n -- an integer
-    OUTPUT:
-        Integer
 
-    EXAMPLES:
+    -  ``n`` - an integer
+
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: [sage.modular.dims.mu1(n) for n in [1..16]]
         [1, 3, 4, 6, 12, 12, 24, 24, 36, 36, 60, 48, 84, 72, 96, 96]
     """
@@ -175,10 +197,11 @@ def mu1(n):
 
 def mu21(n):
     r"""
-    Return value of $\mu_{2,1}(n)$. By definition, this equals
-    $\mu_{2,0}(n)$ for $n<4$ and equals 0 otherwise.
+    Return value of `\mu_{2,1}(n)`. By definition, this equals
+    `\mu_{2,0}(n)` for `n<4` and equals 0 otherwise.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: [sage.modular.dims.mu21(n) for n in [1..16]]
         [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     """
@@ -188,10 +211,11 @@ def mu21(n):
 
 def mu31(n):
     r"""
-    Return value of $\mu_{3,1}(n)$. By definition, this equals
-    $\mu_{3,0}(n)$ for $n<4$ and equals 0 otherwise.
+    Return value of `\mu_{3,1}(n)`. By definition, this equals
+    `\mu_{3,0}(n)` for `n<4` and equals 0 otherwise.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: [sage.modular.dims.mu31(n) for n in [1..10]]
         [1, 0, 1, 0, 0, 0, 0, 0, 0, 0]
     """
@@ -201,10 +225,11 @@ def mu31(n):
 
 def c1(n):
     """
-    Return value of $c_1(n)$, which is the number of cusps on the
-    modular curve $X_1(n)$.
+    Return value of `c_1(n)`, which is the number of cusps on
+    the modular curve `X_1(n)`.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: [sage.modular.dims.c1(n) for n in prime_range(2,100)]
         [2, 2, 4, 6, 10, 12, 16, 18, 22, 28, 30, 36, 40, 42, 46, 52, 58, 60, 66, 70, 72, 78, 82, 88, 96]
     """
@@ -217,9 +242,10 @@ def c1(n):
 
 def g1(n):
     """
-    Return the genus of the modular curve $X_1(n)$.
+    Return the genus of the modular curve `X_1(n)`.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: [sage.modular.dims.g1(n) for n in prime_range(2,100)]
         [0, 0, 0, 0, 1, 2, 5, 7, 12, 22, 26, 40, 51, 57, 70, 92, 117, 126, 155, 176, 187, 222, 247, 287, 345]
     """
@@ -227,15 +253,17 @@ def g1(n):
 
 def eisen(p):
     """
-    Return the Eisenstein number $n$ which is the numerator of $(p-1)/12$.
+    Return the Eisenstein number `n` which is the numerator of
+    `(p-1)/12`.
 
     INPUT:
-        p -- a prime
 
-    OUTPUT:
-        Integer
+    -  ``p`` - a prime
 
-    EXAMPLES:
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: [(p,sage.modular.dims.eisen(p)) for p in prime_range(24)]
         [(2, 1), (3, 1), (5, 1), (7, 1), (11, 5), (13, 1), (17, 4), (19, 3), (23, 11)]
     """
@@ -245,17 +273,19 @@ def eisen(p):
 
 def S0(n,k):
     r"""
-    Return the dimension of the space of level $n$ weight $k$
-    cuspforms on $\Gamma_0(n)$.
+    Return the dimension of the space of level `n` weight
+    `k` cuspforms on `\Gamma_0(n)`.
 
     INPUT:
-        n -- an integer
-        k -- an integer
 
-    OUTPUT:
-        Integer
+    -  ``n`` - an integer
 
-    EXAMPLES:
+    -  ``k`` - an integer
+
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: sage.modular.dims.S0(11,2)
         1
         sage: a = sage.modular.dims.S0(1,2); a
@@ -281,17 +311,19 @@ def S0(n,k):
 
 def S1(n,k):
     """
-    Return the dimension of the space of level $n$ weight $k$
-    cuspforms on $\Gamma_1(n)$.
+    Return the dimension of the space of level `n` weight
+    `k` cuspforms on `\Gamma_1(n)`.
 
     INPUT:
-        n -- an integer
-        k -- an integer
 
-    OUTPUT:
-        Integer
+    -  ``n`` - an integer
 
-    EXAMPLES:
+    -  ``k`` - an integer
+
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: sage.modular.dims.S1(11,2)
         1
         sage: a = sage.modular.dims.S1(13,2); a
@@ -321,15 +353,18 @@ def S1(n,k):
 
 def idxG0(N):
     r"""
-    Return the index $[\SL_2(\Z):\Gamma_0(N)]$ of $\Gamma_0(N)$ in $\SL_2(\Z)$.
+    Return the index
+    `[\mathrm{SL}_2(\mathbb{Z}):\Gamma_0(N)]` of
+    `\Gamma_0(N)` in `\mathrm{SL}_2(\mathbb{Z})`.
 
     INPUT:
-        N -- a positive integer
 
-    OUTPUT:
-        Integer
+    -  ``N`` - a positive integer
 
-    EXAMPLES:
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: [sage.modular.dims.idxG0(N) for N in [1..10]]
         [1, 3, 4, 6, 6, 12, 8, 12, 12, 18]
         sage: type(sage.modular.dims.idxG0(15))
@@ -342,15 +377,17 @@ def idxG0(N):
 
 def idxG1(N):
     r"""
-    The index $[\SL_2(\Z):\Gamma_1(N)]$ of $\Gamma_1(N)$ in $\SL_2(\Z)$.
+    The index `[\mathrm{SL}_2(\mathbb{Z}):\Gamma_1(N)]` of
+    `\Gamma_1(N)` in `\mathrm{SL}_2(\mathbb{Z})`.
 
     INPUT:
-        N -- a positive integer
 
-    OUTPUT:
-        Integer
+    -  ``N`` - a positive integer
 
-    EXAMPLES:
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: [sage.modular.dims.idxG1(N) for N in [1..10]]
         [1, 3, 8, 12, 24, 24, 48, 48, 72, 72]
     """
@@ -369,15 +406,19 @@ def CO_delta(r,p,N,eps):
     the paper of Cohen-Oesterle.
 
     INPUT:
-        r -- positive integer
-        p -- a prime
-        N -- positive integer
-        $\epsilon$ -- character
 
-    OUTPUT:
-        element of the base ring of the character
+    -  ``r`` - positive integer
 
-    EXAMPLES:
+    -  ``p`` - a prime
+
+    -  ``N`` - positive integer
+
+    -  ``eps`` - character
+
+    OUTPUT: element of the base ring of the character
+
+    EXAMPLES::
+
         sage: G.<eps> = DirichletGroup(7)
         sage: sage.modular.dims.CO_delta(1,5,7,eps^3)
         2
@@ -410,15 +451,19 @@ def CO_nu(r, p, N, eps):
     the paper of Cohen-Oesterle.
 
     INPUT:
-        r -- positive integer
-        p -- a prime
-        N -- positive integer
-        eps -- character
 
-    OUTPUT:
-        element of the base ring of the character
+    -  ``r`` - positive integer
 
-    EXAMPLES:
+    -  ``p`` - a prime
+
+    -  ``N`` - positive integer
+
+    -  ``eps`` - character
+
+    OUTPUT: element of the base ring of the character
+
+    EXAMPLES::
+
         sage: G.<eps> = DirichletGroup(7)
         sage: G.<eps> = DirichletGroup(7)
         sage: sage.modular.dims.CO_nu(1,7,7,eps)
@@ -443,18 +488,21 @@ def CO_nu(r, p, N, eps):
 
 def CohenOesterle(eps, k):
     r"""
-    Compute the Cohen-Oesterle function associate to eps, $k$.  This is
-    a summand in the formula for the dimension of the space of cusp
-    forms of weight $2$ with character $\epsilon$.
+    Compute the Cohen-Oesterle function associate to eps, `k`.
+    This is a summand in the formula for the dimension of the space of
+    cusp forms of weight `2` with character
+    `\varepsilon`.
 
     INPUT:
-        eps -- Dirichlet character
-        k -- integer
 
-    OUTPUT:
-        element of the base ring of eps.
+    -  ``eps`` - Dirichlet character
 
-    EXAMPLES:
+    -  ``k`` - integer
+
+    OUTPUT: element of the base ring of eps.
+
+    EXAMPLES::
+
         sage: G.<eps> = DirichletGroup(7)
         sage: sage.modular.dims.CohenOesterle(eps, 2)
         -2/3
@@ -479,11 +527,15 @@ def CohenOesterle(eps, k):
         Used internally by the CohenOesterle function.
 
         INPUT:
-            r, s, p -- integers
-        OUTPUT:
-            Integer
 
-        EXAMPLES:   (indirect doctest)
+        -  ``r, s, p`` - integers
+
+        OUTPUT: Integer
+
+        EXAMPLES: (indirect doctest)
+
+        ::
+
             sage: K = CyclotomicField(3)
             sage: eps = DirichletGroup(7*43,K).0^2
             sage: sage.modular.dims.CohenOesterle(eps,2)
@@ -502,17 +554,20 @@ def CohenOesterle(eps, k):
 
 def mumu(N):
     """
-    Return 0 if any cube divides $N$.  Otherwise return $(-2)^v$ where
-    $v$ is the number of primes that exactly divide $N$.
+    Return 0 if any cube divides `N`. Otherwise return
+    `(-2)^v` where `v` is the number of primes that
+    exactly divide `N`.
 
     This is similar to the Moebius function.
 
     INPUT:
-        N -- an integer at least 1
-    OUTPUT:
-        Integer
 
-    EXAMPLES:
+    -  ``N`` - an integer at least 1
+
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: sage.modular.dims.mumu(27)
         0
         sage: sage.modular.dims.mumu(6*25)
@@ -539,17 +594,21 @@ def mumu(N):
 
 def dimension_cusp_forms_eps(eps, k=2):
     r"""
-    The dimension of the space of cusp forms of weight $k$ and character
-    $\epsilon$.
+    The dimension of the space of cusp forms of weight `k` and
+    character `\varepsilon`.
 
     INPUT:
-        $\epsilon$ -- a Dirichlet character
-        k -- integer, a weight $\geq 2$.
+
+    -  ``eps`` - a Dirichlet character
+
+    -  ``k`` - integer, a weight `\geq 2`.
 
     OUTPUT:
-        integer -- the dimension
 
-    EXAMPLES:
+    -  ``integer`` - the dimension
+
+    EXAMPLES::
+
         sage: G.<eps> = DirichletGroup(9)
         sage: [sage.modular.dims.dimension_cusp_forms_eps(eps, k) for k in [2..10]]
         [0, 1, 0, 3, 0, 5, 0, 7, 0]
@@ -582,17 +641,21 @@ def dimension_cusp_forms_eps(eps, k=2):
 
 def dimension_eis_eps(eps, k=2):
     r"""
-    The dimension of the space of eisenstein series of weight $k$ and
-    character $\varepsilon$.
+    The dimension of the space of eisenstein series of weight
+    `k` and character `\varepsilon`.
 
     INPUT:
-        eps -- a Dirichlet character
-        k -- integer, a weight >= 2.
+
+    -  ``eps`` - a Dirichlet character
+
+    -  ``k`` - integer, a weight = 2.
 
     OUTPUT:
-        integer -- the dimension
 
-    EXAMPLES:
+    -  ``integer`` - the dimension
+
+    EXAMPLES::
+
         sage: G.<eps> = DirichletGroup(9)
         sage: [sage.modular.dims.dimension_eis_eps(eps, k) for k in [2..10]]
         [0, 2, 0, 2, 0, 2, 0, 2, 0]
@@ -634,16 +697,21 @@ def dimension_eis_eps(eps, k=2):
 
 def dimension_cusp_forms_gamma0(N,k=2):
     r"""
-    The dimension of the space $S_k(\Gamma_0(N))$ of cusp forms.
+    The dimension of the space `S_k(\Gamma_0(N))` of cusp
+    forms.
 
     INPUT:
-        N -- integer (the level)
-        k -- integer (the weight)
+
+    -  ``N`` - integer (the level)
+
+    -  ``k`` - integer (the weight)
 
     OUTPUT:
-        Integer -- the dimension
 
-    EXAMPLES:
+    -  ``Integer`` - the dimension
+
+    EXAMPLES::
+
         sage: sage.modular.dims.dimension_cusp_forms_gamma0(23,2)
         2
         sage: sage.modular.dims.dimension_cusp_forms_gamma0(1,24)
@@ -665,16 +733,21 @@ def dimension_cusp_forms_gamma0(N,k=2):
 
 def dimension_cusp_forms_gamma1(N,k=2):
     r"""
-    The dimension of the space $S_k(\Gamma_1(N))$ of cusp forms.
+    The dimension of the space `S_k(\Gamma_1(N))` of cusp
+    forms.
 
     INPUT:
-        N -- integer
-        k -- integer
+
+    -  ``N`` - integer
+
+    -  ``k`` - integer
 
     OUTPUT:
-        integer -- the dimension
 
-    EXAMPLES:
+    -  ``integer`` - the dimension
+
+    EXAMPLES::
+
         sage: sage.modular.dims.dimension_cusp_forms_gamma1(23,2)
         12
         sage: sage.modular.dims.dimension_cusp_forms_gamma1(1,24)
@@ -696,22 +769,27 @@ def dimension_cusp_forms_gamma1(N,k=2):
 
 def dimension_new_cusp_forms_gamma0(N, k=2, p=0):
     r"""
-    Dimension of the $p$-new subspace of $S_k(\Gamma_0(N))$. If $p=0$,
-    dimension of the new subspace.
+    Dimension of the `p`-new subspace of
+    `S_k(\Gamma_0(N))`. If `p=0`, dimension of the
+    new subspace.
 
     INPUT:
-        N -- a positive integer
-        k -- an integer
-        p -- a prime number
 
-    OUTPUT:
-        Integer
+    -  ``N`` - a positive integer
 
-    EXAMPLES:
+    -  ``k`` - an integer
+
+    -  ``p`` - a prime number
+
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: sage.modular.dims.dimension_new_cusp_forms_gamma0(100, 2, 5)
         5
 
-    Independently compute the dimension 5 above:
+    Independently compute the dimension 5 above::
+
         sage: m = ModularSymbols(100, 2,sign=1).cuspidal_subspace()
         sage: m.new_subspace(5)
         Modular Symbols subspace of dimension 5 of Modular Symbols space of dimension 18 for Gamma_0(100) of weight 2 with sign 1 over Rational Field
@@ -732,19 +810,22 @@ def dimension_new_cusp_forms_gamma0(N, k=2, p=0):
 
 def dimension_new_cusp_forms_gamma1(N,k=2,p=0):
     r"""
-    Return the dimension of the $p$-new subspace of
-    $S_k(\Gamma_1(N))$.  If $p=0$, return the dimension of the new
-    subspace.
+    Return the dimension of the `p`-new subspace of
+    `S_k(\Gamma_1(N))`. If `p=0`, return the
+    dimension of the new subspace.
 
     INPUT:
-        N -- a positive integer
-        k -- an integer
-        p -- a prime number
 
-    OUTPUT:
-        Integer
+    -  ``N`` - a positive integer
 
-    EXAMPLES:
+    -  ``k`` - an integer
+
+    -  ``p`` - a prime number
+
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: sage.modular.dims.dimension_new_cusp_forms_gamma1(4*25, 2, 5)
         225
     """
@@ -766,18 +847,22 @@ def dimension_new_cusp_forms_gamma1(N,k=2,p=0):
 def dimension_new_cusp_forms_group(group, k=2, p=0):
     """
     Return the dimension of the new space of cusp forms for the
-    congruence subgroup group. If $p$ is given, return the $p$-new
-    subspace.
+    congruence subgroup group. If `p` is given, return the
+    `p`-new subspace.
 
     INPUT:
-        group -- a congruence subgroup
-        k -- an integer (default: 2)
-        p -- a prime (default: 0); just the $p$-new subspace if given
 
-    OUTPUT:
-        Integer
+    -  ``group`` - a congruence subgroup
 
-    EXAMPLES:
+    -  ``k`` - an integer (default: 2)
+
+    -  ``p`` - a prime (default: 0); just the
+       `p`-new subspace if given
+
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: sage.modular.dims.dimension_new_cusp_forms_group(Gamma0(33),2)
         1
         sage: sage.modular.dims.dimension_new_cusp_forms_group(Gamma0(33),2,3)
@@ -804,18 +889,23 @@ def dimension_new_cusp_forms_group(group, k=2, p=0):
 
 def dimension_new_cusp_forms_eps(eps, k=2, p=0):
     r"""
-    Dimension of the new subspace (or $p$-new subspace) of cusp forms of
-    weight $k$ and character $\epsilon$.
+    Dimension of the new subspace (or `p`-new subspace) of cusp
+    forms of weight `k` and character
+    `\varepsilon`.
 
     INPUT:
-        eps -- a Dirichlet character
-        k -- an integer (ddefault: 2)
-        p -- a prime (default: 0); just the $p$-new subspace if given
 
-    OUTPUT:
-        Integer
+    -  ``eps`` - a Dirichlet character
 
-    EXAMPLES:
+    -  ``k`` - an integer (ddefault: 2)
+
+    -  ``p`` - a prime (default: 0); just the
+       `p`-new subspace if given
+
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: G = DirichletGroup(9)
         sage: eps = G.0^3
         sage: eps.conductor()
@@ -827,13 +917,15 @@ def dimension_new_cusp_forms_eps(eps, k=2, p=0):
         sage: [sage.modular.dims.dimension_new_cusp_forms_eps(eps, k, 3) for k in [2..10]]
         [0, 0, 0, 2, 0, 2, 0, 2, 0]
 
-    Double check using modular symbols (independent calculation):
+    Double check using modular symbols (independent calculation)::
+
         sage: [ModularSymbols(eps,k,sign=1).cuspidal_subspace().new_subspace().dimension()  for k in [2..10]]
         [0, 0, 0, 2, 0, 2, 0, 2, 0]
         sage: [ModularSymbols(eps,k,sign=1).cuspidal_subspace().new_subspace(3).dimension()  for k in [2..10]]
         [0, 0, 0, 2, 0, 2, 0, 2, 0]
 
-    Another example at level 33:
+    Another example at level 33::
+
         sage: G = DirichletGroup(33)
         sage: eps = G.1
         sage: eps.conductor()
@@ -876,20 +968,26 @@ def dimension_new_cusp_forms_eps(eps, k=2, p=0):
 
 def muH(N,H):
     r"""
-    Return the degree of the covering map $X_H(N) \rightarrow X_0(1)$.
+    Return the degree of the covering map
+    `X_H(N) \rightarrow X_0(1)`.
 
     INPUT:
-        N -- an integer
-        H -- list of elements in $\ZZ$ of a subgroup of $(\ZZ/N\ZZ)^*$
 
-    OUTPUT:
-        Integer
+    -  ``N`` - an integer
 
-    EXAMPLES:
+    -  ``H`` - list of elements in `\mathbb{Z}` of
+       a subgroup of `(\mathbb{Z}/N\mathbb{Z})^*`
+
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: sage.modular.dims.muH(33, GammaH(33,[2])._list_of_elements_in_H())
         96
 
-    AUTHOR: Jordi Quer
+    AUTHORS:
+
+    - Jordi Quer
     """
     lenHpm = len(H)
     if N-Integer(1) not in H: lenHpm*=Integer(2)
@@ -897,22 +995,28 @@ def muH(N,H):
 
 def nu2H(N,H):
     r"""
-    Number of elliptic points of order 2 for the group $\Gamma_H(N)$
+    Number of elliptic points of order 2 for the group
+    `\Gamma_H(N)`
 
     INPUT:
-        N -- an integer
-        H -- list of elements in $\ZZ$ of a subgroup of $(\ZZ/N\ZZ)^*$
 
-    OUTPUT:
-        Integer
+    -  ``N`` - an integer
 
-    EXAMPLES:
+    -  ``H`` - list of elements in `\mathbb{Z}` of
+       a subgroup of `(\mathbb{Z}/N\mathbb{Z})^*`
+
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: sage.modular.dims.nu2H(33, GammaH(33,[2])._list_of_elements_in_H())
         0
         sage: sage.modular.dims.nu2H(5, GammaH(5,[2])._list_of_elements_in_H())
         2
 
-    AUTHOR: Jordi Quer
+    AUTHORS:
+
+    - Jordi Quer
     """
     if N%Integer(4) == Integer(0): return Integer(0)
     for p, r in factor(N):
@@ -921,22 +1025,28 @@ def nu2H(N,H):
 
 def nu3H(N,H):
     r"""
-    Number of elliptic points of order 3 for the group $\Gamma_H(N)$
+    Number of elliptic points of order 3 for the group
+    `\Gamma_H(N)`
 
     INPUT:
-        N -- an integer
-        H -- list of elements in $\ZZ$ of a subgroup of $(\ZZ/N\ZZ)^*$
 
-    OUTPUT:
-        Integer
+    -  ``N`` - an integer
 
-    EXAMPLES:
+    -  ``H`` - list of elements in `\mathbb{Z}` of
+       a subgroup of `(\mathbb{Z}/N\mathbb{Z})^*`
+
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: sage.modular.dims.nu3H(33, GammaH(33,[2])._list_of_elements_in_H())
         0
         sage: sage.modular.dims.nu3H(7, GammaH(7,[2])._list_of_elements_in_H())
         2
 
-    AUTHOR: Jordi Quer
+    AUTHORS:
+
+    - Jordi Quer
     """
     if N%Integer(9) == Integer(0): return Integer(0)
     for p, r in factor(N):
@@ -947,20 +1057,25 @@ def nu3H(N,H):
 
 def nuinfH(N,H):
     r"""
-    Number of cusps for the group $\Gamma_H(N)$
+    Number of cusps for the group `\Gamma_H(N)`
 
     INPUT:
-        N -- an integer
-        H -- list of elements in $\ZZ$ of a subgroup of $(\ZZ/N\ZZ)^*$
 
-    OUTPUT:
-        Integer
+    -  ``N`` - an integer
 
-    EXAMPLES:
+    -  ``H`` - list of elements in `\mathbb{Z}` of
+       a subgroup of `(\mathbb{Z}/N\mathbb{Z})^*`
+
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: sage.modular.dims.nuinfH(33, GammaH(33,[2])._list_of_elements_in_H())
         8
 
-    AUTHOR: Jordi Quer
+    AUTHORS:
+
+    - Jordi Quer
     """
     c = Integer(0)
     for d in [d for d in divisors(N) if d**Integer(2)<=N]:
@@ -977,21 +1092,27 @@ def nuinfH(N,H):
 
 def nuinfHreg(N,H):
     r"""
-    Number of regular cusps for the group $\Gamma_H(N)$
+    Number of regular cusps for the group `\Gamma_H(N)`
 
     INPUT:
-        N -- an integer
-        H -- list of elements in $\ZZ$ of a subgroup of $(\ZZ/N\ZZ)^*$
-    OUTPUT:
-        Integer
 
-    EXAMPLES:
+    -  ``N`` - an integer
+
+    -  ``H`` - list of elements in `\mathbb{Z}` of
+       a subgroup of `(\mathbb{Z}/N\mathbb{Z})^*`
+
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: sage.modular.dims.nuinfHreg(33, GammaH(33,[2])._list_of_elements_in_H())
         0
         sage: sage.modular.dims.nuinfHreg(7, GammaH(7,[2])._list_of_elements_in_H())
         2
 
-    AUTHOR: Jordi Quer
+    AUTHORS:
+
+    - Jordi Quer
     """
     c = Integer(0)
     for d in [d for d in divisors(N) if d**Integer(2)<=N]:
@@ -1007,15 +1128,19 @@ def nuinfHreg(N,H):
 
 def gH(N,H):
     r"""
-    Return the genus of the curve $X_H(N)$.
+    Return the genus of the curve `X_H(N)`.
 
     INPUT:
-        N -- an integer
-        H -- list of elements in $\ZZ$ of a subgroup of $(\ZZ/N\ZZ)^*$
-    OUTPUT:
-        Integer
 
-    EXAMPLES:
+    -  ``N`` - an integer
+
+    -  ``H`` - list of elements in `\mathbb{Z}` of
+       a subgroup of `(\mathbb{Z}/N\mathbb{Z})^*`
+
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: sage.modular.dims.gH(33, GammaH(33,[2])._list_of_elements_in_H())
         5
         sage: sage.modular.dims.gH(7, GammaH(7,[2])._list_of_elements_in_H())
@@ -1029,26 +1154,34 @@ def gH(N,H):
         sage: sage.modular.dims.g1(23)
         12
 
-    AUTHOR: Jordi Quer
+    AUTHORS:
+
+    - Jordi Quer
     """
     # (formulas are multiplied by 12 so that everything is an integer)
     return (Integer(12) + muH(N,H) - Integer(3)*nu2H(N,H) - Integer(4)*nu3H(N,H) - Integer(6)*nuinfH(N,H))//Integer(12)
 
 def genus_H(H):
     r"""
-    Return the genus of the modular curve $X_H(N)$, where $H$ is a
-    congruence subgroup of the form $\Gamma_H(N)$.
+    Return the genus of the modular curve `X_H(N)`, where
+    `H` is a congruence subgroup of the form
+    `\Gamma_H(N)`.
 
     INPUT:
-        H -- a congruence subgroup $\Gamma_H(N)$
-    OUTPUT:
-        Integer
 
-    EXAMPLES:
+    -  ``H`` - a congruence subgroup
+       `\Gamma_H(N)`
+
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: sage.modular.dims.genus_H(GammaH(33,[2]))
         5
 
-    AUTHOR: Jordi Quer
+    AUTHORS:
+
+    - Jordi Quer
     """
     if not congroup.is_GammaH(H):
         raise TypeError, "H must be a congruence subgroup GammaH(N)"
@@ -1056,17 +1189,19 @@ def genus_H(H):
 
 def lambda4(k):
     """
-    Return 0 if $k$ is odd, 3 if $k$ is divisible by 4, and -3 if $k$
-    is even but not divisible by 4.
+    Return 0 if `k` is odd, 3 if `k` is divisible by 4,
+    and -3 if `k` is even but not divisible by 4.
 
     This is used for computations of the Cohen-Oesterle formulas.
 
     INPUT:
-        k -- an integer
-    OUTPUT:
-        Integer
 
-    EXAMPLES:
+    -  ``k`` - an integer
+
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: [sage.modular.dims.lambda4(k) for k in [0..10]]
         [3, 0, -3, 0, 3, 0, -3, 0, 3, 0, -3]
     """
@@ -1079,17 +1214,19 @@ def lambda4(k):
 
 def lambda3(k):
     """
-    Return 0 if $k$ is odd, 4 if $k$ is divisible by 4, and -4 if $k$
-    is even but not divisible by 4.
+    Return 0 if `k` is odd, 4 if `k` is divisible by 4,
+    and -4 if `k` is even but not divisible by 4.
 
     This is used for computations of the Cohen-Oesterle formulas.
 
     INPUT:
-        k -- an integer
-    OUTPUT:
-        Integer
 
-    EXAMPLES:
+    -  ``k`` - an integer
+
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: [sage.modular.dims.lambda3(k) for k in [0..10]]
         [4, 0, -4, 4, 0, -4, 4, 0, -4, 4, 0]
     """
@@ -1105,16 +1242,19 @@ def lambda3(k):
 ###############################################################
 def dimension_cusp_forms_H(G,k):
     r"""
-    Return the dimension of the space of weight $k$ cusp forms for the
-    group $G = \Gamma_H$.
+    Return the dimension of the space of weight `k` cusp forms
+    for the group `G = \Gamma_H`.
 
     INPUT:
-        G -- a congruence subgroup GammaH
-        k -- an integer
-    OUTPUT:
-        Integer
 
-    EXAMPLES:
+    -  ``G`` - a congruence subgroup GammaH
+
+    -  ``k`` - an integer
+
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: sage.modular.dims.dimension_cusp_forms_H(GammaH(33,[2]),2)
         5
         sage: sage.modular.dims.dimension_cusp_forms_H(GammaH(33,[2]),3)
@@ -1144,16 +1284,19 @@ def dimension_cusp_forms_H(G,k):
 
 def dimension_eis_H(G,k):
     r"""
-    Return the dimension of the space of weight $k$ Eisenstein series
-    for the group $G = \Gamma_H$.
+    Return the dimension of the space of weight `k` Eisenstein
+    series for the group `G = \Gamma_H`.
 
     INPUT:
-        G -- a congruence subgroup GammaH
-        k -- an integer
-    OUTPUT:
-        Integer
 
-    EXAMPLES:
+    -  ``G`` - a congruence subgroup GammaH
+
+    -  ``k`` - an integer
+
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: sage.modular.dims.dimension_eis_H(GammaH(33,[2]),2)
         7
         sage: sage.modular.dims.dimension_eis_H(GammaH(33,[2]),3)
@@ -1175,18 +1318,22 @@ def dimension_eis_H(G,k):
 
 def dimension_new_cusp_forms_H(G,k, p=0):
     r"""
-    Return the dimension of the space of new (or $p$-new) weight $k$
-    cusp forms for $G$.
+    Return the dimension of the space of new (or `p`-new)
+    weight `k` cusp forms for `G`.
 
     INPUT:
-        G -- group of the form Gamma_H(N)
-        k -- an integer at least 2 (the weight)
-        p -- integer (default: 0); if nonzero, compute the $p$-new subspace.
 
-    OUTPUT:
-        Integer
+    -  ``G`` - group of the form Gamma_H(N)
 
-    EXAMPLES:
+    -  ``k`` - an integer at least 2 (the weight)
+
+    -  ``p`` - integer (default: 0); if nonzero, compute
+       the `p`-new subspace.
+
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: from sage.modular.dims import *
         sage: dimension_new_cusp_forms_H(GammaH(33,[2]), 2)
         3
@@ -1201,22 +1348,28 @@ def dimension_new_cusp_forms_H(G,k, p=0):
 
 def dimension_cusp_forms_fromH(chi,k):
     r"""
-    Compute the dimension of the space of cusp forms of weight $k$ and
-    character $\chi$ using formulas for dimensions for congruence
-    subgroups $\Gamma_H(N)$ instead of the formulas of Cohen-Oesterle.
+    Compute the dimension of the space of cusp forms of weight
+    `k` and character `\chi` using formulas for
+    dimensions for congruence subgroups `\Gamma_H(N)` instead
+    of the formulas of Cohen-Oesterle.
 
     INPUT:
-        chi -- Dirichlet character
-        k -- integer (weight)
 
-    OUTPUT:
-        Integer
+    -  ``chi`` - Dirichlet character
 
-    EXAMPLES:
+    -  ``k`` - integer (weight)
+
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: K = CyclotomicField(3)
         sage: eps = DirichletGroup(7*43,K).0^2
 
     The following two calculations use different algorithms.
+
+    ::
+
         sage: dimension_cusp_forms(eps,2)
         28
         sage: sage.modular.dims.dimension_cusp_forms_fromH(eps,2)
@@ -1232,18 +1385,21 @@ def dimension_cusp_forms_fromH(chi,k):
 
 def dimension_modular_forms_fromH(chi,k):
     r"""
-    Compute the dimension of the space of modular forms of weight $k$
-    and character $\chi$ using formulas for dimensions for congruence
-    subgroups $\Gamma_H(N)$ instead of the formulas of Cohen-Oesterle.
+    Compute the dimension of the space of modular forms of weight
+    `k` and character `\chi` using formulas for
+    dimensions for congruence subgroups `\Gamma_H(N)` instead
+    of the formulas of Cohen-Oesterle.
 
     INPUT:
-        chi -- Dirichlet character
-        k -- integer (weight)
 
-    OUTPUT:
-        Integer
+    -  ``chi`` - Dirichlet character
 
-    EXAMPLES:
+    -  ``k`` - integer (weight)
+
+    OUTPUT: Integer
+
+    EXAMPLES::
+
         sage: K = CyclotomicField(3)
         sage: eps = DirichletGroup(7*43,K).0^2
         sage: dimension_modular_forms(eps,2)
@@ -1266,32 +1422,45 @@ def dimension_modular_forms_fromH(chi,k):
 
 def dimension_new_cusp_forms(X, k=2, p=0):
     """
-    Return the dimension of the new (or $p$-new) subspace of cusp
-    forms for the character or group $X$.
+    Return the dimension of the new (or `p`-new) subspace of
+    cusp forms for the character or group `X`.
 
     INPUT:
-        X -- integer, congruence subgroup or Dirichlet character
-        k -- weight (integer)
-        p -- 0 or a prime
 
-    EXAMPLES:
+    -  ``X`` - integer, congruence subgroup or Dirichlet
+       character
+
+    -  ``k`` - weight (integer)
+
+    -  ``p`` - 0 or a prime
+
+    EXAMPLES::
+
         sage: dimension_new_cusp_forms(100,2)
         1
+
+    ::
 
         sage: dimension_new_cusp_forms(Gamma0(100),2)
         1
         sage: dimension_new_cusp_forms(Gamma0(100),4)
         5
 
+    ::
+
         sage: dimension_new_cusp_forms(Gamma1(100),2)
         141
         sage: dimension_new_cusp_forms(Gamma1(100),4)
         463
 
+    ::
+
         sage: dimension_new_cusp_forms(DirichletGroup(100).1^2,2)
         2
         sage: dimension_new_cusp_forms(DirichletGroup(100).1^2,4)
         8
+
+    ::
 
         sage: sum(dimension_new_cusp_forms(e,3) for e in DirichletGroup(30))
         12
@@ -1313,22 +1482,32 @@ def dimension_cusp_forms(X, k=2):
     subgroup or Dirichlet character.
 
     INPUT:
-        X -- congruence subgroup or Dirichlet character or integer
-        k -- weight (integer)
 
-    EXAMPLES:
+    -  ``X`` - congruence subgroup or Dirichlet character
+       or integer
+
+    -  ``k`` - weight (integer)
+
+    EXAMPLES::
+
         sage: dimension_cusp_forms(5,4)
         1
+
+    ::
 
         sage: dimension_cusp_forms(Gamma0(11),2)
         1
         sage: dimension_cusp_forms(Gamma1(13),2)
         2
 
+    ::
+
         sage: dimension_cusp_forms(DirichletGroup(13).0^2,2)
         1
         sage: dimension_cusp_forms(DirichletGroup(13).0,3)
         1
+
+    ::
 
         sage: dimension_cusp_forms(Gamma0(11),2)
         1
@@ -1341,6 +1520,8 @@ def dimension_cusp_forms(X, k=2):
         sage: dimension_cusp_forms(Gamma0(1),4)
         0
 
+    ::
+
         sage: dimension_cusp_forms(Gamma0(389),2)
         32
         sage: dimension_cusp_forms(Gamma0(389),4)
@@ -1349,6 +1530,8 @@ def dimension_cusp_forms(X, k=2):
         199
         sage: dimension_cusp_forms(Gamma0(11),1)
         0
+
+    ::
 
         sage: dimension_cusp_forms(Gamma1(11),2)
         1
@@ -1359,6 +1542,8 @@ def dimension_cusp_forms(X, k=2):
         sage: dimension_cusp_forms(Gamma1(1),4)
         0
 
+    ::
+
         sage: dimension_cusp_forms(Gamma1(389),2)
         6112
         sage: dimension_cusp_forms(Gamma1(389),4)
@@ -1366,10 +1551,14 @@ def dimension_cusp_forms(X, k=2):
         sage: dimension_cusp_forms(Gamma1(2005),2)
         159201
 
+    ::
+
         sage: dimension_cusp_forms(Gamma1(11),1)
         Traceback (most recent call last):
         ...
         NotImplementedError: computation of dimensions of spaces of weight 1 modular forms not implemented in general.
+
+    ::
 
         sage: e = DirichletGroup(13).0
         sage: e.order()
@@ -1400,12 +1589,18 @@ def dimension_eis(X, k=2):
     congruence subgroup.
 
     INPUT:
-        X -- congruence subgroup or Dirichlet character or integer
-        k -- weight (integer)
 
-    EXAMPLES:
+    -  ``X`` - congruence subgroup or Dirichlet character
+       or integer
+
+    -  ``k`` - weight (integer)
+
+    EXAMPLES::
+
         sage: dimension_eis(5,4)
         2
+
+    ::
 
         sage: dimension_eis(Gamma0(11),2)
         1
@@ -1414,6 +1609,8 @@ def dimension_eis(X, k=2):
         sage: dimension_eis(Gamma1(2006),2)
         3711
 
+    ::
+
         sage: e = DirichletGroup(13).0
         sage: e.order()
         12
@@ -1421,6 +1618,8 @@ def dimension_eis(X, k=2):
         0
         sage: dimension_eis(e^2,2)
         2
+
+    ::
 
         sage: e = DirichletGroup(13).0
         sage: e.order()
@@ -1432,6 +1631,8 @@ def dimension_eis(X, k=2):
         sage: dimension_eis(e,13)
         2
 
+    ::
+
         sage: G = DirichletGroup(20)
         sage: dimension_eis(G.0,3)
         4
@@ -1440,12 +1641,16 @@ def dimension_eis(X, k=2):
         sage: dimension_eis(G.1^2,2)
         6
 
+    ::
+
         sage: G = DirichletGroup(200)
         sage: e = prod(G.gens(), G(1))
         sage: e.conductor()
         200
         sage: dimension_eis(e,2)
         4
+
+    ::
 
         sage: dimension_modular_forms(Gamma1(4), 11)
         6
@@ -1485,14 +1690,17 @@ def dimension_eis(X, k=2):
 def dimension_modular_forms(X, k=2):
     r"""
     The dimension of the space of cusp forms for the given congruence
-    subgroup (either $\Gamma_0(N)$, $\Gamma_1(N)$, or $\Gamma_H(N)$)
-    or Dirichlet character.
+    subgroup (either `\Gamma_0(N)`, `\Gamma_1(N)`, or
+    `\Gamma_H(N)`) or Dirichlet character.
 
     INPUT:
-        X -- congruence subgroup or Dirichlet character
-        k -- weight (integer)
 
-    EXAMPLES:
+    -  ``X`` - congruence subgroup or Dirichlet character
+
+    -  ``k`` - weight (integer)
+
+    EXAMPLES::
+
         sage: dimension_modular_forms(Gamma0(11),2)
         2
         sage: dimension_modular_forms(Gamma0(11),0)
@@ -1533,10 +1741,13 @@ def sturm_bound(level, weight=2):
     weight.
 
     INPUT:
-        level -- an integer or a congruence subgroup
-        weight -- an integer $\geq 2$ (default: 2)
 
-    EXAMPLES:
+    -  ``level`` - an integer or a congruence subgroup
+
+    -  ``weight`` - an integer `\geq 2` (default: 2)
+
+    EXAMPLES::
+
         sage: sturm_bound(11,2)
         2
         sage: sturm_bound(389,2)
@@ -1566,44 +1777,55 @@ def sturm_bound(level, weight=2):
         sage: sturm_bound(Gamma1(13),5)
         72
 
-    FURTHER DETAILS: This function returns a positive integer~$n$ such
-    that the Hecke operators $T_1,\ldots, T_n$ acting on \emph{cusp
-    forms} generate the Hecke algebra as a $\Z$-module when the
-    character is trivial or quadratic.  Otherwise, $T_1,\ldots,T_n$
-    generate the Hecke algebra at least as a $\Z[\eps]$-module, where
-    $\Z[\eps]$ is the ring generated by the values of the Dirichlet
-    character $\eps$.  Alternatively, this is a bound such that if two
-    cusp forms associated to this space of modular symbols are
-    congruent modulo $(\lambda, q^n)$, then they are congruent modulo
-    $\lambda$.
+    FURTHER DETAILS: This function returns a positive integer
+    `n` such that the Hecke operators
+    `T_1,\ldots, T_n` acting on *cusp  forms* generate the
+    Hecke algebra as a `\mathbb{Z}`-module when the character
+    is trivial or quadratic. Otherwise, `T_1,\ldots,T_n`
+    generate the Hecke algebra at least as a
+    `\mathbb{Z}[\varepsilon]`-module, where
+    `\mathbb{Z}[\varepsilon]` is the ring generated by the
+    values of the Dirichlet character `\varepsilon`.
+    Alternatively, this is a bound such that if two cusp forms
+    associated to this space of modular symbols are congruent modulo
+    `(\lambda, q^n)`, then they are congruent modulo
+    `\lambda`.
 
     REFERENCES:
-    See the Agashe-Stein appendix to Lario and Schoof, \emph{Some
-    computations with Hecke rings and deformation rings}, Experimental
-    Math., 11 (2002), no. 2, 303-311.  This result originated in the
-    paper Sturm, \emph{On the congruence of modular forms}, Springer
-    LNM 1240, 275--280, 1987.
 
-    REMARK:
-    Kevin Buzzard pointed out to me (William Stein) in Fall 2002 that
-    the above bound is fine for $\Gamma_1(N)$ with character, as one
-    sees by taking a power of $f$.  More precisely, if $f \con 0
-    \pmod{p}$ for first $s$ coefficients, then $f^r \con 0 \pmod{p}$
-    for first $sr$ coefficents.  Since the weight of $f^r$ is $r\cdot
-    k(f)$, it follows that if $s \geq b$, where $b$ is the Sturm bound
-    for $\Gamma_0(N)$ at weight $k(f)$, then $f^r$ has valuation large
-    enough to be forced to be $0$ at $r*k(f)$ by Sturm bound (which is
-    valid if we choose $r$ correctly).  Thus $f \con 0 \pmod{p}$.
-    Conclusion: For $\Gamma_1(N)$ with fixed character, the Sturm
-    bound is \emph{exactly} the same as for $\Gamma_0(N)$.
+    - See the Agashe-Stein appendix to Lario and Schoof,
+      *Some computations with Hecke rings and deformation rings*,
+      Experimental Math., 11 (2002), no. 2, 303-311.
 
-    A key point is that we are finding $\Z[\eps]$ generators for the
-    Hecke algebra here, not $\Z$-generators.  So if one wants
-    generators for the Hecke algebra over $\Z$, this bound must be
-    suitably modified (and I'm not sure what the modification is).
+    - This result originated in the paper Sturm,
+      *On the congruence of modular forms*,
+      Springer LNM 1240, 275-280, 1987.
 
-    AUTHOR:
-        -- William Stein
+    REMARK: Kevin Buzzard pointed out to me (William Stein) in Fall
+    2002 that the above bound is fine for `\Gamma_1(N)` with
+    character, as one sees by taking a power of `f`. More
+    precisely, if `f \cong 0 \pmod{p}` for first
+    `s` coefficients, then `f^r \cong 0 \pmod{p}` for
+    first `sr` coefficents. Since the weight of `f^r`
+    is `r\cdot k(f)`, it follows that if
+    `s \geq b`, where `b` is the Sturm bound for
+    `\Gamma_0(N)` at weight `k(f)`, then `f^r`
+    has valuation large enough to be forced to be `0` at
+    `r*k(f)` by Sturm bound (which is valid if we choose
+    `r` correctly). Thus `f \cong 0 \pmod{p}`.
+    Conclusion: For `\Gamma_1(N)` with fixed character, the
+    Sturm bound is *exactly* the same as for `\Gamma_0(N)`.
+
+    A key point is that we are finding
+    `\mathbb{Z}[\varepsilon]` generators for the Hecke algebra
+    here, not `\mathbb{Z}`-generators. So if one wants
+    generators for the Hecke algebra over `\mathbb{Z}`, this
+    bound must be suitably modified (and I'm not sure what the
+    modification is).
+
+    AUTHORS:
+
+    - William Stein
     """
     if congroup.is_Gamma0(level):
         level = level.level()

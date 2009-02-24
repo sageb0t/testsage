@@ -101,9 +101,12 @@ cdef class Heilbronn:
         Initialize the list of matrices corresponding to self. (This
         function is automatically called during initialization.)
 
-        NOTE: This function must be overridden by all derived classes!
+        .. note:
 
-        EXAMPLES:
+           This function must be overridden by all derived classes!
+
+        EXAMPLES::
+
             sage: H = sage.modular.modsym.heilbronn.Heilbronn()
             sage: H._initialize_list()
             Traceback (most recent call last):
@@ -116,7 +119,8 @@ cdef class Heilbronn:
         """
         Return the nth matrix in self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: H = HeilbronnCremona(11)
             sage: H[17]
             [-1, 0, 1, -11]
@@ -134,7 +138,8 @@ cdef class Heilbronn:
         """
         Return the number of matrices in self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: HeilbronnCremona(2).__len__()
             4
         """
@@ -142,10 +147,11 @@ cdef class Heilbronn:
 
     def to_list(self):
         """
-        Return the list of Heilbronn matrices corresponding to self.
-        Each matrix is given as a list of four ints.
+        Return the list of Heilbronn matrices corresponding to self. Each
+        matrix is given as a list of four ints.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: H = HeilbronnCremona(2); H
             The Cremona-Heilbronn matrices of determinant 2
             sage: H.to_list()
@@ -161,12 +167,16 @@ cdef class Heilbronn:
     cdef apply_only(self, int u, int v, int N, int* a, int* b):
         """
         INPUT:
-            u, v, N -- integers
-            a, b -- preallocated int arrays of the length self.
-        OUTPUT:
-            sets the entries of a,b
 
-        EXAMPLES:
+        -  ``u, v, N`` - integers
+
+        -  ``a, b`` - preallocated int arrays of the length
+           self.
+
+        OUTPUT: sets the entries of a,b
+
+        EXAMPLES::
+
             sage: M = ModularSymbols(33,2,1)       # indirect test
             sage: sage.modular.modsym.heilbronn.hecke_images_gamma0_weight2(1,0,33,[2,3],M.manin_gens_to_basis())
             [ 3  0  1  0 -1  1]
@@ -194,11 +204,15 @@ cdef class Heilbronn:
     cdef apply_to_polypart(self, fmpz_poly_t* ans, int i, int k):
         """
         INPUT:
-            ans -- fmpz_poly_t*; pre-allocated an initialized array of self.length fmpz_poly_t's
-            i -- integer
-            k -- integer
-        OUTPUT:
-            sets entries of ans
+
+        -  ``ans`` - fmpz_poly_t\*; pre-allocated an
+           initialized array of self.length fmpz_poly_t's
+
+        -  ``i`` - integer
+
+        -  ``k`` - integer
+
+        OUTPUT: sets entries of ans
         """
         cdef int j, m = k-2
         for j from 0 <= j < self.length:
@@ -208,21 +222,22 @@ cdef class Heilbronn:
 
     def apply(self, int u, int v, int N):
         """
-        Return a list of pairs ((c,d),m), which is obtained as follows:
-          1) Compute the images (a,b) of the vector (u,v) (mod N) acted on by
-             each of the HeilbronnCremona matrices in self.
-          2) Reduce each (a,b) to canonical form (c,d) using p1normalize
-          3) Sort.
-          4) Create the list ((c,d),m), where m is the number of times
-             that (c,d) appears in the list created in steps 1--3 above.
-        Note that the pairs ((c,d),m) are sorted lexicographically by (c,d).
+        Return a list of pairs ((c,d),m), which is obtained as follows: 1)
+        Compute the images (a,b) of the vector (u,v) (mod N) acted on by
+        each of the HeilbronnCremona matrices in self. 2) Reduce each (a,b)
+        to canonical form (c,d) using p1normalize 3) Sort. 4) Create the
+        list ((c,d),m), where m is the number of times that (c,d) appears
+        in the list created in steps 1-3 above. Note that the pairs
+        ((c,d),m) are sorted lexicographically by (c,d).
 
         INPUT:
-            u, v, N -- integers
-        OUTPUT:
-            list
 
-        EXAMPLES:
+        -  ``u, v, N`` - integers
+
+        OUTPUT: list
+
+        EXAMPLES::
+
             sage: H = sage.modular.modsym.heilbronn.HeilbronnCremona(2); H
             The Cremona-Heilbronn matrices of determinant 2
             sage: H.apply(1,2,7)
@@ -276,10 +291,10 @@ cdef class HeilbronnCremona(Heilbronn):
 
     def __init__(self, int p):
         """
-        Create the list of Heilbronn-Cremona matrices of
-        determinant p.
+        Create the list of Heilbronn-Cremona matrices of determinant p.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: H = HeilbronnCremona(3) ; H
             The Cremona-Heilbronn matrices of determinant 3
             sage: H.to_list()
@@ -299,7 +314,8 @@ cdef class HeilbronnCremona(Heilbronn):
         """
         Return the string representation of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: HeilbronnCremona(691).__repr__()
             'The Cremona-Heilbronn matrices of determinant 691'
         """
@@ -310,7 +326,8 @@ cdef class HeilbronnCremona(Heilbronn):
         Initialize the list of matrices corresponding to self. (This
         function is automatically called during initialization.)
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: H = HeilbronnCremona.__new__(HeilbronnCremona)
             sage: H.p = 5
             sage: H
@@ -373,9 +390,10 @@ cdef class HeilbronnMerel(Heilbronn):
     def __init__(self, int n):
         r"""
         Initialize the list of Merel-Heilbronn matrices of determinant
-        $n$.
+        `n`.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: H = HeilbronnMerel(3) ; H
             The Merel-Heilbronn matrices of determinant 3
             sage: H.to_list()
@@ -396,7 +414,8 @@ cdef class HeilbronnMerel(Heilbronn):
         """
         Return the string representation of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: HeilbronnMerel(8).__repr__()
             'The Merel-Heilbronn matrices of determinant 8'
         """
@@ -407,7 +426,8 @@ cdef class HeilbronnMerel(Heilbronn):
         Initialize the list of matrices corresponding to self. (This
         function is automatically called during initialization.)
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: H = HeilbronnMerel.__new__(HeilbronnMerel)
             sage: H.n = 5
             sage: H
@@ -469,17 +489,20 @@ cdef class HeilbronnMerel(Heilbronn):
 def hecke_images_gamma0_weight2(int u, int v, int N, indices, R):
     """
     INPUT:
-        u, v, N -- integers so that gcd(u,v,N) = 1
-        indices -- a list of positive integers
-        R       -- matrix over QQ that writes each elements of P1 =
-                   P1List(N) in terms of a subset of P1.
 
-    OUTPUT:
-        a dense matrix with rational entries whose columns are
-        the images T_n(x) for n in indices and x the Manin
-        symbol (u,v), expressed in terms of the basis.
+    -  ``u, v, N`` - integers so that gcd(u,v,N) = 1
 
-    EXAMPLES:
+    -  ``indices`` - a list of positive integers
+
+    -  ``R`` - matrix over QQ that writes each elements of
+       P1 = P1List(N) in terms of a subset of P1.
+
+    OUTPUT: a dense matrix with rational entries whose columns are the
+    images T_n(x) for n in indices and x the Manin symbol (u,v),
+    expressed in terms of the basis.
+
+    EXAMPLES::
+
         sage: M = ModularSymbols(23,2,1)
         sage: A = sage.modular.modsym.heilbronn.hecke_images_gamma0_weight2(1,0,23,[1..6],M.manin_gens_to_basis())
         sage: A
@@ -570,27 +593,32 @@ def hecke_images_gamma0_weight2(int u, int v, int N, indices, R):
 
 def hecke_images_nonquad_character_weight2(int u, int v, int N, indices, chi, R):
     """
-    Return images of the Hecke operators $T_n$ for $n$ in the list
-    indices, where chi must be a quadratic Dirichlet character with
-    values in QQ.
+    Return images of the Hecke operators `T_n` for `n`
+    in the list indices, where chi must be a quadratic Dirichlet
+    character with values in QQ.
 
     R is assumed to be the relation matrix of a weight modular symbols
     space over QQ with character chi.
 
     INPUT:
-        u, v, N -- integers so that gcd(u,v,N) = 1
-        indices -- a list of positive integers
-        chi     -- a Dirichlet character that takes values in a nontrivial
-                   extension of QQ.
-        R       -- matrix over QQ that writes each elements of P1 =
-                   P1List(N) in terms of a subset of P1.
 
-    OUTPUT:
-        a dense matrix with entries in the field QQ(chi) (the values of chi)
-        whose columns are the images T_n(x) for n in indices and x the Manin
-        symbol (u,v), expressed in terms of the basis.
+    -  ``u, v, N`` - integers so that gcd(u,v,N) = 1
 
-    EXAMPLES:
+    -  ``indices`` - a list of positive integers
+
+    -  ``chi`` - a Dirichlet character that takes values
+       in a nontrivial extension of QQ.
+
+    -  ``R`` - matrix over QQ that writes each elements of
+       P1 = P1List(N) in terms of a subset of P1.
+
+    OUTPUT: a dense matrix with entries in the field QQ(chi) (the
+    values of chi) whose columns are the images T_n(x) for n in
+    indices and x the Manin symbol (u,v), expressed in terms of the
+    basis.
+
+    EXAMPLES::
+
         sage: chi = DirichletGroup(13).0^2
         sage: M = ModularSymbols(chi)
         sage: eps = M.character()
@@ -674,19 +702,24 @@ def hecke_images_nonquad_character_weight2(int u, int v, int N, indices, chi, R)
 def hecke_images_quad_character_weight2(int u, int v, int N, indices, chi, R):
     """
     INPUT:
-        u, v, N -- integers so that gcd(u,v,N) = 1
-        indices -- a list of positive integers
-        chi     -- a Dirichlet character that takes values in QQ
-        R       -- matrix over QQ(chi) that writes each elements of P1 =
-                   P1List(N) in terms of a subset of P1.
 
-    OUTPUT:
-        a dense matrix with entries in the rational field QQ (the
-        values of chi) whose columns are the images T_n(x) for n in
-        indices and x the Manin symbol (u,v), expressed in terms of
-        the basis.
+    -  ``u, v, N`` - integers so that gcd(u,v,N) = 1
 
-    EXAMPLES:
+    -  ``indices`` - a list of positive integers
+
+    -  ``chi`` - a Dirichlet character that takes values
+       in QQ
+
+    -  ``R`` - matrix over QQ(chi) that writes each
+       elements of P1 = P1List(N) in terms of a subset of P1.
+
+    OUTPUT: a dense matrix with entries in the rational field QQ (the
+    values of chi) whose columns are the images T_n(x) for n in
+    indices and x the Manin symbol (u,v), expressed in terms of the
+    basis.
+
+    EXAMPLES::
+
         sage: chi = DirichletGroup(29,QQ).0
         sage: M = ModularSymbols(chi)
         sage: R = M.manin_gens_to_basis()
@@ -762,18 +795,24 @@ def hecke_images_quad_character_weight2(int u, int v, int N, indices, chi, R):
 def hecke_images_gamma0_weight_k(int u, int v, int i, int N, int k, indices, R):
     """
     INPUT:
-        u, v, N -- integers so that gcd(u,v,N) = 1
-        i       -- integer with 0 <= i <= k-2
-        k       -- weight
-        indices -- a list of positive integers
-        R       -- matrix over QQ that writes each elements of P1 =
-                   P1List(N) in terms of a subset of P1.
-    OUTPUT:
-        a dense matrix with rational entries whose columns are
-        the images T_n(x) for n in indices and x the Manin
-        symbol [$X^i*Y^(k-2-i), (u,v)$], expressed in terms of the basis.
 
-    EXAMPLES:
+    -  ``u, v, N`` - integers so that gcd(u,v,N) = 1
+
+    -  ``i`` - integer with 0 = i = k-2
+
+    -  ``k`` - weight
+
+    -  ``indices`` - a list of positive integers
+
+    -  ``R`` - matrix over QQ that writes each elements of
+       P1 = P1List(N) in terms of a subset of P1.
+
+    OUTPUT: a dense matrix with rational entries whose columns are the
+    images T_n(x) for n in indices and x the Manin symbol
+    [`X^i*Y^(k-2-i), (u,v)`], expressed in terms of the basis.
+
+    EXAMPLES::
+
         sage: M = ModularSymbols(15,6,sign=-1)
         sage: R = M.manin_gens_to_basis()
         sage: sage.modular.modsym.heilbronn.hecke_images_gamma0_weight_k(4,1,3,15,6,[1,11,12], R)

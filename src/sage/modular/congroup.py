@@ -1,11 +1,13 @@
 r"""
 Congruence subgroups of SL2(Z)
 
-\sage can compute with the congruence subgroups $\Gamma_0(N)$,
-$\Gamma_1(N)$, and $\Gamma_H(N)$.
+Sage can compute with the congruence subgroups
+`\Gamma_0(N)`, `\Gamma_1(N)`, and
+`\Gamma_H(N)`.
 
-AUTHOR:
-    -- William Stein
+AUTHORS:
+
+- William Stein
 """
 
 ################################################################################
@@ -45,7 +47,8 @@ def is_CongruenceSubgroup(x):
     """
     Return True if x is of type CongruenceSubgroup.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: from sage.modular.congroup import is_CongruenceSubgroup
         sage: is_CongruenceSubgroup(SL2Z)
         True
@@ -65,7 +68,8 @@ class CongruenceSubgroup(group.Group):
         """
         Create a congruence subgroup with given level.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Gamma0(500)
             Congruence Subgroup Gamma0(500)
         """
@@ -78,9 +82,12 @@ class CongruenceSubgroup(group.Group):
         """
         Return the string representation of self.
 
-        NOTE: This function should be overridden by all subclasses.
+        .. note::
 
-        EXAMPLES:
+           This function should be overridden by all subclasses.
+
+        EXAMPLES::
+
             sage: sage.modular.congroup.CongruenceSubgroup(5)._repr_()
             'Generic congruence subgroup'
         """
@@ -90,9 +97,12 @@ class CongruenceSubgroup(group.Group):
         """
         Used for pickling self.
 
-        NOTE: This function should be overridden by all subclasses.
+        .. note::
 
-        EXAMPLES:
+           This function should be overridden by all subclasses.
+
+        EXAMPLES::
+
             sage: sage.modular.congroup.CongruenceSubgroup(5).__reduce__()
             Traceback (most recent call last):
             ...
@@ -104,7 +114,8 @@ class CongruenceSubgroup(group.Group):
         """
         Return a hash of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Gamma0(11).__hash__()
             -545929996 # 32-bit
             466678398374495476 # 64-bit
@@ -116,10 +127,11 @@ class CongruenceSubgroup(group.Group):
 
     def modular_symbols(self, sign=0, weight=2, base_ring=QQ):
         """
-        Return the space of modular symbols of the specified weight and sign
-        on the congruence subgroup self.
+        Return the space of modular symbols of the specified weight and
+        sign on the congruence subgroup self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: G = Gamma0(23)
             sage: G.modular_symbols()
             Modular Symbols space of dimension 5 for Gamma_0(23) of weight 2 with sign 0 over Rational Field
@@ -138,7 +150,8 @@ class CongruenceSubgroup(group.Group):
         Return the modular abelian variety corresponding to the congruence
         subgroup self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Gamma0(11).modular_abelian_variety()
             Abelian variety J0(11) of dimension 1
             sage: Gamma1(11).modular_abelian_variety()
@@ -151,13 +164,16 @@ class CongruenceSubgroup(group.Group):
 
     def are_equivalent(self, x, y):
         r"""
-        Determine whether $x$ and $y$ are equivalent by an element of
-        self, i.e. whether or not there exists an element $g$ of self
-        such that $g\cdot x = y$.
+        Determine whether `x` and `y` are equivalent by an
+        element of self, i.e. whether or not there exists an element
+        `g` of self such that `g\cdot x = y`.
 
-        NOTE: This function must be overridden by all subclasses.
+        .. note::
 
-        EXAMPLES:
+           This function must be overridden by all subclasses.
+
+        EXAMPLES::
+
             sage: sage.modular.congroup.CongruenceSubgroup(5).are_equivalent(0, 0)
             Traceback (most recent call last):
             ...
@@ -169,9 +185,12 @@ class CongruenceSubgroup(group.Group):
         """
         Return coset representatives for this congruence subgroup.
 
-        NOTE: This function must be overridden by all subclasses.
+        .. note::
 
-        EXAMPLES:
+           This function must be overridden by all subclasses.
+
+        EXAMPLES::
+
             sage: sage.modular.congroup.CongruenceSubgroup(5).coset_reps()
             Traceback (most recent call last):
             ...
@@ -183,9 +202,12 @@ class CongruenceSubgroup(group.Group):
         """
         Return generators for this congruence subgroup.
 
-        NOTE: This function must be overridden by all subclasses.
+        .. note::
 
-        EXAMPLES:
+           This function must be overridden by all subclasses.
+
+        EXAMPLES::
+
             sage: sage.modular.congroup.CongruenceSubgroup(5).generators()
             Traceback (most recent call last):
             ...
@@ -199,7 +221,8 @@ class CongruenceSubgroup(group.Group):
 
         The generators need not be minimal.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: SL2Z.gens()
             ([ 0 -1]
             [ 1  0], [1 1]
@@ -243,7 +266,8 @@ class CongruenceSubgroup(group.Group):
         Return the i-th generator of self, i.e. the i-th element of the
         tuple self.gens().
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: SL2Z.gen(1)
             [1 1]
             [0 1]
@@ -265,7 +289,8 @@ class CongruenceSubgroup(group.Group):
 
         This need not be the minimal number of generators of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Gamma0(22).ngens()
             40
             sage: Gamma1(14).ngens()
@@ -281,7 +306,8 @@ class CongruenceSubgroup(group.Group):
         """
         Return the level of this congruence subgroup.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: SL2Z.level()
             1
             sage: Gamma0(20).level()
@@ -297,9 +323,12 @@ class CongruenceSubgroup(group.Group):
         """
         Compare self to other.
 
-        NOTE: This function must be overridden by all subclasses.
+        .. note::
 
-        EXAMPLES:
+           This function must be overridden by all subclasses.
+
+        EXAMPLES::
+
             sage: sage.modular.congroup.CongruenceSubgroup(5).__cmp__(ZZ)
             Traceback (most recent call last):
             ...
@@ -314,7 +343,8 @@ class CongruenceSubgroup(group.Group):
         Since congruence subgroups are always nonabelian, this always
         returns False.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: SL2Z.is_abelian()
             False
             sage: Gamma0(3).is_abelian()
@@ -330,10 +360,11 @@ class CongruenceSubgroup(group.Group):
         """
         Return True if this congruence subgroup is finite.
 
-        Since congruence subgroups are always infinite, this always
-        returns False.
+        Since congruence subgroups are always infinite, this always returns
+        False.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: SL2Z.is_finite()
             False
             sage: Gamma0(3).is_finite()
@@ -347,10 +378,10 @@ class CongruenceSubgroup(group.Group):
 
     def is_subgroup(self, right):
         """
-        Return True if self is a subgroup of right, and False
-        otherwise.
+        Return True if self is a subgroup of right, and False otherwise.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: sage.modular.congroup.CongruenceSubgroup(5).is_subgroup(SL2Z)
             Traceback (most recent call last):
             ...
@@ -360,10 +391,11 @@ class CongruenceSubgroup(group.Group):
 
     def is_odd(self):
         """
-        Return True precisely if this subgroup does not contain the
-        matrix -1.
+        Return True precisely if this subgroup does not contain the matrix
+        -1.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: SL2Z.is_odd()
             False
             sage: Gamma0(20).is_odd()
@@ -379,7 +411,8 @@ class CongruenceSubgroup(group.Group):
         """
         Return True precisely if this subgroup contains the matrix -1.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: SL2Z.is_even()
             True
             sage: Gamma0(20).is_even()
@@ -393,24 +426,29 @@ class CongruenceSubgroup(group.Group):
 
     def _new_group_from_level(self, level):
         r"""
-        Return a new group of the same type (Gamma0, Gamma1, or
-        GammaH) as self of the given level. In the case that self is
-        of type GammaH, we take the largest H inside
-        $(Z/\text{level}Z)^\times$ which maps to H, namely its inverse
-        image under the natural reduction map.
+        Return a new group of the same type (Gamma0, Gamma1, or GammaH) as
+        self of the given level. In the case that self is of type GammaH,
+        we take the largest H inside `(Z/\text{level}Z)^\times`
+        which maps to H, namely its inverse image under the natural
+        reduction map.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: G = Gamma0(20)
             sage: G._new_group_from_level(4)
             Congruence Subgroup Gamma0(4)
             sage: G._new_group_from_level(40)
             Congruence Subgroup Gamma0(40)
 
+        ::
+
             sage: G = Gamma1(10)
             sage: G._new_group_from_level(6)
             Traceback (most recent call last):
             ...
             ValueError: one level must divide the other
+
+        ::
 
             sage: G = GammaH(50,[3,37])
             sage: G
@@ -443,7 +481,8 @@ class CongruenceSubgroup(group.Group):
         Since congruence subgroups are always infinite, this always returns
         infinity.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: SL2Z.order()
             +Infinity
             sage: Gamma0(5).order()
@@ -460,10 +499,13 @@ class CongruenceSubgroup(group.Group):
         """
         Coerce x into self.
 
-        NOTE: This function should be overridden by any subclass the
-        user will interact with directly.
+        .. note::
 
-        EXAMPLES:
+           This function should be overridden by any subclass the user
+           will interact with directly.
+
+        EXAMPLES::
+
             sage: sage.modular.congroup.CongruenceSubgroup(5).__call__(0)
             Traceback (most recent call last):
             ...
@@ -475,15 +517,17 @@ class CongruenceSubgroup(group.Group):
 
     def reduce_cusp(self, c):
         r"""
-        Given a cusp $c \in \mathbf{P}^1(\mathbf{Q})$, return the
-        unique reduced cusp equivalent to c under the action of self,
-        where a reduced cusp is an element r/s with r,s coprime
-        integers, s as small as possible, and r as small as possible
-        for that s.
+        Given a cusp `c \in \mathbf{P}^1(\mathbf{Q})`, return the
+        unique reduced cusp equivalent to c under the action of self, where
+        a reduced cusp is an element r/s with r,s coprime integers, s as
+        small as possible, and r as small as possible for that s.
 
-        NOTE: This function should be overridden by all subclasses.
+        .. note::
 
-        EXAMPLES:
+           This function should be overridden by all subclasses.
+
+        EXAMPLES::
+
             sage: sage.modular.congroup.CongruenceSubgroup(5).reduce_cusp(1/4)
             Traceback (most recent call last):
             ...
@@ -494,18 +538,18 @@ class CongruenceSubgroup(group.Group):
     def cusps(self, algorithm='default'):
         r"""
         Return a sorted list of inequivalent cusps for self, i.e. a set of
-        representatives for the orbits of self on $\mathbf{P}^1(\mathbf{Q})$.
-        These should be returned in a reduced form.
+        representatives for the orbits of self on
+        `\mathbf{P}^1(\mathbf{Q})`. These should be returned in a
+        reduced form.
 
-        INPUTS:
-            algorithm -- which algorithm to use to compute the cusps
-                         of self. 'default' finds representatives for
-                         a known complete set of cusps. 'modsym' computes
-                         the boundary map on the space of weight two
-                         modular symbols associated to self, which
-                         finds the cusps for self in the process.
+        INPUTS: algorithm - which algorithm to use to compute the cusps of
+        self. 'default' finds representatives for a known complete set of
+        cusps. 'modsym' computes the boundary map on the space of weight
+        two modular symbols associated to self, which finds the cusps for
+        self in the process.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Gamma0(36).cusps()
             [0, 1/18, 1/12, 1/9, 1/6, 1/4, 1/3, 5/12, 1/2, 2/3, 5/6, Infinity]
             sage: Gamma0(36).cusps(algorithm='modsym') == Gamma0(36).cusps()
@@ -538,24 +582,28 @@ class CongruenceSubgroup(group.Group):
         r"""
         Calculate a list of inequivalent cusps.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: sage.modular.congroup.CongruenceSubgroup(5)._find_cusps()
             Traceback (most recent call last):
             ...
             NotImplementedError
 
-        NOTE: This function should be overridden by all subclasses.
+        .. note::
+
+           This function should be overridden by all subclasses.
         """
         raise NotImplementedError
 
 def lift_to_sl2z(c, d, N):
     """
-    Given a vector (c, d) in $(Z/NZ)^2$, this function computes and
-    returns a list [a, b, c', d'] that defines a 2x2 matrix with
+    Given a vector (c, d) in `(Z/NZ)^2`, this function computes
+    and returns a list [a, b, c', d'] that defines a 2x2 matrix with
     determinant 1 and integer entries, such that c=c'(mod N) and
     d=d'(mod N).
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: lift_to_sl2z(1, 0, 12)
         [0, -1, 1, 0]
         sage: lift_to_sl2z(29, 100, 7)
@@ -603,21 +651,29 @@ def lift_to_sl2z(c, d, N):
 _gammaH_cache = {}
 def GammaH_constructor(level, H):
     r"""
-    Return the congruence subgroup $\Gamma_H(N)$, which is the subgroup of
-    $SL_2(\Z)$ consisting of matrices of the form $\begin{pmatrix} a & b \\
-    c & d \end{pmatrix}$ with $N | c$ and $a, b \in H$, for $H$ a specified
-    subgroup of $(\Z/N\Z)^\times$.
+    Return the congruence subgroup `\Gamma_H(N)`, which is the
+    subgroup of `SL_2(\mathbb{Z})` consisting of matrices of
+    the form
+
+    .. math::
+
+      \begin{pmatrix} a & b \\  c & d \end{pmatrix}`
+
+    with `N | c` and `a, b \in H`, for `H` a
+    specified subgroup of `(\mathbb{Z}/N\mathbb{Z})^\times`.
 
     INPUT:
-        level -- an integer
-        H -- either 0, 1, or a list
-             * If H is a list, return $\Gamma_H(N)$, where $H$
-               is the subgroup of $(\Z/N\Z)^*$ *generated* by the
-               elements of the list.
-             * If H = 0, returns $\Gamma_0(N)$.
-             * If H = 1, returns $\Gamma_1(N)$.
 
-    EXAMPLES:
+    -  ``level`` - an integer
+
+    -  ``H`` - either 0, 1, or a list \* If H is a list,
+       return `\Gamma_H(N)`, where `H` is the subgroup of
+       `(\mathbb{Z}/N\mathbb{Z})^*` \*generated\* by the elements
+       of the list. \* If H = 0, returns `\Gamma_0(N)`. \* If H =
+       1, returns `\Gamma_1(N)`.
+
+    EXAMPLES::
+
         sage: GammaH(11,0)
         Congruence Subgroup Gamma0(11)
         sage: GammaH(11,1)
@@ -644,7 +700,8 @@ def is_GammaH(x):
     """
     Return True if x is a congruence subgroup of type GammaH.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: from sage.modular.congroup import is_GammaH
         sage: is_GammaH(GammaH(13, [2]))
         True
@@ -660,11 +717,14 @@ def _normalize_H(H, level):
     Normalize representatives for a given subgroup H of the units
     modulo level.
 
-    NOTE: This function does *not* make any attempt to find a minimal
-    set of generators for H. It simply normalizes the inputs for use
-    in hashing.
+    .. note::
 
-    EXAMPLES:
+       This function does *not* make any attempt to find a minimal
+       set of generators for H. It simply normalizes the inputs for
+       use in hashing.
+
+    EXAMPLES::
+
         sage: sage.modular.congroup._normalize_H([23], 10)
         [3]
         sage: sage.modular.congroup._normalize_H([1,5], 7)
@@ -685,10 +745,11 @@ def _normalize_H(H, level):
 class GammaH_class(CongruenceSubgroup):
     def __init__(self, level, H):
         r"""
-        The congruence subgroup $\Gamma_H(N)$. The subgroup H
-        must be input as a list.
+        The congruence subgroup `\Gamma_H(N)`. The subgroup H must
+        be input as a list.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: GammaH(117, [4])
             Congruence Subgroup Gamma_H(117) with H generated by [4]
             sage: G = GammaH(16, [7])
@@ -702,10 +763,12 @@ class GammaH_class(CongruenceSubgroup):
 
     def restrict(self, M):
         r"""
-        Return the subgroup of $\Gamma_0(M)$ obtained by taking $H$ to
-        be the image of the $H$ at level $N$ modulo $M$.
+        Return the subgroup of `\Gamma_0(M)` obtained by taking
+        `H` to be the image of the `H` at level `N`
+        modulo `M`.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: G = GammaH(33,[2])
             sage: G.restrict(11)
             Congruence Subgroup Gamma_H(11) with H generated by [2]
@@ -730,7 +793,8 @@ class GammaH_class(CongruenceSubgroup):
         """
         Used for pickling self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: GammaH(92,[5,11]).__reduce__()
             (<function GammaH_constructor at ...>, (92, [5, 11]))
         """
@@ -738,11 +802,13 @@ class GammaH_class(CongruenceSubgroup):
 
     def divisor_subgroups(self):
         r"""
-        Given this congruence subgroup $\Gamma_H(N)$, return all
-        subgroups $\Gamma_G(M)$ for $M$ a divisor of $N$ and such that
-        $G$ is equal to the image of $H$ modulo $M$.
+        Given this congruence subgroup `\Gamma_H(N)`, return all
+        subgroups `\Gamma_G(M)` for `M` a divisor of
+        `N` and such that `G` is equal to the image of
+        `H` modulo `M`.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: G = GammaH(33,[2]); G
             Congruence Subgroup Gamma_H(33) with H generated by [2]
             sage: G._list_of_elements_in_H()
@@ -764,12 +830,13 @@ class GammaH_class(CongruenceSubgroup):
         """
         Compare self to other.
 
-        The ordering on congruence subgroups of the form GammaH(N) for
-        some H is first by level and then by the subgroup H. In
-        particular, this means that we have Gamma1(N) < GammaH(N) <
-        Gamma0(N) for every nontrivial subgroup H.
+        The ordering on congruence subgroups of the form GammaH(N) for some
+        H is first by level and then by the subgroup H. In particular, this
+        means that we have Gamma1(N) GammaH(N) Gamma0(N) for every
+        nontrivial subgroup H.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: G = GammaH(86, [9])
             sage: G.__cmp__(G)
             0
@@ -794,10 +861,11 @@ class GammaH_class(CongruenceSubgroup):
 
     def _generators_for_H(self):
         """
-        Return generators for the subgroup H of the units mod
-        self.level() that defines self.
+        Return generators for the subgroup H of the units mod self.level()
+        that defines self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: GammaH(17,[4])._generators_for_H()
             [4]
             sage: GammaH(12,[-1])._generators_for_H()
@@ -809,7 +877,8 @@ class GammaH_class(CongruenceSubgroup):
         """
         Return the string representation of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: GammaH(123, [55])._repr_()
             'Congruence Subgroup Gamma_H(123) with H generated by [55]'
         """
@@ -817,9 +886,10 @@ class GammaH_class(CongruenceSubgroup):
 
     def _latex_(self):
         r"""
-        Return the \LaTeX representation of self.
+        Return the LaTeX representation of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: GammaH(3,[2])._latex_()
             '\\Gamma_H(3)'
         """
@@ -830,9 +900,12 @@ class GammaH_class(CongruenceSubgroup):
         Returns a sorted list of Python ints that are representatives
         between 1 and N-1 of the elements of H.
 
-        WARNING: Do not change this returned list.
+        .. warning::
 
-        EXAMPLES:
+           Do not change this returned list.
+
+        EXAMPLES::
+
             sage: G = GammaH(11,[3]); G
             Congruence Subgroup Gamma_H(11) with H generated by [3]
             sage: G._list_of_elements_in_H()
@@ -868,7 +941,8 @@ class GammaH_class(CongruenceSubgroup):
         """
         Return True precisely if this subgroup contains the matrix -1.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: GammaH(10, [3]).is_even()
             True
             sage: GammaH(14, [1]).is_even()
@@ -885,7 +959,8 @@ class GammaH_class(CongruenceSubgroup):
 
         The result is cached.
 
-        EXAMPLE:
+        EXAMPLE::
+
             sage: for g in GammaH(3, [2]).generators():
             ...     print g
             ...     print '---'
@@ -904,7 +979,6 @@ class GammaH_class(CongruenceSubgroup):
             [ 1  0]
             [-3  1]
             ---
-
         """
         try:
             return self.__gens
@@ -919,20 +993,20 @@ class GammaH_class(CongruenceSubgroup):
     def _coset_reduction_data_first_coord(G):
         """
         Compute data used for determining the canonical coset
-        representative of an element of SL_2(Z) modulo G. This
-        function specifically returns data needed for the first part
-        of the reduction step (the first coordinate).
+        representative of an element of SL_2(Z) modulo G. This function
+        specifically returns data needed for the first part of the
+        reduction step (the first coordinate).
 
         INPUT:
-            G -- a congruence subgroup Gamma_0(N), Gamma_1(N), or Gamma_H(N).
 
-        OUTPUT:
-            A list v such that
-                v[u] = (min(u*h: h in H),
-                        gcd(u,N) ,
-                        an h such that h*u = min(u*h: h in H)).
+        -  ``G`` - a congruence subgroup Gamma_0(N),
+           Gamma_1(N), or Gamma_H(N).
 
-        EXAMPLES:
+        OUTPUT: A list v such that v[u] = (min(u\*h: h in H), gcd(u,N) , an
+        h such that h\*u = min(u\*h: h in H)).
+
+        EXAMPLES::
+
             sage: G = GammaH(12,[-1,5]); G
             Congruence Subgroup Gamma_H(12) with H generated by [5, 11]
             sage: G._coset_reduction_data_first_coord()
@@ -994,18 +1068,17 @@ class GammaH_class(CongruenceSubgroup):
     def _coset_reduction_data_second_coord(G):
         """
         Compute data used for determining the canonical coset
-        representative of an element of SL_2(Z) modulo G. This
-        function specifically returns data needed for the second part
-        of the reduction step (the second coordinate).
+        representative of an element of SL_2(Z) modulo G. This function
+        specifically returns data needed for the second part of the
+        reduction step (the second coordinate).
 
-        INPUT:
-            self
+        INPUT: self
 
-        OUTPUT:
-            a dictionary v with keys the divisors of N such that v[d]
-            is the subgroup {h in H : h = 1 (mod N/d)}.
+        OUTPUT: a dictionary v with keys the divisors of N such that v[d]
+        is the subgroup h in H : h = 1 (mod N/d).
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: G = GammaH(240,[7,239])
             sage: G._coset_reduction_data_second_coord()
             {1: [1], 2: [1], 3: [1], 4: [1], 5: [1, 49], 6: [1], 48: [1, 191], 8: [1], 80: [1, 7, 49, 103], 10: [1, 49], 12: [1], 15: [1, 49], 240: [1, 7, 49, 103, 137, 191, 233, 239], 40: [1, 7, 49, 103], 20: [1, 49], 24: [1, 191], 120: [1, 7, 49, 103, 137, 191, 233, 239], 60: [1, 49, 137, 233], 30: [1, 49, 137, 233], 16: [1]}
@@ -1028,7 +1101,8 @@ class GammaH_class(CongruenceSubgroup):
         Compute data used for determining the canonical coset
         representative of an element of SL_2(Z) modulo G.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: G = GammaH(12,[-1,7]); G
             Congruence Subgroup Gamma_H(12) with H generated by [7, 11]
             sage: G._coset_reduction_data()
@@ -1047,19 +1121,24 @@ class GammaH_class(CongruenceSubgroup):
         r"""
         Compute a canonical form for a given Manin symbol.
 
-        INPUT:
-        Two integers (uu,vv) that define an element of $(Z/NZ)^2$.
-            uu -- an integer
-            vv -- an integer
+        INPUT: Two integers (uu,vv) that define an element of
+        `(Z/NZ)^2`.
 
-        OUTPUT:
-           pair of integers that are equivalent to (uu,vv).
+        -  ``uu`` - an integer
 
-        NOTE: We do *not* require that gcd(uu,vv,N) = 1.  If the gcd is
-        not 1, we return (0,0).
+        -  ``vv`` - an integer
 
-        EXAMPLE:
-        An example at level 9.
+        OUTPUT: pair of integers that are equivalent to (uu,vv).
+
+        .. note::
+
+           We do *not* require that gcd(uu,vv,N) = 1. If the gcd is
+           not 1, we return (0,0).
+
+        EXAMPLE: An example at level 9.
+
+        ::
+
             sage: G = GammaH(9,[7]); G
             Congruence Subgroup Gamma_H(9) with H generated by [7]
             sage: a = []
@@ -1072,6 +1151,9 @@ class GammaH_class(CongruenceSubgroup):
             [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1, 8), (2, 0), (2, 1), (2, 2), (2, 3), (2, 4), (2, 5), (2, 6), (2, 7), (2, 8), (3, 1), (3, 2), (6, 1), (6, 2)]
 
         An example at level 100.
+
+        ::
+
             sage: G = GammaH(100,[3,7]); G
             Congruence Subgroup Gamma_H(100) with H generated by [3, 7]
             sage: a = []
@@ -1083,7 +1165,8 @@ class GammaH_class(CongruenceSubgroup):
             sage: len(v)
             361
 
-        This demonstrates the problem underlying trac \#1220:
+        This demonstrates the problem underlying trac #1220::
+
             sage: G = GammaH(99, [67])
             sage: G._reduce_coset(11,-3)
             (11, 96)
@@ -1113,19 +1196,20 @@ class GammaH_class(CongruenceSubgroup):
 
     def reduce_cusp(self, c):
         r"""
-        Compute a minimal representative for the given cusp c. Returns
-        a cusp c' which is equivalent to the given cusp, and is in
-        lowest terms with minimal positive denominator, and minimal
-        positive numerator for that denominator.
+        Compute a minimal representative for the given cusp c. Returns a
+        cusp c' which is equivalent to the given cusp, and is in lowest
+        terms with minimal positive denominator, and minimal positive
+        numerator for that denominator.
 
-        Two cusps $u1/v1$ and $u2/v2$ are equivalent modulo $\Gamma_H(N)$
-        if and only if
-            $v1 =  h*v2 (mod N)$ and $u1 =  h^(-1)*u2 (mod gcd(v1,N))$
-        or
-            $v1 = -h*v2 (mod N)$ and $u1 = -h^(-1)*u2 (mod gcd(v1,N))$
-        for some $h \in H$.
+        Two cusps `u1/v1` and `u2/v2` are equivalent modulo
+        `\Gamma_H(N)` if and only if `v1 =  h*v2 (mod N)`
+        and `u1 =  h^(-1)*u2 (mod gcd(v1,N))` or
+        `v1 = -h*v2 (mod N)` and
+        `u1 = -h^(-1)*u2 (mod gcd(v1,N))` for some
+        `h \in H`.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: GammaH(6,[5]).reduce_cusp(Cusp(5,3))
             1/3
             sage: GammaH(12,[5]).reduce_cusp(Cusp(8,9))
@@ -1142,24 +1226,25 @@ class GammaH_class(CongruenceSubgroup):
 
     def _reduce_cusp(self, c):
         r"""
-        Compute a minimal representative for the given cusp c.
-        Returns a pair (c', t), where c' is the minimal representative
-        for the given cusp, and t is either 1 or -1, as explained
-        below. Largely for internal use.
+        Compute a minimal representative for the given cusp c. Returns a
+        pair (c', t), where c' is the minimal representative for the given
+        cusp, and t is either 1 or -1, as explained below. Largely for
+        internal use.
 
-        The minimal representative for a cusp is the element in $P^1(Q)$
-        in lowest terms with minimal positive denominator, and minimal
-        positive numerator for that denominator.
+        The minimal representative for a cusp is the element in
+        `P^1(Q)` in lowest terms with minimal positive denominator,
+        and minimal positive numerator for that denominator.
 
-        Two cusps $u1/v1$ and $u2/v2$ are equivalent modulo $\Gamma_H(N)$
-        if and only if
-            $v1 =  h*v2 (mod N)$ and $u1 =  h^(-1)*u2 (mod gcd(v1,N))$
-        or
-            $v1 = -h*v2 (mod N)$ and $u1 = -h^(-1)*u2 (mod gcd(v1,N))$
-        for some $h \in H$. Then t is 1 or -1 as c and c' fall into
-        the first or second case, respectively.
+        Two cusps `u1/v1` and `u2/v2` are equivalent modulo
+        `\Gamma_H(N)` if and only if `v1 =  h*v2 (mod N)`
+        and `u1 =  h^(-1)*u2 (mod gcd(v1,N))` or
+        `v1 = -h*v2 (mod N)` and
+        `u1 = -h^(-1)*u2 (mod gcd(v1,N))` for some
+        `h \in H`. Then t is 1 or -1 as c and c' fall into the
+        first or second case, respectively.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: GammaH(6,[5])._reduce_cusp(Cusp(5,3))
             (1/3, -1)
             sage: GammaH(12,[5])._reduce_cusp(Cusp(8,9))
@@ -1259,26 +1344,29 @@ class GammaH_class(CongruenceSubgroup):
         r"""
         Return an ordered list of inequivalent cusps for self, i.e. a
         set of representatives for the orbits of self on
-        $\mathbf{P}^1(\mathbf{Q})$.  These are returned in a reduced
+        `\mathbf{P}^1(\mathbf{Q})`. These are returned in a reduced
         form; see self.reduce_cusp for the definition of reduced.
 
-        ALGORITHM:
-            Lemma 3.2 in Cremona's 1997 book shows that for the action
-            of Gamma1(N) on "signed projective space"
-            $\Q^2 / (\Q_{\geq 0}^+)$, we have $u_1/v_1 \sim u_2 / v_2$
-            if and only if $v_1 = v_2 \bmod N$ and $u_1 = u_2 \bmod
-            gcd(v_1, N)$. It follows that every orbit has a
-            representative $u/v$ with $v \le N$ and $0 \le u \le
-            gcd(v, N)$.  We iterate through all pairs $(u,v)$
-            satisfying this.
+        ALGORITHM: Lemma 3.2 in Cremona's 1997 book shows that for the
+        action of Gamma1(N) on "signed projective space"
+        `\mathbb{Q}^2 / (\mathbb{Q}_{\geq 0}^+)`, we have
+        `u_1/v_1 \sim u_2 / v_2` if and only if
+        `v_1 = v_2 \bmod N` and
+        `u_1 = u_2 \bmod
+                    gcd(v_1, N)`. It follows
+        that every orbit has a representative `u/v` with
+        `v \le N` and `0 \le u \le
+                    gcd(v, N)`.
+        We iterate through all pairs `(u,v)` satisfying this.
 
-            Having found a set containing at least one of every
-            equivalence class modulo Gamma1(N), we can be sure of
-            picking up every class modulo GammaH(N) since this
-            contains Gamma1(N); and the reduce_cusp call does the
-            checking to make sure we don't get any duplicates.
+        Having found a set containing at least one of every equivalence
+        class modulo Gamma1(N), we can be sure of picking up every class
+        modulo GammaH(N) since this contains Gamma1(N); and the
+        reduce_cusp call does the checking to make sure we don't get any
+        duplicates.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Gamma1(5)._find_cusps()
             [0, 2/5, 1/2, Infinity]
             sage: Gamma1(35)._find_cusps()
@@ -1312,10 +1400,11 @@ class GammaH_class(CongruenceSubgroup):
         r"""
         Create an element of this congruence subgroup from x.
 
-        If the optional flag check is True (default), check whether
-        x actually gives an element of self.
+        If the optional flag check is True (default), check whether x
+        actually gives an element of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: G = GammaH(10, [3])
             sage: G([1, 0, -10, 1])
             [ 1   0]
@@ -1348,7 +1437,8 @@ def is_Gamma0(x):
     """
     Return True if x is a congruence subgroup of type Gamma0.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: from sage.modular.congroup import is_Gamma0
         sage: is_Gamma0(SL2Z)
         True
@@ -1364,7 +1454,8 @@ def Gamma0_constructor(N):
     """
     Return the congruence subgroup Gamma0(N).
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: G = Gamma0(51) ; G
         Congruence Subgroup Gamma0(51)
         sage: G == Gamma0(51)
@@ -1381,9 +1472,10 @@ def Gamma0_constructor(N):
 class Gamma0_class(GammaH_class):
     def __init__(self, level):
         r"""
-        The congruence subgroup $\Gamma_0(N)$.
+        The congruence subgroup `\Gamma_0(N)`.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: G = Gamma0(11); G
             Congruence Subgroup Gamma0(11)
             sage: loads(G.dumps()) == G
@@ -1406,12 +1498,13 @@ class Gamma0_class(GammaH_class):
         """
         Compare self to other.
 
-        The ordering on congruence subgroups of the form GammaH(N) for
-        some H is first by level and then by the subgroup H. In
-        particular, this means that we have Gamma1(N) < GammaH(N) <
-        Gamma0(N) for every nontrivial subgroup H.
+        The ordering on congruence subgroups of the form GammaH(N) for some
+        H is first by level and then by the subgroup H. In particular, this
+        means that we have Gamma1(N) GammaH(N) Gamma0(N) for every
+        nontrivial subgroup H.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: G = Gamma0(86)
             sage: G.__cmp__(G)
             0
@@ -1445,7 +1538,8 @@ class Gamma0_class(GammaH_class):
         """
         Return the string representation of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Gamma0(98)._repr_()
             'Congruence Subgroup Gamma0(98)'
         """
@@ -1455,7 +1549,8 @@ class Gamma0_class(GammaH_class):
         """
         Used for pickling self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Gamma0(22).__reduce__()
             (<function Gamma0_constructor at ...>, (22,))
         """
@@ -1463,9 +1558,10 @@ class Gamma0_class(GammaH_class):
 
     def _latex_(self):
         r"""
-        Return the \LaTeX representation of self.
+        Return the LaTeX representation of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Gamma0(20)._latex_()
             '\\Gamma_0(20)'
             sage: latex(Gamma0(20))
@@ -1475,10 +1571,11 @@ class Gamma0_class(GammaH_class):
 
     def _generators_for_H(self):
         """
-        Return generators for the subgroup H of the units mod
-        self.level() that defines self.
+        Return generators for the subgroup H of the units mod self.level()
+        that defines self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Gamma0(15)._generators_for_H()
             [11, 7]
         """
@@ -1493,14 +1590,19 @@ class Gamma0_class(GammaH_class):
         Returns a sorted list of Python ints that are representatives
         between 0 and N-1 of the elements of H.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: G = Gamma0(11)
             sage: G._list_of_elements_in_H()
             [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
+        ::
+
             sage: G = Gamma0(6)
             sage: G._list_of_elements_in_H()
             [1, 5]
+
+        ::
 
             sage: G = Gamma0(1)
             sage: G._list_of_elements_in_H()
@@ -1525,10 +1627,11 @@ class Gamma0_class(GammaH_class):
         """
         Return True precisely if this subgroup contains the matrix -1.
 
-        Since Gamma0(N) always contains the matrix -1, this always
-        returns True.
+        Since Gamma0(N) always contains the matrix -1, this always returns
+        True.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Gamma0(12).is_even()
             True
             sage: SL2Z.is_even()
@@ -1540,7 +1643,8 @@ class Gamma0_class(GammaH_class):
         """
         Return True if self is a subgroup of right.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: G = Gamma0(20)
             sage: G.is_subgroup(SL2Z)
             True
@@ -1568,12 +1672,14 @@ class Gamma0_class(GammaH_class):
     def coset_reps(self):
         r"""
         Return representatives for the right cosets of this congruence
-        subgroup in ${\rm SL}_2(\Z)$ as a generator object.
+        subgroup in `{\rm SL}_2(\mathbb{Z})` as a generator
+        object.
 
-        Use \code{list(self.coset_reps())} to obtain coset reps as a
-        list.
+        Use ``list(self.coset_reps())`` to obtain coset reps
+        as a list.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: list(Gamma0(5).coset_reps())
             [[1, 0, 0, 1],
             [0, -1, 1, 0],
@@ -1601,7 +1707,8 @@ class Gamma0_class(GammaH_class):
 
         The result is cached.
 
-        EXAMPLE:
+        EXAMPLE::
+
             sage: for g in Gamma0(3).generators():
             ...     print g
             ...     print '---'
@@ -1629,10 +1736,11 @@ class Gamma0_class(GammaH_class):
 
     def gamma_h_subgroups(self):
         r"""
-        Return the subgroups of the form $\Gamma_H(N)$ contained
-        in self, where $N$ is the level of self.
+        Return the subgroups of the form `\Gamma_H(N)` contained
+        in self, where `N` is the level of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: G = Gamma0(11)
             sage: G.gamma_h_subgroups()
             [Congruence Subgroup Gamma_H(11) with H generated by [2], Congruence Subgroup Gamma_H(11) with H generated by [4], Congruence Subgroup Gamma_H(11) with H generated by [10], Congruence Subgroup Gamma_H(11) with H generated by []]
@@ -1648,10 +1756,11 @@ class Gamma0_class(GammaH_class):
         r"""
         Create an element of this congruence subgroup from x.
 
-        If the optional flag check is True (default), check whether
-        x actually gives an element of self.
+        If the optional flag check is True (default), check whether x
+        actually gives an element of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: G = Gamma0(12)
             sage: G([1, 0, 24, 1])
             [ 1  0]
@@ -1680,17 +1789,20 @@ class Gamma0_class(GammaH_class):
     def _find_cusps(self):
         r"""
         Return an ordered list of inequivalent cusps for self, i.e. a
-        set of representatives for the orbits of self on
-        $\mathbf{P}^1(\mathbf{Q})$.  These are returned in a reduced
+        set  of representatives for the orbits of self on
+        `\mathbf{P}^1(\mathbf{Q})`. These are returned in a reduced
         form; see self.reduce_cusp for the definition of reduced.
 
-        ALGORITHM:
-            Uses explicit formulae specific to $\Gamma_0(N)$: a reduced cusp on
-            $\Gamma_0(N)$ is always of the form $a/d$ where $d | N$, and $a_1/d
-            \sim a_2/d$ if and only if $a_1 \cong a_2 \bmod {\rm gcd}(d,
-            N/d)$.
+        ALGORITHM: Uses explicit formulae specific to
+        `\Gamma_0(N)`: a reduced cusp on `\Gamma_0(N)` is
+        always of the form `a/d` where `d | N`, and
+        `a_1/d
+                    \sim a_2/d` if and only if
+        `a_1 \cong a_2 \bmod {\rm gcd}(d,
+                    N/d)`.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Gamma0(90)._find_cusps()
             [0, 1/45, 1/30, 1/18, 1/15, 1/10, 1/9, 2/15, 1/6, 1/5, 1/3, 11/30, 1/2, 2/3, 5/6, Infinity]
             sage: Gamma0(1).cusps()
@@ -1720,9 +1832,11 @@ class Gamma0_class(GammaH_class):
 
 def is_SL2Z(x):
     """
-    Return True if x is the modular group ${\rm SL}_2(\Z)$.
+    Return True if x is the modular group
+    `\mathrm{SL}_2(\mathbb{Z})`.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: from sage.modular.congroup import is_SL2Z
         sage: is_SL2Z(SL2Z)
         True
@@ -1734,9 +1848,10 @@ def is_SL2Z(x):
 class SL2Z_class(Gamma0_class):
     def __init__(self):
         r"""
-        The modular group ${\rm SL}_2(\Z)$.
+        The modular group `{\rm SL}_2(\mathbb{Z})`.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: G = SL2Z; G
             Modular Group SL(2,Z)
             sage: G.gens()
@@ -1760,6 +1875,8 @@ class SL2Z_class(Gamma0_class):
             [ 0 -1]
             [ 1  1]
 
+        ::
+
             sage: SL2Z == loads(dumps(SL2Z))
             True
             sage: SL2Z is loads(dumps(SL2Z))
@@ -1771,7 +1888,8 @@ class SL2Z_class(Gamma0_class):
         """
         Used for pickling self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: SL2Z.__reduce__()
             (<function _SL2Z_ref at ...>, ())
         """
@@ -1781,7 +1899,8 @@ class SL2Z_class(Gamma0_class):
         """
         Return the string representation of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: SL2Z._repr_()
             'Modular Group SL(2,Z)'
         """
@@ -1789,9 +1908,10 @@ class SL2Z_class(Gamma0_class):
 
     def _latex_(self):
         r"""
-        Return the \LaTeX representation of self.
+        Return the LaTeX representation of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: SL2Z._latex_()
             '\\mbox{\\rm SL}_2(\\mathbf{Z})'
             sage: latex(SL2Z)
@@ -1803,7 +1923,8 @@ class SL2Z_class(Gamma0_class):
         """
         Return True if self is a subgroup of right.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: SL2Z.is_subgroup(SL2Z)
             True
             sage: SL2Z.is_subgroup(Gamma1(1))
@@ -1815,11 +1936,12 @@ class SL2Z_class(Gamma0_class):
 
     def reduce_cusp(self, c):
         r"""
-        Return the unique reduced cusp equivalent to c under the
-        action of self. Always returns Infinity, since there is only
-        one equivalence class of cusps for $SL_2(Z)$.
+        Return the unique reduced cusp equivalent to c under the action of
+        self. Always returns Infinity, since there is only one equivalence
+        class of cusps for `SL_2(Z)`.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: SL2Z.reduce_cusp(Cusps(-1/4))
             Infinity
         """
@@ -1831,7 +1953,8 @@ def _SL2Z_ref():
     """
     Return SL2Z. (Used for pickling SL2Z.)
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: sage.modular.congroup._SL2Z_ref()
         Modular Group SL(2,Z)
         sage: sage.modular.congroup._SL2Z_ref() is SL2Z
@@ -1843,7 +1966,8 @@ def is_Gamma1(x):
     """
     Return True if x is a congruence subgroup of type Gamma1.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: from sage.modular.congroup import is_Gamma1
         sage: is_Gamma1(SL2Z)
         True
@@ -1857,9 +1981,10 @@ def is_Gamma1(x):
 _gamma1_cache = {}
 def Gamma1_constructor(N):
     r"""
-    Return the congruence subgroup $\Gamma_1(N)$.
+    Return the congruence subgroup `\Gamma_1(N)`.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: Gamma1(5)
         Congruence Subgroup Gamma1(5)
         sage: G = Gamma1(23)
@@ -1879,9 +2004,10 @@ def Gamma1_constructor(N):
 class Gamma1_class(GammaH_class):
     def __init__(self, level):
         r"""
-        The congruence subgroup $\Gamma_1(N)$.
+        The congruence subgroup `\Gamma_1(N)`.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: G = Gamma1(11); G
             Congruence Subgroup Gamma1(11)
             sage: loads(G.dumps()) == G
@@ -1893,12 +2019,13 @@ class Gamma1_class(GammaH_class):
         """
         Compare self to other.
 
-        The ordering on congruence subgroups of the form GammaH(N) for
-        some H is first by level and then by the subgroup H. In
-        particular, this means that we have Gamma1(N) < GammaH(N) <
-        Gamma0(N) for every nontrivial subgroup H.
+        The ordering on congruence subgroups of the form GammaH(N) for some
+        H is first by level and then by the subgroup H. In particular, this
+        means that we have Gamma1(N) GammaH(N) Gamma0(N) for every
+        nontrivial subgroup H.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: G = Gamma1(86)
             sage: G.__cmp__(G)
             0
@@ -1934,7 +2061,8 @@ class Gamma1_class(GammaH_class):
         """
         Return the string representation of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Gamma1(133)._repr_()
             'Congruence Subgroup Gamma1(133)'
         """
@@ -1944,7 +2072,8 @@ class Gamma1_class(GammaH_class):
         """
         Used for pickling self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Gamma1(82).__reduce__()
             (<function Gamma1_constructor at ...>, (82,))
         """
@@ -1952,9 +2081,10 @@ class Gamma1_class(GammaH_class):
 
     def _latex_(self):
         r"""
-        Return the \LaTeX representation of self.
+        Return the LaTeX representation of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Gamma1(3)._latex_()
             '\\Gamma_1(3)'
             sage: latex(Gamma1(3))
@@ -1966,7 +2096,8 @@ class Gamma1_class(GammaH_class):
         """
         Return True precisely if this subgroup contains the matrix -1.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Gamma1(1).is_even()
             True
             sage: Gamma1(2).is_even()
@@ -1980,7 +2111,8 @@ class Gamma1_class(GammaH_class):
         """
         Return True if self is a subgroup of right.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Gamma1(3).is_subgroup(SL2Z)
             True
             sage: Gamma1(3).is_subgroup(Gamma1(5))
@@ -2004,7 +2136,8 @@ class Gamma1_class(GammaH_class):
 
         The result is cached.
 
-        EXAMPLE:
+        EXAMPLE::
+
             sage: for g in Gamma1(3).generators():
             ...     print g
             ...     print '---'
@@ -2025,7 +2158,6 @@ class Gamma1_class(GammaH_class):
             [ -5   3]
             [-12   7]
             ---
-
         """
         try:
             return self.__gens
@@ -2041,10 +2173,11 @@ class Gamma1_class(GammaH_class):
         r"""
         Create an element of this congruence subgroup from x.
 
-        If the optional flag check is True (default), check whether
-        x actually gives an element of self.
+        If the optional flag check is True (default), check whether x
+        actually gives an element of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: G = Gamma1(5)
             sage: G([1, 0, -10, 1])
             [ 1   0]

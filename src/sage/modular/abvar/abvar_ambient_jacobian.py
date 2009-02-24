@@ -1,7 +1,8 @@
 """
 Ambient Jacobian Abelian Variety
 
-TESTS:
+TESTS::
+
     sage: loads(dumps(J0(37))) == J0(37)
     True
     sage: loads(dumps(J1(13))) == J1(13)
@@ -27,16 +28,17 @@ def ModAbVar_ambient_jacobian(group):
     Return the ambient Jacobian attached to a given congruence
     subgroup.
 
-    The result is cached using a weakref.  This function is called
+    The result is cached using a weakref. This function is called
     internally by modular abelian variety constructors.
 
     INPUT:
-        group -- a congruence subgroup.
 
-    OUTPUT:
-        a modular abelian variety attached
+    -  ``group`` - a congruence subgroup.
 
-    EXAMPLES:
+    OUTPUT: a modular abelian variety attached
+
+    EXAMPLES::
+
         sage: import sage.modular.abvar.abvar_ambient_jacobian as abvar_ambient_jacobian
         sage: A = abvar_ambient_jacobian.ModAbVar_ambient_jacobian(Gamma0(11))
         sage: A
@@ -45,7 +47,8 @@ def ModAbVar_ambient_jacobian(group):
         sage: A is B
         True
 
-    You can get access to and/or clear the cache as follows:
+    You can get access to and/or clear the cache as follows::
+
         sage: abvar_ambient_jacobian._cache = {}
         sage: B = abvar_ambient_jacobian.ModAbVar_ambient_jacobian(Gamma0(11))
         sage: A is B
@@ -70,7 +73,8 @@ class ModAbVar_ambient_jacobian_class(ModularAbelianVariety_modsym_abstract):
         """
         Create an ambient Jacobian modular abelian variety.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: A = J0(37); A
             Abelian variety J0(37) of dimension 2
             sage: type(A)
@@ -84,12 +88,13 @@ class ModAbVar_ambient_jacobian_class(ModularAbelianVariety_modsym_abstract):
 
     def _modular_symbols(self):
         """
-        Return the modular symbols space associated to this ambient Jacobian.
+        Return the modular symbols space associated to this ambient
+        Jacobian.
 
-        OUTPUT:
-            modular symbols space
+        OUTPUT: modular symbols space
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: M = J0(33)._modular_symbols(); M
             Modular Symbols subspace of dimension 6 of Modular Symbols space of dimension 9 for Gamma_0(33) of weight 2 with sign 0 over Rational Field
             sage: J0(33)._modular_symbols() is M
@@ -106,7 +111,8 @@ class ModAbVar_ambient_jacobian_class(ModularAbelianVariety_modsym_abstract):
         Return string representation of this Jacobian modular abelian
         variety.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: A = J0(11); A
             Abelian variety J0(11) of dimension 1
             sage: A._repr_()
@@ -115,7 +121,11 @@ class ModAbVar_ambient_jacobian_class(ModularAbelianVariety_modsym_abstract):
             sage: A
             J_0(11)
 
-        We now clear the cache to get rid of our renamed $J_0(11)$.
+        We now clear the cache to get rid of our renamed
+        `J_0(11)`.
+
+        ::
+
             sage: import sage.modular.abvar.abvar_ambient_jacobian as abvar_ambient_jacobian
             sage: abvar_ambient_jacobian._cache = {}
         """
@@ -126,7 +136,8 @@ class ModAbVar_ambient_jacobian_class(ModularAbelianVariety_modsym_abstract):
         """
         Return Latex representation of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: latex(J0(37))
             J_0(37)
             sage: J1(13)._latex_()
@@ -142,10 +153,10 @@ class ModAbVar_ambient_jacobian_class(ModularAbelianVariety_modsym_abstract):
         Since self is a Jacobian modular abelian variety, this is just
         self.
 
-        OUTPUT:
-            abelian variety
+        OUTPUT: abelian variety
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: A = J0(17)
             sage: A.ambient_variety()
             Abelian variety J0(17) of dimension 1
@@ -156,10 +167,11 @@ class ModAbVar_ambient_jacobian_class(ModularAbelianVariety_modsym_abstract):
 
     def group(self):
         """
-        Return the group that this Jacobian modular abelian variety
-        is attached to.
+        Return the group that this Jacobian modular abelian variety is
+        attached to.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: J1(37).group()
             Congruence Subgroup Gamma1(37)
             sage: J0(5077).group()
@@ -173,13 +185,13 @@ class ModAbVar_ambient_jacobian_class(ModularAbelianVariety_modsym_abstract):
 
     def groups(self):
         """
-        Return the tuple of congruence subgroups attached to this
-        ambient Jacobian.  This is always a tuple of length 1.
+        Return the tuple of congruence subgroups attached to this ambient
+        Jacobian. This is always a tuple of length 1.
 
-        OUTPUT:
-            tuple
+        OUTPUT: tuple
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: J0(37).groups()
             (Congruence Subgroup Gamma0(37),)
         """
@@ -187,10 +199,10 @@ class ModAbVar_ambient_jacobian_class(ModularAbelianVariety_modsym_abstract):
 
     def _calculate_endomorphism_generators(self):
         """
-        Calculate generators for the endomorphism ring of
-        self.
+        Calculate generators for the endomorphism ring of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: J0(11)._calculate_endomorphism_generators()
             [Abelian variety endomorphism of Abelian variety J0(11) of dimension 1]
             sage: ls = J0(46)._calculate_endomorphism_generators() ; ls
@@ -231,19 +243,24 @@ class ModAbVar_ambient_jacobian_class(ModularAbelianVariety_modsym_abstract):
 
     def degeneracy_map(self, level, t=1, check=True):
         """
-        Return the t-th degeneracy map from self to J(level).  Here t
-        must be a divisor of either level/self.level() or
-        self.level()/level.
+        Return the t-th degeneracy map from self to J(level). Here t must
+        be a divisor of either level/self.level() or self.level()/level.
 
         INPUT:
-            level -- integer (multiple or divisor of level of self)
-            t -- divisor of quotient of level of self and level
-            check -- bool (default: True); if True do some checks on the input
 
-        OUTPUT:
-            a morphism
+        -  ``level`` - integer (multiple or divisor of level of
+           self)
 
-        EXAMPLES:
+        -  ``t`` - divisor of quotient of level of self and
+           level
+
+        -  ``check`` - bool (default: True); if True do some
+           checks on the input
+
+        OUTPUT: a morphism
+
+        EXAMPLES::
+
             sage: J0(11).degeneracy_map(33)
             Degeneracy map from Abelian variety J0(11) of dimension 1 to Abelian variety J0(33) of dimension 3 defined by [1]
             sage: J0(11).degeneracy_map(33).matrix()
@@ -283,7 +300,8 @@ class ModAbVar_ambient_jacobian_class(ModularAbelianVariety_modsym_abstract):
         """
         Return the dimension of this modular abelian variety.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: J0(2007).dimension()
             221
             sage: J1(13).dimension()
@@ -309,7 +327,8 @@ class ModAbVar_ambient_jacobian_class(ModularAbelianVariety_modsym_abstract):
         Decompose this ambient Jacobian as a product of abelian
         subvarieties, up to isogeny.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: J0(33).decomposition(simple=False)
             [
             Abelian subvariety of dimension 2 of J0(33),

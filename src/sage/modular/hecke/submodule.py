@@ -77,9 +77,11 @@ class HeckeSubmodule(module.HeckeModule_free_module):
 
     def __call__(self, x, check=True):
         """
-        Coerce x into the ambient module and checks that x is in this submodule.
+        Coerce x into the ambient module and checks that x is in this
+        submodule.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: M = ModularSymbols(37)
             sage: S = M.cuspidal_submodule()
             sage: M([0,oo])
@@ -129,10 +131,11 @@ class HeckeSubmodule(module.HeckeModule_free_module):
     def _set_dual_free_module_from_nonembedded_module(self, V):
         """
         INPUT:
-            V -- submodule of ambient free module of the same rank as the
-                 rank of self.
-        OUTPUT:
-            Hecke submodule of self
+
+        -  ``V`` - submodule of ambient free module of the same
+           rank as the rank of self.
+
+        OUTPUT: Hecke submodule of self
         """
         M_V = V.matrix()
         E   = self.dual_free_module()
@@ -154,7 +157,8 @@ class HeckeSubmodule(module.HeckeModule_free_module):
         """
         Return the largest Hecke-stable complement of this space.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: M = ModularSymbols(15, 6).cuspidal_subspace()
             sage: M.complement()
             Modular Symbols subspace of dimension 4 of Modular Symbols space of dimension 20 for Gamma_0(15) of weight 6 with sign 0 over Rational Field
@@ -225,22 +229,24 @@ class HeckeSubmodule(module.HeckeModule_free_module):
 
     def degeneracy_map(self, level, t=1):
         """
-        The t-th degeneracy map from self to the space of ambient
-        modular symbols of the given level.  The level of self must be
-        a divisor or multiple of level, and t must be a divisor of the
-        quotient.
+        The t-th degeneracy map from self to the space of ambient modular
+        symbols of the given level. The level of self must be a divisor or
+        multiple of level, and t must be a divisor of the quotient.
 
         INPUT:
-            level -- int, the level of the codomain of the map (positive int).
-            t  -- int, the parameter of the degeneracy map, i.e., the map is
-                  related to $f(q)$ |--> $f(q^t)$.
 
-        OUTPUT:
-            A linear function from self to the space of modular symbols
-            of given level with the same weight, character, sign,
-            etc., as this space.
+        -  ``level`` - int, the level of the codomain of the
+           map (positive int).
 
-        EXAMPLES:
+        -  ``t`` - int, the parameter of the degeneracy map,
+           i.e., the map is related to `f(q)` - `f(q^t)`.
+
+        OUTPUT: A linear function from self to the space of modular symbols
+        of given level with the same weight, character, sign, etc., as this
+        space.
+
+        EXAMPLES::
+
             sage: D = ModularSymbols(10,4).cuspidal_submodule().decomposition(); D
             [
             Modular Symbols subspace of dimension 2 of Modular Symbols space of dimension 10 for Gamma_0(10) of weight 4 with sign 0 over Rational Field,
@@ -255,6 +261,8 @@ class HeckeSubmodule(module.HeckeModule_free_module):
             Domain: Modular Symbols subspace of dimension 4 of Modular Symbols space ...
             Codomain: Modular Symbols space of dimension 4 for Gamma_0(5) of weight ...
 
+        ::
+
             sage: d.rank()
             2
             sage: d.kernel()
@@ -267,18 +275,18 @@ class HeckeSubmodule(module.HeckeModule_free_module):
 
     def dual_free_module(self, bound=None, anemic=True, use_star=True):
         r"""
-        Compute embedded dual free module if possible.  In general
-        this won't be possible, e.g., if this space is not Hecke
-        equivariant, possibly if it is not cuspidal, or if the
-        characteristic is not 0.  In all these cases we raise a
-        RuntimeError exception.
+        Compute embedded dual free module if possible. In general this
+        won't be possible, e.g., if this space is not Hecke equivariant,
+        possibly if it is not cuspidal, or if the characteristic is not 0.
+        In all these cases we raise a RuntimeError exception.
 
         If use_star is True (which is the default), we also use the
         +/- eigenspaces for the star operator to find the dual free
         module of self. If the self does not have a star involution,
         use_star will automatically be set to True.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: M = ModularSymbols(11, 2)
             sage: M.dual_free_module()
             Vector space of dimension 3 over Rational Field
@@ -402,7 +410,8 @@ class HeckeSubmodule(module.HeckeModule_free_module):
         """
         Return the free module corresponding to self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: M = ModularSymbols(33,2).cuspidal_subspace() ; M
             Modular Symbols subspace of dimension 6 of Modular Symbols space of dimension 9 for Gamma_0(33) of weight 2 with sign 0 over Rational Field
             sage: M.free_module()
@@ -421,7 +430,8 @@ class HeckeSubmodule(module.HeckeModule_free_module):
         r"""
         Alias for \code{self.free_module()}.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: M = ModularSymbols(17,4).cuspidal_subspace()
             sage: M.free_module() is M.module()
             True
@@ -430,10 +440,11 @@ class HeckeSubmodule(module.HeckeModule_free_module):
 
     def intersection(self, other):
         """
-        Returns the intersection of self and other, which must both
-        lie in a common ambient space of modular symbols.
+        Returns the intersection of self and other, which must both lie in
+        a common ambient space of modular symbols.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: M = ModularSymbols(43, sign=1)
             sage: A = M[0] + M[1]
             sage: B = M[1] + M[2]
@@ -442,7 +453,8 @@ class HeckeSubmodule(module.HeckeModule_free_module):
             sage: C = A.intersection(B); C.dimension()
             1
 
-        TESTS:
+        TESTS::
+
             sage: M = ModularSymbols(1,80)
             sage: M.plus_submodule().cuspidal_submodule().sign() # indirect doctest
             1
@@ -469,10 +481,11 @@ class HeckeSubmodule(module.HeckeModule_free_module):
 
     def is_ambient(self):
         r"""
-        Return \code{True} if self is an ambient space of modular
+        Return ``True`` if self is an ambient space of modular
         symbols.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: M = ModularSymbols(17,4)
             sage: M.cuspidal_subspace().is_ambient()
             False
@@ -485,8 +498,8 @@ class HeckeSubmodule(module.HeckeModule_free_module):
 
     def is_new(self, p=None):
         """
-        Returns True if this Hecke module is p-new.  If p is None,
-        returns True if it is new.
+        Returns True if this Hecke module is p-new. If p is None, returns
+        True if it is new.
         """
         try:
             return self.__is_new[p]
@@ -500,8 +513,8 @@ class HeckeSubmodule(module.HeckeModule_free_module):
 
     def is_old(self, p=None):
         """
-        Returns True if this Hecke module is p-old.  If p is None,
-        returns True if it is old.
+        Returns True if this Hecke module is p-old. If p is None, returns
+        True if it is old.
         """
         try:
             return self.__is_old[p]
@@ -524,15 +537,16 @@ class HeckeSubmodule(module.HeckeModule_free_module):
 
     def linear_combination_of_basis(self, v):
         """
-        Return the linear combination of the basis of self given by
-        the entries of v.
+        Return the linear combination of the basis of self given by the
+        entries of v.
         """
         x = self.free_module().linear_combination_of_basis(v)
         return self.__ambient(x)
 
     def new_submodule(self, p=None):
         """
-        Return the new or p-new submodule of this space of modular symbols.
+        Return the new or p-new submodule of this space of modular
+        symbols.
         """
         try:
             if self.__is_new[p]:
@@ -565,10 +579,13 @@ class HeckeSubmodule(module.HeckeModule_free_module):
 
     def old_submodule(self, p=None):
         """
-        Return the old or p-old submodule of this space of modular symbols.
+        Return the old or p-old submodule of this space of modular
+        symbols.
 
-        EXAMPLES:
-        We compute the old and new submodules of $\sS_2(\Gamma_0(33))$.
+        EXAMPLES: We compute the old and new submodules of
+        `\mathbf{S}_2(\Gamma_0(33))`.
+
+        ::
 
             sage: M = ModularSymbols(33); S = M.cuspidal_submodule(); S
             Modular Symbols subspace of dimension 6 of Modular Symbols space of dimension 9 for Gamma_0(33) of weight 2 with sign 0 over Rational Field
@@ -628,12 +645,14 @@ class HeckeSubmodule(module.HeckeModule_free_module):
     def submodule_from_nonembedded_module(self, V, Vdual=None, check=True):
         """
         INPUT:
-            V -- submodule of ambient free module of the same rank as the
-                 rank of self.
-            check -- whether to check that V is Hecke equivariant.
 
-        OUTPUT:
-            Hecke submodule of self
+        -  ``V`` - submodule of ambient free module of the same
+           rank as the rank of self.
+
+        -  ``check`` - whether to check that V is Hecke
+           equivariant.
+
+        OUTPUT: Hecke submodule of self
         """
         E = self.free_module()
         M_V = V.matrix()
