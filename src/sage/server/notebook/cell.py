@@ -1,8 +1,8 @@
 """
 A Cell.
 
-A cell is a single input/output block.  Worksheets are built out of a
-list of cells.
+A cell is a single input/output block. Worksheets are built out of
+a list of cells.
 """
 
 ###########################################################################
@@ -49,10 +49,11 @@ else:
 class Cell_generic:
     def is_interactive_cell(self):
         """
-        Returns True if this cell contains the use of interact either
-        as a function call or a decorator.
+        Returns True if this cell contains the use of interact either as a
+        function call or a decorator.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.server.notebook.cell import Cell_generic
             sage: C = sage.server.notebook.cell.TextCell(0, '2+3', None)
             sage: Cell_generic.is_interactive_cell(C)
@@ -62,13 +63,14 @@ class Cell_generic:
 
     def delete_output(self):
         """
-        Delete all output in this cell.  This is not executed -- it is
-        an abstract function that must be overwritten in a derived
-        class.
+        Delete all output in this cell. This is not executed - it is an
+        abstract function that must be overwritten in a derived class.
 
-        EXAMPLES:
-        This function just raises a NotImplementedError, since it most be defined
-        in derived class.
+        EXAMPLES: This function just raises a NotImplementedError, since it
+        most be defined in derived class.
+
+        ::
+
             sage: C = sage.server.notebook.cell.Cell_generic()
             sage: C.delete_output()
             Traceback (most recent call last):
@@ -80,7 +82,8 @@ class Cell_generic:
 class TextCell(Cell_generic):
     def __init__(self, id, text, worksheet):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.TextCell(0, '2+3', None)
             sage: C == loads(dumps(C))
             True
@@ -93,7 +96,8 @@ class TextCell(Cell_generic):
         """
         String representation of this text cell.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.TextCell(0, '2+3', None)
             sage: C.__repr__()
             'TextCell 0: 2+3'
@@ -102,10 +106,11 @@ class TextCell(Cell_generic):
 
     def delete_output(self):
         """
-        Delete all output in this cell.  This does nothing since text
-        cells have no output.
+        Delete all output in this cell. This does nothing since text cells
+        have no output.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.TextCell(0, '2+3', None)
             sage: C
             TextCell 0: 2+3
@@ -119,7 +124,8 @@ class TextCell(Cell_generic):
         """
         Sets the input text of self to be input_text.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.TextCell(0, '2+3', None)
             sage: C
             TextCell 0: 2+3
@@ -131,18 +137,19 @@ class TextCell(Cell_generic):
 
     def set_worksheet(self, worksheet, id=None):
         """
-        Sets the worksheet object of self to be worksheet and
-        optionally changes the id of self.
+        Sets the worksheet object of self to be worksheet and optionally
+        changes the id of self.
 
-        EXAMPLES:
-             sage: C = sage.server.notebook.cell.TextCell(0, '2+3', None)
-             sage: W = "worksheet object"
-             sage: C.set_worksheet(W)
-             sage: C.worksheet()
-             'worksheet object'
-             sage: C.set_worksheet(None, id=2)
-             sage: C.id()
-             2
+        EXAMPLES::
+
+            sage: C = sage.server.notebook.cell.TextCell(0, '2+3', None)
+            sage: W = "worksheet object"
+            sage: C.set_worksheet(W)
+            sage: C.worksheet()
+            'worksheet object'
+            sage: C.set_worksheet(None, id=2)
+            sage: C.id()
+            2
         """
         self.__worksheet = worksheet
         if id is not None:
@@ -152,11 +159,11 @@ class TextCell(Cell_generic):
         """
         Returns the worksheet object associated to self.
 
-        EXAMPLES:
-             sage: C = sage.server.notebook.cell.TextCell(0, '2+3', 'worksheet object')
-             sage: C.worksheet()
-             'worksheet object'
+        EXAMPLES::
 
+            sage: C = sage.server.notebook.cell.TextCell(0, '2+3', 'worksheet object')
+            sage: C.worksheet()
+            'worksheet object'
         """
         return self.__worksheet
 
@@ -165,17 +172,19 @@ class TextCell(Cell_generic):
         Returns an HTML version of self as a string.
 
         INPUT:
-            do_math_parse -- bool (default: True)
-                If True, call math_parse (defined in cell.py)
-                on the html.
 
-        EXAMPLES:
-             sage: C = sage.server.notebook.cell.TextCell(0, '2+3', None)
-             sage: C.html()
-             '<div class="text_cell" id="cell_text_0">2+3...'
-             sage: C.set_input_text("$2+3$")
-             sage: C.html(do_math_parse=True)
-             '<div class="text_cell" id="cell_text_0"><span class="math">2+3</span>...'
+        - ``do_math_parse`` - bool (default: True)
+          If True, call math_parse (defined in cell.py)
+          on the html.
+
+        EXAMPLES::
+
+            sage: C = sage.server.notebook.cell.TextCell(0, '2+3', None)
+            sage: C.html()
+            '<div class="text_cell" id="cell_text_0">2+3...'
+            sage: C.set_input_text("$2+3$")
+            sage: C.html(do_math_parse=True)
+            '<div class="text_cell" id="cell_text_0"><span class="math">2+3</span>...'
         """
 
         s = """<div class="text_cell" id="cell_text_%s">%s</div>"""%(self.__id,self.html_inner(ncols=ncols, do_print=do_print, do_math_parse=do_math_parse, editing=editing))
@@ -209,17 +218,19 @@ return(value);
         Returns an HTML version of the content of self as a string.
 
         INPUT:
-            do_math_parse -- bool (default: True)
-                If True, call math_parse (defined in cell.py)
-                on the html.
 
-        EXAMPLES:
-             sage: C = sage.server.notebook.cell.TextCell(0, '2+3', None)
-             sage: C.html_inner()
-             '2+3...'
-             sage: C.set_input_text("$2+3$")
-             sage: C.html_inner(do_math_parse=True)
-             '<span class="math">2+3</span>...'
+        - ``do_math_parse`` - bool (default: True)
+          If True, call math_parse (defined in cell.py)
+          on the html.
+
+        EXAMPLES::
+
+            sage: C = sage.server.notebook.cell.TextCell(0, '2+3', None)
+            sage: C.html_inner()
+            '2+3...'
+            sage: C.set_input_text("$2+3$")
+            sage: C.html_inner(do_math_parse=True)
+            '<span class="math">2+3</span>...'
         """
         t = self.__text
         if do_math_parse:
@@ -231,7 +242,8 @@ return(value);
 
     def plain_text(self, prompts=False):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.TextCell(0, '2+3', None)
             sage: C.plain_text()
             '2+3'
@@ -240,7 +252,8 @@ return(value);
 
     def edit_text(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.TextCell(0, '2+3', None)
             sage: C.edit_text()
             '2+3'
@@ -249,7 +262,8 @@ return(value);
 
     def id(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.TextCell(0, '2+3', None)
             sage: C.id()
             0
@@ -258,7 +272,8 @@ return(value);
 
     def is_auto_cell(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.TextCell(0, '2+3', None)
             sage: C.is_auto_cell()
             False
@@ -267,7 +282,8 @@ return(value);
 
     def __cmp__(self, right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C1 = sage.server.notebook.cell.TextCell(0, '2+3', None)
             sage: C2 = sage.server.notebook.cell.TextCell(0, '3+2', None)
             sage: C3 = sage.server.notebook.cell.TextCell(1, '2+3', None)
@@ -284,7 +300,8 @@ return(value);
         """
         This does nothing for TextCells.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.TextCell(0, '2+3', None)
             sage: C.set_cell_output_type("wrap")
         """
@@ -293,7 +310,8 @@ return(value);
 class Cell(Cell_generic):
     def __init__(self, id, input, out, worksheet):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C == loads(dumps(C))
             True
@@ -311,7 +329,8 @@ class Cell(Cell_generic):
 
     def set_asap(self, asap):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C.is_asap()
             False
@@ -323,10 +342,11 @@ class Cell(Cell_generic):
 
     def is_asap(self):
         """
-        Return True if this is an asap cell, i.e., evaluation of it is
-        done as soon as possible.
+        Return True if this is an asap cell, i.e., evaluation of it is done
+        as soon as possible.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C.is_asap()
             False
@@ -344,7 +364,8 @@ class Cell(Cell_generic):
         """
         Delete all output in this cell.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', None); C
             Cell 0; in=2+3, out=5
             sage: C.delete_output()
@@ -356,18 +377,20 @@ class Cell(Cell_generic):
         self.__evaluated = False
 
     def evaluated(self):
-        """
-        Return True if this cell has been successfully evaluated
-        in a currently running session.
+        r"""
+        Return True if this cell has been successfully evaluated in a
+        currently running session.
 
-        This is not about whether the output of the cell is valid
-        given the input.
+        This is not about whether the output of the cell is valid given the
+        input.
 
         OUTPUT:
-            bool -- whether or not this cell has been evaluated in this session
 
-        EXAMPLES:
-        We create a worksheet with a cell that has wrong output:
+        -  ``bool`` - whether or not this cell has been
+           evaluated in this session
+
+        EXAMPLES: We create a worksheet with a cell that has wrong output::
+
             sage: nb = sage.server.notebook.notebook.Notebook(tmp_dir())
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
@@ -376,24 +399,30 @@ class Cell(Cell_generic):
             sage: C
             Cell 0; in=2+3, out=20
 
-        We re-evaluate that input cell:
+        We re-evaluate that input cell::
+
             sage: C.evaluate()
             sage: W.check_comp(wait=9999)
             ('d', Cell 0; in=2+3, out=
             5
             )
 
-        Now the output is right:
+        Now the output is right::
+
             sage: C
             Cell 0; in=2+3, out=
             5
 
         And the cell is considered to have been evaluated.
+
+        ::
+
             sage: C.evaluated()
             True
 
-            sage: import shutil; shutil.rmtree(nb.directory())
+        ::
 
+            sage: import shutil; shutil.rmtree(nb.directory())
         """
         # Cells are never considered evaluated in a new session.
         if not self.worksheet().compute_process_has_been_started():
@@ -420,23 +449,24 @@ class Cell(Cell_generic):
         Sets whether or not this is an no_output cell, i.e., a cell for
         which we don't care at all about the output.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C.is_no_output()
             False
             sage: C.set_no_output(True)
             sage: C.is_no_output()
             True
-
         """
         self.__no_output = bool(no_output)
 
     def is_no_output(self):
         """
-        Return True if this is an no_output cell, i.e., a cell for
-        which we don't care at all about the output.
+        Return True if this is an no_output cell, i.e., a cell for which
+        we don't care at all about the output.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C.is_no_output()
             False
@@ -454,14 +484,14 @@ class Cell(Cell_generic):
         """
         Sets the cell output type.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C.cell_output_type()
             'wrap'
             sage: C.set_cell_output_type('nowrap')
             sage: C.cell_output_type()
             'nowrap'
-
         """
         self.__type = typ
 
@@ -469,7 +499,8 @@ class Cell(Cell_generic):
         """
         Returns the cell output type.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C.cell_output_type()
             'wrap'
@@ -485,10 +516,11 @@ class Cell(Cell_generic):
 
     def set_worksheet(self, worksheet, id=None):
         """
-        Sets the worksheet object of self to be worksheet and
-        optionally changes the id of self.
+        Sets the worksheet object of self to be worksheet and optionally
+        changes the id of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', None)
             sage: W = "worksheet object"
             sage: C.set_worksheet(W)
@@ -506,23 +538,23 @@ class Cell(Cell_generic):
         """
         Returns the worksheet object associated to self.
 
-        EXAMPLES:
-             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', 'worksheet object')
-             sage: C.worksheet()
-             'worksheet object'
+        EXAMPLES::
 
+            sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', 'worksheet object')
+            sage: C.worksheet()
+            'worksheet object'
         """
         return self.__worksheet
 
     def update_html_output(self, output=''):
         """
-        Update the list of files with html-style links or embeddings
-        for this cell.
+        Update the list of files with html-style links or embeddings for
+        this cell.
 
         For interactive cells the html output section is always empty,
-        mainly because there is no good way to distinguish content
-        (e.g., images in the current directory) that goes into the
-        interactive template and content that would go here.
+        mainly because there is no good way to distinguish content (e.g.,
+        images in the current directory) that goes into the interactive
+        template and content that would go here.
         """
         if self.is_interactive_cell():
             self.__out_html = ""
@@ -533,7 +565,8 @@ class Cell(Cell_generic):
         """
         Returns the id of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C.id()
             0
@@ -544,7 +577,8 @@ class Cell(Cell_generic):
         """
         Sets the id of self to id.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C.set_id(2)
             sage: C.id()
@@ -556,7 +590,8 @@ class Cell(Cell_generic):
         """
         Returns the workseet associated to self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: nb = sage.server.notebook.notebook.Notebook(tmp_dir())
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
@@ -564,8 +599,9 @@ class Cell(Cell_generic):
             sage: C.worksheet() is W
             True
 
-            sage: import shutil; shutil.rmtree(nb.directory())
+        ::
 
+            sage: import shutil; shutil.rmtree(nb.directory())
         """
         return self.__worksheet
 
@@ -573,7 +609,8 @@ class Cell(Cell_generic):
         """
         Returns the filename of the worksheet associated to self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: nb = sage.server.notebook.notebook.Notebook(tmp_dir())
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
@@ -581,8 +618,9 @@ class Cell(Cell_generic):
             sage: C.worksheet_filename()
             'sage/0'
 
-            sage: import shutil; shutil.rmtree(nb.directory())
+        ::
 
+            sage: import shutil; shutil.rmtree(nb.directory())
         """
         return self.__worksheet.filename()
 
@@ -590,7 +628,8 @@ class Cell(Cell_generic):
         """
         Returns the notebook object associated to self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: nb = sage.server.notebook.notebook.Notebook(tmp_dir())
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
@@ -598,17 +637,19 @@ class Cell(Cell_generic):
             sage: C.notebook() is nb
             True
 
-            sage: import shutil; shutil.rmtree(nb.directory())
+        ::
 
+            sage: import shutil; shutil.rmtree(nb.directory())
         """
         return self.__worksheet.notebook()
 
     def directory(self):
         """
-        Returns the directory associated to self.  If the directory doesn't already
-        exist, then this method creates it.
+        Returns the directory associated to self. If the directory doesn't
+        already exist, then this method creates it.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: nb = sage.server.notebook.notebook.Notebook(tmp_dir())
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
@@ -616,8 +657,9 @@ class Cell(Cell_generic):
             sage: C.directory()
             '.../worksheets/sage/0/cells/0'
 
-            sage: import shutil; shutil.rmtree(nb.directory())
+        ::
 
+            sage: import shutil; shutil.rmtree(nb.directory())
         """
         dir = self._directory_name()
         if not os.path.exists(dir):
@@ -628,7 +670,8 @@ class Cell(Cell_generic):
         """
         Returns a string of the directory associated to self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: nb = sage.server.notebook.notebook.Notebook(tmp_dir())
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
@@ -636,14 +679,16 @@ class Cell(Cell_generic):
             sage: C._directory_name()
             '.../worksheets/sage/0/cells/0'
 
-            sage: import shutil; shutil.rmtree(nb.directory())
+        ::
 
+            sage: import shutil; shutil.rmtree(nb.directory())
         """
         return '%s/cells/%s'%(self.__worksheet.directory(), self.id())
 
     def __cmp__(self, right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C1 = sage.server.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C2 = sage.server.notebook.cell.Cell(0, '3+2', '5', None)
             sage: C3 = sage.server.notebook.cell.Cell(1, '2+3', '5', None)
@@ -658,7 +703,8 @@ class Cell(Cell_generic):
 
     def __repr__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', None); C
             Cell 0; in=2+3, out=5
         """
@@ -666,13 +712,16 @@ class Cell(Cell_generic):
 
     def word_wrap_cols(self):
         """
-        Returns the number of columns for word wrapping.  This defaults to 70, but
-        the default setting for a notebook is 72.
+        Returns the number of columns for word wrapping. This defaults to
+        70, but the default setting for a notebook is 72.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C.word_wrap_cols()
             70
+
+        ::
 
             sage: nb = sage.server.notebook.notebook.Notebook(tmp_dir())
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
@@ -681,8 +730,9 @@ class Cell(Cell_generic):
             sage: C.word_wrap_cols()
             72
 
-            sage: import shutil; shutil.rmtree(nb.directory())
+        ::
 
+            sage: import shutil; shutil.rmtree(nb.directory())
         """
         try:
             return self.notebook().conf()['word_wrap_cols']
@@ -693,8 +743,7 @@ class Cell(Cell_generic):
         """
         Returns the plain text version of self.
 
-        TODO:
-            Add more comprehensive doctests.
+        TODO: Add more comprehensive doctests.
         """
         if ncols == 0:
             ncols = self.word_wrap_cols()
@@ -766,12 +815,12 @@ class Cell(Cell_generic):
         return s
 
     def edit_text(self, ncols=0, prompts=False, max_out=None):
-        """
-        EXAMPLES:
+        r"""
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C.edit_text()
             '{{{id=0|\n2+3\n///\n5\n}}}'
-
         """
         s = self.plain_text(ncols, prompts, max_out)
         return '{{{id=%s|\n%s\n}}}'%(self.id(), s)
@@ -780,7 +829,8 @@ class Cell(Cell_generic):
         """
         Returns True if self is the last cell in the worksheet.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: nb = sage.server.notebook.notebook.Notebook(tmp_dir())
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
@@ -792,18 +842,20 @@ class Cell(Cell_generic):
             sage: C.is_last()
             False
 
-            sage: import shutil; shutil.rmtree(nb.directory())
+        ::
 
+            sage: import shutil; shutil.rmtree(nb.directory())
         """
         return self.__worksheet.cell_list()[-1] == self
 
     def next_id(self):
         """
-        Returns the id of the next cell in the worksheet associated to self.  If self is
-        not in the worksheet or self is the last cell in the cell_list, then the id of
-        the first cell is returned.
+        Returns the id of the next cell in the worksheet associated to
+        self. If self is not in the worksheet or self is the last cell in
+        the cell_list, then the id of the first cell is returned.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: nb = sage.server.notebook.notebook.Notebook(tmp_dir())
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
@@ -815,8 +867,9 @@ class Cell(Cell_generic):
             sage: C.next_id()
             0
 
-            sage: import shutil; shutil.rmtree(nb.directory())
+        ::
 
+            sage: import shutil; shutil.rmtree(nb.directory())
         """
         L = self.__worksheet.cell_list()
         try:
@@ -831,10 +884,10 @@ class Cell(Cell_generic):
 
     def interrupt(self):
         """
-        Record that the calculation running in this cell was
-        interrupted.
+        Record that the calculation running in this cell was interrupted.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: nb = sage.server.notebook.notebook.Notebook(tmp_dir())
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
@@ -845,8 +898,9 @@ class Cell(Cell_generic):
             sage: C.evaluated()
             False
 
-            sage: import shutil; shutil.rmtree(nb.directory())
+        ::
 
+            sage: import shutil; shutil.rmtree(nb.directory())
         """
         self.__interrupted = True
         self.__evaluated = False
@@ -855,7 +909,8 @@ class Cell(Cell_generic):
         """
         Returns True if the evaluation of this cell has been interrupted.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: nb = sage.server.notebook.notebook.Notebook(tmp_dir())
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
@@ -864,8 +919,9 @@ class Cell(Cell_generic):
             sage: C.interrupted()
             True
 
-            sage: import shutil; shutil.rmtree(nb.directory())
+        ::
 
+            sage: import shutil; shutil.rmtree(nb.directory())
         """
         return self.__interrupted
 
@@ -873,7 +929,8 @@ class Cell(Cell_generic):
         """
         Returns True if self is in its worksheet's queue.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: nb = sage.server.notebook.notebook.Notebook(tmp_dir())
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
@@ -881,17 +938,19 @@ class Cell(Cell_generic):
             sage: C.computing()
             False
 
-            sage: import shutil; shutil.rmtree(nb.directory())
+        ::
 
+            sage: import shutil; shutil.rmtree(nb.directory())
         """
         return self in self.__worksheet.queue()
 
     def is_interactive_cell(self):
-        """
-        Return True if this cell contains the use of interact either
-        as a function call or a decorator.
+        r"""
+        Return True if this cell contains the use of interact either as a
+        function call or a decorator.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: nb = sage.server.notebook.notebook.Notebook(tmp_dir())
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
@@ -902,8 +961,9 @@ class Cell(Cell_generic):
             sage: C.is_interactive_cell()
             False
 
-            sage: import shutil; shutil.rmtree(nb.directory())
+        ::
 
+            sage: import shutil; shutil.rmtree(nb.directory())
         """
         # Do *not* cache
         s = strip_string_literals(self.input_text())[0]
@@ -926,10 +986,10 @@ class Cell(Cell_generic):
         """
         Sets the input text of self to be the string input.
 
-        TODO:
-            Add doctests for the code dealing with interact.
+        TODO: Add doctests for the code dealing with interact.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: nb = sage.server.notebook.notebook.Notebook(tmp_dir())
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
@@ -942,6 +1002,8 @@ class Cell(Cell_generic):
             sage: C.version()
             0
 
+        ::
+
             sage: C.set_input_text('3+3')
             sage: C.input_text()
             '3+3'
@@ -950,8 +1012,9 @@ class Cell(Cell_generic):
             sage: C.version()
             1
 
-            sage: import shutil; shutil.rmtree(nb.directory())
+        ::
 
+            sage: import shutil; shutil.rmtree(nb.directory())
         """
         # Stuff to deal with interact
         if input.startswith('%__sage_interact__'):
@@ -981,7 +1044,8 @@ class Cell(Cell_generic):
         """
         Returns self's input text.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C.input_text()
             '2+3'
@@ -989,12 +1053,13 @@ class Cell(Cell_generic):
         return self.__in
 
     def cleaned_input_text(self):
-        """
+        r"""
         Returns the input text with all of the percent directives
         removed.  If the cell is interacting, then the interacting
         text is returned.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '%hide\n%maxima\n2+3', '5', None)
             sage: C.cleaned_input_text()
             '2+3'
@@ -1006,18 +1071,20 @@ class Cell(Cell_generic):
             return self._cleaned_input
 
     def parse_percent_directives(self):
-        """
+        r"""
         Returns a string which consists of the input text of this cell
         with the percent directives at the top removed.  As it's doing
         this, it computes a list of all the directives and which
         system (if any) the cell should be run under.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '%hide\n%maxima\n2+3', '5', None)
             sage: C.parse_percent_directives()
             '2+3'
             sage: C.percent_directives()
             ['hide', 'maxima']
+
         """
         self._system = None
         text = self.input_text().split('\n')
@@ -1042,19 +1109,21 @@ class Cell(Cell_generic):
         return "\n".join(text[i:]).strip()
 
     def percent_directives(self):
-        """
+        r"""
         Returns a list of all the percent directives that appear
         in this cell.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '%hide\n%maxima\n2+3', '5', None)
             sage: C.percent_directives()
             ['hide', 'maxima']
+
         """
         return self._percent_directives
 
     def system(self):
-        """
+        r"""
         Returns the system used to evaluate this cell. The system
         is specified by a percent directive like '%maxima' at
         the top of a cell.
@@ -1063,7 +1132,8 @@ class Cell(Cell_generic):
         which tells the notebook to evaluate the cell using the
         worksheet's default system.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '%maxima\n2+3', '5', None)
             sage: C.system()
             'maxima'
@@ -1075,13 +1145,14 @@ class Cell(Cell_generic):
         return self._system
 
     def is_auto_cell(self):
-        """
+        r"""
         Returns True if self is an auto cell.
 
         An auto cell is a cell that is automatically evaluated when the
         worksheet starts up.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C.is_auto_cell()
             False
@@ -1093,10 +1164,12 @@ class Cell(Cell_generic):
 
     def changed_input_text(self):
         """
-        Returns the changed input text for the cell.  If there was any changed input
-        text, then it is reset to '' before this method returns.
+        Returns the changed input text for the cell. If there was any
+        changed input text, then it is reset to " before this method
+        returns.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C.changed_input_text()
             ''
@@ -1119,17 +1192,17 @@ class Cell(Cell_generic):
 
     def set_changed_input_text(self, new_text):
         """
-        Note that this does not update the version of the cell.  This is
+        Note that this does not update the version of the cell. This is
         typically used for things like tab completion.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C.set_changed_input_text('3+3')
             sage: C.input_text()
             '3+3'
             sage: C.changed_input_text()
             '3+3'
-
         """
         self.__changed_input = new_text
         self.__in = new_text
@@ -1176,10 +1249,10 @@ class Cell(Cell_generic):
 
     def sage(self):
         """
-        TODO:
-            Figure out what exactly this does.
+        TODO: Figure out what exactly this does.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C.sage() is None
             True
@@ -1292,23 +1365,24 @@ class Cell(Cell_generic):
         """
         Returns True if there is output for this cell.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C.has_output()
             True
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '', None)
             sage: C.has_output()
             False
-
         """
         return len(self.__out.strip()) > 0
 
     def is_html(self):
-        """
-        Returns True if this is an HTML cell.  An HTML cell whose system
-        is HTML and is typically specified by '%html' at the top of the cell.
+        r"""
+        Returns True if this is an HTML cell. An HTML cell whose system is
+        'html' and is typically specified by ``%html``.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, "%html\nTest HTML", None, None)
             sage: C.system()
             'html'
@@ -1317,6 +1391,7 @@ class Cell(Cell_generic):
             sage: C = sage.server.notebook.cell.Cell(0, "Test HTML", None, None)
             sage: C.is_html()
             False
+
         """
         try:
             return self.__is_html
@@ -1329,7 +1404,8 @@ class Cell(Cell_generic):
 
         This is called by check_for_system_switching in worksheet.py.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C.is_html()
             False
@@ -1360,18 +1436,17 @@ class Cell(Cell_generic):
 
     def introspect(self):
         """
-        TODO:
-            Figure out what the __introspect method is for and write
-            a better doctest.
+        TODO: Figure out what the __introspect method is for and write a
+        better doctest.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C.introspect()
             False
             sage: C.set_introspect("a", "b")
             sage: C.introspect()
             ['a', 'b']
-
         """
         try:
             return self.__introspect
@@ -1380,11 +1455,11 @@ class Cell(Cell_generic):
 
     def unset_introspect(self):
         """
-        TODO:
-            Figure out what the __introspect method is for and write
-            a better doctest.
+        TODO: Figure out what the __introspect method is for and write a
+        better doctest.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C.set_introspect("a", "b")
             sage: C.introspect()
@@ -1397,11 +1472,11 @@ class Cell(Cell_generic):
 
     def set_introspect(self, before_prompt, after_prompt):
         """
-        TODO:
-            Figure out what the __introspect method is for and write
-            a better doctest.
+        TODO: Figure out what the __introspect method is for and write a
+        better doctest.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C.set_introspect("a", "b")
             sage: C.introspect()
@@ -1410,15 +1485,19 @@ class Cell(Cell_generic):
         self.__introspect = [before_prompt, after_prompt]
 
     def evaluate(self, introspect=False, time=None, username=None):
-        """
+        r"""
         INPUT:
-            username -- name of user doing the evaluation
-            time -- if True return time computation takes
-            introspect -- either False or a pair [before_cursor, after_cursor] of strings.
 
-        EXAMPLES:
-        We create a notebook, worksheet, and cell and evaluate it in
-        order to compute $3^5$:
+        -  ``username`` - name of user doing the evaluation
+
+        -  ``time`` - if True return time computation takes
+
+        -  ``introspect`` - either False or a pair
+           [before_cursor, after_cursor] of strings.
+
+        EXAMPLES: We create a notebook, worksheet, and cell and evaluate it
+        in order to compute `3^5`::
+
             sage: nb = sage.server.notebook.notebook.Notebook(tmp_dir())
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
@@ -1434,8 +1513,9 @@ class Cell(Cell_generic):
             Cell 0; in=3^5, out=
             243
 
-            sage: import shutil; shutil.rmtree(nb.directory())
+        ::
 
+            sage: import shutil; shutil.rmtree(nb.directory())
         """
         self.__interrupted = False
         self.__evaluated = True
@@ -1459,7 +1539,8 @@ class Cell(Cell_generic):
         """
         Returns the version number of this cell.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C.version()
             0
@@ -1474,11 +1555,12 @@ class Cell(Cell_generic):
             return self.__version
 
     def time(self):
-        """
-        Returns True if the time it takes to evaluate this cell
-        should be printed.
+        r"""
+        Returns True if the time it takes to evaluate this cell should be
+        printed.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C.time()
             False
@@ -1492,10 +1574,9 @@ class Cell(Cell_generic):
 
     def doc_html(self, wrap=None, div_wrap=True, do_print=False):
         """
-        Modified version of \code{self.html} for the doc browser.
-        This is a hack and needs to be improved.
-        The problem is how to get the documentation html to display nicely
-        between the example cells.
+        Modified version of ``self.html`` for the doc browser.
+        This is a hack and needs to be improved. The problem is how to get
+        the documentation html to display nicely between the example cells.
         The type setting (jsMath formating) needs attention too.
         """
         self.evaluate()
@@ -1549,11 +1630,11 @@ class Cell(Cell_generic):
         """
         Returns the HTML code for the input of this cell.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', None)
             sage: print C.html_in()
             <div class="insert_new_cell" id="insert_new_cell_0"...</a>
-
         """
         s = ''
         id = self.__id
@@ -1592,7 +1673,8 @@ class Cell(Cell_generic):
         """
         Returns the HTML code for inserting a new cell before self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', None)
             sage: print C.html_new_cell_before()
             <div class="insert_new_cell" id="insert_new_cell_0">...
@@ -1607,7 +1689,8 @@ $("#insert_new_cell_%(id)s").shiftclick(function(e) {insert_new_text_cell_before
         """
         Returns the HTML code for inserting a new cell after self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', None)
             sage: print C.html_new_cell_after()
             <div class="insert_new_cell" id="insert_new_cell_0">...
@@ -1623,13 +1706,15 @@ $("#insert_new_cell_%(id)s").shiftclick(function(e) {insert_new_text_cell_after(
         """
         Returns a notebook URL for this cell.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: nb = sage.server.notebook.notebook.Notebook(tmp_dir())
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
             sage: C = sage.server.notebook.cell.Cell(0, '2+3', '5', W)
             sage: C.url_to_self()
             '/home/sage/0/cells/0'
+
         """
         try:
             return self.__url_to_self
@@ -1641,11 +1726,12 @@ $("#insert_new_cell_%(id)s").shiftclick(function(e) {insert_new_text_cell_after(
         """
         Returns a list of all the files in self's directory.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: nb = sage.server.notebook.notebook.Notebook(tmp_dir())
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
-            sage: C = sage.server.notebook.cell.Cell(0, 'plot(sin(x),0,5)', '', W)
+            sage: C = sage.server.notebook.cell.Cell(0, 'plot(sin(x),0,5)', ", W)
             sage: C.evaluate()
             sage: W.check_comp(wait=9999)
             ('d', Cell 0; in=plot(sin(x),0,5), out=
@@ -1654,8 +1740,9 @@ $("#insert_new_cell_%(id)s").shiftclick(function(e) {insert_new_text_cell_after(
             sage: C.files()
             ['sage0.png']
 
-            sage: import shutil; shutil.rmtree(nb.directory())
+        ::
 
+            sage: import shutil; shutil.rmtree(nb.directory())
         """
         dir = self.directory()
         D = os.listdir(dir)
@@ -1665,11 +1752,12 @@ $("#insert_new_cell_%(id)s").shiftclick(function(e) {insert_new_text_cell_after(
         """
         Deletes all of the files associated with this cell.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: nb = sage.server.notebook.notebook.Notebook(tmp_dir())
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
-            sage: C = sage.server.notebook.cell.Cell(0, 'plot(sin(x),0,5)', '', W)
+            sage: C = sage.server.notebook.cell.Cell(0, 'plot(sin(x),0,5)', ", W)
             sage: C.evaluate()
             sage: W.check_comp(wait=9999)
             ('d', Cell 0; in=plot(sin(x),0,5), out=
@@ -1680,7 +1768,6 @@ $("#insert_new_cell_%(id)s").shiftclick(function(e) {insert_new_text_cell_after(
             sage: C.delete_files()
             sage: C.files()
             []
-
         """
         try:
             dir = self._directory_name()
@@ -1796,18 +1883,21 @@ $("#insert_new_cell_%(id)s").shiftclick(function(e) {insert_new_text_cell_after(
 ########
 
 def format_exception(s0, ncols):
-    """
+    r"""
     Make it so excpetions don't appear expanded by default.
 
     INPUT:
-        s0 -- string
-        ncols -- integer
-    OUTPUT:
-        string
+
+    -  ``s0`` - string
+
+    -  ``ncols`` - integer
+
+    OUTPUT: string
 
     If s0 contains "notracebacks" then this function always returns s0
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: sage.server.notebook.cell.format_exception(sage.server.notebook.cell.TRACEBACK,80)
         '\nTraceback (click to the left for traceback)\n...\nTraceback (most recent call last):'
         sage: sage.server.notebook.cell.format_exception(sage.server.notebook.cell.TRACEBACK + "notracebacks",80)
@@ -1833,11 +1923,12 @@ def format_exception(s0, ncols):
 ComputeCell=Cell
 
 def number_of_rows(txt, ncols):
-    """
-    Returns the number of rows needed to display the string in txt
-    if there are a maximum of ncols columns per row.
+    r"""
+    Returns the number of rows needed to display the string in txt if
+    there are a maximum of ncols columns per row.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: from sage.server.notebook.cell import number_of_rows
         sage: s = "asdfasdf\nasdfasdf\n"
         sage: number_of_rows(s, 8)
