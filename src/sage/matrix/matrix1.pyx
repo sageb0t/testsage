@@ -901,8 +901,10 @@ cdef class Matrix(matrix0.Matrix):
     ############################################################################################
     def stack(self, other):
         """
-        Return the augmented matrix self on top of other: [ self ] [ other
-        ]
+        Return the augmented matrix self on top of other::
+
+            [ self  ]
+            [ other ]
 
         EXAMPLES::
 
@@ -1251,7 +1253,9 @@ cdef class Matrix(matrix0.Matrix):
 
     def augment(self, Matrix other):
         """
-        Return the augmented matrix of the form [self other].
+        Return the augmented matrix of the form::
+
+            [self | other].
 
         EXAMPLES::
 
@@ -1318,8 +1322,10 @@ cdef class Matrix(matrix0.Matrix):
 
     def block_sum(self, Matrix other):
         """
-        Return the block matrix that has self and other on the diagonal:
-        [self 0 ] [ 0 other ]
+        Return the block matrix that has self and other on the diagonal::
+
+            [ self     0 ]
+            [    0 other ]
 
         EXAMPLES::
 
