@@ -3212,7 +3212,7 @@ class GraphGenerators():
         INPUT:
 
         -  ``options`` - a string passed to the command line of
-           geng. You \*must\* pass the number of vertices you desire.
+           geng. You *must* pass the number of vertices you desire.
 
         EXAMPLES::
 
