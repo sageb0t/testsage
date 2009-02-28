@@ -307,8 +307,15 @@ cdef class ComplexNumber(sage.structure.element.FieldElement):
         Returns either the real of imaginary component of self depending on
         the choice of i: real (i=0), imaginary (i=1)
 
-        INPUTS: i - i=0 will return the real component of self i=1 will
-        return the imaginary component of self EXAMPLES::
+        INPUTS:
+
+        - ``i`` - 0 or 1
+
+          - ``0`` - will return the real component of self
+
+          - ``1`` - will return the imaginary component of self
+
+        EXAMPLES::
 
             sage: a = ComplexNumber(2,1)
             sage: a.__getitem__(0)
@@ -373,9 +380,12 @@ cdef class ComplexNumber(sage.structure.element.FieldElement):
         r"""
         Return a string representation of this number.
 
-        INPUTS: base - The base to use for printing (default 10) truncate -
-        (default: ``True``) Whether to print fewer digits than
-        are available, to mask errors in the last bits.
+        INPUTS:
+
+        - ``base`` - The base to use for printing (default 10)
+
+        - ``truncate`` - (default: ``True``) Whether to print fewer
+          digits than are available, to mask errors in the last bits.
 
         EXAMPLES::
 
@@ -584,7 +594,9 @@ cdef class ComplexNumber(sage.structure.element.FieldElement):
 
         as a complex number.
 
-        INPUTS: left - a complex number to divide by self
+        INPUTS:
+
+        - ``left`` - a complex number to divide by self
 
         EXAMPLES::
 
@@ -1144,9 +1156,9 @@ cdef class ComplexNumber(sage.structure.element.FieldElement):
 
         ALGORITHM: Uses the PARI C library.
 
-        EXAMPLES: First we compute `\eta(1+i)`
+        EXAMPLES:
 
-        ::
+        First we compute `\eta(1+i)`::
 
             sage: i = CC.0
             sage: z = 1+i; z.eta()
@@ -1395,7 +1407,9 @@ cdef class ComplexNumber(sage.structure.element.FieldElement):
         `= \sum_{k=1}^\infty \frac{z^k}{k}`
 
         Note that the series definition can only be used for
-        `|z| < 1` EXAMPLES::
+        `|z| < 1`
+
+        EXAMPLES::
 
             sage: a = ComplexNumber(1,0)
             sage: a.dilog()
@@ -1489,10 +1503,10 @@ cdef class ComplexNumber(sage.structure.element.FieldElement):
         return self._parent(self._pari_().incgam(t))
 
     def log(self):
-        """
-        Complex logarithm of z with branch chosen as follows: Write z =
-        rho\*exp(i\*theta) with -pi = theta pi. Then log(z) = log(rho) +
-        i\*theta.
+        r"""
+        Complex logarithm of z with branch chosen as follows: Write
+        `z = \rho e^{i \theta} with `-\pi <= \theta < pi`. Then
+        `\mathrm{log}(z) = \mathrm{log}(\rho) + i \theta`.
 
         .. warning::
 
@@ -1795,7 +1809,7 @@ def create_ComplexNumber(s_real, s_imag=None, int pad=0, min_prec=53):
     -  ``s_imag`` - a string that defines a real number
        (or something whose string representation defines a number)
 
-    -  ``pad`` - an integer = 0.
+    -  ``pad`` - an integer >= 0.
 
     -  ``min_prec`` - number will have at least this many
        bits of precision, no matter what.
