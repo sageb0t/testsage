@@ -130,12 +130,12 @@ def WordOptions(**kwargs):
             word_options['display'] = kwargs['display']
     elif 'truncate' in kwargs:
         if not isinstance(kwargs['truncate'], bool):
-            raise ValueError, "trunctate must be True or False"
+            raise ValueError, "truncate must be True or False"
         else:
             word_options['truncate'] = kwargs['truncate']
     elif 'truncate_length' in kwargs:
         if not isinstance(kwargs['truncate_length'], (int,Integer)) or kwargs['truncate_length'] <= 0:
-            raise ValueError, "trunctate_length must be a positive integer"
+            raise ValueError, "truncate_length must be a positive integer"
         else:
             word_options['truncate_length'] = kwargs['truncate_length']
     elif 'letter_separator' in kwargs:
@@ -1028,7 +1028,7 @@ exponent %s: the length of the word (%s) times the exponent \
         INPUT:
 
         -  ``f`` - involution (default: None) on the alphabet
-           of self. It must be something that WordMorphism's contructor
+           of self. It must be something that WordMorphism's constructor
            understands (dict, str, ...).
 
         OUTPUT:
@@ -1153,7 +1153,7 @@ exponent %s: the length of the word (%s) times the exponent \
         INPUT:
 
         -  ``f`` - involution (default: None) on the alphabet
-           of self. It must be something that WordMorphism's contructor
+           of self. It must be something that WordMorphism's constructor
            understands (dict, str, ...).
 
         OUTPUT:
@@ -1190,7 +1190,7 @@ exponent %s: the length of the word (%s) times the exponent \
         INPUT:
 
         -  ``f`` - involution (default: None) on the alphabet
-           of self. It must be something that WordMorphism's contructor
+           of self. It must be something that WordMorphism's constructor
            understands (dict, str, ...).
 
         -  ``l`` - integer (default: None) the length of the
@@ -1281,7 +1281,7 @@ exponent %s: the length of the word (%s) times the exponent \
         INPUT:
 
         -  ``f`` - involution (default: None) on the alphabet
-           of self. It must be something that WordMorphism's contructor
+           of self. It must be something that WordMorphism's constructor
            understand (dict, str, ...).
 
         OUTPUT:
@@ -1368,7 +1368,7 @@ exponent %s: the length of the word (%s) times the exponent \
         INPUT:
 
         -  ``f`` - involution (default: None) on the alphabet
-           of self. It must be something that WordMorphism's contructor
+           of self. It must be something that WordMorphism's constructor
            understand (dict, str, ...).
 
         OUTPUT:
@@ -1415,7 +1415,7 @@ exponent %s: the length of the word (%s) times the exponent \
         INPUT:
 
         -  ``f`` - involution (default: None) on the alphabet
-           of self. It must be something that WordMorphism's contructor
+           of self. It must be something that WordMorphism's constructor
            understands (dict, str, ...).
 
         OUTPUT:
@@ -1449,13 +1449,13 @@ exponent %s: the length of the word (%s) times the exponent \
         INPUT:
 
         -  ``f`` - involution (default: None) on the alphabet
-           of self. It must be something that WordMorphism's contructor
+           of self. It must be something that WordMorphism's constructor
            understand (dict, str, ...).
 
         OUTPUT:
 
         -  ``list`` - list of the length of the unioccurrent
-           longest palindromic suffixe (lps) for each non-empty prefix of
+           longest palindromic suffix (lps) for each non-empty prefix of
            self. No unioccurrent lps are indicated by None.
 
         EXAMPLES::
@@ -1493,7 +1493,7 @@ exponent %s: the length of the word (%s) times the exponent \
         INPUT:
 
         -  ``f`` - involution (default: None) on the alphabet
-           of self. It must be something that WordMorphism's contructor
+           of self. It must be something that WordMorphism's constructor
            understands (dict, str, ...).
 
         OUTPUT:
@@ -1532,7 +1532,7 @@ exponent %s: the length of the word (%s) times the exponent \
         INPUT:
 
         -  ``f`` - involution (default: None) on the alphabet
-           of self. It must be something that WordMorphism's contructor
+           of self. It must be something that WordMorphism's constructor
            understands (dict, str, ...).
 
         OUTPUT:
@@ -1579,7 +1579,7 @@ exponent %s: the length of the word (%s) times the exponent \
         INPUT:
 
         -  ``f`` - involution (default: None) on the alphabet
-           of self. It must be something that WordMorphism's contructor
+           of self. It must be something that WordMorphism's constructor
            understands (dict, str, ...).
 
         OUTPUT:
@@ -1633,7 +1633,7 @@ exponent %s: the length of the word (%s) times the exponent \
            direction of the closure
 
         -  ``f`` - involution (default: None) on the alphabet
-           of self. It must be something that WordMorphism's contructor
+           of self. It must be something that WordMorphism's constructor
            understands (dict, str, ...).
 
         OUTPUT:
@@ -1716,7 +1716,7 @@ exponent %s: the length of the word (%s) times the exponent \
            direction of the closure
 
         -  ``f`` - involution (default: None) on the alphabet
-           of self. It must be something that WordMorphism's contructor
+           of self. It must be something that WordMorphism's constructor
            understands (dict, str, ...).
 
         OUTPUT:
@@ -1799,7 +1799,7 @@ exponent %s: the length of the word (%s) times the exponent \
         INPUT:
 
         -  ``f`` - involution (default: None) on the alphabet
-           of self. It must be something that WordMorphism's contructor
+           of self. It must be something that WordMorphism's constructor
            understands (dict, str, ...).
 
         OUTPUT:
@@ -2546,7 +2546,7 @@ exponent %s: the length of the word (%s) times the exponent \
             return 0
         return len(self) / self.primitive_length()
 
-    def colored_vector(self, x=0, y=0, width='default', heigth=1, cmap='hsv', thickness=1):
+    def colored_vector(self, x=0, y=0, width='default', height=1, cmap='hsv', thickness=1):
         r"""
         Returns a vector (Graphics object) illustrating self. Each letter
         is represented by a colored rectangle. There is a unique color for
@@ -2563,7 +2563,7 @@ exponent %s: the length of the word (%s) times the exponent \
         -  ``width`` - (default: 'default') width of the
            vector. By default, the width is the length of self.
 
-        -  ``heigth`` - (default: 1) heigth of the vector
+        -  ``height`` - (default: 1) height of the vector
 
         -  ``thickness`` - (default: 1) thickness of the
            contour
@@ -2628,7 +2628,7 @@ exponent %s: the length of the word (%s) times the exponent \
             width = len(self)
 
         #The black frame of the vector
-        ymax = y + heigth
+        ymax = y + height
         L = [(x,y), (x+width,y), (x+width,ymax), (x,ymax), (x,y)]
         rep = line(L, rgbcolor=(0,0,0), thickness=thickness)
 
@@ -2955,7 +2955,7 @@ exponent %s: the length of the word (%s) times the exponent \
         The optional set of words parameter must be over an alphabet that
         contains as much letters as there are different return words in
         self, otherwise there will be some breakage in the function. The
-        default value for this parameter always repects this property. The
+        default value for this parameter always respects this property. The
         letters are attributed to the words in the order they are
         discovered.
 
@@ -4166,7 +4166,7 @@ exponent %s: the length of the word (%s) times the exponent \
 
     def evaluation_dict(self):
         r"""
-        Returns a dictionary keyed by the letters occuring in self with
+        Returns a dictionary keyed by the letters occurring in self with
         values the number of occurrences of the letter.
 
         EXAMPLES::
@@ -4469,7 +4469,7 @@ exponent %s: the length of the word (%s) times the exponent \
 
     def degree(self, weights=None):
         """
-        Returns the weigted degree of self, where the weighted degree of
+        Returns the weighted degree of self, where the weighted degree of
         each letter in the ordered alphabet is given by weights, which
         defaults to [1, 2, 3, ...].
 

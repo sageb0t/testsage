@@ -286,7 +286,7 @@ def rightmost_pivot(comp, min_length, max_length, floor, ceiling, min_slope, max
 def next(comp, min_length, max_length, floor, ceiling, min_slope, max_slope):
     """
     Returns the next integer list after comp that satisfies the
-    contraints.
+    constraints.
 
     EXAMPLES::
 

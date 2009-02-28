@@ -480,7 +480,7 @@ class CombinatorialFreeModuleElement(ModuleElement):
 
     def coefficients(self):
         """
-        Returns a list of the coefficents appearing on the basiselements in
+        Returns a list of the coefficients appearing on the basiselements in
         self.
 
         EXAMPLES::

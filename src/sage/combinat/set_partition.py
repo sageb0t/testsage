@@ -463,7 +463,7 @@ def less(s, t):
     """
 
     if _union(s) != _union(t):
-        raise ValueError, "cannont compare partitions of different sets"
+        raise ValueError, "cannot compare partitions of different sets"
 
     if s == t:
         return False

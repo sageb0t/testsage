@@ -35,7 +35,7 @@ Assume `{\bf a}` is periodic with period `P`.
 
 -  proportional runs property: In each period, half the runs have
    length `1`, one-fourth have length `2`, etc.
-   Moveover, there are as many runs of `1`'s as there are of
+   Moreover, there are as many runs of `1`'s as there are of
    `0`'s.
 
 A general feedback shift register is a map

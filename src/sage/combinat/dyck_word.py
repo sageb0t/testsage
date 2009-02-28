@@ -821,7 +821,7 @@ class DyckWords_size(CombinatorialClass):
 
 def is_a_prefix(obj, k1 = None, k2 = None):
     """
-    If k1 is specificied, then the object must have exactly k1 open
+    If k1 is specified, then the object must have exactly k1 open
     symbols. If k2 is also specified, then obj must have exactly k2
     close symbols.
 
@@ -865,7 +865,7 @@ def is_a_prefix(obj, k1 = None, k2 = None):
 
 def is_a(obj, k1 = None, k2 = None):
     """
-    If k1 is specificied, then the object must have exactly k1 open
+    If k1 is specified, then the object must have exactly k1 open
     symbols. If k2 is also specified, then obj must have exactly k2
     close symbols.
 
