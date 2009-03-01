@@ -246,7 +246,7 @@ class PolyhedralCone(SageObject):
 
     def lineality_dim(self):
         """
-        Returns the lineality dimension of the Groebner cone. This is the
+        Returns the lineality dimension of the Groebner cone. This is
         just the difference between the ambient dimension and the dimension
         of the cone.
 
@@ -379,7 +379,7 @@ class PolyhedralFan(SageObject):
 
     def lineality_dim(self):
         """
-        Returns the lineality dimension of the Groebner fan. This is the
+        Returns the lineality dimension of the Groebner fan. This is
         just the difference between the ambient dimension and the dimension
         of the cone.
 
@@ -1215,7 +1215,7 @@ class GroebnerFan(SageObject):
 
     def interactive(self, *args, **kwds):
         """
-        See the documentation for self[0].interative() This does not work
+        See the documentation for self[0].interactive() This does not work
         with the notebook.
 
         EXAMPLES::

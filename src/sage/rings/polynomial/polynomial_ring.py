@@ -327,7 +327,7 @@ class PolynomialRing_general(sage.algebras.algebra.Algebra):
         """
         Return the completion of self with respect to the irreducible
         polynomial p. Currently only implemented for p=self.gen(), i.e. you
-        can only cimplete R[x] with respect to x, the result being a rings
+        can only complete R[x] with respect to x, the result being a ring
         of power series in x. The prec variable controls the precision used
         in the power series ring.
 
@@ -446,7 +446,7 @@ class PolynomialRing_general(sage.algebras.algebra.Algebra):
         Watch out, Magma has different semantics than Sage, i.e., in Magma
         there is a unique univariate polynomial ring, and the variable name
         has no intrinsic meaning (it only impacts printing), so can't be
-        reliable set because of caching.
+        reliably set because of caching.
 
         ::
 
@@ -863,7 +863,7 @@ class PolynomialRing_general(sage.algebras.algebra.Algebra):
 
         -  ``degree`` - an integer
 
-        -  ``*args, **kwds`` - passed onto the
+        -  ``*args, **kwds`` - passed on to the
            ``random_element`` method for the base ring.
 
         OUTPUT:

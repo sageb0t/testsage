@@ -231,7 +231,7 @@ cdef class BooleanPolynomialRing(MPolynomialRing_generic):
         -  ``n`` - number of variables (an integer > 1)
 
         -  ``names`` - names of ring variables, may be a string
-           of list/tuple
+           or list/tuple
 
         -  ``order`` - term order (default: lex)
 
@@ -1124,7 +1124,7 @@ cdef class BooleanPolynomialRing(MPolynomialRing_generic):
     def _magma_init_(self, magma):
         r"""
         Return a a string which when evaluated with Magma returns a Magma
-        representaion of this boolean polynomial ring.
+        representation of this boolean polynomial ring.
 
         INPUT:
 
@@ -3960,7 +3960,7 @@ cdef class BooleSet:
 
         INPUT:
 
-        -  ``param`` - either a ``CCuddNaviator``,
+        -  ``param`` - either a ``CCuddNavigator``,
            a ``BooleSet`` or ``None``.
 
         -  ``ring`` - a boolean polynomial ring.
