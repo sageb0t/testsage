@@ -5926,7 +5926,7 @@ class A001157(SloaneSequence):
 class A008683(SloaneSequence):
     def __init__(self):
         r"""
-        Moebius (or Möbius) function `\mu(n)`.
+        Moebius function `\mu(n)`.
 
         INPUT:
 
