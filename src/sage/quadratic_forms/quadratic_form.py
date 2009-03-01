@@ -148,6 +148,8 @@ class QuadraticForm():
             level__Tornaria, \
             discrec, \
             hasse_conductor, \
+            clifford_invariant, \
+            clifford_conductor, \
             basiclemma, \
             basiclemmavec, \
             xi, \
