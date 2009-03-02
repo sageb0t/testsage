@@ -261,11 +261,28 @@ class GraphGenerators():
     -  ``loops`` - whether to allow loops in the graph or
        not.
 
+    -  ``implementation`` - which underlying implementation to use (see Graph?)
+
+    -  ``sparse`` - ignored if implementation is not ``c_graph``
+
     EXAMPLES: Print graphs on 3 or less vertices.
 
     ::
 
         sage: for G in graphs(3, augment='vertices'):
+        ...    print G
+        Graph on 0 vertices
+        Graph on 1 vertex
+        Graph on 2 vertices
+        Graph on 3 vertices
+        Graph on 3 vertices
+        Graph on 3 vertices
+        Graph on 2 vertices
+        Graph on 3 vertices
+
+    Note that we can also get graphs with underlying Cython implementation::
+
+        sage: for G in graphs(3, augment='vertices', implementation='c_graph'):
         ...    print G
         Graph on 0 vertices
         Graph on 1 vertex
@@ -3062,7 +3079,8 @@ class GraphGenerators():
 ################################################################################
 
     def __call__(self, vertices, property=lambda x: True, augment='edges',
-        size=None, deg_seq=None, loops=False):
+        size=None, deg_seq=None, loops=False, implementation='networkx',
+        sparse=True):
         """
         Accesses the generator of isomorphism class representatives.
         Iterates over distinct, exhaustive representatives.
@@ -3101,6 +3119,10 @@ class GraphGenerators():
 
         -  ``loops`` - whether to allow loops in the graph or
            not.
+
+        -  ``implementation`` - which underlying implementation to use (see Graph?)
+
+        -  ``sparse`` - ignored if implementation is not ``c_graph``
 
         EXAMPLES: Print graphs on 3 or less vertices.
 
@@ -3145,19 +3167,19 @@ class GraphGenerators():
         else:
             extra_property = lambda x: True
         if augment == 'vertices':
-            g = Graph(loops=loops)
-            for gg in canaug_traverse_vert(g, [], vertices, property, loops=loops):
+            g = Graph(loops=loops, implementation=implementation, sparse=sparse)
+            for gg in canaug_traverse_vert(g, [], vertices, property, loops=loops, implementation=implementation, sparse=sparse):
                 if extra_property(gg):
                     yield gg
         elif augment == 'edges':
-            g = Graph(vertices, loops=loops)
+            g = Graph(vertices, loops=loops, implementation=implementation, sparse=sparse)
             gens = []
             for i in range(vertices-1):
                 gen = range(i)
                 gen.append(i+1); gen.append(i)
                 gen += range(i+2, vertices)
                 gens.append(gen)
-            for gg in canaug_traverse_edge(g, gens, property, loops=loops):
+            for gg in canaug_traverse_edge(g, gens, property, loops=loops, implementation=implementation, sparse=sparse):
                 if extra_property(gg):
                     yield gg
         else:
@@ -3278,11 +3300,26 @@ class DiGraphGenerators():
        then all the digraphs generated will satisfy the property, but
        there will be some missing.
 
+    -  ``implementation`` - which underlying implementation to use (see DiGraph?)
+
+    -  ``sparse`` - ignored if implementation is not ``c_graph``
+
     EXAMPLES: Print digraphs on 2 or less vertices.
 
     ::
 
         sage: for D in digraphs(2, augment='vertices'):
+        ...    print D
+        ...
+        Digraph on 0 vertices
+        Digraph on 1 vertex
+        Digraph on 2 vertices
+        Digraph on 2 vertices
+        Digraph on 2 vertices
+
+    Note that we can also get digraphs with underlying Cython implementation::
+
+        sage: for D in digraphs(2, augment='vertices', implementation='c_graph'):
         ...    print D
         ...
         Digraph on 0 vertices
@@ -3576,7 +3613,7 @@ class DiGraphGenerators():
 #   DiGraph Iterators
 ################################################################################
 
-    def __call__(self, vertices, property=lambda x: True, augment='edges', size=None):
+    def __call__(self, vertices, property=lambda x: True, augment='edges', size=None, implementation='networkx', sparse=True):
         """
         Accesses the generator of isomorphism class representatives.
         Iterates over distinct, exhaustive representatives.
@@ -3607,6 +3644,10 @@ class DiGraphGenerators():
            generate all digraphs with that property. If this does not hold,
            then all the digraphs generated will satisfy the property, but
            there will be some missing.
+
+        -  ``implementation`` - which underlying implementation to use (see DiGraph?)
+
+        -  ``sparse`` - ignored if implementation is not ``c_graph``
 
         EXAMPLES: Print digraphs on 2 or less vertices.
 
@@ -3651,25 +3692,25 @@ class DiGraphGenerators():
         else:
             extra_property = lambda x: True
         if augment == 'vertices':
-            g = DiGraph(sparse=True)
-            for gg in canaug_traverse_vert(g, [], vertices, property, dig=True):
+            g = DiGraph(implementation=implementation, sparse=sparse)
+            for gg in canaug_traverse_vert(g, [], vertices, property, dig=True, implementation=implementation, sparse=sparse):
                 if extra_property(gg):
                     yield gg
         elif augment == 'edges':
-            g = DiGraph(vertices)
+            g = DiGraph(vertices, implementation=implementation, sparse=sparse)
             gens = []
             for i in range(vertices-1):
                 gen = range(i)
                 gen.append(i+1); gen.append(i)
                 gen += range(i+2, vertices)
                 gens.append(gen)
-            for gg in canaug_traverse_edge(g, gens, property, dig=True):
+            for gg in canaug_traverse_edge(g, gens, property, dig=True, implementation=implementation, sparse=sparse):
                 if extra_property(gg):
                     yield gg
         else:
             raise NotImplementedError()
 
-def canaug_traverse_vert(g, aut_gens, max_verts, property, dig=False, loops=False):
+def canaug_traverse_vert(g, aut_gens, max_verts, property, dig=False, loops=False, implementation='networkx', sparse=True):
     """
     Main function for exhaustive generation. Recursive traversal of a
     canonically generated tree of isomorph free (di)graphs satisfying a
@@ -3779,7 +3820,7 @@ def canaug_traverse_vert(g, aut_gens, max_verts, property, dig=False, loops=Fals
             i += 1
         for i in roots:
             # construct a z for each number in roots...
-            z = g.copy()
+            z = g.copy(implementation=implementation, sparse=sparse)
             z.add_vertex(n)
             edges = []
             if dig:
@@ -3803,7 +3844,7 @@ def canaug_traverse_vert(g, aut_gens, max_verts, property, dig=False, loops=Fals
             if property(z):
                 z_s.append(z)
             if loops:
-                z = z.copy()
+                z = z.copy(implementation=implementation, sparse=sparse)
                 z.add_edge((n,n))
                 if property(z):
                     z_s.append(z)
@@ -3816,12 +3857,12 @@ def canaug_traverse_vert(g, aut_gens, max_verts, property, dig=False, loops=Fals
                 m_z = z.subgraph(sub_verts)
 
                 if m_z == g:
-                    for a in canaug_traverse_vert(z, z_aut_gens, max_verts, property, dig=dig, loops=loops):
+                    for a in canaug_traverse_vert(z, z_aut_gens, max_verts, property, dig=dig, loops=loops, implementation=implementation, sparse=sparse):
                         yield a
                 else:
                     for possibility in check_aut(z_aut_gens, cut_vert, n):
                         if m_z.relabel(possibility, inplace=False) == g:
-                            for a in canaug_traverse_vert(z, z_aut_gens, max_verts, property, dig=dig, loops=loops):
+                            for a in canaug_traverse_vert(z, z_aut_gens, max_verts, property, dig=dig, loops=loops, implementation=implementation, sparse=sparse):
                                 yield a
                             break
 
@@ -3861,7 +3902,7 @@ def check_aut(aut_gens, cut_vert, n):
                 if new_perm[cut_vert] == n:
                     yield new_perm
 
-def canaug_traverse_edge(g, aut_gens, property, dig=False, loops=False):
+def canaug_traverse_edge(g, aut_gens, property, dig=False, loops=False, implementation='networkx', sparse=True):
     """
     Main function for exhaustive generation. Recursive traversal of a
     canonically generated tree of isomorph free graphs satisfying a
@@ -3999,7 +4040,7 @@ def canaug_traverse_edge(g, aut_gens, property, dig=False, loops=False):
             if g.has_edge(i, j):
                 continue
             # construct a z for each edge in roots...
-            z = g.copy()
+            z = g.copy(implementation=implementation, sparse=sparse)
             z.add_edge(i, j)
             if not property(z):
                 continue
@@ -4018,12 +4059,12 @@ def canaug_traverse_edge(g, aut_gens, property, dig=False, loops=False):
             m_z = z.copy()
             m_z.delete_edge(cut_edge)
             if m_z == g:
-                for a in canaug_traverse_edge(z, z_aut_gens, property, dig=dig, loops=loops):
+                for a in canaug_traverse_edge(z, z_aut_gens, property, dig=dig, loops=loops, implementation=implementation, sparse=sparse):
                     yield a
             else:
                 for possibility in check_aut_edge(z_aut_gens, cut_edge, i, j, n, dig=dig):
                     if m_z.relabel(possibility, inplace=False) == g:
-                        for a in canaug_traverse_edge(z, z_aut_gens, property, dig=dig, loops=loops):
+                        for a in canaug_traverse_edge(z, z_aut_gens, property, dig=dig, loops=loops, implementation=implementation, sparse=sparse):
                             yield a
                         break
 
