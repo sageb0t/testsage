@@ -86,9 +86,11 @@ def QuaternionAlgebra(arg0, arg1=None, arg2=None, names='i,j,k'):
         sage: QuaternionAlgebra(sqrt(-1), sqrt(-3))
         Quaternion Algebra (I, sqrt(3)*I) with base ring Symbolic Ring
         sage: QuaternionAlgebra(0,0)
+        Traceback (most recent call last):
         ...
         ValueError: a and b must be nonzero
         sage: QuaternionAlgebra(GF(2)(1),1)
+        Traceback (most recent call last):
         ...
         ValueError: a and b must be elements of a field with characteristic not 2
 
@@ -254,7 +256,7 @@ class QuaternionAlgebra_abstract(Algebra):
         """
         Return the inner product matrix associated to self, i.e. the Gram matrix of the reduced norm
         as a quadratic form on self.  The standard basis 1, i, j, k is orthogonal, so this matrix
-        is just the diagonal matrix with diagonal entries 1, a, b, a*b.
+        is just the diagonal matrix with diagonal entries 2, 2*a, 2*b, 2*a*b.
 
         EXAMPLES::
 
@@ -300,6 +302,7 @@ class QuaternionAlgebra_abstract(Algebra):
             sage: QuaternionAlgebra(2,9).is_division_algebra()
             False
             sage: QuaternionAlgebra(RR(2.),1).is_division_algebra()
+            Traceback (most recent call last):
             ...
             NotImplementedError: base field must be rational numbers
         """
@@ -315,11 +318,12 @@ class QuaternionAlgebra_abstract(Algebra):
 
             sage: QuaternionAlgebra(QQ,-5,-2).is_matrix_ring()
             False
-            sage: QuaternionAlgebra(1).is_division_algebra()
+            sage: QuaternionAlgebra(1).is_matrix_ring()
             True
-            sage: QuaternionAlgebra(2,9).is_division_algebra()
+            sage: QuaternionAlgebra(2,9).is_matrix_ring()
             True
             sage: QuaternionAlgebra(RR(2.),1).is_matrix_ring()
+            Traceback (most recent call last):
             ...
             NotImplementedError: base field must be rational numbers
 
@@ -431,12 +435,12 @@ class QuaternionAlgebra_abstract(Algebra):
             sage: QuaternionAlgebra(-3,19).random_element()
             -1/4 + 2/3*i - 5/2*j
             sage: QuaternionAlgebra(GF(17)(2),3).random_element()
-            5 + 6*j + k
+            11 - i + 4*j + 13*k
 
         Specify the numerator and denominator bounds::
 
             sage: QuaternionAlgebra(-3,19).random_element(10^6,10^6)
-            -979933/553629 + 255525/657688*i - 3511/6929*j - 700105/258683*k
+            -61003/263835 + 222181/103881*i - 7314/2707*j + 458453/129132*k
         """
         K = self.base_ring()
         return self([ K.random_element(*args, **kwds) for _ in range(4) ])
@@ -468,7 +472,8 @@ import quaternion_algebra_element
 class QuaternionAlgebra_ab(QuaternionAlgebra_abstract):
     """
     The quaternion algebra of the form (a,b/K), where i^2=a, j^2 = b,
-    and j*i=-i*j.  K is a field not of characteristic and a,b are nonzero elements of K.
+    and j*i=-i*j.  K is a field not of characteristic 2 and a,b are
+    nonzero elements of K.
 
     EXAMPLES::
 
