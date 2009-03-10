@@ -194,9 +194,8 @@ The following files are relevant to preparsing in Sage:
 
 .. Talk about ``SAGE_ROOT/devel/sage/sage/misc/preparser_ipython.py`` file
 
-In particular, the file ``preparser.py`` contains the Sage
-preparser code. Here are some , and the following are some notes
-from it:
+In particular, the file ``preparser.py`` contains the Sage preparser
+code. The following are some notes from it:
 
 -  In Sage, methods can be called on integer and real literals -
    note that in pure Python this would be a syntax error. For
