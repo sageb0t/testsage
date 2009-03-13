@@ -932,9 +932,9 @@ class NumberField_generic(number_field_base.NumberField):
         elif isinstance(x, (tuple, list)) or \
                 (isinstance(x, sage.modules.free_module_element.FreeModuleElement) and
                  self.base_ring().has_coerce_map_from(x.parent().base_ring())):
-            if len(x) != self.degree():
+            if len(x) != self.relative_degree():
                 raise ValueError, "Length must be equal to the degree of this number field"
-            return sum([ x[i]*self.gen(0)**i for i in range(self.degree()) ])
+            return sum([ x[i]*self.gen(0)**i for i in range(self.relative_degree()) ])
         return self._coerce_non_number_field_element_in(x)
 
     def _coerce_from_str(self, x):
@@ -1197,7 +1197,7 @@ class NumberField_generic(number_field_base.NumberField):
             sage: to_K(L.0)
             2*i0 - 6
 
-        Note that he image is indeed a square root of -1.
+        Note that the image is indeed a square root of -1.
 
         ::
 
@@ -1851,11 +1851,6 @@ class NumberField_generic(number_field_base.NumberField):
         OUTPUT: A list of prime ideals of self lying over x. If degree is
         specified and no such ideal exists, returns the empty list.
 
-        .. warning::
-
-           At this time we factor the ideal x, which may not be
-           supported for relative number fields.
-
         EXAMPLES::
 
             sage: x = ZZ['x'].gen()
@@ -1909,6 +1904,21 @@ class NumberField_generic(number_field_base.NumberField):
             sage: P5_2 = P5_2s[0]; P5_2.residue_class_degree()
             2
 
+        Works in relative extensions too::
+
+            sage: PQ.<X> = QQ[]
+            sage: F.<a, b> = NumberField([X^2 - 2, X^2 - 3])
+            sage: PF.<Y> = F[]
+            sage: K.<c> = F.extension(Y^2 - (1 + a)*(a + b)*a*b)
+            sage: I = F.ideal(a + 2*b)
+            sage: K.primes_above(I)
+            [Fractional ideal (2, ((-13*b - 45/2)*a - 37/2*b - 63/2)*c + 1),
+             Fractional ideal (5, (5/2*b + 7/2)*a + 2*b + 10)]
+            sage: K.primes_above(I, degree=1)
+            [Fractional ideal (2, ((-13*b - 45/2)*a - 37/2*b - 63/2)*c + 1)]
+            sage: K.primes_above(I, degree=4)
+            [Fractional ideal (5, (5/2*b + 7/2)*a + 2*b + 10)]
+
         TESTS:
 
         It doesn't make sense to factor the ideal (0)::
@@ -1918,13 +1928,6 @@ class NumberField_generic(number_field_base.NumberField):
             ...
             AttributeError: 'NumberFieldIdeal' object has no attribute 'factor'
 
-        Sage can't factor ideals over extension fields yet::
-
-            sage: G = F.extension(x^2 - 11, 'b')
-            sage: G.primes_above(13)
-            Traceback (most recent call last):
-            ...
-            NotImplementedError
         """
         if degree is not None:
             degree = ZZ(degree)
@@ -2013,6 +2016,12 @@ class NumberField_generic(number_field_base.NumberField):
             sage: P5_2.residue_class_degree()
             2
 
+        Relative number fields are ok::
+
+            sage: G = F.extension(x^2 - 11, 'b')
+            sage: G.prime_above(7)
+            Fractional ideal (7, (3*t^2 + 2*t + 9)*b - t^2 - 31*t - 10)
+
         TESTS:
 
         It doesn't make sense to factor the ideal (0)::
@@ -2022,13 +2031,6 @@ class NumberField_generic(number_field_base.NumberField):
             ...
             AttributeError: 'NumberFieldIdeal' object has no attribute 'factor'
 
-        Sage can't factor ideals over extension fields yet::
-
-            sage: G = F.extension(x^2 - 11, 'b')
-            sage: G.prime_above(13)
-            Traceback (most recent call last):
-            ...
-            NotImplementedError
         """
         ids = self.primes_above(x, degree)
         if not ids:
@@ -2211,7 +2213,7 @@ class NumberField_generic(number_field_base.NumberField):
             ...
             TypeError: Unable to coerce number field defined by non-integral polynomial to PARI.
         """
-        if self.defining_polynomial().denominator() != 1:
+        if self.absolute_polynomial().denominator() != 1:
             raise TypeError, "Unable to coerce number field defined by non-integral polynomial to PARI."
         try:
             return self.__pari_nf
@@ -2701,9 +2703,12 @@ class NumberField_generic(number_field_base.NumberField):
         r"""
         Compute the different fractional ideal of this number field.
 
-        The different is the set of all `x` in `K` such
-        that the trace of `xy` is an integer for all
-        `y \in O_K`.
+        The codifferent is the fractional ideal of all `x` in `K`
+        such that the the trace of `xy` is an integer for
+        all `y \in O_K`.
+
+        The different is the integral ideal which is the inverse of
+        the codifferent.
 
         EXAMPLES::
 
@@ -3103,7 +3108,7 @@ class NumberField_generic(number_field_base.NumberField):
             [1, zeta15, zeta15^2, zeta15^3, zeta15^4, zeta15^5, zeta15^6, zeta15^7]
         """
         g = self.gen()
-        return [ g**i for i in range(self.degree()) ]
+        return [ g**i for i in range(self.relative_degree()) ]
 
     def integral_basis(self, v=None):
         """
@@ -3611,7 +3616,7 @@ class NumberField_generic(number_field_base.NumberField):
             sage: M.polynomial_ring()
             Univariate Polynomial Ring in y over Number Field in a1 with defining polynomial y^2 + 1
         """
-        return self.polynomial().parent()
+        return self.relative_polynomial().parent()
 
     def polynomial_quotient_ring(self):
         """
@@ -3624,7 +3629,7 @@ class NumberField_generic(number_field_base.NumberField):
             sage: K.polynomial_quotient_ring()
             Univariate Quotient Polynomial Ring in alpha over Rational Field with modulus x^3 + 2*x - 5
         """
-        return self.polynomial_ring().quotient(self.polynomial(), self.variable_name())
+        return self.polynomial_ring().quotient(self.relative_polynomial(), self.variable_name())
 
     def regulator(self, proof=None):
         """
@@ -5253,6 +5258,141 @@ class NumberField_absolute(NumberField_generic):
 
         assert False, "bug in relativize"
 
+    # Synonyms so that terminology appropriate to relative number fields
+    # can be applied to an absolute number field:
+
+    def absolute_degree(self):
+        """
+        A synonym for degree.
+
+        EXAMPLES::
+
+            sage: K.<i> = NumberField(x^2 + 1)
+            sage: K.absolute_degree()
+            2
+        """
+        return self.degree()
+
+    def relative_degree(self):
+        """
+        A synonym for degree.
+
+        EXAMPLES::
+
+            sage: K.<i> = NumberField(x^2 + 1)
+            sage: K.relative_degree()
+            2
+        """
+        return self.degree()
+
+    def absolute_polynomial(self):
+        """
+        A synonym for polynomial.
+
+        EXAMPLES::
+
+            sage: K.<i> = NumberField(x^2 + 1)
+            sage: K.absolute_polynomial()
+            x^2 + 1
+        """
+        return self.polynomial()
+
+    def relative_polynomial(self):
+        """
+        A synonym for polynomial.
+
+        EXAMPLES::
+
+            sage: K.<i> = NumberField(x^2 + 1)
+            sage: K.relative_polynomial()
+            x^2 + 1
+        """
+        return self.polynomial()
+
+    def absolute_vector_space(self):
+        """
+        A synonym for vector_space.
+
+        EXAMPLES::
+
+            sage: K.<i> = NumberField(x^2 + 1)
+            sage: K.absolute_vector_space()
+            (Vector space of dimension 2 over Rational Field,
+             Isomorphism map:
+              From: Vector space of dimension 2 over Rational Field
+              To:   Number Field in i with defining polynomial x^2 + 1,
+             Isomorphism map:
+              From: Number Field in i with defining polynomial x^2 + 1
+              To:   Vector space of dimension 2 over Rational Field)
+        """
+        return self.vector_space()
+
+    def relative_vector_space(self):
+        """
+        A synonym for vector_space.
+
+        EXAMPLES::
+
+            sage: K.<i> = NumberField(x^2 + 1)
+            sage: K.relative_vector_space()
+            (Vector space of dimension 2 over Rational Field,
+             Isomorphism map:
+              From: Vector space of dimension 2 over Rational Field
+              To:   Number Field in i with defining polynomial x^2 + 1,
+             Isomorphism map:
+              From: Number Field in i with defining polynomial x^2 + 1
+              To:   Vector space of dimension 2 over Rational Field)
+        """
+        return self.vector_space()
+
+    def absolute_discriminant(self):
+        """
+        A synonym for discriminant.
+
+        EXAMPLES::
+
+            sage: K.<i> = NumberField(x^2 + 1)
+            sage: K.absolute_discriminant()
+            -4
+        """
+        return self.discriminant()
+
+    def relative_discriminant(self):
+        """
+        A synonym for discriminant.
+
+        EXAMPLES::
+
+            sage: K.<i> = NumberField(x^2 + 1)
+            sage: K.relative_discriminant()
+            -4
+        """
+        return self.discriminant()
+
+    def absolute_different(self):
+        """
+        A synonym for different.
+
+        EXAMPLES::
+
+            sage: K.<i> = NumberField(x^2 + 1)
+            sage: K.absolute_different()
+            Fractional ideal (2)
+        """
+        return self.different()
+
+    def relative_different(self):
+        """
+        A synonym for different.
+
+        EXAMPLES::
+
+            sage: K.<i> = NumberField(x^2 + 1)
+            sage: K.relative_different()
+            Fractional ideal (2)
+        """
+        return self.different()
+
 class NumberField_cyclotomic(NumberField_absolute):
     """
     Create a cyclotomic extension of the rational field.
@@ -5957,6 +6097,37 @@ class NumberField_cyclotomic(NumberField_absolute):
             return (ZZ(1), ZZ(0))
         else:
             return (ZZ(0), ZZ(m/2))
+
+    def different(self):
+        """
+        Returns the different ideal of the cyclotomic field self.
+
+        EXAMPLES::
+
+            sage: C20 = CyclotomicField(20)
+            sage: C20.different()
+            Fractional ideal (-4*zeta20^7 + 8*zeta20^5 - 12*zeta20^3 + 6*zeta20)
+            sage: C18 = CyclotomicField(18)
+            sage: D = C18.different().norm()
+            sage: D == C18.discriminant().abs()
+            True
+        """
+        try:
+            return self.__different
+
+        except AttributeError:
+
+            z = self.gen()
+            n = self._n()
+            D = self.ideal(1)
+            factors = n.factor()
+            for f in factors:
+                p = f[0]
+                r = f[1]
+                e = (r*p - r - 1)*p**(r-1)
+                D *= self.ideal(z**(n/p**r) - 1)**e
+            self.__different = D
+            return self.__different
 
     def discriminant(self, v=None):
         """
