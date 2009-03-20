@@ -10,6 +10,8 @@ AUTHORS:
 - Mike Hansen
 
 - Dan Drake (2008-04-07): allow Permutation() to take lists of tuples
+
+- Sebastien Labbe (2009-03-17): added robinson_schensted_inverse
 """
 #*****************************************************************************
 #       Copyright (C) 2007 Mike Hansen <mhansen@gmail.com>,
@@ -137,6 +139,9 @@ def Permutation(l):
 
     -  a PermutationGroupElement
 
+    -  a pair of two tableaux of the same shape, where the second one is
+       standard.
+
     OUTPUT:
 
     - :class:`Permutation_class` object.
@@ -188,6 +193,14 @@ def Permutation(l):
         sage: Permutation(g)
         [2, 1, 3]
 
+    From a pair of tableaux of the same shape. This uses the inverse
+    of Robinson Schensted algorithm::
+
+        sage: p = Tableau([[1, 4, 7], [2, 5], [3], [6]])
+        sage: q = Tableau([[1, 2, 5], [3, 6], [4], [7]])
+        sage: Permutation( (p, q) )
+        [3, 6, 5, 2, 7, 4, 1]
+
     TESTS::
 
         sage: Permutation([()])
@@ -199,9 +212,9 @@ def Permutation(l):
     """
     if isinstance(l, Permutation_class):
         return l
-    #if l is a string, then assume it is in cycle notation
     elif isinstance(l, PermutationGroupElement):
         l = l.list()
+    #if l is a string, then assume it is in cycle notation
     elif isinstance(l, str):
         if l == "()":
             return from_cycles(1,[])
@@ -212,6 +225,10 @@ def Permutation(l):
         for c in cycles:
             cycle_list.append(map(int, c.split(",")))
         return from_cycles(max([max(c) for c in cycle_list]), cycle_list)
+    #if l is a pair of tableaux
+    elif isinstance(l, (tuple, list)) and len(l) == 2 and \
+         all(map(lambda x: isinstance(x, tableau.Tableau_class), l)):
+        return robinson_schensted_inverse(*l)
     # if it's a tuple or nonempty list of tuples, also assume cycle
     # notation
     elif isinstance(l, tuple) or \
@@ -2094,14 +2111,24 @@ class Permutation_class(CombinatorialObject):
             sage: p = Permutation([6,2,3,1,7,5,4])
             sage: p.robinson_schensted()
             [[[1, 3, 4], [2, 5], [6, 7]], [[1, 3, 5], [2, 6], [4, 7]]]
-        """
 
-        p = [[]]
-        q = [[]]
+        TESTS::
+
+        The empty permutation::
+
+            sage: p = Permutation([])
+            sage: p.robinson_schensted()
+            [[], []]
+
+        """
+        p = []
+        q = []
 
         for i in range(1, len(self)+1):
             #Row insert self[i-1] into p
             row_counter = 0
+            if row_counter == len(p):
+                p.append([])
             r = p[row_counter]
             x = self[i-1]
             while max(r+[0]) > x:
@@ -2976,6 +3003,103 @@ def from_reduced_word(rw):
         (p[i-1], p[i]) = (p[i], p[i-1])
 
     return Permutation(p)
+
+def robinson_schensted_inverse(p, q):
+    r"""
+    Returns the permutation corresponding to the pair of tableaux (p,q) using
+    the inverse of Robinson-Schensted algorithm.
+
+    INPUT:
+
+    -  a pair (p, q) of tableaux of the same shape and where q is standard.
+
+    EXAMPLES::
+
+        sage: from sage.combinat.permutation import robinson_schensted_inverse
+        sage: t1 = Tableau([[1, 2, 5], [3], [4]])
+        sage: t2 = Tableau([[1, 2, 3], [4], [5]])
+        sage: robinson_schensted_inverse(t1, t2)
+        [1, 4, 5, 3, 2]
+        sage: robinson_schensted_inverse(t1, t1)
+        [1, 4, 3, 2, 5]
+        sage: robinson_schensted_inverse(t2, t2)
+        [1, 2, 5, 4, 3]
+        sage: robinson_schensted_inverse(t2, t1)
+        [1, 5, 4, 2, 3]
+
+    If the first tableau is not standard, then it is not a bijection::
+
+        sage: p = Tableau([[1,3,2]]); q = Tableau([[1,2,3]])
+        sage: robinson_schensted_inverse(p, q)
+        [1, 3, 2]
+        sage: _.robinson_schensted()
+        [[[1, 2], [3]], [[1, 2], [3]]]
+        sage: robinson_schensted_inverse(*_)
+        [1, 3, 2]
+
+    If the first tableau is semistandard::
+
+        sage: p = Tableau([[1,2,2]]); q = Tableau([[1,2,3]])
+        sage: robinson_schensted_inverse(p, q)
+        [1, 2, 2]
+        sage: _.robinson_schensted()
+        [[[1, 2, 2]], [[1, 2, 3]]]
+
+    TESTS::
+
+    From empty tableaux::
+
+        sage: robinson_schensted_inverse(Tableau([]), Tableau([]))
+        []
+
+    This function is the inverse of robinson_shensted::
+
+        sage: f = lambda p: robinson_schensted_inverse(*p.robinson_schensted())
+        sage: all(p == f(p) for n in range(7) for p in Permutations(n))
+        True
+
+        sage: n = ZZ.random_element(200)
+        sage: p = Permutations(n).random_element()
+        sage: is_fine = True if p == f(p) else p ; is_fine
+        True
+
+    Both tableaux must be of the same shape::
+
+        sage: robinson_schensted_inverse(Tableau([[1,2,3]]), Tableau([[1,2]]))
+        Traceback (most recent call last):
+        ...
+        ValueError: p(=[[1, 2, 3]]) and q(=[[1, 2]]) must have the same shape
+
+    The second tableau must be standard::
+
+        sage: robinson_schensted_inverse(Tableau([[1,2,3]]), Tableau([[1,3,2]]))
+        Traceback (most recent call last):
+        ...
+        ValueError: q(=[[1, 3, 2]]) must be standard
+    """
+    if p.shape() != q.shape():
+        raise ValueError, "p(=%s) and q(=%s) must have the same shape"%(p, q)
+    if not q.is_standard():
+        raise ValueError, "q(=%s) must be standard"%q
+
+    size = p.size()
+    permutation = []
+    d = dict((q[i][j],(i,j)) for i in range(len(q)) for j in range(len(q[i])))
+    p = map(list, p)
+    for n in range(size, 0, -1):
+        i,j = d[n]
+        x = p[i][j]
+        del p[i][j]
+        if len(p[i]) == 0:
+            del p[i]
+        while i > 0:
+            row = p[i-1]
+            y = max(filter(lambda z: z<x, row ))
+            row[row.index(y)] = x
+            x = y
+            i = i-1
+        permutation.insert(0, x)
+    return Permutation(permutation)
 
 class StandardPermutations_descents(CombinatorialClass):
     def __init__(self, d, n):
