@@ -55,8 +55,7 @@ import sage.matrix.matrix_space as matrix_space
 import sage.modules.free_module_element as free_module_element
 import sage.modules.free_module as free_module
 import sage.misc.misc as misc
-import sage.modular.congroup as congroup
-import sage.modular.dims as dims
+import sage.modular.arithgroup.all as arithgroup
 import sage.modular.dirichlet as dirichlet
 import sage.modular.hecke.all as hecke
 import sage.rings.rational_field as rational_field
@@ -107,14 +106,14 @@ class ModularSymbolsAmbient(space.ModularSymbolsSpace, hecke.AmbientHeckeModule)
         weight = int(weight)
         if weight <= 1:
             raise ValueError, "Weight (=%s) Modular symbols of weight <= 1 not defined."%weight
-        if not congroup.is_CongruenceSubgroup(group):
+        if not arithgroup.is_CongruenceSubgroup(group):
             raise TypeError, "group must be a congruence subgroup"
 
         sign = int(sign)
         if not isinstance(base_ring, rings.Ring) and base_ring.is_field():
             raise TypeError, "base_ring must be a commutative ring"
 
-        if character == None and congroup.is_Gamma0(group):
+        if character == None and arithgroup.is_Gamma0(group):
             character = dirichlet.TrivialCharacter(group.level(), base_ring)
 
         space.ModularSymbolsSpace.__init__(self, group, weight,
@@ -1649,7 +1648,7 @@ class ModularSymbolsAmbient_wtk_g0(ModularSymbolsAmbient):
         if not sign in [-1,0,1]:
             raise TypeError, "sign must be an int in [-1,0,1]"
 
-        ModularSymbolsAmbient.__init__(self, weight=k, group=congroup.Gamma0(N),
+        ModularSymbolsAmbient.__init__(self, weight=k, group=arithgroup.Gamma0(N),
                                        sign=sign, base_ring=F)
 
     def _dimension_formula(self):
@@ -1659,9 +1658,9 @@ class ModularSymbolsAmbient_wtk_g0(ModularSymbolsAmbient):
             if k%2 == 1:
                 return 0
             elif k > 2:
-                return 2*dims.dimension_cusp_forms_gamma0(N,k) + dims.c0(N)
+                return 2*self.group().dimension_cusp_forms(k) + self.group().ncusps()
             else:
-                return 2*dims.dimension_cusp_forms_gamma0(N,k) + dims.c0(N)-1
+                return 2*self.group().dimension_cusp_forms(k) + self.group().ncusps() - 1
         else:
             raise NotImplementedError
 
@@ -1677,7 +1676,7 @@ class ModularSymbolsAmbient_wtk_g0(ModularSymbolsAmbient):
                 m = 2
             else:
                 m = 1
-            return m * dims.dimension_cusp_forms_gamma0(N, k)
+            return m * self.group().dimension_cusp_forms(k)
         else:
             raise NotImplementedError
 
@@ -1687,7 +1686,7 @@ class ModularSymbolsAmbient_wtk_g0(ModularSymbolsAmbient):
         M = self.hecke_module_of_level(level)
 
         # 1. Find coset representatives H for Gamma_0(M.level()) \ Gamma_0(self.level())
-        H = congroup.degeneracy_coset_representatives_gamma0(level, N, 1)
+        H = arithgroup.degeneracy_coset_representatives_gamma0(level, N, 1)
         # 2. The map is
         #        [P,pi(g)] |--> sum_{h in H} [P, pi(h*g)]
         #
@@ -1721,7 +1720,7 @@ class ModularSymbolsAmbient_wtk_g0(ModularSymbolsAmbient):
                 m = 2
             else:
                 m = 1
-            return m * dims.dimension_new_cusp_forms_gamma0(N, k)
+            return m * self.group().dimension_new_cusp_forms(k)
         else:
             raise NotImplementedError
 
@@ -1761,7 +1760,7 @@ class ModularSymbolsAmbient_wtk_g0(ModularSymbolsAmbient):
             sage: M.modular_symbols_of_level(12)
             Modular Symbols space of dimension 9 for Gamma_1(12) of weight 2 with sign 0 and over Rational Field
         """
-        return modsym.ModularSymbols(congroup.Gamma0(rings.Integer(N)),
+        return modsym.ModularSymbols(arithgroup.Gamma0(rings.Integer(N)),
                                      self.weight(), sign=self.sign(),
                                      base_ring=self.base_ring())
 
@@ -1846,7 +1845,7 @@ class ModularSymbolsAmbient_wt2_g0(ModularSymbolsAmbient_wtk_g0):
         if self.base_ring().characteristic() == 0:
             N, sign = self.level(), self.sign()
             if sign != 0: return None
-            return 2*dims.dimension_cusp_forms_gamma0(N,2) + dims.c0(N) - 1
+            return 2*self.group().dimension_cusp_forms(2) + self.group().ncusps() - 1
         else:
             raise NotImplementedError
 
@@ -1856,7 +1855,7 @@ class ModularSymbolsAmbient_wt2_g0(ModularSymbolsAmbient_wtk_g0):
                 m = 2
             else:
                 m = 1
-            return m * dims.dimension_cusp_forms_gamma0(self.level(), 2)
+            return m * self.group().dimension_cusp_forms(2)
         else:
             raise NotImplementedError
 
@@ -1866,7 +1865,7 @@ class ModularSymbolsAmbient_wt2_g0(ModularSymbolsAmbient_wtk_g0):
                 m = 2
             else:
                 m = 1
-            return m * dims.dimension_new_cusp_forms_gamma0(self.level(), 2)
+            return m * self.group().dimension_new_cusp_forms(2)
         else:
             raise NotImplementedError
 
@@ -2047,7 +2046,7 @@ class ModularSymbolsAmbient_wtk_g1(ModularSymbolsAmbient):
         """
         ModularSymbolsAmbient.__init__(self,
                 weight=weight,
-                group=congroup.Gamma1(level),
+                group=arithgroup.Gamma1(level),
                 sign=sign,
                 base_ring=F)
 
@@ -2056,7 +2055,7 @@ class ModularSymbolsAmbient_wtk_g1(ModularSymbolsAmbient):
             raise NotImplementedError
         level, weight, sign = self.level(), self.weight(), self.sign()
         if sign != 0: return None
-        d = 2*dims.dimension_cusp_forms_gamma1(level,weight) + dims.c1(level)
+        d = 2*self.group().dimension_cusp_forms(weight) + self.group().ncusps()
         if level == 1 and weight%2 == 1:
             return 0
         if weight == 2:
@@ -2078,20 +2077,20 @@ class ModularSymbolsAmbient_wtk_g1(ModularSymbolsAmbient):
             m = 2
         else:
             m = 1
-        return m * dims.dimension_cusp_forms_gamma1(self.level(), self.weight())
+        return m * self.group().dimension_cusp_forms(self.weight())
 
     def _cuspidal_new_submodule_dimension_formula(self):
         if self.sign() == 0:
             m = 2
         else:
             m = 1
-        return m * dims.dimension_new_cusp_forms_gamma1(self.level(), self.weight())
+        return m * self.group().dimension_new_cusp_forms(self.weight())
 
     def _compute_hecke_matrix_prime_power(self, n, p, r):
         return self._compute_hecke_matrix_prime(n)
 
 ##     def _xxx_degeneracy_raising_matrix(self, M):
-##         R = congroup.degeneracy_coset_representatives_gamma1(M.level(), self.level(), 1)
+##         R = arithgroup.degeneracy_coset_representatives_gamma1(M.level(), self.level(), 1)
 ##         return self._matrix_of_operator_on_modular_symbols(M, R)
 
     def _degeneracy_raising_matrix(self, level):
@@ -2100,7 +2099,7 @@ class ModularSymbolsAmbient_wtk_g1(ModularSymbolsAmbient):
         M = self.hecke_module_of_level(level)
 
         # 1. Find coset representatives H for Gamma_0(M.level()) \ Gamma_0(self.level())
-        H = congroup.degeneracy_coset_representatives_gamma1(M.level(), N, 1)
+        H = arithgroup.degeneracy_coset_representatives_gamma1(M.level(), N, 1)
         # 2. The map is
         #        [P,pi(g)] |--> sum_{h in H} [P, pi(h*g)]
         #
@@ -2150,7 +2149,7 @@ class ModularSymbolsAmbient_wtk_g1(ModularSymbolsAmbient):
         properties (weight, sign, etc.) as this space except with the level
         N.
         """
-        return modsym.ModularSymbols(congroup.Gamma1(N), self.weight(),self.sign(), self.base_ring())
+        return modsym.ModularSymbols(arithgroup.Gamma1(N), self.weight(),self.sign(), self.base_ring())
 
 class ModularSymbolsAmbient_wtk_gamma_h(ModularSymbolsAmbient):
     def __init__(self, group, weight, sign, F):
@@ -2268,7 +2267,7 @@ class ModularSymbolsAmbient_wtk_eps(ModularSymbolsAmbient):
         level = eps.modulus()
         ModularSymbolsAmbient.__init__(self,
                 weight = weight,
-                group = congroup.Gamma1(level),
+                group = arithgroup.Gamma1(level),
                 sign = sign,
                 base_ring = eps.base_ring(),
                 character = eps)
@@ -2285,7 +2284,7 @@ class ModularSymbolsAmbient_wtk_eps(ModularSymbolsAmbient):
             m = 2
         else:
             m = 1
-        return m * dims.dimension_cusp_forms_eps(self.character(), self.weight())
+        return m * self.group().dimension_cusp_forms(self.weight(), eps=self.character())
 
     def _cuspidal_new_submodule_dimension_formula(self):
         if self.base_ring().characteristic() != 0:
@@ -2294,7 +2293,7 @@ class ModularSymbolsAmbient_wtk_eps(ModularSymbolsAmbient):
             m = 2
         else:
             m = 1
-        return m * dims.dimension_new_cusp_forms(self.character(), self.weight())
+        return m * self.group().dimension_new_cusp_forms(self.weight(), eps=self.character())
 
     def _matrix_of_operator_on_modular_symbols(self, codomain, R, character_twist=False):
         """
@@ -2333,7 +2332,7 @@ class ModularSymbolsAmbient_wtk_eps(ModularSymbolsAmbient):
         return M(rows)
 
 ##     def _xxx_degeneracy_raising_matrix(self, M):
-##         R = congroup.degeneracy_coset_representatives_gamma0(M.level(), self.level(), 1)
+##         R = arithgroup.degeneracy_coset_representatives_gamma0(M.level(), self.level(), 1)
 ##         return self._matrix_of_operator_on_modular_symbols(M, R, character_twist = True)
 
     def _degeneracy_raising_matrix(self, level):
@@ -2342,7 +2341,7 @@ class ModularSymbolsAmbient_wtk_eps(ModularSymbolsAmbient):
         M = self.hecke_module_of_level(level)
 
         # 1. Find coset representatives H for Gamma_0(M.level()) \ Gamma_0(self.level())
-        H = congroup.degeneracy_coset_representatives_gamma0(M.level(), N, 1)
+        H = arithgroup.degeneracy_coset_representatives_gamma0(M.level(), N, 1)
         # 2. The map is
         #        [P,pi(g)] |--> sum_{h in H} [P, pi(h*g)]
         #

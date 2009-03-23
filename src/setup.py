@@ -606,6 +606,7 @@ code = setup(name = 'sage',
                      'sage.modules',
 
                      'sage.modular',
+                     'sage.modular.arithgroup',
                      'sage.modular.abvar',
                      'sage.modular.hecke',
                      'sage.modular.modform',
