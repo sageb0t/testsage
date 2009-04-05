@@ -241,7 +241,7 @@ class SpeciesWrapper(CombinatorialClass):
             Structures for Set species with labels [1, 2, 3]
             sage: S.list()
             [{1, 2, 3}]
-            sage: S.count()
+            sage: S.cardinality()
             1
         """
         self._species = species
@@ -251,7 +251,7 @@ class SpeciesWrapper(CombinatorialClass):
         self._name = "%s for %s with labels %s"%(name, species, labels)
         self._structure_class = structure_class if structure_class is not None else species._default_structure_class
 
-    def iterator(self):
+    def __iter__(self):
         """
         EXAMPLES::
 
@@ -271,19 +271,19 @@ class SpeciesWrapper(CombinatorialClass):
 
         #We check to see if the
         try:
-            if self.count() == 0:
+            if self.cardinality() == 0:
                 return iter([])
         except RuntimeError:
             raise NotImplementedError
 
         return getattr(self._species, self._iterator)(self._structure_class, self._labels)
 
-    def count(self):
+    def cardinality(self):
         """
         EXAMPLES::
 
             sage: F = species.SetSpecies()
-            sage: F.structures([1,2,3]).count()
+            sage: F.structures([1,2,3]).cardinality()
             1
         """
         return getattr(self._species, self._generating_series)().count(len(self._labels))

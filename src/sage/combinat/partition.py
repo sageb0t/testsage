@@ -17,7 +17,7 @@ EXAMPLES: There are 5 partitions of the integer 4.
 
 ::
 
-    sage: Partitions(4).count()
+    sage: Partitions(4).cardinality()
     5
     sage: Partitions(4).list()
     [[4], [3, 1], [2, 2], [2, 1, 1], [1, 1, 1, 1]]
@@ -40,14 +40,16 @@ When we are at the last partition, None will be returned.
     sage: Partitions(4).next([1,1,1,1]) is None
     True
 
-We can use the .iterator() method to get an object which iterates
-over the partitions one by one to save memory. Note that when we do
-something like 'for part in Partitions(4)' an iterator is used in
-the background.
+ We can use ``iter`` to get an object which iterates over the partitions one
+ by one to save memory.  Note that when we do something like
+``for part in Partitions(4)`` this iterator is used in the background.
 
 ::
 
-    sage: g = Partitions(4).iterator()
+    sage: g = iter(Partitions(4))
+
+::
+
     sage: g.next()
     [4]
     sage: g.next()
@@ -219,7 +221,7 @@ import sage.combinat.misc as misc
 import sage.combinat.skew_partition
 from sage.rings.integer import Integer
 import __builtin__
-from combinat import CombinatorialClass, CombinatorialObject, cyclic_permutations_iterator
+from combinat import CombinatorialClass, CombinatorialObject, cyclic_permutations_iterator, InfiniteAbstractCombinatorialClass
 import partitions as partitions_ext
 from sage.libs.all import pari
 import tableau
@@ -1963,8 +1965,8 @@ class Partition_class(CombinatorialObject):
 def number_of_partitions_list(n,k=None):
     r"""
     This function will be deprecated in a future version of Sage and
-    eventually removed. Use Partitions(n).count() or Partitions(n,
-    length=k).count() instead.
+    eventually removed. Use Partitions(n).cardinality() or Partitions(n,
+    length=k).cardinality() instead.
 
     Original docstring follows.
 
@@ -2100,13 +2102,13 @@ class OrderedPartitions_nk(CombinatorialClass):
         result.reverse()
         return result
 
-    def count(self):
+    def cardinality(self):
         """
         EXAMPLES::
 
-            sage: OrderedPartitions(3).count()
+            sage: OrderedPartitions(3).cardinality()
             4
-            sage: OrderedPartitions(3,2).count()
+            sage: OrderedPartitions(3,2).cardinality()
             2
         """
         n = self.n
@@ -2343,16 +2345,16 @@ class RestrictedPartitions_nsk(CombinatorialClass):
         result.reverse()
         return [Partition(p) for p in result]
 
-    def count(self):
+    def cardinality(self):
         """
         Returns the size of RestrictedPartitions(n,S,k). Wraps GAP's
         NrRestrictedPartitions.
 
         EXAMPLES::
 
-            sage: RestrictedPartitions(8,[1,3,5,7]).count()
+            sage: RestrictedPartitions(8,[1,3,5,7]).cardinality()
             6
-            sage: RestrictedPartitions(8,[1,3,5,7],2).count()
+            sage: RestrictedPartitions(8,[1,3,5,7],2).cardinality()
             2
         """
         n = self.n
@@ -2432,7 +2434,7 @@ class PartitionTuples_nk(CombinatorialClass):
         """
         return "%s-tuples of partitions of %s"%(self.k, self.n)
 
-    def iterator(self):
+    def __iter__(self):
         r"""
         Returns an iterator for all k-tuples of partitions which together
         form a partition of n.
@@ -2453,7 +2455,7 @@ class PartitionTuples_nk(CombinatorialClass):
             for cp in CartesianProduct(*[p[i] for i in iv]):
                 yield cp
 
-    def count(self):
+    def cardinality(self):
         r"""
         Returns the number of k-tuples of partitions which together form a
         partition of n.
@@ -2462,9 +2464,9 @@ class PartitionTuples_nk(CombinatorialClass):
 
         EXAMPLES::
 
-            sage: PartitionTuples(3,2).count()
+            sage: PartitionTuples(3,2).cardinality()
             10
-            sage: PartitionTuples(8,2).count()
+            sage: PartitionTuples(8,2).cardinality()
             185
 
         Now we compare that with the result of the following GAP
@@ -2715,7 +2717,7 @@ class Partitions_constraints(IntegerListsLex):
         constraints.update(data['constraints'])
         self.__init__(n, **constraints)
 
-class Partitions_all(CombinatorialClass):
+class Partitions_all(InfiniteAbstractCombinatorialClass):
     def __init__(self):
         """
         TESTS::
@@ -2728,13 +2730,13 @@ class Partitions_all(CombinatorialClass):
 
     object_class = Partition_class
 
-    def count(self):
+    def cardinality(self):
         """
         Returns the number of integer partitions.
 
         EXAMPLES::
 
-            sage: Partitions().count()
+            sage: Partitions().cardinality()
             +Infinity
         """
         return infinity
@@ -2784,16 +2786,18 @@ class Partitions_all(CombinatorialClass):
         """
         return "Partitions"
 
-    def list(self):
+    def _infinite_cclass_slice(self, n):
         """
-        EXAMPLES::
+        Needed by InfiniteAbstractCombinatorialClass to buid __iter__.
 
-            sage: Partitions().list()
-            Traceback (most recent call last):
-            ...
-            NotImplementedError
-        """
-        raise NotImplementedError
+        TESTS:
+            sage: Partitions()._infinite_cclass_slice(4) == Partitions(4)
+            True
+            sage: it = iter(Partitions())    # indirect doctest
+            sage: [it.next() for i in range(10)]
+            [[], [1], [2], [1, 1], [3], [2, 1], [1, 1, 1], [4], [3, 1], [2, 2]]
+         """
+        return Partitions_n(n)
 
 class Partitions_n(CombinatorialClass):
     object_class = Partition_class
@@ -2830,7 +2834,7 @@ class Partitions_n(CombinatorialClass):
         """
         return "Partitions of the integer %s"%self.n
 
-    def count(self, algorithm='default'):
+    def cardinality(self, algorithm='default'):
         r"""
         INPUT:
 
@@ -2866,30 +2870,30 @@ class Partitions_n(CombinatorialClass):
             [[5], [4, 1], [3, 2], [3, 1, 1], [2, 2, 1], [2, 1, 1, 1], [1, 1, 1, 1, 1]]
             sage: len(v)
             7
-            sage: Partitions(5).count(algorithm='gap')
+            sage: Partitions(5).cardinality(algorithm='gap')
             7
-            sage: Partitions(5).count(algorithm='pari')
+            sage: Partitions(5).cardinality(algorithm='pari')
             7
-            sage: Partitions(5).count(algorithm='bober')
+            sage: Partitions(5).cardinality(algorithm='bober')
             7
 
         The input must be a nonnegative integer or a ValueError is raised.
 
         ::
 
-            sage: Partitions(10).count()
+            sage: Partitions(10).cardinality()
             42
-            sage: Partitions(3).count()
+            sage: Partitions(3).cardinality()
             3
-            sage: Partitions(10).count()
+            sage: Partitions(10).cardinality()
             42
-            sage: Partitions(3).count(algorithm='pari')
+            sage: Partitions(3).cardinality(algorithm='pari')
             3
-            sage: Partitions(10).count(algorithm='pari')
+            sage: Partitions(10).cardinality(algorithm='pari')
             42
-            sage: Partitions(40).count()
+            sage: Partitions(40).cardinality()
             37338
-            sage: Partitions(100).count()
+            sage: Partitions(100).cardinality()
             190569292
 
         A generating function for p(n) is given by the reciprocal of
@@ -2905,7 +2909,7 @@ class Partitions_n(CombinatorialClass):
             sage: q = PowerSeriesRing(QQ, 'q', default_prec=9).gen()
             sage: prod([(1-q^k)^(-1) for k in range(1,9)])  ## partial product of
             1 + q + 2*q^2 + 3*q^3 + 5*q^4 + 7*q^5 + 11*q^6 + 15*q^7 + 22*q^8 + O(q^9)
-            sage: [Partitions(k) .count()for k in range(2,10)]
+            sage: [Partitions(k) .cardinality()for k in range(2,10)]
             [2, 3, 5, 7, 11, 15, 22, 30]
 
         REFERENCES:
@@ -2939,9 +2943,9 @@ class Partitions_n(CombinatorialClass):
 
         return Partition_class([1]*self.n)
 
-    def iterator(self):
+    def __iter__(self):
         """
-        An iterator a list of the partitions of n.
+        An iterator for the partitions of n.
 
         EXAMPLES::
 
@@ -3763,7 +3767,7 @@ def partitions_restricted(n,S,k=None):
 def number_of_partitions_restricted(n,S,k=None):
     """
     This function will be deprecated in a future version of Sage and
-    eventually removed. Use RestrictedPartitions(n, S, k).count()
+    eventually removed. Use RestrictedPartitions(n, S, k).cardinality()
     instead.
 
     Original docstring follows.

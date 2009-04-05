@@ -140,7 +140,7 @@ def IntegerVectors(n=None, k=None, **kwargs):
 
         sage: IV53 = IntegerVectors(5,3); IV53
         Integer vectors of length 3 that sum to 5
-        sage: IV53.count()
+        sage: IV53.cardinality()
         21
         sage: IV53.first()
         [5, 0, 0]
@@ -198,15 +198,15 @@ class IntegerVectors_all(CombinatorialClass):
             sage: IntegerVectors().list()
             Traceback (most recent call last):
             ...
-            NotImplementedError
+            NotImplementedError: infinite list
         """
-        raise NotImplementedError
+        raise NotImplementedError, "infinite list"  # can't use InfiniteAbstractCombinatorialClass
 
-    def count(self):
+    def cardinality(self):
         """
         EXAMPLES::
 
-            sage: IntegerVectors().count()
+            sage: IntegerVectors().cardinality()
             +Infinity
         """
         return infinity
@@ -289,7 +289,7 @@ class IntegerVectors_nk(CombinatorialClass):
         res = self._list_rec(self.n, self.k)
         return map(list, res)
 
-    def iterator(self):
+    def __iter__(self):
         """
         EXAMPLE::
 
@@ -451,15 +451,15 @@ class IntegerVectors_nkconstraints(CombinatorialClass):
 
         return True
 
-    def count(self):
+    def cardinality(self):
         """
         EXAMPLES::
 
-            sage: IntegerVectors(3,3, min_part=1).count()
+            sage: IntegerVectors(3,3, min_part=1).cardinality()
             1
-            sage: IntegerVectors(5,3, min_part=1).count()
+            sage: IntegerVectors(5,3, min_part=1).cardinality()
             6
-            sage: IntegerVectors(13, 4, min_part=2, max_part=4).count()
+            sage: IntegerVectors(13, 4, min_part=2, max_part=4).cardinality()
             16
         """
         if not self.constraints:
@@ -543,7 +543,7 @@ class IntegerVectors_nkconstraints(CombinatorialClass):
         """
         return integer_list.next(x, *self._parameters())
 
-    def iterator(self):
+    def __iter__(self):
         """
         EXAMPLES::
 
@@ -591,11 +591,11 @@ class IntegerVectors_nkconstraints(CombinatorialClass):
         ::
 
             sage: iv = [ IntegerVectors(n,k) for n in range(-2, 7) for k in range(7) ]
-            sage: all(map(lambda x: x.count() == len(x.list()), iv))
+            sage: all(map(lambda x: x.cardinality() == len(x.list()), iv))
             True
             sage: essai = [[1,1,1], [2,5,6], [6,5,2]]
             sage: iv = [ IntegerVectors(x[0], x[1], max_part = x[2]-1) for x in essai ]
-            sage: all(map(lambda x: x.count() == len(x.list()), iv))
+            sage: all(map(lambda x: x.cardinality() == len(x.list()), iv))
             True
         """
         return integer_list.iterator(self.n, *self._parameters())
@@ -639,14 +639,19 @@ class IntegerVectors_nconstraints(IntegerVectors_nkconstraints):
         else:
             return x in IntegerVectors_all() and sum(x) == self.n
 
-    def count(self):
+    def cardinality(self):
         """
         EXAMPLES::
 
-            sage: IntegerVectors(3).count()
+            sage: IntegerVectors(3, max_length=2).cardinality()
+            4
+            sage: IntegerVectors(3).cardinality()
             +Infinity
         """
-        return infinity
+        if 'max_length' not in self.constraints:
+            return infinity
+        else:
+            return self._CombinatorialClass__cardinality_from_iterator()
 
     def list(self):
         """
@@ -660,9 +665,9 @@ class IntegerVectors_nconstraints(IntegerVectors_nkconstraints):
             NotImplementedError: infinite list
         """
         if 'max_length' not in self.constraints:
-            raise NotImplementedError, "infinite list"
+            raise NotImplementedError, "infinite list" # no list from infinite iter
         else:
-            return list(self.iterator())
+            return list(self)
 
 class IntegerVectors_nnondescents(CombinatorialClass):
     r"""
@@ -702,7 +707,7 @@ class IntegerVectors_nnondescents(CombinatorialClass):
         """
         return "Integer vectors of %s with non-descents composition %s"%(self.n, self.comp)
 
-    def iterator(self):
+    def __iter__(self):
         """
          TESTS::
 
@@ -752,7 +757,7 @@ class IntegerVectors_nnondescents(CombinatorialClass):
              [[0, 0, 0, 0, 0]]
          """
         for iv in IntegerVectors(self.n, len(self.comp)):
-            blocks = [ IntegerVectors(iv[i], self.comp[i], max_slope=0).iterator() for i in range(len(self.comp))]
+            blocks = [ IntegerVectors(iv[i], self.comp[i], max_slope=0).__iter__() for i in range(len(self.comp))]
             for parts in cartesian_product.CartesianProduct(*blocks):
                 res = []
                 for part in parts:

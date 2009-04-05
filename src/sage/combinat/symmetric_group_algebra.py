@@ -395,7 +395,7 @@ def kappa(alpha):
         n = alpha.size()
     except AttributeError:
         n = sum(alpha)
-    return factorial(n)/StandardTableaux(alpha).count()
+    return factorial(n)/StandardTableaux(alpha).cardinality()
 
 e_cache = {}
 def e(tableau, star=0):
