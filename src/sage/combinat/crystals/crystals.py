@@ -67,7 +67,7 @@ documentations)::
     sage: Tens = TensorProductOfCrystals(C, C)
     sage: Spin = CrystalOfSpins(['B', 3])
     sage: Tab  = CrystalOfTableaux(['A', 3], shape = [2,1,1])
-    sage: Fast  = FastCrystal(['B', 2], shape = [3/2, 1/2])
+    sage: Fast = FastCrystal(['B', 2], shape = [3/2, 1/2])
 
 One can get (currently) crude plotting via::
 
@@ -148,7 +148,7 @@ class Crystal(CombinatorialClass, Parent):
     r"""
     The abstract class of crystals
 
-    instances of this class should have the following attributes:
+    Instances of this class should have the following methods:
 
     -  cartan_type
 
@@ -172,6 +172,17 @@ class Crystal(CombinatorialClass, Parent):
             Ambient space of the Root system of type ['A', 5]
         """
         return self.cartan_type.root_system().ambient_space()
+
+    def index_set(self):
+	"""
+	Returns the index set of the Dynkin diagram underlying the given crystal
+
+	EXAMPLES:
+	    sage: C = CrystalOfLetters(['A', 5])
+	    sage: C.index_set()
+	    [1, 2, 3, 4, 5]
+        """
+	return self.cartan_type.index_set()
 
     def Lambda(self):
         """
@@ -237,7 +248,7 @@ class Crystal(CombinatorialClass, Parent):
         todo = result.copy()
         while len(todo) > 0:
             x = todo.pop()
-            for i in self.index_set:
+            for i in self.index_set():
                 y = x.f(i)
                 if y == None or y in result:
                     continue
@@ -259,7 +270,7 @@ class Crystal(CombinatorialClass, Parent):
         d = {}
         for x in self:
             d[x] = {}
-            for i in self.index_set:
+            for i in self.index_set():
                 child = x.f(i)
                 if child is None:
                     continue
@@ -560,7 +571,7 @@ class Crystal(CombinatorialClass, Parent):
         for x in self:
             result += "  " + vertex_key(x) + " [ label = \" \", texlbl = \"$"+quoted_latex(x)+"$\" ];\n"
         for x in self:
-            for i in self.index_set:
+            for i in self.index_set():
                 child = x.f(i)
                 if child is None:
                     continue
@@ -602,7 +613,7 @@ class CrystalElement(Element):
             sage: C(1).index_set()
             [1, 2, 3, 4, 5]
         """
-        return self._parent.index_set
+        return self._parent.index_set()
 
     def weight(self):
         """
@@ -822,7 +833,7 @@ class CrystalBacktracker(GenericBacktracker):
             return
 
         # Run through the children y of x
-        for i in self._crystal.index_set:
+        for i in self._crystal.index_set():
             y = x.f(i)
             if y is None:
                 continue
@@ -960,9 +971,3 @@ class ClassicalCrystal(Crystal):
         """
         return sum(self.weight_lattice_realization().weyl_dimension(x.weight())
                    for x in self.highest_weight_vectors())
-
-class AffineCrystal(Crystal):
-    r"""
-    The abstract class of affine crystals
-    """
-    pass

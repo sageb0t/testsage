@@ -98,7 +98,6 @@ class ClassicalCrystalOfLetters(ClassicalCrystal):
         """
         self.cartan_type = CartanType(cartan_type)
         self._name = "The crystal of letters for type %s"%cartan_type
-        self.index_set = self.cartan_type.index_set()
         self.element_class = element_class
         self.module_generators = [self(1)]
         self._list = ClassicalCrystal.list(self)
@@ -159,10 +158,10 @@ class ClassicalCrystalOfLetters(ClassicalCrystal):
         """
         return x in self._list
 
-    def cmp_elements(self, x, y):
+    def lt_elements(self, x, y):
         r"""
         Returns True if and only if there is a path from x to y in the
-        crystal graph.
+        crystal graph, when x is not equal to y.
 
         Because the crystal graph is classical, it is a directed acyclic
         graph which can be interpreted as a poset. This function implements
@@ -173,22 +172,22 @@ class ClassicalCrystalOfLetters(ClassicalCrystal):
             sage: C = CrystalOfLetters(['A', 5])
             sage: x = C(1)
             sage: y = C(2)
-            sage: C.cmp_elements(x,y)
-            -1
-            sage: C.cmp_elements(y,x)
-            1
-            sage: C.cmp_elements(x,x)
-            0
+            sage: C.lt_elements(x,y)
+            True
+            sage: C.lt_elements(y,x)
+            False
+            sage: C.lt_elements(x,x)
+            False
+	    sage: C = CrystalOfLetters(['D', 4])
+	    sage: C.lt_elements(C(4),C(-4))
+	    False
+	    sage: C.lt_elements(C(-4),C(4))
+	    False
         """
         assert x.parent() == self and y.parent() == self
         if self._digraph_closure.has_edge(x,y):
-            return -1
-        elif self._digraph_closure.has_edge(y,x):
-            return 1
-        else:
-            return 0
-
-    # TODO: cmp, in, ...
+            return True
+	return False
 
 # Utility. Note: much of this class should be factored out at some point!
 class Letter(Element):
@@ -252,25 +251,95 @@ class Letter(Element):
                self.parent() == other.parent() and \
                self.value == other.value
 
-    def __cmp__(self, other):
-        """
-        EXAMPLES::
+    def __ne__(self, other):
+	"""
+	EXAMPLES::
 
-            sage: C = CrystalOfLetters(['A', 5])
-            sage: C(1) < C(2)
-            True
-            sage: C(2) < C(1)
-            False
-            sage: C(2) > C(1)
-            True
-            sage: C(1) <= C(1)
-            True
+	    sage: C = CrystalOfLetters(['B', 3])
+	    sage: C(0) <> C(0)
+	    False
+	    sage: C(1) <> C(-1)
+	    True
         """
-        if type(self) is not type(other):
-            return cmp(type(self), type(other))
-        if self.parent() != other.parent():
-            return cmp(self.parent(), other.parent())
-        return self.parent().cmp_elements(self, other)
+	return not self == other
+
+    def __lt__(self, other):
+	"""
+	EXAMPLES::
+
+	    sage: C = CrystalOfLetters(['D', 4])
+	    sage: C(-4) < C(4)
+	    False
+	    sage: C(4) < C(-3)
+	    True
+	    sage: C(4) < C(4)
+	    False
+        """
+	return self.parent().lt_elements(self, other)
+
+    def __gt__(self, other):
+	"""
+	EXAMPLES::
+
+	    sage: C = CrystalOfLetters(['D', 4])
+	    sage: C(-4) > C(4)
+	    False
+	    sage: C(4) > C(-3)
+	    False
+	    sage: C(4) < C(4)
+	    False
+	    sage: C(-1) > C(1)
+	    True
+        """
+	return other.__lt__(self)
+
+    def __le__(self, other):
+	"""
+	EXAMPLES::
+
+	    sage: C = CrystalOfLetters(['D', 4])
+	    sage: C(-4) <= C(4)
+	    False
+	    sage: C(4) <= C(-3)
+	    True
+	    sage: C(4) <= C(4)
+	    True
+        """
+	return self.__lt__(other) or self == other
+
+    def __ge__(self, other):
+	"""
+	EXAMPLES::
+
+	    sage: C = CrystalOfLetters(['D', 4])
+	    sage: C(-4) >= C(4)
+	    False
+	    sage: C(4) >= C(-3)
+	    False
+	    sage: C(4) >= C(4)
+	    True
+        """
+	return other.__le__(self)
+
+#    def __cmp__(self, other):
+#        """
+#        EXAMPLES::
+#
+#            sage: C = CrystalOfLetters(['A', 5])
+#            sage: C(1) < C(2)
+#            True
+#            sage: C(2) < C(1)
+#            False
+#            sage: C(2) > C(1)
+#            True
+#            sage: C(1) <= C(1)
+#            True
+#        """
+#        if type(self) is not type(other):
+#            return cmp(type(self), type(other))
+#        if self.parent() != other.parent():
+#            return cmp(self.parent(), other.parent())
+#        return self.parent().cmp_elements(self, other)
 
 #########################
 # Type A
@@ -321,7 +390,7 @@ class Crystal_of_letters_type_A_element(Letter, CrystalElement):
         EXAMPLES::
 
             sage: C = CrystalOfLetters(['A',4])
-            sage: [[c,i,c.e(i)] for i in C.index_set for c in C if c.e(i) is not None]
+            sage: [[c,i,c.e(i)] for i in C.index_set() for c in C if c.e(i) is not None]
             [[2, 1, 1], [3, 2, 2], [4, 3, 3], [5, 4, 4]]
         """
         assert i in self.index_set()
@@ -337,7 +406,7 @@ class Crystal_of_letters_type_A_element(Letter, CrystalElement):
         EXAMPLES::
 
             sage: C = CrystalOfLetters(['A',4])
-            sage: [[c,i,c.f(i)] for i in C.index_set for c in C if c.f(i) is not None]
+            sage: [[c,i,c.f(i)] for i in C.index_set() for c in C if c.f(i) is not None]
             [[1, 1, 2], [2, 2, 3], [3, 3, 4], [4, 4, 5]]
         """
         assert i in self.index_set()
@@ -390,7 +459,7 @@ class Crystal_of_letters_type_B_element(Letter, CrystalElement):
         EXAMPLES::
 
             sage: C = CrystalOfLetters(['B',4])
-            sage: [[c,i,c.e(i)] for i in C.index_set for c in C if c.e(i) is not None]
+            sage: [[c,i,c.e(i)] for i in C.index_set() for c in C if c.e(i) is not None]
             [[2, 1, 1],
              [-1, 1, -2],
              [3, 2, 2],
@@ -420,7 +489,7 @@ class Crystal_of_letters_type_B_element(Letter, CrystalElement):
         EXAMPLES::
 
             sage: C = CrystalOfLetters(['B',4])
-            sage: [[c,i,c.f(i)] for i in C.index_set for c in C if c.f(i) is not None]
+            sage: [[c,i,c.f(i)] for i in C.index_set() for c in C if c.f(i) is not None]
             [[1, 1, 2],
              [-2, 1, -1],
              [2, 2, 3],
@@ -490,7 +559,7 @@ class Crystal_of_letters_type_C_element(Letter, CrystalElement):
         EXAMPLES::
 
             sage: C = CrystalOfLetters(['C',4])
-            sage: [[c,i,c.e(i)] for i in C.index_set for c in C if c.e(i) is not None]
+            sage: [[c,i,c.e(i)] for i in C.index_set() for c in C if c.e(i) is not None]
             [[2, 1, 1],
              [-1, 1, -2],
              [3, 2, 2],
@@ -514,7 +583,7 @@ class Crystal_of_letters_type_C_element(Letter, CrystalElement):
         EXAMPLES::
 
             sage: C = CrystalOfLetters(['C',4])
-            sage: [[c,i,c.f(i)] for i in C.index_set for c in C if c.f(i) is not None]
+            sage: [[c,i,c.f(i)] for i in C.index_set() for c in C if c.f(i) is not None]
             [[1, 1, 2],
              [-2, 1, -1],
              [2, 2, 3],
@@ -578,7 +647,7 @@ class Crystal_of_letters_type_D_element(Letter, CrystalElement):
         EXAMPLES::
 
             sage: C = CrystalOfLetters(['D',5])
-            sage: [[c,i,c.e(i)] for i in C.index_set for c in C if c.e(i) is not None]
+            sage: [[c,i,c.e(i)] for i in C.index_set() for c in C if c.e(i) is not None]
             [[2, 1, 1],
              [-1, 1, -2],
              [3, 2, 2],
@@ -612,7 +681,7 @@ class Crystal_of_letters_type_D_element(Letter, CrystalElement):
         EXAMPLES::
 
             sage: C = CrystalOfLetters(['D',5])
-            sage: [[c,i,c.f(i)] for i in C.index_set for c in C if c.f(i) is not None]
+            sage: [[c,i,c.f(i)] for i in C.index_set() for c in C if c.f(i) is not None]
             [[1, 1, 2],
              [-2, 1, -1],
              [2, 2, 3],
@@ -687,7 +756,7 @@ class Crystal_of_letters_type_G_element(Letter, CrystalElement):
         EXAMPLES::
 
             sage: C = CrystalOfLetters(['G',2])
-            sage: [[c,i,c.e(i)] for i in C.index_set for c in C if c.e(i) is not None]
+            sage: [[c,i,c.e(i)] for i in C.index_set() for c in C if c.e(i) is not None]
             [[2, 1, 1],
              [0, 1, 3],
              [-3, 1, 0],
@@ -722,7 +791,7 @@ class Crystal_of_letters_type_G_element(Letter, CrystalElement):
         EXAMPLES::
 
             sage: C = CrystalOfLetters(['G',2])
-            sage: [[c,i,c.f(i)] for i in C.index_set for c in C if c.f(i) is not None]
+            sage: [[c,i,c.f(i)] for i in C.index_set() for c in C if c.f(i) is not None]
             [[1, 1, 2],
              [3, 1, 0],
              [0, 1, -3],
