@@ -486,7 +486,7 @@ cdef class RealDoubleField_class(Field):
         EXAMPLES::
 
             sage: RDF.NaN()
-            nan
+            NaN
         """
         return self(0)/self(0)
 
@@ -495,7 +495,7 @@ cdef class RealDoubleField_class(Field):
         EXAMPLES::
 
             sage: RDF.nan()
-            nan
+            NaN
         """
         return self(0)/self(0)
 
@@ -1382,7 +1382,7 @@ cdef class RealDoubleElement(FieldElement):
         EXAMPLES::
 
             sage: RDF.NaN()
-            nan
+            NaN
         """
         return self(0)/self(0)
 
@@ -1391,7 +1391,7 @@ cdef class RealDoubleElement(FieldElement):
         EXAMPLES::
 
             sage: RDF.nan()
-            nan
+            NaN
         """
         return self(0)/self(0)
 
