@@ -1305,7 +1305,7 @@ class BrandtModuleElement(HeckeModuleElement):
         EXAMPLES::
 
             sage: B = BrandtModule(11)
-            sage: B.0 + B.1
+            sage: B.0 + B.1 # indirect doctest
             (1, 1)
         """
         return BrandtModuleElement(self.parent(), self.element() + right.element())
@@ -1315,7 +1315,7 @@ class BrandtModuleElement(HeckeModuleElement):
         EXAMPLES::
 
             sage: B = BrandtModule(11)
-            sage: B.0 - B.1
+            sage: B.0 - B.1 # indirect doctest
             (1, -1)
         """
         return BrandtModuleElement(self.parent(), self.element() - right.element())
@@ -1325,7 +1325,7 @@ class BrandtModuleElement(HeckeModuleElement):
         EXAMPLES::
 
             sage: B = BrandtModule(11)
-            sage: -B.0
+            sage: -B.0 # indirect doctest
             (-1, 0)
         """
         return BrandtModuleElement(self.parent(), -self.element())
