@@ -3354,6 +3354,13 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
         discriminant of the quadratic field over which they are
         isomorphic.
 
+        .. note::
+
+        If there is more than one curve with minimal conductor, the
+        one returned is the one with smallest label (if in the
+        database), or the one with minimal `a`-invariant list
+        (otherwise).
+
         EXAMPLES::
 
             sage: E = EllipticCurve('121d1')
