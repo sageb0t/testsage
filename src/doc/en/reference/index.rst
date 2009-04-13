@@ -70,6 +70,7 @@ Contents:
    matrices
    modules
    geometry
+   homology
    lfunctions
    schemes
    plane_curves
