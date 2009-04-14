@@ -1719,6 +1719,7 @@ jsMath.styles = {
          jsMath.Extension.Require("verb");
          jsMath.Extension.Require("moreArrows");
          jsMath.Extension.Require("AMSmath");
+         jsMath.Extension.Require("AMSsymbols");
 </script>'''
 
         # import latex macros
