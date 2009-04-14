@@ -555,7 +555,7 @@ a.left_panel_hide:hover {
 
 span.X {
    color:white;
-   font-family:arial monospace;
+   font-family:arial, monospace;
    font-weight:bold;
    cursor:pointer;
 }
@@ -1046,7 +1046,7 @@ div.cell_input_active {
   margin-bottom:0px;
   line-height:1.2em;
   width: 97%;
-  zIndex: -100;
+  z-index: -100;
   visibility: hidden;
   position: absolute;
 }
