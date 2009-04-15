@@ -4,7 +4,7 @@ Manin symbols
 This module defines the class ManinSymbol.  A Manin Symbol of
 weight `k`, level `N` has the form `[P(X,Y),(u:v)]` where
 `P(X,Y)\in\mathbb{Z}[X,Y]` is homogeneous of weight `k-2` and
-`(u:v)\in\mathbb{P}^1(\mathbb{Z}/N\mathbb{Z})`.  The ManinSymbol class
+`(u:v)\in\mathbb{P}^1(\mathbb{Z}/N\mathbb{Z}).`  The ManinSymbol class
 holds a "monomial Manin Symbol" of the simpler form
 `[X^iY^{k-2-i},(u:v)]`, which is stored as a triple `(i,u,v)`; the
 weight and level are obtained from the parent structure, which is a
@@ -261,7 +261,7 @@ class ManinSymbolList(SageObject):
 
         OUTPUT:
 
-        -  ``int`` - the index of the normalized Manin symbol equivalent to `(i,u,v)`.
+        (``int``) the index of the normalized Manin symbol equivalent to `(i,u,v)`.
 
         EXAMPLES::
 
@@ -288,7 +288,8 @@ class ManinSymbolList(SageObject):
 
         OUTPUT:
 
-        -  list of ``ManinSymbol`` - a copy of the complete list of Manin symbols.
+        a list of ``ManinSymbol`` objects, which is a copy of the complete list
+        of Manin symbols.
 
         EXAMPLES::
 
@@ -327,7 +328,7 @@ class ManinSymbolList(SageObject):
 
         OUTPUT:
 
-        -  ``ManinSymbol`` - the `i`'th Manin symbol in the list.
+        ``ManinSymbol`` - the `i`'th Manin symbol in the list.
 
         EXAMPLES::
 
@@ -367,7 +368,7 @@ class ManinSymbolList(SageObject):
 
         OUTPUT:
 
-        -  ``integer`` - the weight of the Manin symbols in the list.
+        ``integer`` - the weight of the Manin symbols in the list.
 
         EXAMPLES::
 
@@ -457,13 +458,13 @@ class ManinSymbolList_group(ManinSymbolList):
 
         INPUT:
 
-        - `j` - (int) a symbol index
+        - ``j`` - (int) a symbol index
 
         OUTPUT:
 
-        (k, s) where k is the index of the symbol obtained by acting
-        on the `j`'th symbol with `S`, and `s` is the parity of of the
-        `j`'th symbol.
+        ``(k, s)`` where k is the index of the symbol obtained by acting on the
+        `j`'th symbol with `S`, and `s` is the parity of of the `j`'th symbol
+        (a Python ``int``, either 1 or -1).
 
         EXAMPLE::
 
@@ -501,13 +502,13 @@ class ManinSymbolList_group(ManinSymbolList):
 
         INPUT:
 
-        - `j` - (int) a symbol index
+        - ``j`` - (int) a symbol index
 
         OUTPUT:
 
-        (k, s) where k is the index of the symbol obtained by acting
-        on the `j`'th symbol with `I`, and `s` is the parity of of the
-        `j`'th symbol.
+        ``(k, s)`` where k is the index of the symbol obtained by acting on the
+        `j`'th symbol with `I`, and `s` is the parity of of the `j`'th symbol
+        (a Python ``int``, either 1 or -1)
 
         EXAMPLE::
 
@@ -540,7 +541,7 @@ class ManinSymbolList_group(ManinSymbolList):
 
         INPUT:
 
-        - `j` - (int) a symbol index
+        - ``j`` - (int) a symbol index
 
         OUTPUT: see documentation for apply()
 
@@ -582,7 +583,7 @@ class ManinSymbolList_group(ManinSymbolList):
 
         INPUT:
 
-        - `j` - (int) a symbol index
+        - ``j`` - (int) a symbol index
 
         OUTPUT: see documentation for apply()
 
@@ -619,25 +620,23 @@ class ManinSymbolList_group(ManinSymbolList):
         return z
 
     def apply(self, j, m):
-        """
+        r"""
         Apply the matrix `m=[a,b;c,d]` to the `j`-th Manin symbol.
 
         INPUT:
 
-        - `j` - (int) a symbol index
+        - ``j`` - (int) a symbol index
 
-        - m = [a, b, c, d] a list of 4
-           integers, which defines a 2x2 matrix.
+        - ``m = [a, b, c, d]`` a list of 4 integers, which defines a 2x2 matrix.
 
         OUTPUT:
 
-        - ``list`` - a list of pairs (j_i, alpha_i), where each
-           alpha_i is a nonzero integer, j_i is an integer (index of
-           the j_i-th Manin symbol), and the sum alpha_i\*x_j_i is the
-           image of the j-th Manin symbol under the right action of
-           the matrix [a,b;c,d].  Here the right action of g=[a,b;c,d]
-           on a Manin symbol [P(X,Y),(u,v)] is
-           [P(aX+bY,cX+dY),(u,v)\*g].
+        a list of pairs `(j_i, \alpha_i)`, where each `\alpha_i` is a nonzero
+        integer, `j_i` is an integer (index of the `j_i`-th Manin symbol), and
+        `\sum_i \alpha_i\*x_{j_i}` is the image of the j-th Manin symbol under
+        the right action of the matrix [a,b;c,d]. Here the right action of
+        g=[a,b;c,d] on a Manin symbol `[P(X,Y),(u,v)]` is
+        `[P(aX+bY,cX+dY),(u,v)\*g]`.
 
         EXAMPLE::
 
@@ -668,7 +667,8 @@ class ManinSymbolList_group(ManinSymbolList):
 
         OUTPUT:
 
-        - ``(i,u,v)`` - (3-tuple of ints) another tuple defining the associated normalized ManinSymbol.
+        ``(i,u,v)`` - (3-tuple of ints) another tuple defining the associated
+        normalized ManinSymbol.
 
         EXAMPLE::
 
@@ -695,9 +695,9 @@ class ManinSymbolList_gamma0(ManinSymbolList_group):
 
     INPUT:
 
-    ``level`` - (integer): the level.
+    - ``level`` - (integer): the level.
 
-    ``weight`` - (integer): the weight.
+    - ``weight`` - (integer): the weight.
 
     EXAMPLE::
 
@@ -721,6 +721,8 @@ class ManinSymbolList_gamma0(ManinSymbolList_group):
             sage: M11 = ManinSymbolList_gamma0(11,2)
             sage: M11
             Manin Symbol List of weight 2 for Gamma0(11)
+            sage: M11 == loads(dumps(M11))
+            True
         """
         ManinSymbolList_group.__init__(self, level, weight, p1list.P1List(level))
 
@@ -745,9 +747,9 @@ class ManinSymbolList_gamma1(ManinSymbolList_group):
 
     INPUT:
 
-    ``level`` - (integer): the level.
+    - ``level`` - (integer): the level.
 
-    ``weight`` - (integer): the weight.
+    - ``weight`` - (integer): the weight.
 
     EXAMPLE::
 
@@ -765,6 +767,8 @@ class ManinSymbolList_gamma1(ManinSymbolList_group):
         Manin Symbol List of weight 4 for Gamma1(6)
         sage: len(m)
         72
+        sage: m == loads(dumps(m))
+        True
     """
     def __init__(self, level, weight):
         """
@@ -799,9 +803,9 @@ class ManinSymbolList_gamma_h(ManinSymbolList_group):
 
     INPUT:
 
-    ``group`` - (integer): the congruence subgroup.
+    - ``group`` - (integer): the congruence subgroup.
 
-    ``weight`` - (integer): the weight.
+    - ``weight`` - (integer): the weight.
 
     EXAMPLE::
 
@@ -822,6 +826,8 @@ class ManinSymbolList_gamma_h(ManinSymbolList_group):
         (1,97)]
         sage: len(m.manin_symbol_list())
         2016
+        sage: m == loads(dumps(m))
+        True
     """
     def __init__(self, group, weight):
         r"""
@@ -878,6 +884,8 @@ class ManinSymbolList_character(ManinSymbolList):
         Manin Symbol List of weight 2 for Gamma1(4) with character [-1]
         sage: m.manin_symbol_list()
         [(0,1), (1,0), (1,1), (1,2), (1,3), (2,1)]
+        sage: m == loads(dumps(m))
+        True
     """
     def __init__(self, character, weight):
         """
@@ -998,11 +1006,11 @@ class ManinSymbolList_character(ManinSymbolList):
 
         INPUT:
 
-        - `j` - (integer) a symbol index.
+        - ``j`` - (integer) a symbol index.
 
         OUTPUT:
 
-        `(k, s)` where `k` is the index of the symbol obtained by acting
+        ``(k, s)`` where `k` is the index of the symbol obtained by acting
         on the `j`'th symbol with `S`, and `s` is the parity of of the
         `j`'th symbol.
 
@@ -1030,11 +1038,11 @@ class ManinSymbolList_character(ManinSymbolList):
 
         INPUT:
 
-        - `j` - (integer) a symbol index
+        - ``j`` - (integer) a symbol index
 
         OUTPUT:
 
-        `(k, s)` where `k` is the index of the symbol obtained by acting
+        ``(k, s)`` where `k` is the index of the symbol obtained by acting
         on the `j`'th symbol with `I`, and `s` is the parity of of the
         `j`'th symbol.
 
@@ -1062,7 +1070,7 @@ class ManinSymbolList_character(ManinSymbolList):
 
         INPUT:
 
-        - `j` - (integer) a symbol index.
+        - ``j`` - (integer) a symbol index.
 
         OUTPUT:
 
@@ -1103,7 +1111,7 @@ class ManinSymbolList_character(ManinSymbolList):
 
         INPUT:
 
-        - `j` - (integer) a symbol index
+        - ``j`` - (integer) a symbol index
 
         OUTPUT:
 
@@ -1171,9 +1179,9 @@ class ManinSymbolList_character(ManinSymbolList):
 
         OUTPUT:
 
-        -  ``int`` - the index of the Manin symbol equivalent to `(i,u,v)`.
-
-        -  ``scalar`` - element of the base field or the int 0.
+        ``(i, s)`` where i (``int``) is the index of the Manin symbol
+        equivalent to `(i,u,v)` (or -1) and ``s`` is the scalar (an element of
+        the base field) or the int 0.
 
         EXAMPLE::
 
@@ -1205,14 +1213,13 @@ class ManinSymbolList_character(ManinSymbolList):
 
         INPUT:
 
-        - ``x`` - 3-tuple of integers `(i,u,v)`, defining an element
-           of this list of Manin symbols, which need not be
-           normalized.
+        - ``x`` - 3-tuple of integers ``(i,u,v)``, defining an element of this
+          list of Manin symbols, which need not be normalized.
 
         OUTPUT:
 
-        - `((i,u,v),s)` - `(i,u,v)` is the normalized Manin symbol
-           equivalent to ``x``, and `s` is the normalizing scalar.
+        ``((i,u,v),s)``, where ``(i,u,v)`` is the normalized Manin symbol equivalent
+        to ``x``, and ``s`` is the normalizing scalar.
 
         EXAMPLE::
 
@@ -1432,6 +1439,8 @@ class ManinSymbol(SageObject):
         sage: m = ManinSymbolList_gamma0(5,2)
         sage: s = ManinSymbol(m,(2,2,3)); s
         (2,3)
+        sage: s == loads(dumps(s))
+        True
 
         ::
 
