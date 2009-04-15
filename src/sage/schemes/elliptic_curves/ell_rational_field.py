@@ -118,10 +118,68 @@ CMJ={ 0: -3, 54000: -12, -12288000: -27, 1728: -4, 287496: -16,
       -884736000: -43, -147197952000: -67, -262537412640768000: -163}
 
 class EllipticCurve_rational_field(EllipticCurve_number_field):
-    """
+    r"""
     Elliptic curve over the Rational Field.
+
+    INPUT:
+
+    - ``ainvs`` (list or string) -- either `[a_1,a_2,a_3,a_4,a_6]` or
+      `[a_4,a_6]` (with `a_1=a_2=a_3=0`) or a valid label from the
+      database.
+
+    .. note::
+
+       See constructor.py for more variants.
+
+    EXAMPLES:
+
+    Construction from Weierstrass coeffiecients (`a`-invariants), long form::
+
+        sage: E = EllipticCurve([1,2,3,4,5]); E
+        Elliptic Curve defined by y^2 + x*y + 3*y = x^3 + 2*x^2 + 4*x + 5 over Rational Field
+
+    Construction from Weierstrass coeffiecients (`a`-invariants),
+    short form (sets `a_1=a_2=a_3=0`)::
+
+        sage: EllipticCurve([4,5]).ainvs()
+        [0, 0, 0, 4, 5]
+
+    Construction from a database label::
+
+        sage: EllipticCurve('389a1')
+        Elliptic Curve defined by y^2 + y = x^3 + x^2 - 2*x over Rational Field
+
     """
     def __init__(self, ainvs, extra=None):
+        r"""
+        Constructor for the EllipticCurve_rational_field class.
+
+        INPUT:
+
+        - ``ainvs`` (list or string) -- either `[a_1,a_2,a_3,a_4,a_6]`
+          or `[a_4,a_6]` (with `a_1=a_2=a_3=0`) or a valid label from
+          the database.
+
+        .. note::
+
+           See constructor.py for more variants.
+
+        EXAMPLES::
+
+            sage: E = EllipticCurve([1,2,3,4,5]); E
+            Elliptic Curve defined by y^2 + x*y + 3*y = x^3 + 2*x^2 + 4*x + 5 over Rational Field
+
+        Constructor from `[a_4,a_6]` sets `a_1=a_2=a_3=0`::
+
+            sage: EllipticCurve([4,5]).ainvs()
+            [0, 0, 0, 4, 5]
+
+        Constructor from a label::
+
+          sage: EllipticCurve('389a1')
+          Elliptic Curve defined by y^2 + y = x^3 + x^2 - 2*x over Rational Field
+
+        """
         if extra != None:   # possibility of two arguments (the first would be the field)
             ainvs = extra
         if isinstance(ainvs, str):
@@ -343,15 +401,24 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
             return self.__is_integral
 
     def mwrank(self, options=''):
-        """
+        r"""
         Run Cremona's mwrank program on this elliptic curve and return the
         result as a string.
 
         INPUT:
 
-        -  ``options`` - string; passed when starting mwrank.
-           The format is q pprecision vverbosity bhlim_q xnaux chlim_c l t o
-           s d]
+        -  ``options`` (string) -- run-time options passed when starting mwrank.
+           The format is as follows (see below for examples of usage):
+
+           - ``-v n``    (verbosity level)       sets verbosity to n (default=1)
+           - ``-o``      (PARI/GP style output flag)  turns ON extra PARI/GP short output (default is OFF)
+           - ``-p n``    (precision)       sets precision to `n` decimals (default=15)
+           - ``-b n``    (quartic bound)   bound on quartic point search (default=10)
+           - ``-x n``    (n_aux)           number of aux primes used for sieving (default=6)
+           - ``-l``      (generator list flag)            turns ON listing of points (default ON unless v=0)
+           - ``-s``      (selmer_only flag)     if set, computes Selmer rank only (default: not set)
+           - ``-d``      (skip_2nd_descent flag)        if set, skips the second descent for curves with 2-torsion (default: not set)
+           - ``-S n``    (sat_bd)          upper bound on saturation primes (default=100, -1 for automatic)
 
         OUTPUT:
 
@@ -676,10 +743,18 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
             return self.__database_curve
 
     def Np(self, p):
-        """
-        The number of points on E modulo p, where p is a prime, not
-        necessarily of good reduction. (When p is a bad prime, also counts
-        the singular point.)
+        r"""
+        The number of points on `E` modulo `p`.
+
+        INPUT:
+
+        - ``p`` (int) -- a prime, not necessarily of good reduction.
+
+        OUTPUT:
+
+        (int) The number ofpoints on the reduction of `E` modulo `p`
+        (including the singular point when `p` is a prime of bad
+        reduction).
 
         EXAMPLES::
 
@@ -1080,10 +1155,14 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
             sage: M(1/5)
             1
 
+        ::
+
             sage: E=EllipticCurve('121b1')
             sage: M=E.modular_symbol()
             sage: M(1/7)
             2
+
+        ::
 
             sage: E=EllipticCurve('11a1')
             sage: E.modular_symbol()(0)
@@ -1094,6 +1173,8 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
             sage: E=EllipticCurve('11a3')
             sage: E.modular_symbol()(0)
             1/25
+
+        ::
 
             sage: E=EllipticCurve('11a2')
             sage: E.modular_symbol(use_eclib=True, normalize='L_ratio')(0)
@@ -1110,6 +1191,8 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
             1
             sage: E.modular_symbol(use_eclib=False, normalize='period')(0)
             1
+
+        ::
 
             sage: E=EllipticCurve('11a3')
             sage: E.modular_symbol(use_eclib=True, normalize='L_ratio')(0)
@@ -1913,9 +1996,9 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
         return self.__regulator[proof]
 
     def height_pairing_matrix(self, points=None, precision=None):
-        """
+        r"""
         Returns the height pairing matrix of the given points on this
-        curve, which must be defined over Q.
+        curve, which must be defined over `\QQ`.
 
         INPUT:
 
@@ -4811,16 +4894,20 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
           compute analytic order of Sha
 
         OUTPUT:
-            sha -- conjectural order of sha, as a floating point number
 
-        NOTE: Often you'll want to do proof.elliptic_curve(False) when
-        using this function, since often the twisted elliptic curves
-        that come up have enormous conductor, and Sha is nontrivial,
-        which makes provably finding the Mordell-Weil group using
-        2-descent difficult.
+        (floating point number) an approximation to the conjectural order of Sha.
+
+        .. note::
+
+           Often you'll want to do ``proof.elliptic_curve(False)`` when
+           using this function, since often the twisted elliptic
+           curves that come up have enormous conductor, and Sha is
+           nontrivial, which makes provably finding the Mordell-Weil
+           group using 2-descent difficult.
 
         EXAMPLES:
-        An example where E has rank 11::
+
+        An example where E has conductor 11::
 
             sage: E = EllipticCurve('11a')
             sage: E.heegner_sha_an(-7)                                  # long
@@ -5203,6 +5290,13 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
         except TypeError:
             raise ValueError, "No rational point computable from z"
 
+    def integral_x_coords_in_interval(self,xmin,xmax):
+        r"""
+        Returns the set of integers `x` with `xmin\le x\le xmax` which are
+        `x`-coordinates of points on this curve.
+        """
+        return set([x for x  in range(xmin,xmax) if self.is_x_coord(x)])
+
     def integral_points(self, mw_base='auto', both_signs=False, verbose=False):
         """
         Computes all integral points (up to sign) on this elliptic curve.
@@ -5339,11 +5433,13 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
 
         ############################## begin ################################
         def point_preprocessing(free,tor):
-            # Transforms an mw_base "free" into a Z-basis for E(Q)\cap
-            # E^0(R). If there is a torsion point on the "egg" we add
-            # it to any of the gens on the egg; otherwise we replace
-            # the free generators with generators of a subgroup of
-            # index 2.
+            r"""
+            Transforms the mw_basis ``free`` into a `\ZZ`-basis for
+            `E(\QQ)\cap E^0(`\RR)`. If there is a torsion point on the
+            "egg" we add it to any of the gens on the egg; otherwise
+            we replace the free generators with generators of a
+            subgroup of index 2.
+            """
             r = len(free)
             newfree = [Q for Q in free] # copy
             tor_egg = [T for T in tor if not T.is_on_identity_component()]
@@ -5364,18 +5460,6 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
                             else:
                                 newfree[i] += P
             return newfree
-        ##############################  end  ################################
-        ############################## begin ################################
-        def modified_height(i):#computes modified height if base point i
-            return max(mw_base[i].height(),h_E,c7*mw_base_log[i]**2)
-        ##############################  end  ################################
-        ############################## begin ################################
-        def integral_x_coords_in_interval(xmin,xmax):
-            """
-            Returns the set of integers x with xmin=x=xmax which are
-            x-coordinates of points on this curve.
-            """
-            return set([x for x  in range(xmin,xmax) if self.is_x_coord(x)])
         ##############################  end  ################################
 
         # END Internal functions #############################################
@@ -5463,7 +5547,7 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
         c9_help_list = []
         for i in range(0,r):
             mw_base_log.append(mw_base[i].elliptic_logarithm().abs())
-            mod_h_list.append(modified_height(i))
+            mod_h_list.append(max(mw_base[i].height(),h_E,c7*mw_base_log[i]**2))
             c9_help_list.append((mod_h_list[i]).sqrt()/mw_base_log[i])
         c8 = max(e*h_E,max(mod_h_list))
         c9 = e/c7.sqrt() * min(c9_help_list)
@@ -5543,7 +5627,7 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
         b2_12 = b2/12
         if disc > 0:
             ##Points in egg have X(P) between e1 and e2 [X(P)=x(P)+b2/12]:
-            x_int_points = integral_x_coords_in_interval((e1-b2_12).ceil(), (e2-b2_12).floor()+1)
+            x_int_points = self.integral_x_coords_in_interval((e1-b2_12).ceil(), (e2-b2_12).floor()+1)
             if verbose:
                 print 'x-coords of points on compact component with ',(e1-b2_12).ceil(),'<=x<=',(e2-b2_12).floor()
                 L = list(x_int_points) # to have the order
@@ -5556,7 +5640,7 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
         ##Points in noncompact component with X(P)< 2*max(|e1|,|e2|,|e3|) , espec. X(P)>=e3
         x0 = (e3-b2_12).ceil()
         x1 = (2*max(abs(e1),abs(e2),abs(e3)) - b2_12).ceil()
-        x_int_points2 = integral_x_coords_in_interval(x0, x1)
+        x_int_points2 = self.integral_x_coords_in_interval(x0, x1)
         x_int_points = x_int_points.union(x_int_points2)
         if verbose:
             print 'x-coords of points on non-compact component with ',x0,'<=x<=',x1-1
@@ -6346,6 +6430,9 @@ def integral_points_with_bounded_mw_coeffs(E, mw_base, N):
     # the real precision than to increase eps.
 
     def is_approx_integral(P):
+        r"""
+        Local function, returns True if the real point `P` is approximately integral.
+        """
         eps = 0.0001
         return (abs(P[0]-P[0].round()))<eps and (abs(P[1]-P[1].round()))<eps
 
