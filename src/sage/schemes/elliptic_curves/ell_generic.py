@@ -1446,8 +1446,8 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
 
         .. note::
 
-        Not fully implemented in characteristic 2, or in
-        characteristic 3 when both `j`-invariants are 0.
+           Not fully implemented in characteristic 2, or in
+           characteristic 3 when both `j`-invariants are 0.
 
         EXAMPLES::
 
@@ -1585,7 +1585,7 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
 
         .. note::
 
-        Not fully implemented in characteristics 2 or 3.
+           Not fully implemented in characteristics 2 or 3.
 
         EXAMPLES::
 
@@ -1653,7 +1653,7 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
 
         .. note::
 
-        Not fully implemented in characteristics 2 or 3.
+           Not fully implemented in characteristics 2 or 3.
 
         EXAMPLES::
 
