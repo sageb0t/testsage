@@ -290,6 +290,9 @@ class QuaternionAlgebra_abstract(Algebra):
 
     def is_commutative(self):
         """
+        Return ``False`` always, since all quaternion algebras are
+        noncommutative.
+
         EXAMPLES::
 
             sage: Q.<i,j,k> = QuaternionAlgebra(QQ, -3,-7)
@@ -484,8 +487,12 @@ class QuaternionAlgebra_ab(QuaternionAlgebra_abstract):
     and `j*i = -i*j`.  ``K`` is a field not of characteristic 2 and ``a``,
     ``b`` are nonzero elements of ``K``.
 
+    See ``QuaternionAlgebra`` for many more examples.
+
     EXAMPLES::
 
+        sage: QuaternionAlgebra(QQ, -7, -21)  # indirect doctest
+        Quaternion Algebra (-7, -21) with base ring Rational Field
     """
     def __init__(self, base_ring, a, b, names='i,j,k'):
         """
@@ -493,9 +500,10 @@ class QuaternionAlgebra_ab(QuaternionAlgebra_abstract):
         `i*j = -j*i = k`.
 
         INPUT:
-            - ``base_ring`` -
-            - ``a, b`` -
-            - ``names`` -
+
+        - ``base_ring`` - commutative ring
+        - ``a, b`` - elements of ``base_ring``
+        - ``names`` - string (optional, default 'i, j, k') names of the generators
 
         TESTS::
 
@@ -548,8 +556,7 @@ class QuaternionAlgebra_ab(QuaternionAlgebra_abstract):
         """
         Return a maximal order in this quaternion algebra.
 
-        OUTPUT:
-            - an order in this quaternion algebra
+        OUTPUT: an order in this quaternion algebra
 
         EXAMPLES::
 
@@ -621,6 +628,12 @@ class QuaternionAlgebra_ab(QuaternionAlgebra_abstract):
 
     def gen(self, i=0):
         """
+        Return the `i^{th}` generator of ``self``.
+
+        INPUT:
+
+        - ``i`` - integer (optional, default 0)
+
         EXAMPLES::
 
             sage: Q.<ii,jj,kk> = QuaternionAlgebra(QQ,-1,-2); Q
@@ -638,6 +651,8 @@ class QuaternionAlgebra_ab(QuaternionAlgebra_abstract):
 
     def _repr_(self):
         """
+        Print representation.
+
         TESTS::
 
             sage: Q.<i,j,k> = QuaternionAlgebra(QQ,-5,-2)
@@ -758,8 +773,9 @@ class QuaternionAlgebra_ab(QuaternionAlgebra_abstract):
         Return the order of this quaternion order with given basis.
 
         INPUT:
-            basis -- list of 4 elements of self
-            check -- bool (default: True)
+
+        - ``basis`` - list of 4 elements of ``self``
+        - ``check`` - bool (default: ``True``)
 
         EXAMPLES::
 
@@ -767,7 +783,7 @@ class QuaternionAlgebra_ab(QuaternionAlgebra_abstract):
             sage: Q.quaternion_order([1,i,j,k])
             Order of Quaternion Algebra (-11, -1) with base ring Rational Field with basis (1, i, j, k)
 
-        We test out check=False::
+        We test out ``check=False``::
 
             sage: Q.quaternion_order([1,i,j,k], check=False)
             Order of Quaternion Algebra (-11, -1) with base ring Rational Field with basis [1, i, j, k]
@@ -778,15 +794,19 @@ class QuaternionAlgebra_ab(QuaternionAlgebra_abstract):
 
     def ideal(self, gens, left_order=None, right_order=None, check=True):
         r"""
-        Return the quaternion ideal with given gens over `\mathbf{Z}`.
+        Return the quaternion ideal with given gens over `\ZZ`.
         Neither a left or right order structure need be specified.
 
         INPUT:
-            - gens -- a list of elements of this quaternion order
-            - check -- bool (default: True); if False, then gens must
-                       4-tuple that forms a Hermite basis for an ideal
-            - left_order -- a quaternion order or None
-            - right_order -- a quaternion order or None
+
+        - ``gens`` -- a list of elements of this quaternion order
+
+        - ``check`` -- bool (default: ``True``); if ``False``, then ``gens`` must
+          4-tuple that forms a Hermite basis for an ideal
+
+        - ``left_order`` -- a quaternion order or ``None``
+
+        - ``right_order`` -- a quaternion order or ``None``
 
         EXAMPLES::
 
@@ -833,9 +853,10 @@ class QuaternionOrder(Algebra):
     def __init__(self, A, basis, check=True):
         """
         INPUT:
-            A -- a quaternion algebra
-            basis -- list of 4 integral quaternions in A
-            check -- whether to do type and other consistency checks
+
+        - ``A`` - a quaternion algebra
+        - ``basis`` - list of 4 integral quaternions in ``A``
+        - ``check`` - whether to do type and other consistency checks
 
         ** TODO -- NOTE: We do *not* currently check that basis is
            closed under multiplication!! **
@@ -890,7 +911,8 @@ class QuaternionOrder(Algebra):
         Return the n-th generator.
 
         INPUT:
-           - n -- an integer between 0 and 3, inclusive.
+
+        - ``n`` - an integer between 0 and 3, inclusive.
 
         EXAMPLES::
 
@@ -991,10 +1013,10 @@ class QuaternionOrder(Algebra):
         Return the intersection of this order with other.
 
         INPUT:
-            other -- a quaternion order in the same ambient quaternion algebra
 
-        OUTPUT:
-            a quaternion order
+        - ``other`` - a quaternion order in the same ambient quaternion algebra
+
+        OUTPUT: a quaternion order
 
         EXAMPLES::
 
@@ -1032,12 +1054,11 @@ class QuaternionOrder(Algebra):
 
     def free_module(self):
         """
-        Return the free ZZ-module that corresponds to this order
+        Return the free `\\ZZ`-module that corresponds to this order
         inside the vector space corresponding to the ambient
         quaternion algebra.
 
-        OUTPUT:
-            a free ZZ-module of rank 4
+        OUTPUT: a free `\\ZZ`-module of rank 4
 
         EXAMPLES::
 
@@ -1062,11 +1083,10 @@ class QuaternionOrder(Algebra):
     def discriminant(self):
         r"""
         Return the discriminant of this order, which we define as
-        `\sqrt( det ( Tr(e_i \bar(e_j) ) ) )`, where `\{e_i\}` is the
+        `\sqrt{ det ( Tr(e_i \bar{e_j} ) ) }`, where `\{e_i\}` is the
         basis of the order.
 
-        OUTPUT:
-            Rational number
+        OUTPUT: rational number
 
         EXAMPLES::
 
@@ -1089,12 +1109,14 @@ class QuaternionOrder(Algebra):
 
     def left_ideal(self, gens, check=True):
         r"""
-        Return the ideal with given gens over `\mathbf{Z}`.
+        Return the ideal with given gens over `\ZZ`.
 
         INPUT:
-            - gens -- a list of elements of this quaternion order
-            - check -- bool (default: True); if False, then gens must
-                       4-tuple that forms a Hermite basis for an ideal
+
+        - ``gens`` -- a list of elements of this quaternion order
+
+        - ``check`` -- bool (default: ``True``); if ``False``, then ``gens`` must
+          4-tuple that forms a Hermite basis for an ideal
 
         EXAMPLES::
 
@@ -1109,12 +1131,14 @@ class QuaternionOrder(Algebra):
 
     def right_ideal(self, gens, check=True):
         r"""
-        Return the ideal with given gens over `\mathbf{Z}`.
+        Return the ideal with given gens over `\ZZ`.
 
         INPUT:
-            - gens -- a list of elements of this quaternion order
-            - check -- bool (default: True); if False, then gens must
-                       4-tuple that forms a Hermite basis for an ideal
+
+        - ``gens`` -- a list of elements of this quaternion order
+
+        - ``check`` -- bool (default: ``True``); if ``False``, then ``gens`` must
+          4-tuple that forms a Hermite basis for an ideal
 
         EXAMPLES::
 
@@ -1152,13 +1176,16 @@ class QuaternionFractionalIdeal_rational(QuaternionFractionalIdeal):
     def __init__(self, basis, left_order=None, right_order=None, check=True):
         """
         INPUT:
-            - left_order -- a quaternion order or None
-            - right_order -- a quaternion order or None
-            - basis -- tuple of length 4 of elements in
-                       of ambient quaternion algebra whose ZZ-span is an ideal
-            - check -- bool (default: True); if False, do no type
-                       checking, and the input basis *must* be
-                       in Hermite form.
+
+        - ``left_order`` -- a quaternion order or ``None``
+
+        - ``right_order`` -- a quaternion order or ``None``
+
+        - ``basis`` -- tuple of length 4 of elements in of ambient
+          quaternion algebra whose `\\ZZ`-span is an ideal
+
+        - ``check`` -- bool (default: ``True``); if ``False``, do no type
+          checking, and the input basis *must* be in Hermite form.
 
         EXAMPLES::
 
@@ -1191,8 +1218,7 @@ class QuaternionFractionalIdeal_rational(QuaternionFractionalIdeal):
         """
         Return the ambient quaternion algebra that contains this fractional ideal.
 
-        OUTPUT:
-            - a quaternion algebra
+        OUTPUT: a quaternion algebra
 
         EXAMPLES::
 
@@ -1211,8 +1237,7 @@ class QuaternionFractionalIdeal_rational(QuaternionFractionalIdeal):
         """
         Return the left order associated to this fractional ideal.
 
-        OUTPUT:
-            - an order in a quaternion algebra
+        OUTPUT: an order in a quaternion algebra
 
         EXAMPLES::
 
@@ -1230,8 +1255,7 @@ class QuaternionFractionalIdeal_rational(QuaternionFractionalIdeal):
         """
         Return the right order associated to this fractional ideal.
 
-        OUTPUT:
-            - an order in a quaternion algebra
+        OUTPUT: an order in a quaternion algebra
 
         EXAMPLES::
 
@@ -1269,8 +1293,7 @@ class QuaternionFractionalIdeal_rational(QuaternionFractionalIdeal):
         ideal structure, then the left order is returned.  If it has
         neither structure, then an error is raised.
 
-        OUTPUT:
-            - QuaternionOrder
+        OUTPUT: QuaternionOrder
 
         EXAMPLES::
 
@@ -1305,8 +1328,7 @@ class QuaternionFractionalIdeal_rational(QuaternionFractionalIdeal):
         """
         Return basis for this fractional ideal.  The basis is in Hermite form.
 
-        OUTPUT:
-            - tuple
+        OUTPUT: tuple
 
         EXAMPLES::
 
@@ -1317,8 +1339,8 @@ class QuaternionFractionalIdeal_rational(QuaternionFractionalIdeal):
 
     def gens(self):
         """
-        Return the generators for this ideal, which are the same as the ZZ-basis
-        for this ideal.
+        Return the generators for this ideal, which are the same as
+        the `\\ZZ`-basis for this ideal.
 
         EXAMPLES::
 
@@ -1329,10 +1351,15 @@ class QuaternionFractionalIdeal_rational(QuaternionFractionalIdeal):
 
     def __cmp__(self, right):
         """
-        Compare this fractional quaterion ideal to right.  If right is
-        not a fractional quaternion ideal a TypeError is raised.  If
-        the fractional ideals are in different ambient quaternion
-        algebras, then the quaternion algebras themselves compared.
+        Compare this fractional quaterion ideal to ``right``.  If
+        ``right`` is not a fractional quaternion ideal a TypeError is
+        raised.  If the fractional ideals are in different ambient
+        quaternion algebras, then the quaternion algebras themselves
+        are compared.
+
+        INPUT:
+
+        - ``right`` - another fractional quaternion ideal
 
         EXAMPLES::
 
@@ -1353,13 +1380,12 @@ class QuaternionFractionalIdeal_rational(QuaternionFractionalIdeal):
         Return basis matrix `M` in Hermite normal form for self as a
         matrix with rational entries.
 
-        If `Q` is the ambient quaternion algebra, then the ZZ-span of
+        If `Q` is the ambient quaternion algebra, then the `\\ZZ`-span of
         the rows of `M` viewed as linear combinations of Q.basis() =
         `[1,i,j,k]` is the fractional ideal self.  Also, M *
         M.denominator() is an integer matrix in Hermite normal form.
 
-        OUTPUT:
-            - matrix over QQ
+        OUTPUT: matrix over `\\QQ`
 
         EXAMPLES::
 
@@ -1382,8 +1408,7 @@ class QuaternionFractionalIdeal_rational(QuaternionFractionalIdeal):
         ``Q.free_module()``, where ``Q`` is the ambient quaternion
         algebra.
 
-        OUTPUT:
-            - free ZZ-module of rank 4 embeded in an ambient QQ^4.
+        OUTPUT: free `\\ZZ`-module of rank 4 embeded in an ambient `\\QQ^4`.
 
         EXAMPLES::
 
@@ -1404,9 +1429,10 @@ class QuaternionFractionalIdeal_rational(QuaternionFractionalIdeal):
         Return theta series coefficients of self, as a vector of `B` integers.
 
         INPUT:
-            - B -- positive integer
-        OUTPUT:
-            - vector over ZZ with B entries
+
+        - ``B`` -- positive integer
+
+        OUTPUT: vector over `\\ZZ` with ``B`` entries
 
         EXAMPLES::
 
@@ -1433,8 +1459,7 @@ class QuaternionFractionalIdeal_rational(QuaternionFractionalIdeal):
         """
         Return the normalized quadratic form associated to this quaternion ideal.
 
-        OUTPUT:
-            Quadratic Form
+        OUTPUT: quadratic form
 
         EXAMPLES::
 
@@ -1469,20 +1494,20 @@ class QuaternionFractionalIdeal_rational(QuaternionFractionalIdeal):
     def theta_series(self, B, var='q'):
         """
         Return normalized theta series of self, as a power series over
-        `\\mathbf{Z}` in the variable ``var``, which is 'q' by default.
+        `\\ZZ` in the variable ``var``, which is 'q' by default.
 
         The normalized theta series is by definition
 
-        .. math:
+        .. math::
 
-            \theta_I(q)=\sum_{x \in I} q^{\frac{N(x)}{N(I)}}
+            \\theta_I(q)=\\sum_{x \\in I} q^{\\frac{N(x)}{N(I)}}
 
         INPUT:
-            - B -- positive integer
-            - var -- string (default: 'q')
 
-        OUTPUT:
-            - power series
+        - ``B`` -- positive integer
+        - ``var`` -- string (default: 'q')
+
+        OUTPUT: power series
 
         EXAMPLES::
 
@@ -1513,8 +1538,7 @@ class QuaternionFractionalIdeal_rational(QuaternionFractionalIdeal):
         """
         Return the Gram matrix of this fractional ideal.
 
-        OUTPUT:
-            - 4x4 matrix over QQ.
+        OUTPUT: 4x4 matrix over `\\QQ`.
 
         EXAMPLES::
 
@@ -1541,8 +1565,7 @@ class QuaternionFractionalIdeal_rational(QuaternionFractionalIdeal):
         """
         Return the norm of this fractional ideal.
 
-        OUTPUT:
-            rational number
+        OUTPUT: rational number
 
         EXAMPLES::
 
@@ -1562,8 +1585,7 @@ class QuaternionFractionalIdeal_rational(QuaternionFractionalIdeal):
         """
         Return the ideal with generators the conjugates of the generators for self.
 
-        OUTPUT:
-            - a quaternionic fractional ideal
+        OUTPUT: a quaternionic fractional ideal
 
         EXAMPLES::
 
@@ -1578,7 +1600,7 @@ class QuaternionFractionalIdeal_rational(QuaternionFractionalIdeal):
 
     def __mul__(self, right):
         """
-        Return the product of the fractional ideals self and right.
+        Return the product of the fractional ideals ``self`` and ``right``.
 
         NOTE: We do not keep track of left or right order structure.
 
@@ -1605,13 +1627,13 @@ class QuaternionFractionalIdeal_rational(QuaternionFractionalIdeal):
 
     def multiply_by_conjugate(self, J):
         """
-        Return product of self and the conjugate Jbar of J.
+        Return product of self and the conjugate Jbar of `J`.
 
         INPUT:
-            J -- a quaternion ideal.
 
-        OUTPUT:
-            - a quaternionic fractional ideal.
+        - ``J`` -- a quaternion ideal.
+
+        OUTPUT: a quaternionic fractional ideal.
 
         EXAMPLES::
 
@@ -1629,16 +1651,18 @@ class QuaternionFractionalIdeal_rational(QuaternionFractionalIdeal):
 
     def is_equivalent(I, J, B=10):
         """
-        Return ``True`` if ``I`` and ``J`` are equivalaent as right ideals.
+        Return ``True`` if ``I`` and ``J`` are equivalent as right ideals.
 
         INPUT:
-            - I -- a fractional quaternion ideal (self)
-            - J -- a fractional quaternion ideal with same order as I
-            - B -- a bound to compute and compare theta series before
-                   doing the full equivalence test
 
-        OUTPUT:
-            - bool
+        - ``I`` -- a fractional quaternion ideal (self)
+
+        - ``J`` -- a fractional quaternion ideal with same order as ``I``
+
+        - ``B`` -- a bound to compute and compare theta series before
+          doing the full equivalence test
+
+        OUTPUT: bool
 
         EXAMPLES::
 
@@ -1678,11 +1702,12 @@ class QuaternionFractionalIdeal_rational(QuaternionFractionalIdeal):
 
 def basis_for_quaternion_lattice(gens):
     """
-    Return a basis for the ZZ-lattice in a quaternion algebra spanned
-    by the given gens.
+    Return a basis for the `\\ZZ`-lattice in a quaternion algebra
+    spanned by the given gens.
 
     INPUT:
-        gens -- list of elements of a single quaternion algebra
+
+    - ``gens`` -- list of elements of a single quaternion algebra
 
     EXAMPLES::
 
