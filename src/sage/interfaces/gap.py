@@ -798,7 +798,7 @@ class Gap(Expect):
         EXAMPLES::
 
             sage: gap.console() #not tested
-            GAP4, Version: 4.4.12 of 17-Dec-2008, x86_64-unknown-linux-gnu-gcc
+            GAP4, Version: 4.4.10 of 02-Oct-2007, x86_64-unknown-linux-gnu-gcc
             gap>
         """
         gap_console()
@@ -810,7 +810,7 @@ class Gap(Expect):
         EXAMPLES::
 
             sage: gap.version()
-            '4.4.12'
+            '4.4.10'
         """
         return gap_version()
 
@@ -1266,7 +1266,7 @@ def gap_console(use_workspace_cache=True):
     EXAMPLES::
 
         sage: gap.console() #not tested
-        GAP4, Version: 4.4.12 of 17-Dec-2008, x86_64-unknown-linux-gnu-gcc
+        GAP4, Version: 4.4.10 of 02-Oct-2007, x86_64-unknown-linux-gnu-gcc
         gap>
     """
     cmd, _ = gap_command(use_workspace_cache=use_workspace_cache)
@@ -1279,6 +1279,6 @@ def gap_version():
     EXAMPLES::
 
         sage: gap_version()
-        '4.4.12'
+        '4.4.10'
     """
     return gap.eval('VERSION')[1:-1]
