@@ -268,6 +268,7 @@ cdef inline long bitset_pop(bitset_t a) except -1:
     cdef long i = bitset_first(a)
     if i == -1:
         raise KeyError, 'pop from an empty set'
+    bitset_discard(a, i)
     return i
 
 cdef inline long bitset_first_diff(bitset_t a, bitset_t b):
@@ -325,6 +326,17 @@ cdef inline long bitset_next_diff(bitset_t a, bitset_t b, long n):
         if a.bits[i] != b.bits[i]:
             return (i << index_shift) | _bitset_first_in_limb(a.bits[i] ^ b.bits[i])
     return -1
+
+cdef inline long bitset_len(bitset_t bits):
+    """
+    Calculate the number of items in the set (i.e., the number of nonzero bits).
+    """
+    cdef long len = 0
+    cdef long i = bitset_first(bits)
+    while i>=0:
+        len += 1
+        i=bitset_next(bits, i+1)
+    return len
 
 #############################################################################
 # Bitset Arithmetic
