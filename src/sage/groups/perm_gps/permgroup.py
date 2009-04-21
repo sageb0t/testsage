@@ -1119,7 +1119,7 @@ class PermutationGroup_generic(group.FiniteGroup):
         if p == 0:
             L = eval(gap.eval("GroupCohomology(%s,%s)"%(GG,n)))
         else:
-	    L = eval(gap.eval("GroupCohomology(%s,%s,%s)"%(GG,n,p)))
+            L = eval(gap.eval("GroupCohomology(%s,%s,%s)"%(GG,n,p)))
         return AbelianGroup(len(L),L)
 
     def cohomology_part(self, n, p = 0):
@@ -1157,7 +1157,7 @@ class PermutationGroup_generic(group.FiniteGroup):
             gap.eval("S := SylowSubgroup(%s,%s)"%(GG,p))
             gap.eval("R:=ResolutionFiniteGroup(S,%s)"%(n+1))
             gap.eval("HR:=HomToIntegers(R)")
-	    L = eval(gap.eval("Cohomology(HR,%s)"%n))
+            L = eval(gap.eval("Cohomology(HR,%s)"%n))
         return AbelianGroup(len(L),L)
 
     def homology(self, n, p = 0):
@@ -1210,7 +1210,7 @@ class PermutationGroup_generic(group.FiniteGroup):
         if p == 0:
             L = eval(gap.eval("GroupHomology(%s,%s)"%(GG,n)))
         else:
-	    L = eval(gap.eval("GroupHomology(%s,%s,%s)"%(GG,n,p)))
+            L = eval(gap.eval("GroupHomology(%s,%s,%s)"%(GG,n,p)))
         return AbelianGroup(len(L),L)
 
     def homology_part(self, n, p = 0):
@@ -1245,7 +1245,7 @@ class PermutationGroup_generic(group.FiniteGroup):
             gap.eval("S := SylowSubgroup(%s,%s)"%(GG,p))
             gap.eval("R:=ResolutionFiniteGroup(S,%s)"%(n+1))
             gap.eval("TR:=TensorWithIntegers(R);")
-	    L = eval(gap.eval("Homology(TR,%s)"%n))
+            L = eval(gap.eval("Homology(TR,%s)"%n))
         return AbelianGroup(len(L),L)
 
     def character_table(self):
@@ -1974,7 +1974,7 @@ class PermutationGroup_generic(group.FiniteGroup):
         gap.eval("cc := ConstituentsOfCharacter( pi )")
         M = gap.eval("M := MolienSeries(Sum(cc))")
         R = PolynomialRing(RationalField(),"x")
-	x = R.gen()
+        x = R.gen()
         nn = gap.eval("NumeratorOfRationalFunction(M)")
         dd = gap.eval("DenominatorOfRationalFunction(M)")
         FF = FractionField(R)
@@ -2042,7 +2042,7 @@ class PermutationGroup_generic(group.FiniteGroup):
         GG = G._gap_init_()
         ff = gap.eval("ff := PoincareSeriesPrimePart(%s,%s,%s)"%(GG,p,n))
         R = PolynomialRing(RationalField(),"x")
-	x = R.gen()
+        x = R.gen()
         nn = gap.eval("NumeratorOfRationalFunction(ff)").replace("x_1","x")
         dd = gap.eval("DenominatorOfRationalFunction(ff)").replace("x_1","x")
         FF = FractionField(R)
