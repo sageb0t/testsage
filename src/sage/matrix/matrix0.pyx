@@ -49,58 +49,6 @@ import sage.modules.free_module
 
 import matrix_misc
 
-matrix_delimiters = ['(', ')']
-
-def set_matrix_latex_delimiters(left='(', right=')'):
-    r"""
-    Change the left and right delimiters for the LaTeX representation
-    of matrices
-
-    INPUT:
-
-    - ``left``, ``right`` - strings (default '(' and ')', respectively)
-
-    Good choices for ``left`` and ``right`` are any delimiters which
-    LaTeX understands and knows how to resize; some examples are:
-
-    - parentheses: '(', ')'
-    - brackets: '[', ']'
-    - braces: '\\{', '\\}'
-    - vertical lines: '|'
-    - angle brackets: '\\langle', '\\rangle'
-
-    .. note::
-
-       Putting aside aesthetics, you may combine these in any way
-       imaginable; for example, you could set ``left`` to be a
-       right-hand bracket ']' and ``right`` to be a right-hand brace
-       '\\}', and it will be typeset correctly.
-
-    EXAMPLES::
-
-        sage: a = matrix(1, 1, [17])
-        sage: latex(a)
-        \left(\begin{array}{r}
-        17
-        \end{array}\right)
-        sage: sage.matrix.matrix0.set_matrix_latex_delimiters("[", "]")
-        sage: latex(a)
-        \left[\begin{array}{r}
-        17
-        \end{array}\right]
-        sage: sage.matrix.matrix0.set_matrix_latex_delimiters("\\{", "\\}")
-        sage: latex(a)
-        \left\{\begin{array}{r}
-        17
-        \end{array}\right\}
-
-    Reset to default::
-
-        sage: sage.matrix.matrix0.set_matrix_latex_delimiters()
-    """
-    global matrix_delimiters
-    matrix_delimiters = [left, right]
-
 cdef extern from "Python.h":
     bint PySlice_Check(PyObject* ob)
 
@@ -1639,7 +1587,10 @@ cdef class Matrix(sage.structure.element.Matrix):
 
     def _latex_(self):
         r"""
-        Return latex representation of this matrix.
+        Return latex representation of this matrix.  The matrix is
+        enclosed in parentheses by default, but the delimiters can be
+        changed using the command
+        ``latex.matrix_delimiters(...)``.
 
         EXAMPLES::
 
@@ -1685,6 +1636,8 @@ cdef class Matrix(sage.structure.element.Matrix):
             \end{array}\right)
             sage: sage.server.support.EMBEDDED_MODE = False
         """
+        latex = sage.misc.latex.latex
+        matrix_delimiters = latex.matrix_delimiters()
         cdef Py_ssize_t nr, nc, r, c
         nr = self._nrows
         nc = self._ncols
@@ -1696,7 +1649,6 @@ cdef class Matrix(sage.structure.element.Matrix):
 
         row_divs, col_divs = self.get_subdivisions()
 
-        latex = sage.misc.latex.latex
         from sage.server.support import EMBEDDED_MODE
 
         # jsmath doesn't know the command \hline, so have to do things
@@ -2695,7 +2647,7 @@ cdef class Matrix(sage.structure.element.Matrix):
         Return True if this matrix is invertible.
 
         EXAMPLES: The following matrix is invertible over
-        `\mathbb{Q}` but not over `\mathbb{Z}`.
+        `\QQ` but not over `\ZZ`.
 
         ::
 
@@ -2714,7 +2666,7 @@ cdef class Matrix(sage.structure.element.Matrix):
             [-3/2  1/2]
             [   1    0]
 
-        The next matrix is invertible over `\mathbb{Z}`.
+        The next matrix is invertible over `\ZZ`.
 
         ::
 
@@ -2726,7 +2678,7 @@ cdef class Matrix(sage.structure.element.Matrix):
             [ 0 -1]
 
         The following nontrivial matrix is invertible over
-        `\mathbb{Z}[x]`.
+        `\ZZ[x]`.
 
         ::
 
@@ -3293,7 +3245,7 @@ cdef class Matrix(sage.structure.element.Matrix):
         Return the product of two matrices.
 
         EXAMPLE of matrix times matrix over same base ring: We multiply
-        matrices over `\mathbb{Q}[x,y]`.
+        matrices over `\QQ[x,y]`.
 
         ::
 
@@ -3514,8 +3466,8 @@ cdef class Matrix(sage.structure.element.Matrix):
         Raises a ``ZeroDivisionError`` if the matrix has zero
         determinant, and raises an ``ArithmeticError``, if the
         inverse doesn't exist because the matrix is nonsquare. Also, note,
-        e.g., that the inverse of a matrix over `\mathbb{Z}` is
-        always a matrix defined over `\mathbb{Q}` (even if the
+        e.g., that the inverse of a matrix over `\ZZ` is
+        always a matrix defined over `\QQ` (even if the
         entries are integers).
 
         EXAMPLES::
@@ -3541,7 +3493,7 @@ cdef class Matrix(sage.structure.element.Matrix):
             Full MatrixSpace of 2 by 2 dense matrices over Rational Field
 
         This is analogous to the situation for ring elements, e.g., for
-        `\mathbb{Z}` we have::
+        `\ZZ` we have::
 
             sage: parent(~1)
             Rational Field
@@ -3719,16 +3671,16 @@ def unpickle(cls, parent, mutability, cache, data, version):
     EXAMPLES: We illustrating saving and loading several different
     types of matrices.
 
-    OVER `\mathbb{Z}`::
+    OVER `\ZZ`::
 
         sage: A = matrix(ZZ,2,range(4))
         sage: loads(dumps(A))
         [0 1]
         [2 3]
 
-    Sparse OVER `\mathbb{Q}`:
+    Sparse OVER `\QQ`:
 
-    Dense over `\mathbb{Q}[x,y]`:
+    Dense over `\QQ[x,y]`:
 
     Dense over finite field.
     """
