@@ -24,8 +24,6 @@ The Sage wiki http://wiki.sagemath.org/ contains a wealth of
 information. Moreover, all these can be tested in the Sage notebook
 interface http://www.sagenb.org/ on the web.
 
-Contents:
-
 .. toctree::
    :maxdepth: 2
 
