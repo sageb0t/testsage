@@ -1458,7 +1458,7 @@ class Maxima(Expect):
     def unit_quadratic_integer(self, n):
         r"""
         Finds a unit of the ring of integers of the quadratic number field
-        `\mathbb{Q}(\sqrt{n})`, `n>1`, using the qunit maxima
+        `\QQ(\sqrt{n})`, `n>1`, using the qunit maxima
         command.
 
         EXAMPLES::

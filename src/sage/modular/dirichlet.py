@@ -6,11 +6,11 @@ homomorphism
 
 .. math::
 
-       (\mathbb{Z}/N\mathbb{Z})^* \to R^*,
+       (\ZZ/N\ZZ)^* \to R^*,
 
 for some ring `R`, to the map
-`\mathbb{Z}/N\mathbb{Z} \to R` obtained by sending those
-`x\in\mathbb{Z}/N\mathbb{Z}` with `\gcd(N,x)>1` to
+`\ZZ/N\ZZ \to R` obtained by sending those
+`x\in\ZZ/N\ZZ` with `\gcd(N,x)>1` to
 `0`.
 
 EXAMPLES::
@@ -172,7 +172,7 @@ class DirichletCharacter(MultiplicativeGroupElement):
 
            - tuple (or list) of ring elements, the values of the
              Dirichlet character on the chosen generators of
-             `(\mathbb{Z}/N\mathbb{Z})^*`.
+             `(\ZZ/N\ZZ)^*`.
 
            - Vector over Z/eZ, where e is the order of the root of
              unity.
@@ -760,7 +760,7 @@ class DirichletCharacter(MultiplicativeGroupElement):
 
         .. math::
 
-                           g_a(\chi) = \sum_{r \in \mathbb{Z}/m\mathbb{Z}} \chi(r)\,\zeta^{ar},
+                           g_a(\chi) = \sum_{r \in \ZZ/m\ZZ} \chi(r)\,\zeta^{ar},
 
         where `m` is the modulus of `\chi` and
         `\zeta` is a primitive `m^{th}` root of unity, i.e.,
@@ -825,7 +825,7 @@ class DirichletCharacter(MultiplicativeGroupElement):
 
         .. math::
 
-           g_a(\chi) = \sum_{r \in \mathbb{Z}/m\mathbb{Z}} \chi(r)\,\zeta^{ar},
+           g_a(\chi) = \sum_{r \in \ZZ/m\ZZ} \chi(r)\,\zeta^{ar},
 
         where `m` is the modulus of `\chi` and
         `\zeta` is a primitive `m^{th}` root of unity, i.e.,
@@ -1186,17 +1186,17 @@ class DirichletCharacter(MultiplicativeGroupElement):
 
         .. math::
 
-           \varepsilon : (\mathbb{Z}/N\mathbb{Z})^* \to \mathbb{Q}(\zeta_n)
+           \varepsilon : (\ZZ/N\ZZ)^* \to \QQ(\zeta_n)
 
         be a Dirichlet character. This function returns an equal Dirichlet
         character
 
         .. math::
 
-           \chi : (\mathbb{Z}/N\mathbb{Z})^* \to \mathbb{Q}(\zeta_m)
+           \chi : (\ZZ/N\ZZ)^* \to \QQ(\zeta_m)
 
         where `m` is the least common multiple of `n` and
-        the exponent of `(\mathbb{Z}/N\mathbb{Z})^*`.
+        the exponent of `(\ZZ/N\ZZ)^*`.
 
         EXAMPLES::
 
@@ -1475,7 +1475,7 @@ class DirichletCharacter(MultiplicativeGroupElement):
     def values_on_gens(self):
         """
         Returns a tuple of the values of this character on each of the
-        minimal generators of `(\mathbb{Z}/N\mathbb{Z})^*`, where
+        minimal generators of `(\ZZ/N\ZZ)^*`, where
         `N` is the modulus.
 
         EXAMPLES::
@@ -1494,7 +1494,7 @@ class DirichletCharacter(MultiplicativeGroupElement):
 
     def element(self):
         r"""
-        Return the underlying `\mathbb{Z}/n\mathbb{Z}`-module
+        Return the underlying `\ZZ/n\ZZ`-module
         vector of exponents.
 
         .. warning::
@@ -1528,9 +1528,9 @@ def DirichletGroup(modulus, base_ring=None, zeta=None, zeta_order=None,
     The group of Dirichlet characters modulo `N` with values in
     the subgroup `\langle \zeta_n\rangle` of the
     multiplicative group of the ``base_ring``. If the
-    base_ring is omitted then we use `\mathbb{Q}(\zeta_n)`,
+    base_ring is omitted then we use `\QQ(\zeta_n)`,
     where `n` is the exponent of
-    `(\mathbb{Z}/N\mathbb{Z})^*`. If `\zeta` is omitted
+    `(\ZZ/N\ZZ)^*`. If `\zeta` is omitted
     then we compute and use a maximal-order zeta in base_ring, if
     possible.
 
@@ -1563,7 +1563,7 @@ def DirichletGroup(modulus, base_ring=None, zeta=None, zeta_order=None,
     EXAMPLES:
 
     The default base ring is a cyclotomic field of order the exponent
-    of `(\mathbb{Z}/N\mathbb{Z})^*`.
+    of `(\ZZ/N\ZZ)^*`.
 
     ::
 
@@ -2185,7 +2185,7 @@ class DirichletGroup_class(parent_gens.ParentWithMultiplicativeAbelianGens):
 
     def integers_mod(self):
         r"""
-        Returns the group of integers `\mathbb{Z}/N\mathbb{Z}`
+        Returns the group of integers `\ZZ/N\ZZ`
         where `N` is the modulus of self.
 
         EXAMPLES::
@@ -2268,7 +2268,7 @@ class DirichletGroup_class(parent_gens.ParentWithMultiplicativeAbelianGens):
     def unit_gens(self):
         r"""
         Returns the minimal generators for the units of
-        `(\mathbb{Z}/N\mathbb{Z})^*`, where `N` is the
+        `(\ZZ/N\ZZ)^*`, where `N` is the
         modulus of self.
 
         EXAMPLES::

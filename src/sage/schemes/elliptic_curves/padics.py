@@ -344,7 +344,7 @@ def _multiply_point(E, R, P, m):
        non-singular point at all primes
 
     -  ``R`` - a ring in which 2 is invertible (typically
-       `\mathbb{Z}/L\mathbb{Z}` for some positive odd integer
+       `\ZZ/L\ZZ` for some positive odd integer
        `L`).
 
     -  ``m`` - an integer, = 1
@@ -860,7 +860,7 @@ def padic_sigma(self, p, N=20, E2=None, check=False, check_hypotheses=True):
        sense
 
     OUTPUT: A power series `t + \cdots` with coefficients in
-    `\mathbb{Z}_p`.
+    `\ZZ_p`.
 
     The output series will be truncated at `O(t^{N+1})`, and
     the coefficient of `t^n` for `n \geq 1` will be
@@ -1074,7 +1074,7 @@ def padic_sigma_truncated(self, p, N=20, lamb=0, E2=None, check_hypotheses=True)
        sense
 
     OUTPUT: A power series `t + \cdots` with coefficients in
-    `\mathbb{Z}_p`.
+    `\ZZ_p`.
 
     The coefficient of `t^j` for `j \geq 1` will be
     correct to precision `O(p^{N - 2 + (3 - j)(lamb + 1)})`.
@@ -1482,7 +1482,7 @@ def _brent(F, p, N):
     This is an internal function; it is used by padic_sigma().
 
     `F` is a assumed to be a power series over
-    `R = \mathbb{Z}/p^{N-1}\mathbb{Z}`.
+    `R = \ZZ/p^{N-1}\ZZ`.
 
     It solves the differential equation `G'(t)/G(t) = F(t)`
     using Brent's algorithm, with initial condition `G(0) = 1`.

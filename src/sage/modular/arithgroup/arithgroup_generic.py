@@ -1,5 +1,5 @@
 r"""
-Arithmetic subgroups (finite index subgroups of `{\rm SL}_2(\mathbb{Z})`)
+Arithmetic subgroups (finite index subgroups of `{\rm SL}_2(\ZZ)`)
 """
 
 ################################################################################
@@ -38,7 +38,7 @@ def is_ArithmeticSubgroup(x):
 
 class ArithmeticSubgroup(group.Group):
     r"""
-    Base class for arithmetic subgroups of `{\rm SL}_2(\mathbb{Z})`. Not
+    Base class for arithmetic subgroups of `{\rm SL}_2(\ZZ)`. Not
     intended to be used directly, but still includes quite a few
     general-purpose routines which compute data about an arithmetic subgroup
     assuming that it has a working element testing routine.
@@ -450,7 +450,7 @@ class ArithmeticSubgroup(group.Group):
 
     def reduce_cusp(self, c):
         r"""
-        Given a cusp `c \in \mathbb{P}^1(\mathbb{Q})`, return the
+        Given a cusp `c \in \mathbb{P}^1(\QQ)`, return the
         unique reduced cusp equivalent to c under the action of self,
         where a reduced cusp is an element `\tfrac{r}{s}` with r,s coprime
         integers, s as small as possible, and r as small as possible
@@ -470,7 +470,7 @@ class ArithmeticSubgroup(group.Group):
     def cusps(self, algorithm='default'):
         r"""
         Return a sorted list of inequivalent cusps for self, i.e. a set of
-        representatives for the orbits of self on `\mathbb{P}^1(\mathbb{Q})`.
+        representatives for the orbits of self on `\mathbb{P}^1(\QQ)`.
         These should be returned in a reduced form where this makes sense.
 
         INPUTS:
@@ -684,7 +684,7 @@ class ArithmeticSubgroup(group.Group):
 
     def projective_index(self):
         r"""
-        Return the index of the image of self in `{\rm PSL}_2(\mathbb{Z})`. This is equal
+        Return the index of the image of self in `{\rm PSL}_2(\ZZ)`. This is equal
         to the index of self if self contains -1, and half of this otherwise.
 
         This is equal to the degree of the natural map from the modular curve

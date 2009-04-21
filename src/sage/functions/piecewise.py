@@ -1267,7 +1267,7 @@ class PiecewisePolynomial:
         -  ``L`` - (the period)/2
 
         OUTPUT: `(f^*(x+)+f^*(x-)/2`, where `f^*` denotes
-        the function `f` extended to `\mathbb{R}` with period
+        the function `f` extended to `\RR` with period
         `2L` (Dirichlet's Theorem for Fourier series).
 
         EXAMPLES::

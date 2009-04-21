@@ -1,5 +1,5 @@
 r"""
-List of Elements of `\mathbb{P}^1(\mathbb{Z}/N\mathbb{Z})`
+List of Elements of `\mathbb{P}^1(\ZZ/N\ZZ)`
 """
 
 from sage.misc.search import search
@@ -28,7 +28,7 @@ cdef int c_p1_normalize_int(int N, int u, int v,
                             int compute_s) except -1:
     """
     Computes the canonical representative of
-    `\mathbb{P}^1(\mathbb{Z}/N\mathbb{Z})` equivalent to
+    `\mathbb{P}^1(\ZZ/N\ZZ)` equivalent to
     `(u,v)` along with a transforming scalar.
 
     INPUT:
@@ -118,7 +118,7 @@ cdef int c_p1_normalize_int(int N, int u, int v,
 def p1_normalize_int(N, u, v):
     r"""
     Computes the canonical representative of
-    `\mathbb{P}^1(\mathbb{Z}/N\mathbb{Z})` equivalent to
+    `\mathbb{P}^1(\ZZ/N\ZZ)` equivalent to
     `(u,v)` along with a transforming scalar.
 
     INPUT:
@@ -158,7 +158,7 @@ def p1_normalize_int(N, u, v):
 def p1list_int(int N):
     r"""
     Returns a list of the normalized elements of
-    `\mathbb{P}^1(\mathbb{Z}/N\mathbb{Z})`.
+    `\mathbb{P}^1(\ZZ/N\ZZ)`.
 
     INPUT:
 
@@ -248,7 +248,7 @@ cdef int c_p1_normalize_llong(int N, int u, int v,
     c_p1_normalize_llong(N, u, v):
 
     Computes the canonical representative of
-    `\mathbb{P}^1(\mathbb{Z}/N\mathbb{Z})` equivalent to `(u,v)` along
+    `\mathbb{P}^1(\ZZ/N\ZZ)` equivalent to `(u,v)` along
     with a transforming scalar 's' (if compute_s is 1).
 
     INPUT:
@@ -356,7 +356,7 @@ cdef int c_p1_normalize_llong(int N, int u, int v,
 def p1_normalize_llong(N, u, v):
     r"""
     Computes the canonical representative of
-    `\mathbb{P}^1(\mathbb{Z}/N\mathbb{Z})` equivalent to
+    `\mathbb{P}^1(\ZZ/N\ZZ)` equivalent to
     `(u,v)` along with a transforming scalar.
 
     INPUT:
@@ -396,7 +396,7 @@ def p1_normalize_llong(N, u, v):
 def p1list_llong(int N):
     r"""
     Returns a list of the normalized elements of
-    `\mathbb{P}^1(\mathbb{Z}/N\mathbb{Z})`, as a plain list of
+    `\mathbb{P}^1(\ZZ/N\ZZ)`, as a plain list of
     2-tuples.
 
     INPUT:
@@ -449,7 +449,7 @@ def p1list_llong(int N):
 def p1list(N):
     """
     Returns the elements of the projective line modulo `N`,
-    `\mathbb{P}^1(\mathbb{Z}/N\mathbb{Z})`, as a plain list of 2-tuples.
+    `\mathbb{P}^1(\ZZ/N\ZZ)`, as a plain list of 2-tuples.
 
     INPUT:
 
@@ -458,7 +458,7 @@ def p1list(N):
     OUTPUT:
 
     A list of the elements of the projective line
-    `\mathbb{P}^1(\mathbb{Z}/N\mathbb{Z})`, as plain 2-tuples.
+    `\mathbb{P}^1(\ZZ/N\ZZ)`, as plain 2-tuples.
 
     EXAMPLES::
 
@@ -482,7 +482,7 @@ def p1list(N):
 def p1_normalize(int N, int u, int v):
     r"""
     Computes the canonical representative of
-    `\mathbb{P}^1(\mathbb{Z}/N\mathbb{Z})` equivalent to
+    `\mathbb{P}^1(\ZZ/N\ZZ)` equivalent to
     `(u,v)` along with a transforming scalar.
 
     INPUT:
@@ -621,7 +621,7 @@ cdef int p1_normalize_xgcdtable(int N, int u, int v,
 
 cdef class P1List:
     """
-    The class for `\mathbb{P}^1(\mathbb{Z}/N\mathbb{Z})`, the projective line modulo `N`.
+    The class for `\mathbb{P}^1(\ZZ/N\ZZ)`, the projective line modulo `N`.
 
     EXAMPLES::
 
@@ -647,7 +647,7 @@ cdef class P1List:
 
         OUTPUT:
 
-        A P1List object representing `\mathbb{P}^1(\mathbb{Z}/N\mathbb{Z})`.
+        A P1List object representing `\mathbb{P}^1(\ZZ/N\ZZ)`.
 
         EXAMPLES::
 
@@ -798,7 +798,7 @@ cdef class P1List:
     def lift_to_sl2z(self, int i):
         """
         Lift the `i`'th element of this P1list to an element of
-        `SL(2,\mathbb{Z})`.
+        `SL(2,\ZZ)`.
 
         If the `i`'th element is `(c,d)`, this function computes and
         returns a list `[a,b, c',d']` that defines a 2x2 matrix
@@ -946,7 +946,7 @@ cdef class P1List:
         r"""
         Returns the index of the class of `(u,v)` in the fixed list
         of representatives of
-        `\mathbb{P}^1(\mathbb{Z}/N\mathbb{Z})`.
+        `\mathbb{P}^1(\ZZ/N\ZZ)`.
 
         INPUT:
 
@@ -983,7 +983,7 @@ cdef class P1List:
         r"""
         Returns the index of the class of `(u,v)` in the fixed list
         of representatives of
-        `\mathbb{P}^1(\mathbb{Z}/N\mathbb{Z})`.
+        `\mathbb{P}^1(\ZZ/N\ZZ)`.
 
         INPUT:
 
@@ -1017,7 +1017,7 @@ cdef class P1List:
         r"""
         Returns the index of the class of `(u,v)` in the fixed list
         of representatives of
-        `\mathbb{P}^1(\mathbb{Z}/N\mathbb{Z})`.
+        `\mathbb{P}^1(\ZZ/N\ZZ)`.
 
         INPUT:
 
@@ -1057,7 +1057,7 @@ cdef class P1List:
 
     def normalize(self, int u, int v):
         r"""
-        Returns a normalised element of `\mathbb{P}^1(\mathbb{Z}/N\mathbb{Z})`.
+        Returns a normalised element of `\mathbb{P}^1(\ZZ/N\ZZ)`.
 
         INPUT:
 
@@ -1087,7 +1087,7 @@ cdef class P1List:
 
     def normalize_with_scalar(self, int u, int v):
         r"""
-        Returns a normalised element of `\mathbb{P}^1(\mathbb{Z}/N\mathbb{Z})`, together with
+        Returns a normalised element of `\mathbb{P}^1(\ZZ/N\ZZ)`, together with
         the normalizing scalar.
 
         INPUT:
@@ -1141,10 +1141,10 @@ cdef class export:
 
 def lift_to_sl2z_int(int c, int d, int N):
     """
-    Lift a pair `(c, d)` to an element of `SL(2, \mathbb{Z})`.
+    Lift a pair `(c, d)` to an element of `SL(2, \ZZ)`.
 
     `(c,d)` is assumed to be an element of
-    `\mathbb{P}^1(\mathbb{Z}/N\mathbb{Z})`. This function computes
+    `\mathbb{P}^1(\ZZ/N\ZZ)`. This function computes
     and returns a list `[a, b, c', d']` that defines a 2x2
     matrix, with determinant 1 and integer entries, such that
     `c=c'` (mod `N`) and `d=d'` (mod `N`).
@@ -1204,10 +1204,10 @@ def lift_to_sl2z_int(int c, int d, int N):
 
 def lift_to_sl2z_llong(llong c, llong d, int N):
     r"""
-    Lift a pair `(c, d)` (modulo `N`) to an element of `SL(2, \mathbb{Z})`.
+    Lift a pair `(c, d)` (modulo `N`) to an element of `SL(2, \ZZ)`.
 
     `(c,d)` is assumed to be an element of
-    `\mathbb{P}^1(\mathbb{Z}/N\mathbb{Z})`. This function computes and
+    `\mathbb{P}^1(\ZZ/N\ZZ)`. This function computes and
     returns a list `[a, b, c', d']` that defines a 2x2 matrix,
     with determinant 1 and integer entries, such that `c=c'` (mod `N`)
     and `d=d'` (mod `N`).
