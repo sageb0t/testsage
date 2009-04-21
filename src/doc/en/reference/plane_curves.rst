@@ -31,6 +31,7 @@ Elliptic and Plane Curves
    sage/schemes/elliptic_curves/ell_modular_symbols
    sage/schemes/elliptic_curves/sha_tate
    sage/schemes/elliptic_curves/padics
+   sage/schemes/elliptic_curves/cm
 
 .. _ch:jacobians:
 
