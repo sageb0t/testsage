@@ -538,8 +538,6 @@ code = setup(name = 'sage',
 
                      'sage.calculus',
 
-                     'sage.catalogue',
-
                      'sage.categories',
 
                      'sage.coding',
