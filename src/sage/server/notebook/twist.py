@@ -677,7 +677,6 @@ class Worksheet_edit(WorksheetResource, resource.Resource):
     worksheet with the given filename.
     """
     def render(self, ctx):
-        self.worksheet.save_snapshot(self.username)
         s = notebook.html_edit_window(self.worksheet, self.username)
         return HTMLResponse(stream = s)
 
@@ -733,7 +732,6 @@ class Worksheet_save(WorksheetResource, resource.PostableResource):
             E = ctx.args['textfield'][0]
             self.worksheet.edit_save(E)
             self.worksheet.record_edit(self.username)
-            self.worksheet.save_snapshot(self.username, E)
         return http.RedirectResponse('/home/'+self.worksheet.filename())
 
 class Worksheet_save_snapshot(WorksheetResource, resource.PostableResource):
@@ -1581,7 +1579,6 @@ class SendWorksheetToStop(SendWorksheetToFolder):
     Saves and quits each selected worksheet.
     """
     def action(self, W):
-        W.save_snapshot(self.username)
         W.quit()
 
 ############################
