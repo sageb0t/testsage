@@ -468,7 +468,7 @@ cdef class SymmetricReductionStrategy:
             if report is not None:
                 print '>'
             return p
-        if p<self._min_lm:
+        if p.lm()<self._min_lm:
             if report is not None:
                 print '>'
             return p
@@ -554,6 +554,6 @@ cdef class SymmetricReductionStrategy:
             p = self.reduce(p, notail=True, report=report)
             OUT = OUT + p.lt()
             p = p.tail()
-            if p<self._min_lm:
+            if p.lm()<self._min_lm:
                 return OUT+p
         return OUT
