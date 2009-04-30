@@ -928,7 +928,7 @@ class ModularSymbolsAmbient(space.ModularSymbolsSpace, hecke.AmbientHeckeModule)
             self.__cuspidal_submodule = S
         return self.__cuspidal_submodule
 
-    def _degeneracy_raising_matrix(self, level):
+    def _degeneracy_raising_matrix(self, level, t):
         raise NotImplementedError
 
     def _degeneracy_lowering_matrix(self, level, t):
@@ -1681,7 +1681,8 @@ class ModularSymbolsAmbient_wtk_g0(ModularSymbolsAmbient):
         else:
             raise NotImplementedError
 
-    def _degeneracy_raising_matrix(self, level):
+    def _degeneracy_raising_matrix(self, level, t):
+        if t != 1: raise RuntimeError
         level = int(level)
         N = self.level()
         M = self.hecke_module_of_level(level)
@@ -2094,7 +2095,8 @@ class ModularSymbolsAmbient_wtk_g1(ModularSymbolsAmbient):
 ##         R = arithgroup.degeneracy_coset_representatives_gamma1(M.level(), self.level(), 1)
 ##         return self._matrix_of_operator_on_modular_symbols(M, R)
 
-    def _degeneracy_raising_matrix(self, level):
+    def _degeneracy_raising_matrix(self, level, t):
+        if t != 1: raise RuntimeError
         level = int(level)
         N = self.level()
         M = self.hecke_module_of_level(level)
@@ -2194,7 +2196,7 @@ class ModularSymbolsAmbient_wtk_gamma_h(ModularSymbolsAmbient):
     def _compute_hecke_matrix_prime_power(self, n, p, r):
         raise NotImplementedError
 
-    def _degeneracy_raising_matrix(self, level):
+    def _degeneracy_raising_matrix(self, level, t):
         raise NotImplementedError
 
     def boundary_space(self):
@@ -2336,7 +2338,8 @@ class ModularSymbolsAmbient_wtk_eps(ModularSymbolsAmbient):
 ##         R = arithgroup.degeneracy_coset_representatives_gamma0(M.level(), self.level(), 1)
 ##         return self._matrix_of_operator_on_modular_symbols(M, R, character_twist = True)
 
-    def _degeneracy_raising_matrix(self, level):
+    def _degeneracy_raising_matrix(self, level, t):
+        if t != 1: raise RuntimeError
         level = int(level)
         N = self.level()
         M = self.hecke_module_of_level(level)
