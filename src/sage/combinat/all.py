@@ -77,6 +77,7 @@ from sf.all import *
 from matrices.all import *
 # Posets
 from posets.all import *
+from backtrack import TransitiveIdeal, TransitiveIdealGraded, SearchForest
 
 #import lrcalc
 
