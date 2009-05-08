@@ -232,7 +232,8 @@ class ModularFormsAmbient(space.ModularFormsSpace,
         EXAMPLE::
 
             sage: ModularForms(22, 2)._degeneracy_raising_matrix(44, 1)
-            [  1   0  -1  -2   0   0   0   0   0]                                                                                           [  0   1   0  -2   0   0   0   0   0]
+            [  1   0  -1  -2   0   0   0   0   0]
+            [  0   1   0  -2   0   0   0   0   0]
             [  0   0   0   0   1   0   0   0  24]
             [  0   0   0   0   0   1   0  -2  21]
             [  0   0   0   0   0   0   1   3 -10]
@@ -511,7 +512,7 @@ class ModularFormsAmbient(space.ModularFormsSpace,
             p = rings.Integer(p)
             if not p.is_prime():
                raise ValueError, "p (=%s) must be a prime or None."%p
-        M = self.eisenstein_submodule().new_submodule(p) + self.cuspidal_submodule().new_submodule(p)
+        M = self.cuspidal_submodule().new_submodule(p) + self.eisenstein_submodule().new_submodule(p)
         self.__new_submodule[p] = M
         return M
 
