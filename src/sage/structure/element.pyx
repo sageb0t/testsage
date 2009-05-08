@@ -1262,7 +1262,7 @@ cdef class RingElement(ModuleElement):
         """
         Return the additive order of self.
 
-        This is deprecated; used ``additive_order`` instead.
+        This is deprecated; use ``additive_order`` instead.
 
         EXAMPLES::
 
