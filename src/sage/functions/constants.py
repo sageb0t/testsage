@@ -431,6 +431,35 @@ class Constant(Function):
         from sage.ext.fast_eval import fast_float_constant
         return fast_float_constant(self)
 
+    def _fast_callable_(self, etb):
+        r"""
+        Given an ExpressionTreeBuilder, return an Expression representing
+        this value.
+
+        EXAMPLES::
+
+            sage: from sage.ext.fast_callable import ExpressionTreeBuilder
+            sage: etb = ExpressionTreeBuilder(vars=['x'])
+            sage: pi._fast_callable_(etb)
+            pi
+            sage: e._fast_callable_(etb)
+            e
+            sage: golden_ratio._fast_callable_(etb)
+            golden_ratio
+            sage: log2._fast_callable_(etb)
+            log2
+            sage: etb = ExpressionTreeBuilder(vars=['x'], domain=RealField(150))
+            sage: pi._fast_callable_(etb)
+            3.1415926535897932384626433832795028841971694
+            sage: e._fast_callable_(etb)
+            2.7182818284590452353602874713526624977572471
+            sage: golden_ratio._fast_callable_(etb)
+            1.6180339887498948482045868343656381177203092
+            sage: log2._fast_callable_(etb)
+            0.69314718055994530941723212145817656807550013
+        """
+        return etb.constant(self)
+
     def floor(self):
         """
         Returns the floor of self.
@@ -1107,7 +1136,7 @@ class NotANumber(Constant):
             NaN
         """
         Constant.__init__(self,
-	    {'matlab':'NaN'})
+            {'matlab':'NaN'})
 
     def _repr_(self, simplify=True):
         """
@@ -1136,7 +1165,7 @@ class NotANumber(Constant):
         EXAMPLES::
 
             sage: RDF(NaN)
-            nan
+            NaN
         """
         return R.NaN()
 
@@ -1182,9 +1211,9 @@ class GoldenRatio(Constant):
             golden_ratio
         """
         Constant.__init__(self,{'mathematica':'N[(1+Sqrt[5])/2]','gp':'(1+sqrt(5))/2',
-				'maple':'(1+sqrt(5))/2','maxima':'(1+sqrt(5))/2',
-				'pari':'(1+sqrt(5))/2','octave':'(1+sqrt(5))/2',
-				'kash':'(1+Sqrt(5))/2'})
+                                'maple':'(1+sqrt(5))/2','maxima':'(1+sqrt(5))/2',
+                                'pari':'(1+sqrt(5))/2','octave':'(1+sqrt(5))/2',
+                                'kash':'(1+Sqrt(5))/2'})
     def _repr_(self, simplify=True):
         """
         EXAMPLES::
@@ -1246,7 +1275,7 @@ class GoldenRatio(Constant):
             sage: RealField(100)(golden_ratio)
             1.6180339887498948482045868344
         """
-	return (R(1)+R(5).sqrt())/R(2)
+        return (R(1)+R(5).sqrt())/R(2)
 
     def _algebraic_(self, field):
         """
@@ -1311,8 +1340,8 @@ class Log2(Constant):
             log2
         """
         Constant.__init__(self,{'mathematica':'N[Log[2]]','kash':'Log(2)',
-				'maple':'log(2)','maxima':'log(2)','gp':'log(2)',
-				'pari':'log(2)','octave':'log(2)'})
+                                'maple':'log(2)','maxima':'log(2)','gp':'log(2)',
+                                'pari':'log(2)','octave':'log(2)'})
 
     def _repr_(self, simplify=True):
         """
@@ -1407,7 +1436,7 @@ class EulerGamma(Constant):
             euler_gamma
         """
         Constant.__init__(self,
-	    {'kash':'EulerGamma(R)','maple':'gamma',
+            {'kash':'EulerGamma(R)','maple':'gamma',
              'mathematica':'EulerGamma','pari':'Euler',
              'maxima':'%gamma', 'maxima':'euler_gamma'})
 
@@ -1630,7 +1659,7 @@ class Khinchin(Constant):
             sage: RDF(khinchin)
             2.68545200107
         """
-	return R('2.685452001065306445309714835481795693820')
+        return R('2.685452001065306445309714835481795693820')
 
     def __float__(self):
         """
@@ -1727,7 +1756,7 @@ class TwinPrime(Constant):
             sage: RDF(twinprime)
             0.660161815847
         """
-	return R('0.660161815846869573927812110014555778432')
+        return R('0.660161815846869573927812110014555778432')
 
     def __float__(self):
         """
@@ -1736,7 +1765,7 @@ class TwinPrime(Constant):
             sage: float(twinprime)
             0.66016181584686962
         """
-	return 0.660161815846869573927812110014555778432
+        return 0.660161815846869573927812110014555778432
 
 twinprime = TwinPrime()
 
@@ -1822,7 +1851,7 @@ class Merten(Constant):
             sage: float(merten)
             0.26149721284764277
         """
-	return 0.261497212847642783755426838608695859051
+        return 0.261497212847642783755426838608695859051
 
 merten = Merten()
 
@@ -1911,6 +1940,6 @@ class Brun(Constant):
             sage: float(brun)
             1.902160583104
         """
-	return 1.9021605831040
+        return 1.9021605831040
 
 brun=Brun()

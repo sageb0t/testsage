@@ -17,6 +17,10 @@ from symmetric_group_algebra import SymmetricGroupAlgebra, HeckeAlgebraSymmetric
 
 from permutation import Permutation, Permutations, Arrangements, PermutationOptions, CyclicPermutations, CyclicPermutationsOfPartition
 
+# Integer lists lex
+
+from integer_list import IntegerListsLex
+
 #Compositions
 from composition import Composition, Compositions
 from composition_signed import SignedCompositions
@@ -38,7 +42,7 @@ from skew_partition import SkewPartition, SkewPartitions
 from partition_algebra import SetPartitionsAk, SetPartitionsPk, SetPartitionsTk, SetPartitionsIk, SetPartitionsBk, SetPartitionsSk, SetPartitionsRk, SetPartitionsRk, SetPartitionsPRk
 
 #Tableaux
-from tableau import Tableau, Tableaux, StandardTableaux, SemistandardTableaux
+from tableau import Tableau, StandardTableau, Tableaux, StandardTableaux, SemistandardTableaux
 from skew_tableau import SkewTableau, StandardSkewTableaux, SemistandardSkewTableaux
 from ribbon import Ribbon, StandardRibbons
 from ribbon_tableau import RibbonTableaux, RibbonTableau, MultiSkewTableau, SemistandardMultiSkewTableaux
@@ -85,5 +89,3 @@ from species.all import *
 from dlx import AllExactCovers, OneExactCover, DLXMatrix
 
 from multichoose_nk import MultichooseNK
-
-from family import Family, FiniteFamily, LazyFamily

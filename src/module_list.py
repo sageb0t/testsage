@@ -91,13 +91,18 @@ ext_modules = [
     ##
     ################################
 
-    Extension('sage.algebras.quaternion_algebra_element',
-               sources = ['sage/algebras/quaternion_algebra_element.pyx'],
-               extra_compile_args=["-std=c99", "-D_XPG6"],
+    Extension('sage.algebras.quatalg.quaternion_algebra_element',
+               sources = ['sage/algebras/quatalg/quaternion_algebra_element.pyx'],
+               extra_compile_args=["-std=c99"],
                language='c++',
                libraries = ["csage", "flint", "gmp", "gmpxx", "m", "stdc++", "ntl"],
                include_dirs = [SAGE_ROOT+'/local/include/FLINT/'],
                depends = [SAGE_ROOT + "/local/include/FLINT/flint.h"]),
+
+    Extension('sage.algebras.quatalg.quaternion_algebra_cython',
+               sources = ['sage/algebras/quatalg/quaternion_algebra_cython.pyx'],
+               language='c++',
+               libraries = ["csage", "flint", "gmp", "gmpxx", "m", "stdc++", "ntl"]),
 
     ################################
     ##
@@ -163,6 +168,9 @@ ext_modules = [
     ##
     ################################
 
+    Extension('sage.ext.fast_callable',
+              sources = ['sage/ext/fast_callable.pyx']),
+
     Extension('sage.ext.fast_eval',
               sources = ['sage/ext/fast_eval.pyx']),
 
@@ -191,6 +199,15 @@ ext_modules = [
     Extension('sage.finance.time_series',
               sources = ['sage/finance/time_series.pyx'],
               include_dirs = numpy_include_dirs),
+
+    ################################
+    ##
+    ## sage.functions
+    ##
+    ################################
+
+    Extension('sage.functions.prime_pi',
+        sources = ['sage/functions/prime_pi.pyx']),
 
     ################################
     ##
@@ -716,8 +733,8 @@ ext_modules = [
     ##
     ################################
 
-    Extension('sage.modular.congroup_pyx',
-              sources = ['sage/modular/congroup_pyx.pyx']),
+    Extension('sage.modular.arithgroup.congroup_pyx',
+              sources = ['sage/modular/arithgroup/congroup_pyx.pyx']),
 
     Extension('sage.modular.modsym.apply',
               sources = ['sage/modular/modsym/apply.pyx'],
@@ -785,6 +802,10 @@ ext_modules = [
     ##
     ################################
 
+    Extension('sage.plot.complex_plot',
+              sources = ['sage/plot/complex_plot.pyx'],
+              include_dirs = numpy_include_dirs),
+
     Extension('sage.plot.plot3d.base',
               sources = ['sage/plot/plot3d/base.pyx']),
 
@@ -838,6 +859,7 @@ ext_modules = [
 
     Extension('sage.rings.complex_double',
               sources = ['sage/rings/complex_double.pyx'],
+              extra_compile_args=["-std=c99",  "-D_XPG6"],
               libraries = ['gsl', BLAS, BLAS2, 'pari', 'gmp']),
 
     Extension('sage.rings.complex_interval',

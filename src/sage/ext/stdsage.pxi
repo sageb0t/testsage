@@ -38,9 +38,6 @@ cdef extern from "stdsage.h":
     bint PY_IS_NUMERIC(object o)
 
 # Memory management
-cdef extern from "stdlib.h":
-    ctypedef unsigned long size_t
-
 cdef extern from "stdsage.h":
     void  sage_free(void *p)
     void* sage_realloc(void *p, size_t n)

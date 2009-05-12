@@ -2344,7 +2344,7 @@ def binomial(x,m):
 
                 x (x-1) \cdots (x-m+1) / m!
 
-    which is defined for `m \in \mathbb{Z}` and any
+    which is defined for `m \in \ZZ` and any
     `x`. We extend this definition to include cases when
     `x-m` is an integer but `m` is not by
 
@@ -2354,7 +2354,7 @@ def binomial(x,m):
 
     INPUT:
 
-    -  ``x,m`` - numbers or symbolic expressions Either m
+    -  ``x,m`` - numbers or symbolic expressions. Either m
        or x-m must be an integer.
 
     OUTPUT: number or symbolic expression (if input is symbolic)
@@ -2371,6 +2371,8 @@ def binomial(x,m):
         0
         sage: binomial(20,10)
         184756
+        sage: binomial(-2, 5)
+        -6
         sage: binomial(RealField()('2.5'), 2)
         1.87500000000000
         sage: n=var('n'); binomial(n,2)
@@ -2385,6 +2387,13 @@ def binomial(x,m):
         sage: k, i = var('k,i',ns=1)
         sage: binomial(k,i)
         binomial(k,i)
+
+    TESTS:
+
+    We test that certain binomials are very fast (this should be
+    instant) -- see trac 3309::
+
+        sage: a = binomial(RR(1140000.78), 42000000)
     """
     if not isinstance(m, (int, long, integer.Integer)):
         try:
@@ -2396,7 +2405,7 @@ def binomial(x,m):
                 pass
             raise TypeError, 'Either m or x-m must be an integer'
     if isinstance(x, (int, long, integer.Integer)):
-        if m < 0 or m > x:
+        if x >= 0 and (m < 0 or m > x):
             return ZZ(0)
 
         if m > sys.maxint:
@@ -2411,6 +2420,12 @@ def binomial(x,m):
         P = type(x)
     if m < 0:
         return P(0)
+    # a (hopefully) temporary fix for #3309; eventually Pari should do
+    # this for us.
+    if isinstance(x, (float, sage.rings.real_mpfr.RealNumber,
+                      sage.rings.real_mpfr.RealLiteral)):
+        from sage.calculus.calculus import gamma
+        return gamma(x+1)/gamma(P(m+1))/gamma(x-m+1)
     return misc.prod([x-i for i in xrange(m)]) / P(factorial(m))
 
 def multinomial(*ks):
@@ -2436,8 +2451,8 @@ def multinomial(*ks):
     """
     s, c = 0, 1
     for k in ks:
-	s += k
-	c *= binomial(s, k)
+        s += k
+        c *= binomial(s, k)
     return c
 
 def binomial_coefficients(n):
@@ -3337,12 +3352,13 @@ def hilbert_conductor_inverse(d):
     The quaternion algebra (a,b) over Q will have (reduced) discriminant d.
 
     INPUT:
-        d -- square-free positive integer
 
-    OUTPUT:
-        pair of integers
+    - d -- square-free positive integer
 
-    EXAMPLES:
+    OUTPUT: pair of integers
+
+    EXAMPLES::
+
         sage: hilbert_conductor_inverse(2)
         (-1, -1)
         sage: hilbert_conductor_inverse(3)
@@ -3361,9 +3377,11 @@ def hilbert_conductor_inverse(d):
         ValueError: d needs to be positive
 
     AUTHOR:
-        -- Gonzalo Tornaria (2009-03-02)
 
-    TEST:
+    - Gonzalo Tornaria (2009-03-02)
+
+    TESTS::
+
         sage: for i in xrange(100):
         ...     d = random_int_upto(2**32).squarefree_part()
         ...     if hilbert_conductor(*hilbert_conductor_inverse(d)) != d:
@@ -3858,3 +3876,29 @@ def fundamental_discriminant(D):
     if D%4 == 1:
         return D
     return 4*D
+
+def squarefree_divisors(x):
+    """
+    Iterator over the squarefree divisors (up to units) of the element x.
+
+    Depends on the output of the prime_divisors function.
+
+    INPUT::
+
+        x -- an element of any ring for which the prime_divisors
+             function works.
+
+    EXAMPLES::
+
+        sage: list(squarefree_divisors(7))
+        [1, 7]
+        sage: list(squarefree_divisors(6))
+        [1, 2, 3, 6]
+        sage: list(squarefree_divisors(12))
+        [1, 2, 3, 6]
+
+    """
+    p_list = prime_divisors(x)
+    from sage.misc.misc import powerset
+    for a in powerset(p_list):
+        yield prod(a,1)

@@ -191,7 +191,7 @@ class ECM:
         child = pexpect.spawn(self.__cmd)
         cleaner.cleaner(child.pid, self.__cmd)
         child.timeout = None
-	child.__del__ = nothing   # work around stupid exception ignored error
+        child.__del__ = nothing   # work around stupid exception ignored error
         child.expect('[ECM]')
         child.sendline(str(n))
         child.sendline("bad") # child.sendeof()
@@ -258,7 +258,7 @@ class ECM:
         child = pexpect.spawn(self.__cmd)
         cleaner.cleaner(child.pid, self.__cmd)
         child.timeout = None
-	child.__del__ = nothing   # program around stupid exception ignored error
+        child.__del__ = nothing   # program around stupid exception ignored error
         child.expect('[ECM]')
         child.sendline(str(n))
         child.sendline("bad") # child.sendeof()

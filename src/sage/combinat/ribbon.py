@@ -255,7 +255,7 @@ def StandardRibbons(shape):
         [[2, 4], [1, 3]]
         sage: StandardRibbons([2,2]).last()
         [[1, 2], [3, 4]]
-        sage: StandardRibbons([2,2]).count()
+        sage: StandardRibbons([2,2]).cardinality()
         5
         sage: StandardRibbons([2,2]).list()
         [[[2, 4], [1, 3]],
@@ -263,7 +263,7 @@ def StandardRibbons(shape):
          [[1, 4], [2, 3]],
          [[1, 3], [2, 4]],
          [[1, 2], [3, 4]]]
-        sage: StandardRibbons([3,2,2]).count()
+        sage: StandardRibbons([3,2,2]).cardinality()
         155
     """
     return StandardRibbons_shape(shape)
@@ -310,7 +310,7 @@ class StandardRibbons_shape(CombinatorialClass):
         """
         return from_permutation(permutation.descents_composition_last(self.shape))
 
-    def iterator(self):
+    def __iter__(self):
         """
         An iterator for the standard ribbon of ribbon shape shape.
 

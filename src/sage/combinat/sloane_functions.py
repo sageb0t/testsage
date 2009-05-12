@@ -108,7 +108,7 @@ from sage.structure.sage_object import SageObject
 from sage.misc.misc import srange
 from sage.rings.integer_ring import ZZ
 import sage.calculus.all as calculus
-from sage.functions.transcendental import prime_pi
+from sage.functions.all import prime_pi
 import partition
 from sage.rings.integer import Integer as Integer_class
 
@@ -970,13 +970,13 @@ class A008277(SloaneSequence):
 
     def s2(self, n, k):
         """
-	Returns the Stirling number S2(n,k) of the 2nd kind.
+        Returns the Stirling number S2(n,k) of the 2nd kind.
 
-	EXAMPLES::
+        EXAMPLES::
 
-	    sage: sloane.A008277.s2(4,2)
-	    7
-	"""
+            sage: sloane.A008277.s2(4,2)
+            7
+        """
         return combinat.stirling_number2(n,k)
 
     def _eval(self, n):
@@ -1879,7 +1879,7 @@ class A000120(SloaneSequence):
 
             sage: [sloane.A000120._eval(n) for n in range(10)]
             [0, 1, 1, 2, 1, 2, 2, 3, 1, 2]
-	"""
+        """
         return self.f(n)
 
 class A010060(SloaneSequence):
@@ -3722,7 +3722,7 @@ class A000041(SloaneSequence):
             sage: [sloane.A000041._eval(n) for n in range(1,11)]
             [1, 2, 3, 5, 7, 11, 15, 22, 30, 42]
         """
-        return partition.Partitions(n).count()
+        return partition.Partitions(n).cardinality()
 
 class A000045(SloaneSequence):
     def __init__(self):
@@ -4989,7 +4989,7 @@ class A000153(ExtremesOfPermanentsSequence):
         """
         SloaneSequence.__init__(self, offset=0)
         self._b = []
-	self._a0a1d = (0,1,2)
+        self._a0a1d = (0,1,2)
         self._precompute(2)  # force precomputation, e.g. a(0) will fail when asked first
 
     def _repr_(self):
@@ -5043,7 +5043,7 @@ class A000255(ExtremesOfPermanentsSequence):
         """
         SloaneSequence.__init__(self, offset=0)
         self._b = []
-	self._a0a1d = (1,1,1)
+        self._a0a1d = (1,1,1)
         self._precompute(2)  # force precomputation, e.g. a(0) will fail when asked first
 
     def _repr_(self):
@@ -5101,7 +5101,7 @@ class A000261(ExtremesOfPermanentsSequence):
         - Jaap Spies (2007-01-23)
         """
         SloaneSequence.__init__(self, offset=1)
-	self._a0a1d = (0,1,3)
+        self._a0a1d = (0,1,3)
         self._b = []
         self._k = self.offset + 1
 
@@ -5160,7 +5160,7 @@ class A001909(ExtremesOfPermanentsSequence):
         - Jaap Spies (2007-01-13)
         """
         SloaneSequence.__init__(self, offset=2)
-	self._a0a1d = (0,1,4)
+        self._a0a1d = (0,1,4)
         self._b = []
         self._k = self.offset + 1
 
@@ -5219,7 +5219,7 @@ class A001910(ExtremesOfPermanentsSequence):
         - Jaap Spies (2007-01-13)
         """
         SloaneSequence.__init__(self, offset=3)
-	self._a0a1d = (0,1,5)
+        self._a0a1d = (0,1,5)
         self._b = []
         self._k = self.offset + 1
 
@@ -5304,7 +5304,7 @@ class A090010(ExtremesOfPermanentsSequence2):
         - Jaap Spies (2007-01-23)
         """
         SloaneSequence.__init__(self, offset=1)
-	self._a0a1d = (6,43,6)
+        self._a0a1d = (6,43,6)
         self._k = self.offset + 1
         self._b = []
 
@@ -5365,7 +5365,7 @@ class A055790(ExtremesOfPermanentsSequence2):
         - Jaap Spies (2007-01-23)
         """
         SloaneSequence.__init__(self, offset=0)
-	self._a0a1d = (0,2,1)
+        self._a0a1d = (0,2,1)
         self._b = []
         self._precompute(2)
         self._k1 = 2
@@ -8188,11 +8188,11 @@ class A079922(SloaneSequence):
 
     def _repr_(self):
         """
-    	EXAMPLES::
+        EXAMPLES::
 
-    	    sage: sloane.A079922._repr_()
-    	    'Solutions to the Dancing School problem with n girls and n+3 boys'
-    	"""
+            sage: sloane.A079922._repr_()
+            'Solutions to the Dancing School problem with n girls and n+3 boys'
+        """
         return "Solutions to the Dancing School problem with n girls and n+3 boys"
 
     def _eval(self, n):
@@ -8257,11 +8257,11 @@ class A079923(SloaneSequence):
 
     def _repr_(self):
         """
-    	EXAMPLES::
+        EXAMPLES::
 
-    	    sage: sloane.A079923._repr_()
-    	    'Solutions to the Dancing School problem with n girls and n+4 boys'
-    	"""
+            sage: sloane.A079923._repr_()
+            'Solutions to the Dancing School problem with n girls and n+4 boys'
+        """
         return "Solutions to the Dancing School problem with n girls and n+4 boys"
 
     def _eval(self, n):

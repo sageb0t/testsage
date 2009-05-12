@@ -1,3 +1,5 @@
+.. _chapter-python:
+
 =========================
 Coding in Python for Sage
 =========================
@@ -270,9 +272,9 @@ groups, rings, point sets, etc.
    #. The set-theoretic map :math:`R \to S` defined by
       ``_coerce_`` must define a morphism in the bigger category;
       in particular, the map must be defined on all of :math:`R`. It
-      does not have to be injective. For example, :math:`\mathbb{Z}` is in the
-      category of rings and :math:`\mathbb{F}_7` is in the category of fields,
-      and the reduction :math:`\mathbb{Z}\to\mathbb{F}_7` is a morphism in the
+      does not have to be injective. For example, :math:`\ZZ` is in the
+      category of rings and :math:`\GF{7}` is in the category of fields,
+      and the reduction :math:`\ZZ\to\GF{7}` is a morphism in the
       category of rings (not fields).
 
    #. If ``_coerce_`` is defined in both direction, i.e.,
@@ -285,7 +287,7 @@ groups, rings, point sets, etc.
       the object of the smaller category (this is a fairly arbitrary
       choice, but we have to make it for clarity and consistency-we go to
       the object that has more structure). E.g., there is a canonical
-      coercion :math:`\mathbb{Z}/7\mathbb{Z} \to \mathbb{F}_7`, but not conversely.
+      coercion :math:`\ZZ/7\ZZ \to \GF{7}`, but not conversely.
 
    #. (Reflexitivity) If ``R is S`` is True, then
       ``_coerce_`` must be the identity map. Here, by
@@ -315,7 +317,7 @@ groups, rings, point sets, etc.
    #. Convention: ``_coerce_`` should send generators to
       generators when this makes sense. This is only a convention, and
       can be violated when it isn't sensible, e.g., the map
-      :math:`\mathbb{Q} \hookrightarrow  \mathbb{C}` should be defined, but should
+      :math:`\QQ \hookrightarrow  \CC` should be defined, but should
       not send :math:`1` to :math:`i`!
 
    In implementing ``_coerce_``, we are making a fixed choice
@@ -323,8 +325,8 @@ groups, rings, point sets, etc.
    above rules. E.g., embeddings of finite fields via Conway
    polynomials, or inclusions of extensions of number fields, fit into
    this structure, as does the inclusion
-   :math:`\mathbb{Q} \hookrightarrow \mathbb{C}` and the surjection
-   :math:`\mathbb{Z} \to \mathbb{Z}/n\mathbb{Z}`. The function ``_coerce_``
+   :math:`\QQ \hookrightarrow \CC` and the surjection
+   :math:`\ZZ \to \ZZ/n\ZZ`. The function ``_coerce_``
    **does not** have to be "canonical" in a precisely defined
    mathematical sense.
 
@@ -336,7 +338,7 @@ groups, rings, point sets, etc.
    :math:`R` as its parent, then ``__call__`` must return
    a **new copy** of :math:`x`, unless :math:`x` is immutable
    (this is to agree with standard Python conventions). For example,
-   if :math:`x \in \mathbb{Z}/n\mathbb{Z}`, then ``ZZ.__call__(x)`` is
+   if :math:`x \in \ZZ/n\ZZ`, then ``ZZ.__call__(x)`` is
    defined but ``ZZ.__coerce__(x)`` is not.
 
 -  **ARITHMETIC** ``__add__``, ``__mul__``, ...:

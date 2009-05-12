@@ -63,12 +63,12 @@ EXAMPLES:
     sage: A3.random_element()  #random
     {{1, 3, -3, -1}, {2, -2}}
 
-    sage: A3.count()
+    sage: A3.cardinality()
     203
 
     sage: A2p5 = SetPartitionsAk(2.5); A2p5
     Set partitions of {1, ..., 3, -1, ..., -3} with 3 and -3 in the same block
-    sage: A2p5.count()
+    sage: A2p5.cardinality()
     52
 
     sage: A2p5.first() #random
@@ -135,7 +135,7 @@ class SetPartitionsAkhalf_k(CombinatorialClass):
             sage: A3 = SetPartitionsAk(3)
             sage: len(filter(lambda x: x in A2p5, A3))
             52
-            sage: A2p5.count()
+            sage: A2p5.cardinality()
             52
         """
         if x not in SetPartitionsAk_k(self.k+1):
@@ -147,20 +147,20 @@ class SetPartitionsAkhalf_k(CombinatorialClass):
 
         return True
 
-    def count(self):
+    def cardinality(self):
         """
         TESTS::
 
-            sage: SetPartitionsAk(1.5).count()
+            sage: SetPartitionsAk(1.5).cardinality()
             5
-            sage: SetPartitionsAk(2.5).count()
+            sage: SetPartitionsAk(2.5).cardinality()
             52
-            sage: SetPartitionsAk(3.5).count()
+            sage: SetPartitionsAk(3.5).cardinality()
             877
         """
-        return set_partition.SetPartitions_set(self._set).count()
+        return set_partition.SetPartitions_set(self._set).cardinality()
 
-    def iterator(self):
+    def __iter__(self):
         """
         TESTS::
 
@@ -175,7 +175,7 @@ class SetPartitionsAkhalf_k(CombinatorialClass):
 
             sage: ks = [ 1.5, 2.5, 3.5 ]
             sage: aks = map(SetPartitionsAk, ks)
-            sage: all([ak.count() == len(ak.list()) for ak in aks])
+            sage: all([ak.cardinality() == len(ak.list()) for ak in aks])
             True
         """
         kp = Set([-self.k-1])
@@ -200,7 +200,7 @@ of 1, ..., k.
 EXAMPLES:
     sage: S3 = SetPartitionsSk(3); S3
     Set partitions of {1, ..., 3, -1, ..., -3} with propagating number 3
-    sage: S3.count()
+    sage: S3.cardinality()
     6
 
     sage: S3.list()  #random
@@ -219,7 +219,7 @@ EXAMPLES:
 
     sage: S3p5 = SetPartitionsSk(3.5); S3p5
     Set partitions of {1, ..., 4, -1, ..., -4} with 4 and -4 in the same block and propagating number 4
-    sage: S3p5.count()
+    sage: S3p5.cardinality()
     6
 
     sage: S3p5.list() #random
@@ -254,7 +254,7 @@ class SetPartitionsSk_k(SetPartitionsAk_k):
             sage: S3 = SetPartitionsSk(3)
             sage: all([ sp in S3 for sp in S3])
             True
-            sage: S3.count()
+            sage: S3.cardinality()
             6
             sage: len(filter(lambda x: x in S3, A3))
             6
@@ -267,24 +267,24 @@ class SetPartitionsSk_k(SetPartitionsAk_k):
 
         return True
 
-    def count(self):
+    def cardinality(self):
         """
         Returns k!.
 
         TESTS::
 
-            sage: SetPartitionsSk(2).count()
+            sage: SetPartitionsSk(2).cardinality()
             2
-            sage: SetPartitionsSk(3).count()
+            sage: SetPartitionsSk(3).cardinality()
             6
-            sage: SetPartitionsSk(4).count()
+            sage: SetPartitionsSk(4).cardinality()
             24
-            sage: SetPartitionsSk(5).count()
+            sage: SetPartitionsSk(5).cardinality()
             120
         """
         return factorial(self.k)
 
-    def iterator(self):
+    def __iter__(self):
         """
         TESTS::
 
@@ -297,7 +297,7 @@ class SetPartitionsSk_k(SetPartitionsAk_k):
              {{1, -3}, {2, -2}, {3, -1}}]
             sage: ks = range(1, 6)
             sage: sks = map(SetPartitionsSk, ks)
-            sage: all([ sk.count() == len(sk.list()) for sk in sks])
+            sage: all([ sk.cardinality() == len(sk.list()) for sk in sks])
             True
         """
         for p in Permutations(self.k):
@@ -317,7 +317,7 @@ class SetPartitionsSkhalf_k(SetPartitionsAkhalf_k):
             True
             sage: len(filter(lambda x: x in S2p5, A3))
             2
-            sage: S2p5.count()
+            sage: S2p5.cardinality()
             2
         """
         if not SetPartitionsAkhalf_k.__contains__(self, x):
@@ -336,27 +336,27 @@ class SetPartitionsSkhalf_k(SetPartitionsAkhalf_k):
         s = self.k+1
         return SetPartitionsAkhalf_k.__repr__(self) + " and propagating number %s"%s
 
-    def count(self):
+    def cardinality(self):
         """
         TESTS::
 
-            sage: SetPartitionsSk(2.5).count()
+            sage: SetPartitionsSk(2.5).cardinality()
             2
-            sage: SetPartitionsSk(3.5).count()
+            sage: SetPartitionsSk(3.5).cardinality()
             6
-            sage: SetPartitionsSk(4.5).count()
+            sage: SetPartitionsSk(4.5).cardinality()
             24
 
         ::
 
             sage: ks = [2.5, 3.5, 4.5, 5.5]
             sage: sks = [SetPartitionsSk(k) for k in ks]
-            sage: all([ sk.count() == len(sk.list()) for sk in sks])
+            sage: all([ sk.cardinality() == len(sk.list()) for sk in sks])
             True
         """
         return factorial(self.k)
 
-    def iterator(self):
+    def __iter__(self):
         """
         TESTS::
 
@@ -389,7 +389,7 @@ in I_k.
 EXAMPLES:
     sage: I3 = SetPartitionsIk(3); I3
     Set partitions of {1, ..., 3, -1, ..., -3} with propagating number < 3
-    sage: I3.count()
+    sage: I3.cardinality()
     197
 
     sage: I3.first() #random
@@ -401,7 +401,7 @@ EXAMPLES:
 
     sage: I2p5 = SetPartitionsIk(2.5); I2p5
     Set partitions of {1, ..., 3, -1, ..., -3} with 3 and -3 in the same block and propagating number < 3
-    sage: I2p5.count()
+    sage: I2p5.cardinality()
     50
 
     sage: I2p5.first() #random
@@ -432,7 +432,7 @@ class SetPartitionsIk_k(SetPartitionsAk_k):
             True
             sage: len(filter(lambda x: x in I3, A3))
             197
-            sage: I3.count()
+            sage: I3.cardinality()
             197
         """
         if not SetPartitionsAk_k.__contains__(self, x):
@@ -441,16 +441,16 @@ class SetPartitionsIk_k(SetPartitionsAk_k):
             return False
         return True
 
-    def count(self):
+    def cardinality(self):
         """
         TESTS::
 
-            sage: SetPartitionsIk(2).count()
+            sage: SetPartitionsIk(2).cardinality()
             13
         """
         return len(self.list())
 
-    def iterator(self):
+    def __iter__(self):
         """
         TESTS::
 
@@ -469,7 +469,7 @@ class SetPartitionsIk_k(SetPartitionsAk_k):
                  {{-1}, {-2}, {1, 2}},
                  {{-1}, {-2}, {2}, {1}}]
         """
-        for sp in SetPartitionsAk_k.iterator(self):
+        for sp in SetPartitionsAk_k.__iter__(self):
             if propagating_number(sp) < self.k:
                 yield sp
 
@@ -484,7 +484,7 @@ class SetPartitionsIkhalf_k(SetPartitionsAkhalf_k):
             True
             sage: len(filter(lambda x: x in I2p5, A3))
             50
-            sage: I2p5.count()
+            sage: I2p5.cardinality()
             50
         """
         if not SetPartitionsAkhalf_k.__contains__(self, x):
@@ -502,20 +502,20 @@ class SetPartitionsIkhalf_k(SetPartitionsAkhalf_k):
         """
         return SetPartitionsAkhalf_k.__repr__(self) + " and propagating number < %s"%(self.k+1)
 
-    def count(self):
+    def cardinality(self):
         """
         TESTS::
 
-            sage: SetPartitionsIk(1.5).count()
+            sage: SetPartitionsIk(1.5).cardinality()
             4
-            sage: SetPartitionsIk(2.5).count()
+            sage: SetPartitionsIk(2.5).cardinality()
             50
-            sage: SetPartitionsIk(3.5).count()
+            sage: SetPartitionsIk(3.5).cardinality()
             871
         """
         return len(self.list())
 
-    def iterator(self):
+    def __iter__(self):
         """
         TESTS::
 
@@ -526,7 +526,7 @@ class SetPartitionsIkhalf_k(SetPartitionsAkhalf_k):
              {{-1}, {2, -2}, {1}}]
         """
 
-        for sp in SetPartitionsAkhalf_k.iterator(self):
+        for sp in SetPartitionsAkhalf_k.__iter__(self):
             if propagating_number(sp) < self.k+1:
                 yield sp
 #####
@@ -548,7 +548,7 @@ EXAMPLES:
     sage: B3.random_element() #random
     {{2, -1}, {1, -3}, {3, -2}}
 
-    sage: B3.count()
+    sage: B3.cardinality()
     15
 
     sage: B2p5 = SetPartitionsBk(2.5); B2p5
@@ -561,7 +561,7 @@ EXAMPLES:
     sage: B2p5.random_element() #random
     {{2, -2}, {3, -3}, {1, -1}}
 
-    sage: B2p5.count()
+    sage: B2p5.cardinality()
     3
 """
 
@@ -583,7 +583,7 @@ class SetPartitionsBk_k(SetPartitionsAk_k):
             sage: A3 = SetPartitionsAk(3)
             sage: len(filter(lambda x: x in B3, A3))
             15
-            sage: B3.count()
+            sage: B3.cardinality()
             15
         """
         if not SetPartitionsAk_k.__contains__(self, x):
@@ -595,22 +595,22 @@ class SetPartitionsBk_k(SetPartitionsAk_k):
 
         return True
 
-    def count(self):
+    def cardinality(self):
         """
         Returns the number of set partitions in B_k where k is an integer.
         This is given by (2k)!! = (2k-1)\*(2k-3)\*...\*5\*3\*1.
 
         EXAMPLES::
 
-            sage: SetPartitionsBk(3).count()
+            sage: SetPartitionsBk(3).cardinality()
             15
-            sage: SetPartitionsBk(2).count()
+            sage: SetPartitionsBk(2).cardinality()
             3
-            sage: SetPartitionsBk(1).count()
+            sage: SetPartitionsBk(1).cardinality()
             1
-            sage: SetPartitionsBk(4).count()
+            sage: SetPartitionsBk(4).cardinality()
             105
-            sage: SetPartitionsBk(5).count()
+            sage: SetPartitionsBk(5).cardinality()
             945
         """
         c = 1
@@ -618,7 +618,7 @@ class SetPartitionsBk_k(SetPartitionsAk_k):
             c *= i
         return c
 
-    def iterator(self):
+    def __iter__(self):
         """
         TESTS::
 
@@ -647,12 +647,12 @@ class SetPartitionsBk_k(SetPartitionsAk_k):
              {{1, 2}, {3, -2}, {-3, -1}}]
 
         Check to make sure that the number of elements generated is the
-        same as what is given by count()
+        same as what is given by cardinality()
 
         ::
 
             sage: bks = [ SetPartitionsBk(i) for i in range(1, 6) ]
-            sage: all( [ bk.count() == len(bk.list()) for bk in bks] )
+            sage: all( [ bk.cardinality() == len(bk.list()) for bk in bks] )
             True
         """
         for sp in set_partition.SetPartitions(self.set, [2]*(len(self.set)/2)):
@@ -678,7 +678,7 @@ class SetPartitionsBkhalf_k(SetPartitionsAkhalf_k):
             True
             sage: len(filter(lambda x: x in B2p5, A3))
             3
-            sage: B2p5.count()
+            sage: B2p5.cardinality()
             3
         """
         if not SetPartitionsAkhalf_k.__contains__(self, x):
@@ -688,22 +688,22 @@ class SetPartitionsBkhalf_k(SetPartitionsAkhalf_k):
                 return False
         return True
 
-    def count(self):
+    def cardinality(self):
         """
         TESTS::
 
             sage: B3p5 = SetPartitionsBk(3.5)
-            sage: B3p5.count()
+            sage: B3p5.cardinality()
             15
         """
         return len(self.list())
 
-    def iterator(self):
+    def __iter__(self):
         """
         TESTS::
 
             sage: B3p5 = SetPartitionsBk(3.5)
-            sage: B3p5.count()
+            sage: B3p5.cardinality()
             15
 
         ::
@@ -739,7 +739,7 @@ These are the planar set partitions.
 
 sage: P3 = SetPartitionsPk(3); P3
 Set partitions of {1, ..., 3, -1, ..., -3} that are planar
-sage: P3.count()
+sage: P3.cardinality()
 132
 
 sage: P3.first() #random
@@ -751,7 +751,7 @@ sage: P3.random_element() #random
 
 sage: P2p5 = SetPartitionsPk(2.5); P2p5
 Set partitions of {1, ..., 3, -1, ..., -3} with 3 and -3 in the same block and that are planar
-sage: P2p5.count()
+sage: P2p5.cardinality()
 42
 
 sage: P2p5.first() #random
@@ -780,7 +780,7 @@ class SetPartitionsPk_k(SetPartitionsAk_k):
             sage: A3 = SetPartitionsAk(3)
             sage: len(filter(lambda x: x in P3, A3))
             132
-            sage: P3.count()
+            sage: P3.cardinality()
             132
             sage: all([sp in P3 for sp in P3])
             True
@@ -793,20 +793,20 @@ class SetPartitionsPk_k(SetPartitionsAk_k):
 
         return True
 
-    def count(self):
+    def cardinality(self):
         """
         TESTS::
 
-            sage: SetPartitionsPk(2).count()
+            sage: SetPartitionsPk(2).cardinality()
             14
-            sage: SetPartitionsPk(3).count()
+            sage: SetPartitionsPk(3).cardinality()
             132
-            sage: SetPartitionsPk(4).count()
+            sage: SetPartitionsPk(4).cardinality()
             1430
         """
         return catalan_number(2*self.k)
 
-    def iterator(self):
+    def __iter__(self):
         """
         TESTS::
 
@@ -826,7 +826,7 @@ class SetPartitionsPk_k(SetPartitionsAk_k):
              {{-1}, {-2}, {1, 2}},
              {{-1}, {-2}, {2}, {1}}]
         """
-        for sp in SetPartitionsAk_k.iterator(self):
+        for sp in SetPartitionsAk_k.__iter__(self):
             if is_planar(sp):
                 yield sp
 
@@ -841,7 +841,7 @@ class SetPartitionsPkhalf_k(SetPartitionsAkhalf_k):
             True
             sage: len(filter(lambda x: x in P2p5, A3))
             42
-            sage: P2p5.count()
+            sage: P2p5.cardinality()
             42
         """
         if not SetPartitionsAkhalf_k.__contains__(self, x):
@@ -860,18 +860,18 @@ class SetPartitionsPkhalf_k(SetPartitionsAkhalf_k):
         """
         return SetPartitionsAkhalf_k.__repr__(self) + " and that are planar"
 
-    def count(self):
+    def cardinality(self):
         """
         TESTS::
 
-            sage: SetPartitionsPk(2.5).count()
+            sage: SetPartitionsPk(2.5).cardinality()
             42
-            sage: SetPartitionsPk(1.5).count()
+            sage: SetPartitionsPk(1.5).cardinality()
             5
         """
         return len(self.list())
 
-    def iterator(self):
+    def __iter__(self):
         """
         TESTS::
 
@@ -882,7 +882,7 @@ class SetPartitionsPkhalf_k(SetPartitionsAkhalf_k):
              {{-1}, {1, 2, -2}},
              {{-1}, {2, -2}, {1}}]
         """
-        for sp in SetPartitionsAkhalf_k.iterator(self):
+        for sp in SetPartitionsAkhalf_k.__iter__(self):
             if is_planar(sp):
                 yield sp
 
@@ -896,7 +896,7 @@ These are planar set partitions where every block is of size 2.
 
 sage: T3 = SetPartitionsTk(3); T3
 Set partitions of {1, ..., 3, -1, ..., -3} with block size 2 and that are planar
-sage: T3.count()
+sage: T3.cardinality()
 5
 
 sage: T3.first() #random
@@ -908,7 +908,7 @@ sage: T3.random_element() #random
 
 sage: T2p5 = SetPartitionsTk(2.5); T2p5
 Set partitions of {1, ..., 3, -1, ..., -3} with 3 and -3 in the same block and with block size 2 and that are planar
-sage: T2p5.count()
+sage: T2p5.cardinality()
 2
 
 sage: T2p5.first() #random
@@ -937,7 +937,7 @@ class SetPartitionsTk_k(SetPartitionsBk_k):
             True
             sage: len(filter(lambda x: x in T3, A3))
             5
-            sage: T3.count()
+            sage: T3.cardinality()
             5
         """
         if not SetPartitionsBk_k.__contains__(self, x):
@@ -948,22 +948,22 @@ class SetPartitionsTk_k(SetPartitionsBk_k):
 
         return True
 
-    def count(self):
+    def cardinality(self):
         """
         TESTS::
 
-            sage: SetPartitionsTk(2).count()
+            sage: SetPartitionsTk(2).cardinality()
             2
-            sage: SetPartitionsTk(3).count()
+            sage: SetPartitionsTk(3).cardinality()
             5
-            sage: SetPartitionsTk(4).count()
+            sage: SetPartitionsTk(4).cardinality()
             14
-            sage: SetPartitionsTk(5).count()
+            sage: SetPartitionsTk(5).cardinality()
             42
         """
         return catalan_number(self.k)
 
-    def iterator(self):
+    def __iter__(self):
         """
         TESTS::
 
@@ -974,7 +974,7 @@ class SetPartitionsTk_k(SetPartitionsBk_k):
              {{-3, -2}, {2, 3}, {1, -1}},
              {{1, 2}, {3, -1}, {-3, -2}}]
         """
-        for sp in SetPartitionsBk_k.iterator(self):
+        for sp in SetPartitionsBk_k.__iter__(self):
             if is_planar(sp):
                 yield sp
 
@@ -989,7 +989,7 @@ class SetPartitionsTkhalf_k(SetPartitionsBkhalf_k):
             True
             sage: len(filter(lambda x: x in T2p5, A3))
             2
-            sage: T2p5.count()
+            sage: T2p5.cardinality()
             2
         """
         if not SetPartitionsBkhalf_k.__contains__(self, x):
@@ -1008,20 +1008,20 @@ class SetPartitionsTkhalf_k(SetPartitionsBkhalf_k):
         """
         return SetPartitionsBkhalf_k.__repr__(self) + " and that are planar"
 
-    def count(self):
+    def cardinality(self):
         """
         TESTS::
 
-            sage: SetPartitionsTk(2.5).count()
+            sage: SetPartitionsTk(2.5).cardinality()
             2
-            sage: SetPartitionsTk(3.5).count()
+            sage: SetPartitionsTk(3.5).cardinality()
             5
-            sage: SetPartitionsTk(4.5).count()
+            sage: SetPartitionsTk(4.5).cardinality()
             14
         """
         return catalan_number(self.k)
 
-    def iterator(self):
+    def __iter__(self):
         """
         TESTS::
 
@@ -1032,7 +1032,7 @@ class SetPartitionsTkhalf_k(SetPartitionsBkhalf_k):
              {{-3, -2}, {2, 3}, {1, -1}, {4, -4}},
              {{1, 2}, {-3, -2}, {4, -4}, {3, -1}}]
         """
-        for sp in SetPartitionsBkhalf_k.iterator(self):
+        for sp in SetPartitionsBkhalf_k.__iter__(self):
             if is_planar(sp):
                 yield sp
 
@@ -1071,7 +1071,7 @@ class SetPartitionsRk_k(SetPartitionsAk_k):
             True
             sage: len(filter(lambda x: x in R3, A3))
             34
-            sage: R3.count()
+            sage: R3.cardinality()
             34
         """
         if not SetPartitionsAk_k.__contains__(self, x):
@@ -1094,26 +1094,26 @@ class SetPartitionsRk_k(SetPartitionsAk_k):
 
         return True
 
-    def count(self):
+    def cardinality(self):
         """
         TESTS::
 
-            sage: SetPartitionsRk(2).count()
+            sage: SetPartitionsRk(2).cardinality()
             7
-            sage: SetPartitionsRk(3).count()
+            sage: SetPartitionsRk(3).cardinality()
             34
-            sage: SetPartitionsRk(4).count()
+            sage: SetPartitionsRk(4).cardinality()
             209
-            sage: SetPartitionsRk(5).count()
+            sage: SetPartitionsRk(5).cardinality()
             1546
         """
         return sum( [ binomial(self.k, l)**2*factorial(l) for l in range(self.k + 1) ] )
 
-    def iterator(self):
+    def __iter__(self):
         """
         TESTS::
 
-            sage: len(SetPartitionsRk(3).list() ) == SetPartitionsRk(3).count()
+            sage: len(SetPartitionsRk(3).list() ) == SetPartitionsRk(3).cardinality()
             True
         """
         #The number of blocks with at most two things
@@ -1141,7 +1141,7 @@ class SetPartitionsRkhalf_k(SetPartitionsAkhalf_k):
             True
             sage: len(filter(lambda x: x in R2p5, A3))
             7
-            sage: R2p5.count()
+            sage: R2p5.cardinality()
             7
         """
         if not SetPartitionsAkhalf_k.__contains__(self, x):
@@ -1173,25 +1173,25 @@ class SetPartitionsRkhalf_k(SetPartitionsAkhalf_k):
         """
         return SetPartitionsAkhalf_k.__repr__(self) + " and with at most 1 positive and negative entry in each block"
 
-    def count(self):
+    def cardinality(self):
         """
         TESTS::
 
-            sage: SetPartitionsRk(2.5).count()
+            sage: SetPartitionsRk(2.5).cardinality()
             7
-            sage: SetPartitionsRk(3.5).count()
+            sage: SetPartitionsRk(3.5).cardinality()
             34
-            sage: SetPartitionsRk(4.5).count()
+            sage: SetPartitionsRk(4.5).cardinality()
             209
         """
         return sum( [ binomial(self.k, l)**2*factorial(l) for l in range(self.k + 1) ] )
 
-    def iterator(self):
+    def __iter__(self):
         """
         TESTS::
 
             sage: R2p5 = SetPartitionsRk(2.5)
-            sage: list(R2p5.iterator()) #random due to sets
+            sage: list(R2p5) #random due to sets
             [{{-2}, {-1}, {3, -3}, {2}, {1}},
              {{-2}, {3, -3}, {2}, {1, -1}},
              {{-1}, {3, -3}, {2}, {1, -2}},
@@ -1250,7 +1250,7 @@ class SetPartitionsPRk_k(SetPartitionsRk_k):
             True
             sage: len(filter(lambda x: x in PR3, A3))
             20
-            sage: PR3.count()
+            sage: PR3.cardinality()
             20
         """
         if not SetPartitionsRk_k.__contains__(self, x):
@@ -1261,26 +1261,26 @@ class SetPartitionsPRk_k(SetPartitionsRk_k):
 
         return True
 
-    def count(self):
+    def cardinality(self):
         """
         TESTS::
 
-            sage: SetPartitionsPRk(2).count()
+            sage: SetPartitionsPRk(2).cardinality()
             6
-            sage: SetPartitionsPRk(3).count()
+            sage: SetPartitionsPRk(3).cardinality()
             20
-            sage: SetPartitionsPRk(4).count()
+            sage: SetPartitionsPRk(4).cardinality()
             70
-            sage: SetPartitionsPRk(5).count()
+            sage: SetPartitionsPRk(5).cardinality()
             252
         """
         return binomial(2*self.k, self.k)
 
-    def iterator(self):
+    def __iter__(self):
         """
         TESTS::
 
-            sage: len(SetPartitionsPRk(3).list() ) == SetPartitionsPRk(3).count()
+            sage: len(SetPartitionsPRk(3).list() ) == SetPartitionsPRk(3).cardinality()
             True
         """
         #The number of blocks with at most two things
@@ -1309,7 +1309,7 @@ class SetPartitionsPRkhalf_k(SetPartitionsRkhalf_k):
             True
             sage: len(filter(lambda x: x in PR2p5, A3))
             6
-            sage: PR2p5.count()
+            sage: PR2p5.cardinality()
             6
         """
         if not SetPartitionsRkhalf_k.__contains__(self, x):
@@ -1329,24 +1329,24 @@ class SetPartitionsPRkhalf_k(SetPartitionsRkhalf_k):
         """
         return SetPartitionsRkhalf_k.__repr__(self) + " and that are planar"
 
-    def count(self):
+    def cardinality(self):
         """
         TESTS::
 
-            sage: SetPartitionsPRk(2.5).count()
+            sage: SetPartitionsPRk(2.5).cardinality()
             6
-            sage: SetPartitionsPRk(3.5).count()
+            sage: SetPartitionsPRk(3.5).cardinality()
             20
-            sage: SetPartitionsPRk(4.5).count()
+            sage: SetPartitionsPRk(4.5).cardinality()
             70
         """
         return binomial(2*self.k, self.k)
 
-    def iterator(self):
+    def __iter__(self):
         """
         TESTS::
 
-            sage: list(SetPartitionsPRk(2.5).iterator())
+            sage: list(SetPartitionsPRk(2.5))
             [{{-2}, {-1}, {3, -3}, {2}, {1}},
              {{-2}, {3, -3}, {2}, {1, -1}},
              {{-1}, {3, -3}, {2}, {1, -2}},

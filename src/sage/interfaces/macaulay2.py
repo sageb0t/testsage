@@ -732,14 +732,14 @@ class Macaulay2Element(ExpectElement):
         return P.eval('%s == 0'%self.name()) == 'false'
 
     def sage_polystring(self):
-	"""
-	If this Macaulay2 element is a polynomial, return a string
-	representation of this polynomial that is suitable for
-	evaluation in Python.  Thus * is used for multiplication
-	and ** for exponentiation.   This function is primarily
-	used internally.
+        """
+        If this Macaulay2 element is a polynomial, return a string
+        representation of this polynomial that is suitable for
+        evaluation in Python.  Thus * is used for multiplication
+        and ** for exponentiation.   This function is primarily
+        used internally.
 
-	EXAMPLES:
+        EXAMPLES:
             sage: R = macaulay2.ring('QQ','(x,y)')               # optional
             sage: f = macaulay2('x^3 + 3*y^11 + 5')              # optional
             sage: print f                                        # optional
@@ -747,7 +747,7 @@ class Macaulay2Element(ExpectElement):
             x  + 3y   + 5
             sage: f.sage_polystring()                            # optional
             'x**3+3*y**11+5'
-	"""
+        """
         return self.external_string().replace('^','**')
 
     def structure_sheaf(self):

@@ -312,7 +312,7 @@ class CyclicPermutationGroup(PermutationGroup_generic):
         """
         Return True if this group is commutative.
 
-	EXAMPLES:
+        EXAMPLES:
             sage: C = CyclicPermutationGroup(8)
             sage: C.is_commutative()
             True
@@ -323,7 +323,7 @@ class CyclicPermutationGroup(PermutationGroup_generic):
         """
         Return True if this group is abelian.
 
-	EXAMPLES:
+        EXAMPLES:
             sage: C = CyclicPermutationGroup(8)
             sage: C.is_abelian()
             True
@@ -331,20 +331,20 @@ class CyclicPermutationGroup(PermutationGroup_generic):
         return True
 
     def as_AbelianGroup(self):
-	"""
-	Returns the corresponding Abelian Group instance.
+        """
+        Returns the corresponding Abelian Group instance.
 
-	EXAMPLES:
+        EXAMPLES:
             sage: C = CyclicPermutationGroup(8)
             sage: C.as_AbelianGroup()
             Multiplicative Abelian Group isomorphic to C8
 
-	"""
-	n = self.order()
+        """
+        n = self.order()
         a = list(factor(n))
         invs = [x[0]**x[1] for x in a]
         G = AbelianGroup(len(a),invs)
-	return G
+        return G
 
 class KleinFourGroup(PermutationGroup_generic):
     def __init__(self):
@@ -397,7 +397,7 @@ class DihedralGroup(PermutationGroup_generic):
             sage: DihedralGroup(2)
             Dihedral group of order 4 as a permutation group
             sage: DihedralGroup(2).gens()
-	    [(3,4), (1,2)]
+            [(3,4), (1,2)]
 
             sage: DihedralGroup(5).gens()
             [(1,2,3,4,5), (1,5)(2,4)]
@@ -913,7 +913,7 @@ class SuzukiGroup(PermutationGroup_generic):
         from sage.rings.arith import valuation
         t = valuation(q, 2)
         if 2**t != q or is_even(t):
-	    raise ValueError,"The ground field size %s must be an odd power of 2."%q
+            raise ValueError,"The ground field size %s must be an odd power of 2."%q
         id = 'SuzukiGroup(IsPermGroup,%s)'%q
         PermutationGroup_generic.__init__(self, gap_group=id)
         self._q = q

@@ -30,9 +30,12 @@ it operates via your web browser. It provides you with Sage worksheets
 that you can edit and evaluate, which contain scalable typeset
 mathematics and beautiful antialiased images.
 
-Enjoy Sage!
+This work is licensed under a `Creative Commons Attribution-Share Alike
+3.0 License`__.
 
-Contents:
+__ http://creativecommons.org/licenses/by-sa/3.0/
+
+Enjoy Sage!
 
 .. toctree::
    :maxdepth: 2
@@ -70,10 +73,12 @@ Contents:
    matrices
    modules
    geometry
+   homology
    lfunctions
    schemes
    plane_curves
    coding
+   arithgroup
    hecke
    modsym
    modfrm
