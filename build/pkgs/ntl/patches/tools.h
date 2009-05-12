@@ -9,6 +9,7 @@
 
 #include <cstdlib>
 #include <cmath>
+#include <cstdio>
 #include <iostream>
 
 #else
