@@ -713,7 +713,7 @@ class SymmetricIdeal( Ideal_generic ):
             Apply permutations
             :>
             :>
-            >
+            :>
             Symmetric interreduction
             [1/1]  >
             Classical Groebner basis
