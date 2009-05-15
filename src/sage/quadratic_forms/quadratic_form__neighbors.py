@@ -48,14 +48,14 @@ def find_primitive_p_divisible_vector__random(self, p):
         else:
             v[ZZ.random_element(n)] = ZZ.random_element(p)      ## Replace a random entry and try again.
 
-def find_primitive_p_divisible_vector__all(self, p):
-    """
-    Finds all random p-primitive vectors (up to scaling) in L/pL whose
-    value is p-divisible.
-
-    Note: Since there are about p^(n-2) of these lines, we should avoid this for large n.
-    """
-    pass
+#def find_primitive_p_divisible_vector__all(self, p):
+#    """
+#    Finds all random p-primitive vectors (up to scaling) in L/pL whose
+#    value is p-divisible.
+#
+#    Note: Since there are about p^(n-2) of these lines, we should avoid this for large n.
+#    """
+#    pass
 
 def find_primitive_p_divisible_vector__next(self, p, v=None):
     """
