@@ -1,1 +1,0 @@
-import sage.rings.arith
