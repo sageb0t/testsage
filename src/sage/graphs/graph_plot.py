@@ -248,7 +248,7 @@ class GraphPlot(SageObject):
         changes are cumulative.
 
         EXAMPLES:
-            sage: g = Graph({}, loops=True, multiedges=True)
+            sage: g = Graph({}, loops=True, multiedges=True, sparse=True)
             sage: g.add_edges([(0,0,'a'),(0,0,'b'),(0,1,'c'),(0,1,'d'),
             ...     (0,1,'e'),(0,1,'f'),(0,1,'f'),(2,1,'g'),(2,2,'h')])
             sage: GP = g.graphplot(vertex_size=100, edge_labels=True, color_by_label=True, edge_style='dashed')
@@ -340,7 +340,7 @@ class GraphPlot(SageObject):
         cumulative.
 
         EXAMPLES:
-            sage: g = Graph({}, loops=True, multiedges=True)
+            sage: g = Graph({}, loops=True, multiedges=True, sparse=True)
             sage: g.add_edges([(0,0,'a'),(0,0,'b'),(0,1,'c'),(0,1,'d'),
             ...     (0,1,'e'),(0,1,'f'),(0,1,'f'),(2,1,'g'),(2,2,'h')])
             sage: GP = g.graphplot(vertex_size=100, edge_labels=True, color_by_label=True, edge_style='dashed')
@@ -349,7 +349,7 @@ class GraphPlot(SageObject):
             sage: GP.set_edges(edge_colors='black')
             sage: GP.plot()
 
-            sage: d = DiGraph({}, loops=True, multiedges=True)
+            sage: d = DiGraph({}, loops=True, multiedges=True, sparse=True)
             sage: d.add_edges([(0,0,'a'),(0,0,'b'),(0,1,'c'),(0,1,'d'),
             ...     (0,1,'e'),(0,1,'f'),(0,1,'f'),(2,1,'g'),(2,2,'h')])
             sage: GP = d.graphplot(vertex_size=100, edge_labels=True, color_by_label=True, edge_style='dashed')
@@ -535,7 +535,7 @@ class GraphPlot(SageObject):
         radius VR.  Returns a tuple of xy tuples representing the two points.
 
         EXAMPLE:
-            sage: d = DiGraph({}, loops=True, multiedges=True)
+            sage: d = DiGraph({}, loops=True, multiedges=True, sparse=True)
             sage: d.add_edges([(0,0,'a'),(0,0,'b'),(0,1,'c'),(0,1,'d'),
             ...     (0,1,'e'),(0,1,'f'),(0,1,'f'),(2,1,'g'),(2,2,'h')])
             sage: GP = d.graphplot(vertex_size=100, edge_labels=True, color_by_label=True, edge_style='dashed')
@@ -671,7 +671,7 @@ class GraphPlot(SageObject):
             sage: P = C.graphplot(vertex_labels=False, vertex_size=0, graph_border=True)
             sage: P.show()
 
-            sage: G = graphs.HeawoodGraph()
+            sage: G = graphs.HeawoodGraph().copy(sparse=True)
             sage: for u,v,l in G.edges():
             ...    G.set_edge_label(u,v,'(' + str(u) + ',' + str(v) + ')')
             sage: G.graphplot(edge_labels=True).show()
@@ -745,13 +745,13 @@ class GraphPlot(SageObject):
             sage: D = DiGraph({0:[1,2,3], 2:[1,4], 3:[0]})
             sage: D.graphplot().show()
 
-            sage: D = DiGraph(multiedges=True)
+            sage: D = DiGraph(multiedges=True, sparse=True)
             sage: for i in range(5):
             ...     D.add_edge((i,i+1,'a'))
             ...     D.add_edge((i,i-1,'b'))
             sage: D.graphplot(edge_labels=True,edge_colors=D._color_by_label()).plot()
 
-            sage: g = Graph({}, loops=True, multiedges=True)
+            sage: g = Graph({}, loops=True, multiedges=True, sparse=True)
             sage: g.add_edges([(0,0,'a'),(0,0,'b'),(0,1,'c'),(0,1,'d'),
             ...     (0,1,'e'),(0,1,'f'),(0,1,'f'),(2,1,'g'),(2,2,'h')])
             sage: g.graphplot(edge_labels=True, color_by_label=True, edge_style='dashed').plot()
