@@ -2349,7 +2349,7 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
         TESTS:
             sage: P.<x, y> = QQ[]
             sage: P(0).degree(x)
-            0
+            -1
             sage: P(1).degree(x)
             0
 
@@ -2360,6 +2360,8 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
 
         deg = 0
 
+        if self._poly == NULL:
+            return -1
         if not x:
             return self.total_degree()
 
@@ -2406,7 +2408,7 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
         TESTS:
             sage: R.<x,y,z> = QQ[]
             sage: R(0).total_degree()
-            0
+            -1
             sage: R(1).total_degree()
             0
         """
@@ -2414,7 +2416,7 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
         cdef ring *r = (<MPolynomialRing_libsingular>self._parent)._ring
         cdef int l
         if self._poly == NULL:
-            return 0
+            return -1
         if(r != currRing): rChangeCurrRing(r)
         return pLDeg(p,&l,r)
 
