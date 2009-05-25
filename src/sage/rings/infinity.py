@@ -1205,7 +1205,7 @@ class PlusInfinity(_uniq, AnInfinity, PlusInfinityElement):
             sage: import sympy
             sage: bool(oo == sympy.oo) # indirect doctest
             True
-            sage: #bool(SR(oo) == sympy.oo)
+            sage: bool(SR(oo) == sympy.oo)
             True
         """
         import sympy
