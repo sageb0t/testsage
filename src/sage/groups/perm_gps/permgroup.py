@@ -328,9 +328,9 @@ class PermutationGroup_generic(group.FiniteGroup):
             self._gens = self._gens_from_gap()
             return
 
-        gens = [PermutationGroupElement(x, check=False).list() for x in gens]
+        gens = [self._element_class()(x, check=False).list() for x in gens]
         self._deg = max([1]+[max(g) for g in gens])
-        gens = [PermutationGroupElement(x, self, check=False) for x in gens]
+        gens = [self._element_class()(x, self, check=False) for x in gens]
         if not gens:  # length 0
              gens = [()]
         if canonicalize:
@@ -355,7 +355,7 @@ class PermutationGroup_generic(group.FiniteGroup):
             gens = self._gap_().GeneratorsOfGroup()
         except TypeError, s:
             raise RuntimeError, "(It might be necessary to install the database_gap optional Sage package, if you haven't already.)\n%s"%s
-        gens = [PermutationGroupElement(gens[n],self, check=False)
+        gens = [self._element_class()(gens[n],self, check=False)
                        for n in range(1, int(gens.Length())+1)]
         if gens == []:
             gens = [()]
@@ -447,6 +447,21 @@ class PermutationGroup_generic(group.FiniteGroup):
             return -1
         return gapcmp
 
+    def _element_class(self):
+        r"""
+        Return the class to be used for creating elements of this group. By
+        default this is
+        ``sage.groups.perm_gps.permgroup_element.PermutationGroupElement``, but
+        it may be overridden in derived subclasses (most importantly
+        ``sage.rings.number_field.galois_group.GaloisGroup_v2``).
+
+        EXAMPLE::
+
+            sage: SymmetricGroup(17)._element_class()
+            <type 'sage.groups.perm_gps.permgroup_element.PermutationGroupElement'>
+        """
+        return PermutationGroupElement
+
     def __call__(self, x, check=True):
         """
         Coerce ``x`` into this permutation group.
@@ -507,7 +522,7 @@ class PermutationGroup_generic(group.FiniteGroup):
         if isinstance(x, (int, long, Integer)) and x == 1:
             return self.identity()
 
-        return PermutationGroupElement(x, self, check=check)
+        return self._element_class()(x, self, check=check)
 
     def _coerce_impl(self, x):
         r"""
@@ -547,7 +562,7 @@ class PermutationGroup_generic(group.FiniteGroup):
                 return x
             elif (x_parent.degree() <= self.degree() and
                   (self.__class__ == SymmetricGroup or x._gap_() in self._gap_())):
-                return PermutationGroupElement(x.list(), self, check = False)
+                return self._element_class()(x.list(), self, check = False)
         raise TypeError, "no implicit coercion of element into permutation group"
 
     @cached_method
@@ -563,7 +578,7 @@ class PermutationGroup_generic(group.FiniteGroup):
         """
         X = self._gap_().Elements()
         n = X.Length()
-        L = [PermutationGroupElement(X[i], self, check = False)
+        L = [self._element_class()(X[i], self, check = False)
                             for i in range(1,n+1)]
         return L
 
@@ -681,7 +696,7 @@ class PermutationGroup_generic(group.FiniteGroup):
             2
         """
         gens = self._gap_().SmallGeneratingSet()
-        return [PermutationGroupElement(x, self, check=False) for x in gens]
+        return [self._element_class()(x, self, check=False) for x in gens]
 
     def gen(self, i):
         r"""
@@ -750,7 +765,7 @@ class PermutationGroup_generic(group.FiniteGroup):
         gens = phi.Image().GeneratorsOfGroup()
         N = Integer(gens.Length())
         nm = gens.name()
-        gens = [PermutationGroupElement(gap.eval("%s[%s];"%(nm, i))) for i in range(1,N+1)]
+        gens = [self._element_class()(gap.eval("%s[%s];"%(nm, i))) for i in range(1,N+1)]
         H = PermutationGroup(gens)
         nH = H.order()
         R,vars = PolynomialRing(RationalField(),names,nH).objgens()
@@ -779,7 +794,7 @@ class PermutationGroup_generic(group.FiniteGroup):
             sage: e*g
             (1,2,3)(4,5)
         """
-        return PermutationGroupElement([], self, check=True)
+        return self._element_class()([], self, check=True)
 
     def exponent(self):
         """
@@ -939,7 +954,7 @@ class PermutationGroup_generic(group.FiniteGroup):
         """
         current_randstate().set_seed_gap()
 
-        return PermutationGroupElement(self._gap_().Random(),
+        return self._element_class()(self._gap_().Random(),
                                        self, check=False)
 
     def group_id(self):
@@ -1095,7 +1110,7 @@ class PermutationGroup_generic(group.FiniteGroup):
         gap.eval("gens := GeneratorsOfGroup( Image( phi ));")
         N = Integer(gap.eval("N := Length(gens);"))
         if N>0:
-            gens = [PermutationGroupElement(gap.eval("gens[%s];"%i)) for i in range(1,N+1)]
+            gens = [self._element_class()(gap.eval("gens[%s];"%i)) for i in range(1,N+1)]
             Q = PermutationGroup(gens)
             return Q
         else:
@@ -1445,7 +1460,7 @@ class PermutationGroup_generic(group.FiniteGroup):
         n = Integer(cl.Length())
         L = gap("List([1..Length(%s)], i->Representative(%s[i]))"%(
             cl.name(),  cl.name()))
-        return [PermutationGroupElement(L[i], self, check=False) \
+        return [self._element_class()(L[i], self, check=False) \
                 for i in range(1,n+1)]
 
     def conjugacy_classes_subgroups(self):
@@ -2100,7 +2115,7 @@ class PermutationGroup_generic(group.FiniteGroup):
         gap.eval("gens := GeneratorsOfGroup( Ssgp );")
         N = Integer(gap.eval("N := Length(gens);"))
         if N>0:
-            gens = [PermutationGroupElement(gap.eval("gens[%s];"%j)) for j in range(1,N+1)]
+            gens = [self._element_class()(gap.eval("gens[%s];"%j)) for j in range(1,N+1)]
             H = PermutationGroup(gens)
         else:
             H = PermutationGroup([()])
