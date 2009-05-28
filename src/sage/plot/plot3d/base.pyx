@@ -649,7 +649,7 @@ end_scene""" % (
         render_params.output_archive.close()
 
     def jmol_repr(self, render_params):
-        """
+        r"""
         A (possibly nested) list of strings which will be concatenated and
         used by jmol to render self. (Nested lists of strings are used
         because otherwise all the intermediate concatenations can kill
@@ -657,6 +657,7 @@ end_scene""" % (
         are stored in render_parames.output_archive.
 
         EXAMPLES::
+
             sage: G = sage.plot.plot3d.base.Graphics3d()
             sage: G.jmol_repr(G.default_render_params())
             []
@@ -693,6 +694,7 @@ end_scene""" % (
         is stored elsewhere.
 
         EXAMPLES::
+
             sage: G = sage.plot.plot3d.base.Graphics3d()
             sage: G.obj_repr(G.default_render_params())
             []
@@ -1218,7 +1220,7 @@ class Graphics3dGroup(Graphics3d):
         return [g.obj_repr(render_params) for g in self.all]
 
     def jmol_repr(self, render_params):
-        """
+        r"""
         The jmol representation of a group is simply the concatenation of
         the representation of its objects.
 
@@ -1334,7 +1336,7 @@ class TransformGroup(Graphics3dGroup):
         return self._bounding_box
 
     def x3d_str(self):
-        """
+        r"""
         To apply a transformation to a set of objects in x3d, simply make them
         all children of an x3d Transform node.
 
@@ -1402,7 +1404,7 @@ class TransformGroup(Graphics3dGroup):
         return rep
 
     def jmol_repr(self, render_params):
-        """
+        r"""
         Transformations for jmol are applied at the leaf nodes.
 
         EXAMPLES::
@@ -1549,7 +1551,7 @@ cdef class PrimitiveObject(Graphics3d):
         return set([self.texture])
 
     def x3d_str(self):
-        """
+        r"""
         EXAMPLES::
 
             sage: sphere().flatten().x3d_str()
@@ -1591,7 +1593,7 @@ cdef class PrimitiveObject(Graphics3d):
         return self.triangulation().obj_repr(render_params)
 
     def jmol_repr(self, render_params):
-        """
+        r"""
         Default behavior is to render the triangulation. The actual polygon
         data is stored in a separate file.
 
