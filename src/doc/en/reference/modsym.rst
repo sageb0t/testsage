@@ -13,6 +13,7 @@ Modular Symbols
    sage/modular/modsym/subspace
 
    sage/modular/modsym/element
+   sage/modular/modsym/modular_symbols
    sage/modular/modsym/manin_symbols
 
    sage/modular/modsym/boundary
@@ -20,5 +21,7 @@ Modular Symbols
    sage/modular/modsym/heilbronn
 
    sage/modular/modsym/p1list
+   sage/modular/modsym/g1list
+   sage/modular/modsym/ghlist
 
    sage/modular/modsym/relation_matrix

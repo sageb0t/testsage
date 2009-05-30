@@ -76,9 +76,22 @@ cd "$CUR"
 
 if [ -d "$DEVEL/sage-main" ]; then
     cd "$DEVEL"
+
     rm -f sage
     ln -sf sage-main sage
     cd sage
+
+    # TEMPORARY HACK (2009-05-15) until we write a proper system for
+    # deleting old/stale .so and .py[c] files.  We only have to do this
+    # once for the first upgrade (to sage-4.0).   This line should be
+    # removed no matter what in a couple of months (e.g, end of 2009).
+    # Note that deleting files from build/* during spkg-install
+    # is safe, since at worst it increases build time.  -- William Stein
+    rm -f build/*/sage/symbolic/constants*
+    rm -f build/sage/symbolic/constants*
+
+    sage -sync-build
+
     # Pull in changes from the archive just downloaded.
     hg pull "$CUR"
     hg merge tip

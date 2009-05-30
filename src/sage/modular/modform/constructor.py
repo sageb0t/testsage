@@ -89,33 +89,32 @@ def canonical_parameters(group, level, weight, base_ring):
     if weight <= 1:
         raise NotImplementedError, "weight must be at least 2"
 
-    if isinstance(group, (int, long, rings.Integer)):
-        if ( rings.Integer(group) != rings.Integer(level) ):
-            raise ValueError, "group and level do not match."
-        group = arithgroup.Gamma0(group)
-        level = rings.Integer(level)
-
-    elif isinstance(group, dirichlet.DirichletCharacter):
+    if isinstance(group, dirichlet.DirichletCharacter):
         if ( group.level() != rings.Integer(level) ):
             raise ValueError, "group.level() and level do not match."
         group = group.minimize_base_ring()
         level = rings.Integer(level)
 
-    elif arithgroup.is_SL2Z(group) or \
-       arithgroup.is_Gamma1(group) and group.level() == rings.Integer(1):
-        if ( rings.Integer(level) != rings.Integer(1) ):
-            raise ValueError, "group.level() and level do not match."
-        group = arithgroup.Gamma0(rings.Integer(1))
-
     elif arithgroup.is_CongruenceSubgroup(group):
         if ( rings.Integer(level) != group.level() ):
             raise ValueError, "group.level() and level do not match."
+        # normalize the case of SL2Z
+        if arithgroup.is_SL2Z(group) or \
+           arithgroup.is_Gamma1(group) and group.level() == rings.Integer(1):
+            group = arithgroup.Gamma0(rings.Integer(1))
 
     elif group is None:
         pass
 
     else:
-        raise ValueError, "group of unknown type."
+        try:
+            m = rings.Integer(group)
+        except TypeError:
+            raise TypeError, "group of unknown type."
+        level = rings.Integer(level)
+        if ( m != level ):
+            raise ValueError, "group and level do not match."
+        group = arithgroup.Gamma0(m)
 
     if not rings.is_CommutativeRing(base_ring):
         raise TypeError, "base_ring (=%s) must be a commutative ring"%base_ring
@@ -224,6 +223,11 @@ def ModularForms(group  = 1,
         4
         sage: m.T(2).charpoly('x')
         x^4 - 917*x^2 - 42284
+
+    This came up in a subtle bug (trac #5923)::
+
+        sage: ModularForms(gp(1), gap(12))
+        Modular Forms space of dimension 2 for Modular Group SL(2,Z) of weight 12 over Rational Field
     """
     if isinstance(group, dirichlet.DirichletCharacter):
         if base_ring is None:
@@ -231,7 +235,8 @@ def ModularForms(group  = 1,
     if base_ring is None:
         base_ring = rings.QQ
 
-    if hasattr(group, 'level'):
+    if isinstance(group, dirichlet.DirichletCharacter) \
+           or arithgroup.is_CongruenceSubgroup(group):
         level = group.level()
     else:
         level = group

@@ -1,7 +1,8 @@
 """
-Abelian varieties attached to newforms.
+Abelian varieties attached to newforms
 
-TESTS:
+TESTS::
+
     sage: A = AbelianVariety('23a')
     sage: loads(dumps(A)) == A
     True
@@ -29,13 +30,14 @@ class ModularAbelianVariety_newform(ModularAbelianVariety_modsym_abstract):
     """
     def __init__(self, f, internal_name=False):
         """
-        Create the modular abelian variety $A_f$ attached to the
-        newform $f$.
+        Create the modular abelian variety `A_f` attached to the
+        newform `f`.
 
         INPUT:
             f -- a newform
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: f = CuspForms(37).newforms('a')[0]
             sage: f.abelian_variety()
             Newform abelian subvariety 37a of dimension 1 of J0(37)
@@ -58,7 +60,8 @@ class ModularAbelianVariety_newform(ModularAbelianVariety_modsym_abstract):
 
     def _modular_symbols(self,sign=0):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: f = CuspForms(52).newforms('a')[0]
             sage: A = f.abelian_variety()
             sage: A._modular_symbols()
@@ -74,7 +77,8 @@ class ModularAbelianVariety_newform(ModularAbelianVariety_modsym_abstract):
         r"""
         Return the newform that this modular abelian variety is attached to.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: f = Newform('37a')
             sage: A = f.abelian_variety()
             sage: A.newform()
@@ -82,7 +86,8 @@ class ModularAbelianVariety_newform(ModularAbelianVariety_modsym_abstract):
             sage: A.newform() is f
             True
 
-        If the a variable name has not ben specified, we must specify one:
+        If the a variable name has not ben specified, we must specify one::
+
             sage: A = AbelianVariety('67b')
             sage: A.newform()
             Traceback (most recent call last):
@@ -91,8 +96,9 @@ class ModularAbelianVariety_newform(ModularAbelianVariety_modsym_abstract):
             sage: A.newform('alpha')
             q + alpha*q^2 + (-alpha - 3)*q^3 + (-3*alpha - 3)*q^4 - 3*q^5 + O(q^6)
 
-        If the eigenform is actulaly over $\Q$ then we don't have to specify
-        the name:
+        If the eigenform is actually over `\QQ` then we don't have to specify
+        the name::
+
             sage: A = AbelianVariety('67a')
             sage: A.newform()
             q + 2*q^2 - 2*q^3 + 2*q^4 + 2*q^5 + O(q^6)
@@ -111,7 +117,8 @@ class ModularAbelianVariety_newform(ModularAbelianVariety_modsym_abstract):
         OUTPUT:
             string
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: A = AbelianVariety('43b')
             sage: A.label()
             '43b'
@@ -132,7 +139,8 @@ class ModularAbelianVariety_newform(ModularAbelianVariety_modsym_abstract):
         OUTPUT:
             int
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: A = AbelianVariety('43b')
             sage: A.factor_number()
             1
@@ -147,7 +155,8 @@ class ModularAbelianVariety_newform(ModularAbelianVariety_modsym_abstract):
         """
         String representation of this modular abelian variety.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: AbelianVariety('37a')._repr_()
             'Newform abelian subvariety 37a of dimension 1 of J0(37)'
         """
@@ -158,12 +167,14 @@ class ModularAbelianVariety_newform(ModularAbelianVariety_modsym_abstract):
         """
         Return the endomorphism ring of this newform abelian variety.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: A = AbelianVariety('23a')
             sage: E = A.endomorphism_ring(); E
             Endomorphism ring of Newform abelian subvariety 23a of dimension 2 of J0(23)
 
-        We display the matrices of these two basis matrices:
+        We display the matrices of these two basis matrices::
+
             sage: E.0.matrix()
             [1 0 0 0]
             [0 1 0 0]
@@ -175,7 +186,8 @@ class ModularAbelianVariety_newform(ModularAbelianVariety_modsym_abstract):
             [-1  2 -2  1]
             [-1  1  0 -1]
 
-        The result is cached:
+        The result is cached::
+
             sage: E is A.endomorphism_ring()
             True
         """
@@ -190,7 +202,8 @@ class ModularAbelianVariety_newform(ModularAbelianVariety_modsym_abstract):
 
     def _calculate_endomorphism_generators(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: A = AbelianVariety('43b')
             sage: B = A.endomorphism_ring(); B   # indirect doctest
             Endomorphism ring of Newform abelian subvariety 43b of dimension 2 of J0(43)

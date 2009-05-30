@@ -681,11 +681,9 @@ cdef class FreeModuleElement(element_Vector):   # abstract base class
             3.07738488539
             sage: v.norm(pi/2)
             4.2165958647
-            sage: var('a b c d p')
-            (a, b, c, d, p)
-            sage: v=vector([a, b, c, d])
+            sage: _=var('a b c d p'); v=vector([a, b, c, d])
             sage: v.norm(p)
-            (abs(d)^p + abs(c)^p + abs(b)^p + abs(a)^p)^(1/p)
+            (abs(a)^p + abs(b)^p + abs(c)^p + abs(d)^p)^(1/p)
         """
         abs_self = [abs(x) for x in self]
         if p == Infinity:
@@ -809,9 +807,9 @@ cdef class FreeModuleElement(element_Vector):   # abstract base class
 
             sage: x = var('x')
             sage: v = vector([x/(2*x)+sqrt(2)+var('theta')^3,x/(2*x)]); v
-            (theta^3 + sqrt(2) + 1/2, 1/2)
+            (sqrt(2) + theta^3 + 1/2, 1/2)
             sage: v._repr_()
-            '(theta^3 + sqrt(2) + 1/2, 1/2)'
+            '(sqrt(2) + theta^3 + 1/2, 1/2)'
         """
         d = self.degree()
         if d == 0: return "()"
@@ -1352,7 +1350,7 @@ cdef class FreeModuleElement(element_Vector):   # abstract base class
             sage: a = vector(SR, 5, [1, x, x^2, sin(x), pi]); a
             (1, x, x^2, sin(x), pi)
             sage: a._mathematica_init_()
-            '{1, x, (x) ^ (2), Sin[x], Pi}'
+            '{1, x, (x)^(2), Sin[x], Pi}'
         """
         return '{' + ', '.join([x._mathematica_init_() for x in self.list()]) + '}'
 
@@ -1559,14 +1557,17 @@ cdef class FreeModuleElement(element_Vector):   # abstract base class
             sage: v = vector([1,x,x^2])
             sage: v._derivative(x)
             (0, 1, 2*x)
-            sage: type(v._derivative()) == type(v)
+            sage: type(v._derivative(x)) == type(v)
             True
             sage: v = vector([1,x,x^2], sparse=True)
             sage: v._derivative(x)
             (0, 1, 2*x)
-            sage: type(v._derivative()) == type(v)
+            sage: type(v._derivative(x)) == type(v)
             True
         """
+        if var is None:
+            raise ValueError, "No differentiation variable specified."
+
         # We would just use apply_map, except that Cython doesn't
         # allow lambda functions
         if self._degree == 0:
@@ -1592,12 +1593,12 @@ cdef class FreeModuleElement(element_Vector):   # abstract base class
             sage: v = vector([1,x,x^2])
             sage: v.derivative(x)
             (0, 1, 2*x)
-            sage: type(v.derivative()) == type(v)
+            sage: type(v.derivative(x)) == type(v)
             True
             sage: v = vector([1,x,x^2], sparse=True)
             sage: v.derivative(x)
             (0, 1, 2*x)
-            sage: type(v.derivative()) == type(v)
+            sage: type(v.derivative(x)) == type(v)
             True
             sage: v.derivative(x,x)
             (0, 0, 2)

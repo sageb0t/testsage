@@ -15,7 +15,7 @@ import sage.misc.misc as misc
 import sage.misc.search
 from sage.libs.pari.gen import pari, PariError, vecsmall_to_intlist
 
-import sage.rings.rational_field
+from sage.rings.rational_field import QQ
 import sage.rings.rational
 import sage.rings.complex_field
 import sage.rings.complex_number
@@ -2376,7 +2376,7 @@ def binomial(x,m):
         sage: binomial(RealField()('2.5'), 2)
         1.87500000000000
         sage: n=var('n'); binomial(n,2)
-        (n - 1)*n/2
+        1/2*(n - 1)*n
         sage: n=var('n'); binomial(n,n)
         1
         sage: n=var('n'); binomial(n,n-1)
@@ -2424,7 +2424,7 @@ def binomial(x,m):
     # this for us.
     if isinstance(x, (float, sage.rings.real_mpfr.RealNumber,
                       sage.rings.real_mpfr.RealLiteral)):
-        from sage.calculus.calculus import gamma
+        from sage.functions.all import gamma
         return gamma(x+1)/gamma(P(m+1))/gamma(x-m+1)
     return misc.prod([x-i for i in xrange(m)]) / P(factorial(m))
 
@@ -2634,10 +2634,12 @@ def kronecker_symbol(x,y):
         1
         sage: kronecker(-2,15)
         -1
+        sage: kronecker(2/3,5)
+        1
 
     IMPLEMENTATION: Using GMP.
     """
-    x = ZZ(x)
+    x = QQ(x).numerator() * QQ(x).denominator()
     return ZZ(x.kronecker(y))
 
 def kronecker(x,y):
@@ -2677,8 +2679,10 @@ def legendre_symbol(x,p):
         ValueError: p must be a prime
         sage: kronecker_symbol(2,15)
         1
+        sage: legendre_symbol(2/3,7)
+        -1
     """
-    x = ZZ(x)
+    x = QQ(x).numerator() * QQ(x).denominator()
     p = ZZ(p)
     if not p.is_prime():
         raise ValueError, "p must be a prime"
@@ -2991,8 +2995,8 @@ def continued_fraction_list(x, partial_convergents=False, bits=None):
         sage: print continued_fraction_list(RealField(200)(e))
         [2, 1, 2, 1, 1, 4, 1, 1, 6, 1, 1, 8, 1, 1, 10, 1, 1, 12, 1, 1, 14, 1, 1, 16, 1, 1, 18, 1, 1, 20, 1, 1, 22, 1, 1, 24, 1, 1, 26, 1, 1, 28, 1, 1, 30, 1, 1, 32, 1, 1, 34, 1, 1, 36, 1, 1, 38, 1, 1]
     """
-    import sage.calculus.calculus
-    import sage.functions.constants
+    from sage.symbolic.expression import Expression
+
     # if x is a SymbolicExpression, try coercing it to a real number
     if not bits is None:
         try:
@@ -3002,8 +3006,7 @@ def continued_fraction_list(x, partial_convergents=False, bits=None):
     elif isinstance(x, float):
         from real_double import RDF
         x = RDF(x)
-    elif isinstance(x, (sage.calculus.calculus.SymbolicExpression,
-                        sage.functions.constants.Constant)):
+    elif isinstance(x, Expression):
         try:
             x = sage.rings.real_mpfr.RealField(53)(x)
         except TypeError:
@@ -3081,12 +3084,11 @@ def convergent(v, n):
     """
     if hasattr(v, 'convergent'):
         return v.convergent(n)
-    Q = sage.rings.rational_field.RationalField()
     i = int(n)
-    x = Q(v[i])
+    x = QQ(v[i])
     i -= 1
     while i >= 0:
-        x = Q(v[i]) + 1/x
+        x = QQ(v[i]) + 1/x
         i -= 1
     return x
 
@@ -3117,7 +3119,6 @@ def convergents(v):
     """
     if hasattr(v, 'convergents'):
         return v.convergents()
-    Q = sage.rings.rational_field.RationalField()
     if not isinstance(v, list):
         v = pari(v).contfrac()
     w = [(0,1), (1,0)]
@@ -3125,7 +3126,7 @@ def convergents(v):
         pn = w[n+1][0]*v[n] + w[n][0]
         qn = w[n+1][1]*v[n] + w[n][1]
         w.append((pn, qn))
-    return [Q(x) for x in w[2:]]
+    return [QQ(x) for x in w[2:]]
 
 ## def continuant(v, n=None):
 ##     """
@@ -3261,6 +3262,11 @@ def hilbert_symbol(a, b, p, algorithm="pari"):
         sage: hilbert_symbol (3, -1, 2, algorithm='all')
         -1
 
+        sage: hilbert_symbol(QQ(-1)/QQ(4), -1, 2) == -1
+        True
+        sage: hilbert_symbol(QQ(-1)/QQ(4), -1, 3) == 1
+        True
+
     AUTHORS:
 
     - William Stein and David Kohel (2006-01-05)
@@ -3268,8 +3274,8 @@ def hilbert_symbol(a, b, p, algorithm="pari"):
     p = ZZ(p)
     if p != -1 and not p.is_prime():
         raise ValueError, "p must be prime or -1"
-    a = ZZ(a)
-    b = ZZ(b)
+    a = QQ(a).numerator() * QQ(a).denominator()
+    b = QQ(b).numerator() * QQ(b).denominator()
 
     if algorithm == "pari":
         return ZZ(pari(a).hilbert(b,p))
@@ -3383,7 +3389,7 @@ def hilbert_conductor_inverse(d):
     TESTS::
 
         sage: for i in xrange(100):
-        ...     d = random_int_upto(2**32).squarefree_part()
+        ...     d = ZZ.random_element(2**32).squarefree_part()
         ...     if hilbert_conductor(*hilbert_conductor_inverse(d)) != d:
         ...         print "hilbert_conductor_inverse failed for d =", d
     """
@@ -3471,11 +3477,9 @@ def falling_factorial(x, a):
         sage: CC(a)
         0.652965496420167 + 0.343065839816545*I
         sage: falling_factorial(1+I, 4)
-        (I - 2)*(I - 1)*I*(I + 1)
-        sage: expand(falling_factorial(1+I, 4))
         4*I + 2
         sage: falling_factorial(I, 4)
-        (I - 3)*(I - 2)*(I - 1)*I
+        -10
 
     ::
 
@@ -3499,7 +3503,7 @@ def falling_factorial(x, a):
     """
     if isinstance(a, (integer.Integer, int, long)) and a >= 0:
         return misc.prod([(x - i) for i in range(a)])
-    from sage.calculus.calculus import gamma
+    from sage.functions.all import gamma
     return gamma(x+1) / gamma(x-a+1)
 
 def rising_factorial(x, a):
@@ -3552,8 +3556,6 @@ def rising_factorial(x, a):
     ::
 
         sage: a = rising_factorial(I, 4); a
-        I*(I + 1)*(I + 2)*(I + 3)
-        sage: expand(a)
         -10
 
     See falling_factorial(I, 4).
@@ -3570,7 +3572,7 @@ def rising_factorial(x, a):
     """
     if isinstance(a, (integer.Integer, int, long)) and a >= 0:
         return misc.prod([(x + i) for i in range(a)])
-    from sage.calculus.calculus import gamma
+    from sage.functions.all import gamma
     return gamma(x+a) / gamma(x)
 
 def integer_ceil(x):
