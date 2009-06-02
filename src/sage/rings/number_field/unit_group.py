@@ -1,13 +1,15 @@
 """
-The unit group of a number field.
+Unit Groups of Number Fields
 
-EXAMPLES:
+EXAMPLES::
+
     sage: x = polygen(QQ)
     sage: K.<a> = NumberField(x^4-8*x^2+36)
     sage: UK = UnitGroup(K); UK
     Unit group with structure C4 x Z of Number Field in a with defining polynomial x^4 - 8*x^2 + 36
 
-    # The first generator is a primitive root of unity in the field:
+The first generator is a primitive root of unity in the field::
+
     sage: UK.gens() # random
     [1/12*a^3 - 1/6*a, 1/24*a^3 + 1/4*a^2 - 1/12*a - 1]
     sage: [u.multiplicative_order() for u in UK.gens()]
@@ -18,9 +20,9 @@ EXAMPLES:
     sage: UK.ngens()
     2
 
-    # Units in the field can be converted into elements of the unit
-    # group represented as elements of an abstract multiplicative
-    # group:
+Units in the field can be converted into elements of the unit group represented
+as elements of an abstract multiplicative group::
+
     sage: UK(1)
     1
     sage: UK(-1)
@@ -37,8 +39,8 @@ EXAMPLES:
     sage: UK.roots_of_unity()
     [1/12*a^3 - 1/6*a, -1, -1/12*a^3 + 1/6*a, 1]
 
-    # exp and log functions provide maps between units as field
-    # elements and exponent vectors with respect to the generators:
+Exp and log functions provide maps between units as field elements and exponent
+vectors with respect to the generators::
 
     sage: u = UK.exp([13,10]); u # random
     -41/8*a^3 - 55/4*a^2 + 41/4*a + 55
@@ -57,7 +59,8 @@ EXAMPLES:
     sage: UK.fundamental_units()
     [a^3 + a^2 - 1, a - 1]
 
-    # A relative number field example:
+A relative number field example::
+
     sage: L.<a, b> = NumberField([x^2 + x + 1, x^4 + 1])
     sage: UL = L.unit_group(); UL
     Unit group with structure C24 x Z x Z x Z of Number Field in a with defining polynomial x^2 + x + 1 over its base field
@@ -91,7 +94,8 @@ EXAMPLES:
     -b*a,
     1]
 
-    # A relative extension example, which worked thanks to the code review by F.W.Clarke:
+A relative extension example, which worked thanks to the code review by F.W.Clarke::
+
     sage: PQ.<X> = QQ[]
     sage: F.<a, b> = NumberField([X^2 - 2, X^2 - 3])
     sage: PF.<Y> = F[]
@@ -100,7 +104,8 @@ EXAMPLES:
     Unit group with structure C2 x Z x Z x Z x Z x Z x Z x Z of Number Field in c with defining polynomial Y^2 + (-2*b - 3)*a - 2*b - 6 over its base field
 
 AUTHOR:
-    -- John Cremona
+
+- John Cremona
 """
 #*****************************************************************************
 #       Copyright (C) 2009 William Stein, John Cremona
@@ -136,14 +141,16 @@ class UnitGroup(AbelianGroup_class):
         Create a unit group of a number field.
 
         INPUT:
-            number_field - a number field
-            proof - boolean (default True): proof flag
+
+        - number_field - a number field
+        - proof - boolean (default True): proof flag
 
         The proof flag is passed to pari via the pari_bnf() function
         which computes the unit group.  See the documentation for the
         number_field module.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: x = polygen(QQ)
             sage: K.<a> = NumberField(x^2-38)
             sage: UK = K.unit_group(); UK
@@ -201,12 +208,14 @@ class UnitGroup(AbelianGroup_class):
         Returns the abstract group element corresponding to the unit u.
 
         INPUT:
-            u -- Any object from which an element of the unit group's
-            number field K may be constructed; an error is raised if
-            an element of K cannot be constructed from u, or if the
-            element constructed is not a unit.
 
-        EXAMPLES:
+        - u -- Any object from which an element of the unit group's number
+          field K may be constructed; an error is raised if an element of K
+          cannot be constructed from u, or if the element constructed is not a
+          unit.
+
+        EXAMPLES::
+
             sage: x = polygen(QQ)
             sage: K.<a> = NumberField(x^2-38)
             sage: UK = UnitGroup(K)
@@ -255,7 +264,8 @@ class UnitGroup(AbelianGroup_class):
         """
         Return generators for the unit group, as a list.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: x = polygen(QQ)
             sage: K.<a> = NumberField(x^4 + 23)
             sage: K.unit_group().gens() # random
@@ -267,7 +277,8 @@ class UnitGroup(AbelianGroup_class):
         """
         Return the number of generators of the unit group.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: x = polygen(QQ)
             sage: U = NumberField(x^2 + x + 23899, 'a').unit_group(); U
             Unit group with structure C2 of Number Field in a with defining polynomial x^2 + x + 23899
@@ -280,10 +291,11 @@ class UnitGroup(AbelianGroup_class):
         """
         Return the rank of the unit group.
 
-        EXAMPLES:
-        sage: K.<z> = CyclotomicField(13)
-        sage: UnitGroup(K).rank()
-        5
+        EXAMPLES::
+
+            sage: K.<z> = CyclotomicField(13)
+            sage: UnitGroup(K).rank()
+            5
         """
         return len(self.__gens)-1
 
@@ -293,7 +305,8 @@ class UnitGroup(AbelianGroup_class):
 
         NOTE: i=0 gives the torsion generator, i.e. a primitive root of unity.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: K.<z> = CyclotomicField(13)
             sage: UK = K.unit_group()
             sage: UK.ngens()
@@ -319,7 +332,8 @@ class UnitGroup(AbelianGroup_class):
         """
         Return string representation of this unit group.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: x = polygen(QQ)
             sage: U = UnitGroup(NumberField(x^3 - 2, 'a'))
             sage: U
@@ -335,7 +349,8 @@ class UnitGroup(AbelianGroup_class):
         """
         Return generators for the free part of the unit group, as a list.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: x = polygen(QQ)
             sage: K.<a> = NumberField(x^4 + 23)
             sage: U = UnitGroup(K)
@@ -348,7 +363,8 @@ class UnitGroup(AbelianGroup_class):
         """
         Return all the roots of unity in this unit group, primitive or not.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: x = polygen(QQ)
             sage: K.<b> = NumberField(x^2+1)
             sage: U = UnitGroup(K)
@@ -365,7 +381,8 @@ class UnitGroup(AbelianGroup_class):
         """
         Return a generator for the torsion part of the unit group.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: x = polygen(QQ)
             sage: K.<a> = NumberField(x^4 - x^2 + 4)
             sage: U = UnitGroup(K)
@@ -378,7 +395,8 @@ class UnitGroup(AbelianGroup_class):
         """
         Returns the order of the torsion part of the unit group.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: x = polygen(QQ)
             sage: K.<a> = NumberField(x^4 - x^2 + 4)
             sage: U = UnitGroup(K)
@@ -391,7 +409,8 @@ class UnitGroup(AbelianGroup_class):
         """
         Return one, or a list of all, primitive n-th root of unity in this unit group.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: x = polygen(QQ)
             sage: K.<z> = NumberField(x^2 + 3)
             sage: U = UnitGroup(K)
@@ -456,7 +475,8 @@ class UnitGroup(AbelianGroup_class):
         """
         Return the number field associated with this unit group.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: x = polygen(QQ)
             sage: U = UnitGroup(NumberField(x^2 + 23, 'w')); U
             Unit group with structure C2 of Number Field in w with defining polynomial x^2 + 23
@@ -470,15 +490,17 @@ class UnitGroup(AbelianGroup_class):
         Return the exponents of the unit u with respect to group generators.
 
         INPUT:
-            u -- Any object from which an element of the unit group's
-            number field K may be constructed; an error is raised if
-            an element of K cannot be constructed from u, or if the
-            element constructed is not a unit.
+
+        - u -- Any object from which an element of the unit group's number
+          field K may be constructed; an error is raised if an element of K
+          cannot be constructed from u, or if the element constructed is not a
+          unit.
 
         OUTPUT: a list of integers giving the exponents of u with
         respect to the unit group's basis.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: x = polygen(QQ)
             sage: K.<z> = CyclotomicField(13)
             sage: UK = UnitGroup(K)
@@ -502,15 +524,17 @@ class UnitGroup(AbelianGroup_class):
         Return unit with given exponents with respect to group generators.
 
         INPUT:
-            u -- Any object from which an element of the unit group's
-            number field K may be constructed; an error is raised if
-            an element of K cannot be constructed from u, or if the
-            element constructed is not a unit.
+
+        - u -- Any object from which an element of the unit group's number
+          field K may be constructed; an error is raised if an element of K
+          cannot be constructed from u, or if the element constructed is not a
+          unit.
 
         OUTPUT: a list of integers giving the exponents of u with
         respect to the unit group's basis.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: x = polygen(QQ)
             sage: K.<z> = CyclotomicField(13)
             sage: UK = UnitGroup(K)
