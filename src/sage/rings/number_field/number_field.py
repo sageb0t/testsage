@@ -1431,7 +1431,7 @@ class NumberField_generic(number_field_base.NumberField):
 
     def specified_complex_embedding(self):
         r"""
-        Returns the embedding of this field into the complex numbers has
+        Returns the embedding of this field into the complex numbers which has
         been specified.
 
         Fields created with the ``QuadraticField`` or
@@ -3868,11 +3868,15 @@ class NumberField_generic(number_field_base.NumberField):
         """
         Return generators for the unit group modulo torsion.
 
+        INPUT:
+
+        - ``proof`` (bool, default True) flag passed to ``pari``.
+
+        .. note::
+
+            For more functionality see the unit_group() function.
+
         ALGORITHM: Uses PARI's bnfunit command.
-
-        INPUTS: proof - default: True
-
-        NOTE: For more functionality see the unit_group() function.
 
         EXAMPLES::
 
@@ -3944,9 +3948,13 @@ class NumberField_generic(number_field_base.NumberField):
 
         ALGORITHM: Uses PARI's bnfunit command.
 
-        INPUTS: proof -- default: True
+        INPUT:
 
-        NOTE: the group is cached.
+        - ``proof`` (bool, default True) flag passed to ``pari``.
+
+        .. note::
+
+           The group is cached.
 
         EXAMPLES::
 
@@ -6249,6 +6257,7 @@ class NumberField_cyclotomic(NumberField_absolute):
 
         If prec is 53 (the default), then the complex double field is used;
         otherwise the arbitrary precision (but slow) complex field is used.
+
         EXAMPLES::
 
             sage: C = CyclotomicField(4)
@@ -6710,10 +6719,10 @@ class NumberField_cyclotomic(NumberField_absolute):
         return self.gen()
 
 class NumberField_quadratic(NumberField_absolute):
-    """
+    r"""
     Create a quadratic extension of the rational field.
 
-    The command QuadraticField(a) creates the field Q(sqrt(a)).
+    The command ``QuadraticField(a)`` creates the field `\QQ(\sqrt{a})`.
 
     EXAMPLES::
 
@@ -6862,10 +6871,12 @@ class NumberField_quadratic(NumberField_absolute):
         field is negative, then the following warning from the PARI manual
         applies:
 
-            IMPORTANT WARNING: For `D<0`, this function may give
-            incorrect results when the class group has a low exponent
-            (has many cyclic factors), because implementing Shank's
-            method in full generality slows it down immensely.
+        .. warning::
+
+            For `D<0`, this function may give incorrect results when
+            the class group has a low exponent (has many cyclic
+            factors), because implementing Shank's method in full
+            generality slows it down immensely.
 
         EXAMPLES::
 
@@ -6880,7 +6891,7 @@ class NumberField_quadratic(NumberField_absolute):
 
         It is an open problem to *prove* that there are infinity many
         positive square-free `d` such that
-        `\QQ(\sqrt{d})` has class number `1`:n
+        `\QQ(\sqrt{d})` has class number `1`:
 
         ::
 
@@ -7131,9 +7142,9 @@ def put_natural_embedding_first(v):
             return
 
 def refine_embedding(e, prec=None):
-    """
-    Given an embedding e: K->RR or CC, returns an equivalent embedding
-    with higher precision.
+    r"""
+    Given an embedding from a number field to either `\RR` or
+    `\CC`, returns an equivalent embedding with higher precision.
 
     INPUT:
 
