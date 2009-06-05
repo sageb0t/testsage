@@ -98,7 +98,8 @@ An example template for a ``_latex_`` method follows:
            r"""
            Returns the LaTeX representation of X.
 
-           EXAMPLES:
+           EXAMPLES::
+
                sage: a = X(1,2)
                sage: latex(a)
                '\\frac{1}{2}'
