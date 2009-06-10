@@ -1877,13 +1877,23 @@ def nested_pickle(cls):
         sage: getattr(module, 'A2.B', 'Not found')    # todo: not implemented
         <class __main__.A2.B at ...>
 
-    Finaly, we check that one can use a metaclass to ensure
-    nested_pickle is called on any derived subclass::
+    EXAMPLES::
 
-        sage: class NestedClassMetaclass(type):
-        ...       def __init__(self, *args):
-        ...           nested_pickle(self)
-        ...
+        sage: from sage.misc.misc import *
+        sage: loads(dumps(MainClass.NestedClass())) # indirect doctest
+        <sage.misc.misc.MainClass.NestedClass object at 0x...>
+    """
+    modify_for_nested_pickle(cls, cls.__name__, sys.modules[cls.__module__])
+    return cls
+
+class NestedClassMetaclass(type):
+    r"""
+    A metaclass for nested pickling.
+
+    Check that one can use a metaclass to ensure nested_pickle
+    is called on any derived subclass::
+
+        sage: from sage.misc.misc import NestedClassMetaclass
         sage: class ASuperClass(object):
         ...       __metaclass__ = NestedClassMetaclass
         ...
@@ -1893,17 +1903,25 @@ def nested_pickle(cls):
         ...
         sage: A3.B.__name__
         'A3.B'
-        sage: getattr(module, 'A3.B', 'Not found')
+        sage: getattr(sys.modules['__main__'], 'A3.B', 'Not found')
         <class '__main__.A3.B'>
-
-    EXAMPLES::
-
-        sage: from sage.misc.misc import *
-        sage: loads(dumps(MainClass.NestedClass())) # indirect doctest
-        <sage.misc.misc.MainClass.NestedClass object at 0x...>
     """
-    modify_for_nested_pickle(cls, cls.__name__, sys.modules[cls.__module__])
-    return cls
+    def __init__(self, *args):
+        r"""
+        This invokes the nested_pickle on construction.
+
+        sage: from sage.misc.misc import NestedClassMetaclass
+        sage: class A(object):
+        ...       __metaclass__ = NestedClassMetaclass
+        ...       class B(object):
+        ...           pass
+        ...
+        sage: A.B
+        <class '__main__.A.B'>
+        sage: getattr(sys.modules['__main__'], 'A.B', 'Not found')
+        <class '__main__.A.B'>
+        """
+        nested_pickle(self)
 
 class MainClass(object):
     r"""
@@ -1915,6 +1933,9 @@ class MainClass(object):
         sage: loads(dumps(MainClass()))
         <sage.misc.misc.MainClass object at 0x...>
     """
+
+    __metaclass__ = NestedClassMetaclass
+
     class NestedClass(object):
         r"""
         EXAMPLES::
@@ -1936,8 +1957,6 @@ class MainClass(object):
                 'MainClass.NestedClass.NestedSubClass'
             """
             pass
-
-nested_pickle(MainClass)
 
 class SubClass(MainClass):
     r"""
