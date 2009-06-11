@@ -315,6 +315,19 @@ class IntegerModRing_generic(quotient_ring.QuotientRing_generic):
         """
         return True
 
+    def is_prime_field(self):
+        """
+        Return ``True`` if the order is prime.
+
+        EXAMPLES::
+
+            sage: Zmod(7).is_prime_field()
+            True
+            sage: Zmod(8).is_prime_field()
+            False
+        """
+        return self.__order.is_prime()
+
     def _precompute_table(self):
         self._pyx_order.precompute_table(self)
 
@@ -1017,6 +1030,18 @@ class IntegerModRing_generic(quotient_ring.QuotientRing_generic):
             Residue class ring of integers modulo 12345678900
         """
         return 'Integers(%s)'%self.order()
+
+    def degree(self):
+        """
+        Return 1.
+
+        EXAMPLE::
+
+            sage: R = Integers(12345678900)
+            sage: R.degree()
+            1
+        """
+        return integer.Integer(1)
 
 Zmod = IntegerModRing
 Integers = IntegerModRing
