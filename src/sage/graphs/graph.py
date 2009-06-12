@@ -324,20 +324,30 @@ Show each graph as you iterate through the results:
 Visualization
 -------------
 
-To see a graph `G` you are working with, right now there
-are two main options. You can view the graph in two dimensions via
-matplotlib with ``show()``.
-
-::
+To see a graph `G` you are working with, there
+are three main options. You can view the graph in two dimensions via
+matplotlib with ``show()``. ::
 
     sage: G = graphs.RandomGNP(15,.3)
     sage: G.show()
 
-Or you can view it in three dimensions via jmol with ``show3d()``.
-
-::
+And you can view it in three dimensions via jmol with ``show3d()``. ::
 
     sage: G.show3d()
+
+Or it can be rendered with `\mbox{\rm\LaTeX}`.  This requires the right
+additions to a standard `\mbox{\rm\TeX}` installation.  Then standard
+Sage commands, such as ``view(G)`` will display the graph, or
+``latex(G)`` will produce a string suitable for inclusion in a
+`\mbox{\rm\LaTeX}` document.  More details on this are at
+the :mod:`sage.graphs.graph_latex` module. ::
+
+    sage: from sage.graphs.graph_latex import check_tkz_graph
+    sage: check_tkz_graph()  # random - depends on TeX installation
+    sage: latex(G)
+    \begin{tikzpicture}
+    ...
+    \end{tikzpicture}
 
 Graph classes and methods
 -------------------------
@@ -368,13 +378,39 @@ class GenericGraph(SageObject):
     # Nice defaults for plotting arrays of graphs (see sage.misc.functional.show)
     graphics_array_defaults =  {'layout': 'circular', 'vertex_size':50, 'vertex_labels':False, 'graph_border':True}
 
+    def __init__(self):
+        r"""
+        Every graph carries a dictionary of options, which is set
+        here to ``None``.  Some options are added to the global
+        :data:`sage.misc.latex.latex` instance which will insure
+        that if `\mbox{\rm\LaTeX}` is used to render the graph,
+        then the right packages are loaded and jsMath reacts
+        properly.
+
+        Most other initialization is done in the directed
+        and undirected subclasses.
+
+        TESTS::
+
+            sage: g = Graph()
+            sage: g
+            Graph on 0 vertices
+        """
+        self._latex_opts = None
+        from sage.graphs.graph_latex import have_tkz_graph
+        from sage.misc.latex import latex
+        if have_tkz_graph():
+            latex.add_to_preamble('\\usepackage{tkz-graph}')
+            latex.add_to_preamble('\\usepackage{tkz-berge}')
+            latex.add_to_jsmath_avoid_list('\\begin{tikzpicture}')
+
     def __add__(self, other_graph):
         """
         Returns the disjoint union of self and other.
 
         If there are common vertices to both, they will be renamed.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = graphs.CycleGraph(3)
             sage: H = graphs.CycleGraph(4)
@@ -502,7 +538,7 @@ class GenericGraph(SageObject):
         """
         Returns the sum of a graph with itself n times.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = graphs.CycleGraph(3)
             sage: H = G*3; H
@@ -546,7 +582,7 @@ class GenericGraph(SageObject):
         """
         Returns the sum of a graph with itself n times.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = graphs.CycleGraph(3)
             sage: H = int(3)*G; H
@@ -561,7 +597,7 @@ class GenericGraph(SageObject):
         str(G) returns the name of the graph, unless the name is the empty
         string, in which case it returns the default representation.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = graphs.PetersenGraph()
             sage: str(G)
@@ -577,7 +613,7 @@ class GenericGraph(SageObject):
         Returns a string representing the edges of the (simple) graph for
         graph6 and dig6 strings.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = graphs.PetersenGraph()
             sage: G._bit_vector()
@@ -609,24 +645,62 @@ class GenericGraph(SageObject):
         s += '0'*(total_length-len(s))
         return s
 
-    def _latex_(self):
-        """
-        To include a graph in LaTeX document, see function
-        Graph.write_to_eps().
+    def _latex_(self, **options):
+        r""" Returns a string to render the graph using
+        `\mbox{\rm{\LaTeX}}`.
 
-        EXAMPLE::
+        To adjust the string, use the
+        :meth:`set_latex_options` method to set options,
+        or call the :meth:`latex_options` method to
+        get a :class:`~sage.graphs.graph_latex.GraphLatex`
+        object that may be used to also customize the
+        output produced here.  Possible options are documented at
+        :meth:`sage.graphs.graph_latex.GraphLatex.set_option`.
 
-            sage: G = graphs.PetersenGraph()
-            sage: latex(G)
-            Traceback (most recent call last):
-            ...
-            NotImplementedError: To include a graph in LaTeX document, see function Graph.write_to_eps().
-            sage: G._latex_()
-            Traceback (most recent call last):
-            ...
-            NotImplementedError: To include a graph in LaTeX document, see function Graph.write_to_eps().
+        EXAMPLES::
+
+            sage: from sage.graphs.graph_latex import check_tkz_graph
+            sage: check_tkz_graph()  # random - depends on TeX installation
+            sage: g = graphs.CompleteGraph(2)
+            sage: print g._latex_()
+            \begin{tikzpicture}
+            %
+            \definecolor{col_a0}{rgb}{1.0,1.0,1.0}
+            \definecolor{col_a1}{rgb}{1.0,1.0,1.0}
+            %
+            %
+            \definecolor{col_lab_a0}{rgb}{0.0,0.0,0.0}
+            \definecolor{col_lab_a1}{rgb}{0.0,0.0,0.0}
+            %
+            %
+            \definecolor{col_a0-a1}{rgb}{0.0,0.0,0.0}
+            %
+            %
+            \GraphInit[vstyle=Normal]
+            %
+            \SetVertexMath
+            %
+            \SetVertexNoLabel
+            %
+            \renewcommand*{\VertexLightFillColor}{col_a0}
+            \Vertex[x=5.0cm,y=5.0cm]{a0}
+            \renewcommand*{\VertexLightFillColor}{col_a1}
+            \Vertex[x=0.0cm,y=0.0cm]{a1}
+            %
+            %
+            \AssignVertexLabel{a}{2}{
+            \color{col_lab_a0}{$0$},
+            \color{col_lab_a1}{$1$}
+            }
+            %
+            %
+            \renewcommand*{\EdgeColor}{col_a0-a1}
+            \Edge(a0)(a1)
+            %
+            %
+            \end{tikzpicture}
         """
-        raise NotImplementedError('To include a graph in LaTeX document, see function Graph.write_to_eps().')
+        return self.latex_options().latex()
 
     def _matrix_(self, R=None):
         """
@@ -661,7 +735,7 @@ class GenericGraph(SageObject):
         """
         Return a string representation of self.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = graphs.PetersenGraph()
             sage: G._repr_()
@@ -910,7 +984,7 @@ class GenericGraph(SageObject):
         and each column is an edge. Note that in the case of graphs, there
         is a choice of orientation for each edge.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = graphs.CubeGraph(3)
             sage: G.incidence_matrix()
@@ -1105,7 +1179,7 @@ class GenericGraph(SageObject):
         """
         Returns the boundary of the (di)graph.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = graphs.PetersenGraph()
             sage: G.set_boundary([0,1,2,3,4])
@@ -1118,7 +1192,7 @@ class GenericGraph(SageObject):
         """
         Sets the boundary of the (di)graph.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = graphs.PetersenGraph()
             sage: G.set_boundary([0,1,2,3,4])
@@ -1666,7 +1740,7 @@ class GenericGraph(SageObject):
         - ``new`` - if not None, then this becomes the new name of the (di)graph.
           (if new == '', removes any name)
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: d = {0: [1,4,5], 1: [2,6], 2: [3,7], 3: [4,8], 4: [9], 5: [7, 8], 6: [8,9], 7: [9]}
             sage: G = Graph(d); G
@@ -1705,12 +1779,47 @@ class GenericGraph(SageObject):
         """
         return self._pos
 
+    def check_pos_validity(self, pos=None):
+        r"""
+        Checks whether pos specifies two coordinates for every vertex (and no more vertices).
+
+        INPUT:
+
+            - pos - a position dictionary for a set of vertices
+
+        OUTPUT:
+
+        If ``pos`` is ``None`` then the position dictionary of ``self`` is
+        investigated, otherwise the position dictionary provided in  ``pos`` is
+        investigated.  The function returns ``True`` if the dictionary is of the
+        correct form for ``self``.
+
+        EXAMPLES::
+
+            sage: p = {0: [1, 5], 1: [0, 2], 2: [1, 3], 3: [8, 2], 4: [0, 9], 5: [0, 8], 6: [8, 1], 7: [9, 5], 8: [3, 5], 9: [6, 7]}
+            sage: G = graphs.PetersenGraph()
+            sage: G.check_pos_validity(p)
+            True
+        """
+        if pos is None:
+            pos = getattr(self, '_pos', None)
+        if pos is None:
+            return False
+        if len(pos) != self.order():
+            return False
+        for v in pos:
+            if not self.has_vertex(v):
+                return False
+            if len(pos[v]) != 2:
+                return False
+        return True
+
     def set_pos(self, pos):
         """
         Sets the position dictionary, a dictionary specifying the
         coordinates of each vertex.
 
-        EXAMPLE: Note that set_pos will allow you to do ridiculous things,
+        EXAMPLES: Note that set_pos will allow you to do ridiculous things,
         which will not blow up until plotting::
 
             sage: G = graphs.PetersenGraph()
@@ -1737,7 +1846,7 @@ class GenericGraph(SageObject):
         Note that edge weightings can still exist for (di)graphs G where
         G.weighted() is False.
 
-        EXAMPLE: Here we have two graphs with different labels, but
+        EXAMPLES: Here we have two graphs with different labels, but
         weighted is False for both, so we just check for the presence of
         edges::
 
@@ -1816,7 +1925,7 @@ class GenericGraph(SageObject):
         In the case of a multigraph, raises an error, since there is an
         infinite number of possible edges.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: d = {0: [1,4,5], 1: [2,6], 2: [3,7], 3: [4,8], 4: [9], 5: [7, 8], 6: [8,9], 7: [9]}
             sage: G = Graph(d); G.density()
@@ -1903,7 +2012,7 @@ class GenericGraph(SageObject):
         Return True if the graph is a forest, i.e. a disjoint union of
         trees.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: seven_acre_wood = sum(graphs.trees(7), Graph())
             sage: seven_acre_wood.is_forest()
@@ -1919,7 +2028,7 @@ class GenericGraph(SageObject):
         Returns the number of vertices. Note that len(G) returns the number
         of vertices in G also.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = graphs.PetersenGraph()
             sage: G.order()
@@ -1941,7 +2050,7 @@ class GenericGraph(SageObject):
         """
         Returns the number of edges.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = graphs.PetersenGraph()
             sage: G.size()
@@ -2646,7 +2755,7 @@ class GenericGraph(SageObject):
         Indicates whether the (di)graph is connected. Note that in a graph,
         path connected is equivalent to connected.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = Graph( { 0 : [1, 2], 1 : [2], 3 : [4, 5], 4 : [5] } )
             sage: G.is_connected()
@@ -2676,7 +2785,7 @@ class GenericGraph(SageObject):
         connected component. The list is ordered from largest to smallest
         component.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = Graph( { 0 : [1, 3], 1 : [2], 2 : [3], 4 : [5, 6], 5 : [6] } )
             sage: G.connected_components()
@@ -2700,7 +2809,7 @@ class GenericGraph(SageObject):
         """
         Returns the number of connected components.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = Graph( { 0 : [1, 3], 1 : [2], 2 : [3], 4 : [5, 6], 5 : [6] } )
             sage: G.connected_components_number()
@@ -2715,7 +2824,7 @@ class GenericGraph(SageObject):
         """
         Returns a list of connected components as graph objects.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = Graph( { 0 : [1, 3], 1 : [2], 2 : [3], 4 : [5, 6], 5 : [6] } )
             sage: L = G.connected_components_subgraphs()
@@ -2734,7 +2843,7 @@ class GenericGraph(SageObject):
         """
         Returns a list of the vertices connected to vertex.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = Graph( { 0 : [1, 3], 1 : [2], 2 : [3], 4 : [5, 6], 5 : [6] } )
             sage: G.connected_component_containing_vertex(0)
@@ -2957,7 +3066,7 @@ class GenericGraph(SageObject):
         of vertices. Deleting a non-existant vertex will raise an
         exception.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: D = DiGraph({0:[1,2,3,4,5],1:[2],2:[3],3:[4],4:[5],5:[1]}, implementation='networkx')
             sage: D.delete_vertices([1,2,3,4,5]); D
@@ -3023,7 +3132,7 @@ class GenericGraph(SageObject):
         In a digraph, the external boundary of a vertex v are those
         vertices u with an arc (v, u).
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = graphs.CubeGraph(4)
             sage: l = ['0111', '0000', '0001', '0011', '0010', '0101', '0100', '1111', '1101', '1011', '1001']
@@ -3084,7 +3193,7 @@ class GenericGraph(SageObject):
 
         -  ``object`` - object to associate to vertex
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: T = graphs.TetrahedralGraph()
             sage: T.vertices()
@@ -3157,7 +3266,7 @@ class GenericGraph(SageObject):
         """
         Returns a list of vertices with loops.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = Graph({0 : [0], 1: [1,2,3], 2: [3]}, loops=True)
             sage: G.loop_vertices()
@@ -3180,7 +3289,7 @@ class GenericGraph(SageObject):
         -  ``vertices`` - iterated vertices are these
            intersected with the vertices of the (di)graph
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: P = graphs.PetersenGraph()
             sage: for v in P.vertex_iterator():
@@ -3225,7 +3334,7 @@ class GenericGraph(SageObject):
         """
         Return an iterator over neighbors of vertex.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = graphs.CubeGraph(3)
             sage: for i in G.neighbor_iterator('010'):
@@ -3261,7 +3370,7 @@ class GenericGraph(SageObject):
         -  ``boundary_first`` - Return the boundary vertices
            first.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: P = graphs.PetersenGraph()
             sage: P.vertices()
@@ -3299,7 +3408,7 @@ class GenericGraph(SageObject):
 
         G[vertex] also works.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: P = graphs.PetersenGraph()
             sage: sorted(P.neighbors(3))
@@ -3363,7 +3472,7 @@ class GenericGraph(SageObject):
         """
         Add edges from an iterable container.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = graphs.DodecahedralGraph()
             sage: H = Graph(implementation='networkx')
@@ -3431,7 +3540,7 @@ class GenericGraph(SageObject):
         """
         Delete edges from an iterable container.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: K12 = graphs.CompleteGraph(12)
             sage: K4 = graphs.CompleteGraph(4)
@@ -3458,7 +3567,7 @@ class GenericGraph(SageObject):
         """
         Deletes all edges from u and v.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = Graph(multiedges=True, implementation='networkx')
             sage: G.add_edges([(0,1), (0,1), (0,1), (1,2), (2,3)])
@@ -3581,7 +3690,7 @@ class GenericGraph(SageObject):
         - G.has_edge( (1, 2) )
         - G.has_edge( 1, 2, 'label' )
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: graphs.EmptyGraph().has_edge(9,2)
             False
@@ -3648,7 +3757,7 @@ class GenericGraph(SageObject):
         -  ``labels`` - if False, each edge is a tuple (u,v) of
            vertices.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: K = graphs.CompleteBipartiteGraph(9,3)
             sage: len(K.edge_boundary( [0,1,2,3,4,5,6,7,8], [9,10,11] ))
@@ -3702,7 +3811,7 @@ class GenericGraph(SageObject):
            to directed graphs. If True, searches across edges in either
            direction.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: for i in graphs.PetersenGraph().edge_iterator([0]):
             ...    print i
@@ -3758,7 +3867,7 @@ class GenericGraph(SageObject):
         -  ``label`` - if False, each edge is a tuple (u,v) of
            vertices.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: graphs.PetersenGraph().edges_incident([0,9], labels=False)
             [(0, 1), (0, 4), (0, 5), (9, 4), (9, 6), (9, 7)]
@@ -3779,7 +3888,7 @@ class GenericGraph(SageObject):
         Returns the label of an edge. Note that if the graph allows
         multiple edges, then a list of labels on the edge is returned.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = Graph({0 : {1 : 'edgelabel'}}, implementation='networkx')
             sage: G.edges(labels=False)
@@ -3806,7 +3915,7 @@ class GenericGraph(SageObject):
         """
         Returns a list of edge labels.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = Graph({0:{1:'x',2:'z',3:'a'}, 2:{5:'out'}}, implementation='networkx')
             sage: G.edge_labels()
@@ -3824,7 +3933,7 @@ class GenericGraph(SageObject):
         """
         Removes all multiple edges, retaining one edge for each.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = Graph(multiedges=True, implementation='networkx')
             sage: G.add_edges( [ (0,1), (0,1), (0,1), (0,1), (1,2) ] )
@@ -3904,7 +4013,7 @@ class GenericGraph(SageObject):
         """
         Returns a list of all loops in the graph.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = Graph(4, loops=True)
             sage: G.add_edges( [ (0,0), (1,1), (2,2), (3,3), (2,3) ] )
@@ -3934,7 +4043,7 @@ class GenericGraph(SageObject):
         """
         Returns the number of edges that are loops.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = Graph(4, loops=True)
             sage: G.add_edges( [ (0,0), (1,1), (2,2), (3,3), (2,3) ] )
@@ -3961,7 +4070,7 @@ class GenericGraph(SageObject):
         Empties the graph of vertices and edges and removes name, boundary,
         associated objects, and position information.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G=graphs.CycleGraph(4); G.set_vertices({0:'vertex0'})
             sage: G.order(); G.size()
@@ -4048,7 +4157,7 @@ class GenericGraph(SageObject):
         """
         Returns a list, whose ith entry is the frequency of degree i.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = graphs.Grid2dGraph(9,12)
             sage: G.degree_histogram()
@@ -4297,7 +4406,7 @@ class GenericGraph(SageObject):
         """
         Return a random subgraph that contains each vertex with prob. p.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: P = graphs.PetersenGraph()
             sage: P.random_subgraph(.25)
@@ -4327,7 +4436,7 @@ class GenericGraph(SageObject):
            True and the graph is directed, only return True if all possible
            edges in _both_ directions exist.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: g = graphs.CompleteGraph(4)
             sage: g.is_clique([1,2,3])
@@ -4371,7 +4480,7 @@ class GenericGraph(SageObject):
            iterable container of vertices, e.g. a list, set, graph, file or
            numeric array. If not passed, defaults to the entire graph.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: graphs.CycleGraph(4).is_independent_set([1,3])
             True
@@ -4384,7 +4493,7 @@ class GenericGraph(SageObject):
         """
         Tests whether self is a subgraph of other.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: P = graphs.PetersenGraph()
             sage: G = P.subgraph(range(6))
@@ -5020,7 +5129,7 @@ class GenericGraph(SageObject):
            of half the usual radius. This generally doubles the speed
            (consider the total volume in each case).
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: D = graphs.DodecahedralGraph()
             sage: D.shortest_path(4, 9)
@@ -5083,7 +5192,7 @@ class GenericGraph(SageObject):
            edges in the path. If True, returns the sum of the weights of these
            edges. Default behavior is to have the same value as by_weight.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: D = graphs.DodecahedralGraph()
             sage: D.shortest_path_length(4, 9)
@@ -5212,7 +5321,7 @@ class GenericGraph(SageObject):
         from u to v. The second is more complicated- it indicates the
         predecessor pred[u][v] of v in the shortest path from u to v.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = Graph( { 0: {1: 1}, 1: {2: 1}, 2: {3: 1}, 3: {4: 2}, 4: {0: 2} }, sparse=True )
             sage: G.plot(edge_labels=True).show()
@@ -5489,7 +5598,7 @@ class GenericGraph(SageObject):
         edges that are not in the original graph. This is not well defined
         for graphs with multiple edges.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: P = graphs.PetersenGraph()
             sage: P.plot().show()
@@ -5537,7 +5646,7 @@ class GenericGraph(SageObject):
         terminal vertex of e is the initial vertex of f. In other words, an
         edge in H represents a (directed) path of length 2 in G.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: g=graphs.CompleteGraph(4)
             sage: h=g.line_graph()
@@ -5609,7 +5718,7 @@ class GenericGraph(SageObject):
         Returns a simple version of itself (i.e., undirected and loops and
         multiple edges are removed).
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = DiGraph(loops=True,multiedges=True,sparse=True)
             sage: G.add_edges( [ (0,0), (1,1), (2,2), (2,3,1), (2,3,2), (3,2) ] )
@@ -5646,7 +5755,7 @@ class GenericGraph(SageObject):
            the first graph and the second graph will be relabeled with
            consecutive integers.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = graphs.CycleGraph(3)
             sage: H = graphs.CycleGraph(4)
@@ -5701,7 +5810,7 @@ class GenericGraph(SageObject):
         If the graphs have common vertices, the common vertices will be
         identified.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = graphs.CycleGraph(3)
             sage: H = graphs.CycleGraph(4)
@@ -6059,7 +6168,7 @@ class GenericGraph(SageObject):
         Logic for coloring by label (factored out from plot() for use in 3d
         plots, etc)
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = AlternatingGroup(5).cayley_graph()
             sage: G.num_edges()
@@ -6088,6 +6197,57 @@ class GenericGraph(SageObject):
         for i in range(num_labels):
             edge_colors[r[i]] = edge_labels[i]
         return edge_colors
+
+    def latex_options(self):
+        r"""
+        Returns an instance of
+        :class:`~sage.graphs.graph_latex.GraphLatex` for the graph.
+
+        Changes to this object will affect the `\mbox{\rm\LaTeX}`
+        version of the graph.
+
+        EXAMPLES::
+
+            sage: g = graphs.PetersenGraph()
+            sage: opts = g.latex_options()
+            sage: opts
+            LaTeX options for Petersen graph: {'tkz_style': 'Normal'}
+            sage: opts.set_option('tkz_style', 'Classic')
+            sage: opts
+            LaTeX options for Petersen graph: {'tkz_style': 'Classic'}
+        """
+        from sage.graphs.graph_latex import GraphLatex
+        if self._latex_opts == None:
+             self._latex_opts = GraphLatex(self)
+        return self._latex_opts
+
+    def set_latex_options(self, **kwds):
+        r"""
+        Sets multiple options for rendering a graph with LaTeX.
+
+        INPUTS:
+
+        - ``kwds`` - any number of option/value pairs to set many graph
+          latex options at once (a variable number, in any
+          order). Existing values are overwritten, new values are
+          added.  Existing values can be cleared by setting the value
+          to ``None``.  Possible options are documented at
+          :meth:`sage.graphs.graph_latex.GraphLatex.set_option`.
+
+        This method is a convenience for setting the options of a graph
+        directly on an instance of the graph.  For details, or finer control,
+        see the :class:`~sage.graphs.graph_latex.GraphLatex` class.
+
+        EXAMPLES::
+
+            sage: g = graphs.PetersenGraph()
+            sage: g.set_latex_options(tkz_style = 'Welsh')
+            sage: opts = g.latex_options()
+            sage: opts.get_option('tkz_style')
+            'Welsh'
+        """
+        opts = self.latex_options()
+        opts.set_options(**kwds)
 
     @options(vertex_size=200, vertex_labels=True, layout=None,
             edge_style='solid', edge_colors='black', edge_labels=False,
@@ -6125,8 +6285,10 @@ class GenericGraph(SageObject):
             talk=False, color_by_label=False, partition=None,
             dist = .075, max_dist=1.5, loop_size=.075)
     def plot(self, **options):
-        """
+        r"""
         Returns a graphics object representing the (di)graph.
+        See also the :mod:`sage.graphs.graph_latex` module for ways
+        to use  `\mbox{\rm\LaTeX}` to produce an image of a graph.
 
         INPUT:
 
@@ -6398,7 +6560,7 @@ class GenericGraph(SageObject):
         For syntax and lengthy documentation, see G.plot?. Any options not
         used by plot will be passed on to the Graphics.show method.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: C = graphs.CubeGraph(8)
             sage: P = C.plot(vertex_labels=False, vertex_size=0, graph_border=True)
@@ -6417,8 +6579,10 @@ class GenericGraph(SageObject):
                      edge_colors=None, edge_size=0.02, edge_size2=0.0325,
                      pos3d=None, iterations=50, color_by_label=False,
                      engine='jmol', **kwds):
-        """
-        Plot a graph in three dimensions.
+        r"""
+        Plot a graph in three dimensions.    See also the
+        :mod:`sage.graphs.graph_latex` module for ways to use
+        `\mbox{\rm\LaTeX}` to produce an image of a graph.
 
         INPUT:
 
@@ -6701,7 +6865,7 @@ class GenericGraph(SageObject):
 
         - http://www.graphviz.org/doc/info/lang.html
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = Graph({0:{1:None,2:None}, 1:{0:None,2:None}, 2:{0:None,1:None,3:'foo'}, 3:{2:'foo'}}, implementation='networkx')
             sage: s = G.graphviz_string() # indirect doctest
@@ -6760,7 +6924,7 @@ class GenericGraph(SageObject):
         -  ``laplacian`` - if True, use the Laplacian matrix
            instead (see self.kirchhoff_matrix())
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: P = graphs.PetersenGraph()
             sage: P.spectrum()
@@ -6801,7 +6965,7 @@ class GenericGraph(SageObject):
         -  ``laplacian`` - if True, use the Laplacian matrix
            instead (see self.kirchhoff_matrix())
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: P = graphs.PetersenGraph()
             sage: P.characteristic_polynomial()
@@ -6823,7 +6987,7 @@ class GenericGraph(SageObject):
         -  ``laplacian`` - if True, use the Laplacian matrix
            instead (see self.kirchhoff_matrix())
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: C = graphs.CycleGraph(5)
             sage: E = C.eigenspaces()
@@ -7058,7 +7222,7 @@ class GenericGraph(SageObject):
            vertex in cell i (since the partition is equitable, this is well
            defined)
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = graphs.PetersenGraph()
             sage: G.is_equitable([[0,4],[1,3,5,9],[2,6,8],[7]])
@@ -7469,7 +7633,7 @@ class GenericGraph(SageObject):
         vertices of self (thus by default tests for vertex transitivity in
         the usual sense).
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = Graph({0:[1],1:[2]})
             sage: G.is_vertex_transitive()
@@ -7663,7 +7827,7 @@ class GenericGraph(SageObject):
         -  ``edge_labels`` - default False, otherwise allows
            only permutations respecting edge labels.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: D = graphs.DodecahedralGraph()
             sage: E = D.canonical_label(); E
@@ -8070,6 +8234,7 @@ class Graph(GenericGraph):
             sage: Graph(a).adjacency_matrix() == a
             True
         """
+        GenericGraph.__init__(self)
         msg = ''
         multiedges = kwds.get('multiedges', None)
         from sage.structure.element import is_Matrix
@@ -8465,7 +8630,7 @@ class Graph(GenericGraph):
         Only valid for simple (no loops, multiple edges) graphs on 0 to
         262143 vertices.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = graphs.KrackhardtKiteGraph()
             sage: G.graph6_string()
@@ -8485,7 +8650,7 @@ class Graph(GenericGraph):
         Only valid for undirected graphs on 0 to 262143 vertices, but loops
         and multiple edges are permitted.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: G = graphs.BullGraph()
             sage: G.sparse6_string()
@@ -8559,7 +8724,7 @@ class Graph(GenericGraph):
         """
         Since graph is undirected, returns False.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: Graph().is_directed()
             False
@@ -8641,7 +8806,7 @@ class Graph(GenericGraph):
         Traverse the graph G with depth-first-search and color nodes. This
         function uses the corresponding NetworkX function.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: graphs.CycleGraph(4).is_bipartite()
             True
@@ -8661,7 +8826,7 @@ class Graph(GenericGraph):
         Returns a dictionary with vertices as the keys and the color class
         as the values. Fails with an error if the graph is not bipartite.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: graphs.CycleGraph(4).bipartite_color()
             {0: 1, 1: 0, 2: 1, 3: 0}
@@ -8694,7 +8859,7 @@ class Graph(GenericGraph):
         Returns (X,Y) where X and Y are the nodes in each bipartite set of
         graph G. Fails with an error if graph is not bipartite.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: graphs.CycleGraph(4).bipartite_sets()
             ([0, 2], [1, 3])
@@ -8914,7 +9079,7 @@ class Graph(GenericGraph):
         Returns a directed version of the graph. A single edge becomes two
         edges, one in each direction.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: graphs.PetersenGraph().to_directed()
             Petersen graph: Digraph on 10 vertices
@@ -8936,7 +9101,7 @@ class Graph(GenericGraph):
         Since the graph is already undirected, simply returns a copy of
         itself.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: graphs.PetersenGraph().to_undirected()
             Petersen graph: Graph on 10 vertices
@@ -8961,7 +9126,7 @@ class Graph(GenericGraph):
         doc. Note: you cannot use pdflatex to print the resulting document,
         use TeX and Ghostscript or something similar instead.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: P = graphs.PetersenGraph()
             sage: P.write_to_eps(tmp_dir() + 'sage.eps')
@@ -9008,7 +9173,7 @@ class Graph(GenericGraph):
 
        - http://www.graphviz.org/doc/info/lang.html
 
-       EXAMPLE::
+       EXAMPLES::
 
            sage: G = Graph({0:{1:None,2:None}, 1:{0:None,2:None}, 2:{0:None,1:None,3:'foo'}, 3:{2:'foo'}}, implementation='networkx')
            sage: s = G.graphviz_string()
@@ -9605,7 +9770,7 @@ class DiGraph(GenericGraph):
                  boundary=[], weighted=None, implementation='networkx',
                  sparse=True, vertex_labels=True, **kwds):
         """
-        TEST::
+        TESTS::
 
             sage: D = DiGraph()
             sage: loads(dumps(D)) == D
@@ -9620,6 +9785,7 @@ class DiGraph(GenericGraph):
             True
         """
         msg = ''
+        GenericGraph.__init__(self)
         multiedges = kwds.get('multiedges', None)
         from sage.structure.element import is_Matrix
         from sage.misc.misc import uniq
@@ -9932,7 +10098,7 @@ class DiGraph(GenericGraph):
         Valid for single (no multiple edges) digraphs on 0 to 262143
         vertices.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: D = DiGraph()
             sage: D.dig6_string()
@@ -9955,7 +10121,7 @@ class DiGraph(GenericGraph):
         """
         Since digraph is directed, returns True.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: DiGraph().is_directed()
             True
@@ -10003,7 +10169,7 @@ class DiGraph(GenericGraph):
         Since the graph is already directed, simply returns a copy of
         itself.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: DiGraph({0:[1,2,3],4:[5,1]}).to_directed()
             Digraph on 6 vertices
@@ -10015,7 +10181,7 @@ class DiGraph(GenericGraph):
         Returns an undirected version of the graph. Every directed edge
         becomes an edge.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: D = DiGraph({0:[1,2],1:[0]})
             sage: G = D.to_undirected()
@@ -10041,7 +10207,7 @@ class DiGraph(GenericGraph):
         Return an iterator over all arriving edges from vertices, or over
         all edges if vertices is None.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: D = DiGraph( { 0: [1,2,3], 1: [0,2], 2: [3], 3: [4], 4: [0,5], 5: [1] } )
             sage: for a in D.incoming_edge_iterator([0]):
@@ -10066,7 +10232,7 @@ class DiGraph(GenericGraph):
         -  ``labels`` - if False, each edge is a tuple (u,v) of
            vertices.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: D = DiGraph( { 0: [1,2,3], 1: [0,2], 2: [3], 3: [4], 4: [0,5], 5: [1] } )
             sage: D.incoming_edges([0])
@@ -10079,7 +10245,7 @@ class DiGraph(GenericGraph):
         Return an iterator over all departing edges from vertices, or over
         all edges if vertices is None.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: D = DiGraph( { 0: [1,2,3], 1: [0,2], 2: [3], 3: [4], 4: [0,5], 5: [1] } )
             sage: for a in D.outgoing_edge_iterator([0]):
@@ -10105,7 +10271,7 @@ class DiGraph(GenericGraph):
         -  ``labels`` - if False, each edge is a tuple (u,v) of
            vertices.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: D = DiGraph( { 0: [1,2,3], 1: [0,2], 2: [3], 3: [4], 4: [0,5], 5: [1] } )
             sage: D.outgoing_edges([0])
@@ -10117,7 +10283,7 @@ class DiGraph(GenericGraph):
         """
         Returns an iterator over predecessor vertices of vertex.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: D = DiGraph( { 0: [1,2,3], 1: [0,2], 2: [3], 3: [4], 4: [0,5], 5: [1] } )
             sage: for a in D.predecessor_iterator(0):
@@ -10131,7 +10297,7 @@ class DiGraph(GenericGraph):
         """
         Returns a list of predecessor vertices of vertex.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: D = DiGraph( { 0: [1,2,3], 1: [0,2], 2: [3], 3: [4], 4: [0,5], 5: [1] } )
             sage: D.predecessors(0)
@@ -10143,7 +10309,7 @@ class DiGraph(GenericGraph):
         """
         Returns an iterator over successor vertices of vertex.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: D = DiGraph( { 0: [1,2,3], 1: [0,2], 2: [3], 3: [4], 4: [0,5], 5: [1] } )
             sage: for a in D.successor_iterator(0):
@@ -10158,7 +10324,7 @@ class DiGraph(GenericGraph):
         """
         Returns a list of successor vertices of vertex.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: D = DiGraph( { 0: [1,2,3], 1: [0,2], 2: [3], 3: [4], 4: [0,5], 5: [1] } )
             sage: D.successors(0)
@@ -10445,7 +10611,7 @@ class DiGraph(GenericGraph):
 
        - http://www.graphviz.org/doc/info/lang.html
 
-       EXAMPLE::
+       EXAMPLES::
 
            sage: G = DiGraph({0:{1:None,2:None}, 1:{2:None}, 2:{3:'foo'}, 3:{}}, implementation='networkx')
            sage: s = G.graphviz_string(); s
@@ -10484,7 +10650,7 @@ def tachyon_vertex_plot(g, bgcolor=(1,1,1),
     plot containing only the vertices, as well as the 3d position
     dictionary used for the plot.
 
-    EXAMPLE::
+    EXAMPLES::
 
         sage: G = graphs.TetrahedralGraph()
         sage: from sage.graphs.graph import tachyon_vertex_plot
@@ -10567,7 +10733,7 @@ def graph_isom_equivalent_non_multi_graph(g, partition):
     hence the canonical label is still well-defined, when we forget
     about the additional vertices.
 
-    EXAMPLE::
+    EXAMPLES::
 
         sage: from sage.graphs.graph import graph_isom_equivalent_non_multi_graph
         sage: G = Graph(multiedges=True)
@@ -10621,7 +10787,7 @@ def graph_isom_equivalent_non_edge_labeled_graph(g, partition):
     edges to like-labeled edges are allowed, and this additional
     partition information enforces this on the bipartite graph.
 
-    EXAMPLE::
+    EXAMPLES::
 
         sage: G = Graph(multiedges=True, implementation='networkx')
         sage: G.add_edges([(0,1,i) for i in range(10)])
@@ -10679,7 +10845,7 @@ def compare_edges(x, y):
     """
     Compare edge x to edge y, return -1 if x y, 1 if x y, else 0.
 
-    EXAMPLE::
+    EXAMPLES::
 
         sage: G = graphs.PetersenGraph()
         sage: E = G.edges()
