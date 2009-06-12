@@ -1856,9 +1856,8 @@ class GenericGraph(SageObject):
             True
 
         Now one is weighted and the other is not, and thus the
-        graphs are not equal.
+        graphs are not equal::
 
-        ::
             sage: G.weighted(True)
             sage: H.weighted()
             False
@@ -8039,6 +8038,8 @@ class Graph(GenericGraph):
        The labels ('x', 'z', 'a', 'out') are labels for edges. For
        example, 'out' is the label for the edge on 2 and 5. Labels can be
        used as weights, if all the labels share some common parent.
+
+       ::
 
         sage: a,b,c,d,e,f = sorted(SymmetricGroup(3))
         sage: Graph({b:{d:'c',e:'p'}, c:{d:'p',e:'c'}})
