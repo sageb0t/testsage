@@ -27,4 +27,4 @@ export CC=gcc
 cd src
 
 echo "Building Rubiks cube solvers"
-make install PREFIX="$SAGE_LOCAL"
+$MAKE install PREFIX="$SAGE_LOCAL"
