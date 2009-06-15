@@ -2074,7 +2074,7 @@ cdef class NumberFieldElement(FieldElement):
 
             sage: L.<b> = K.extension(x^2 - 3)
             sage: [L(6).valuation(P) for P in L.primes_above(6)]
-            [4, 2, 2]
+            [2, 2, 4]
         """
         from number_field_ideal import is_NumberFieldIdeal
         from sage.rings.infinity import infinity
@@ -2213,7 +2213,7 @@ cdef class NumberFieldElement(FieldElement):
 
         INPUT:
 
-        - ``prec`` (int) -- desired floating point precision (defult:
+        - ``prec`` (int) -- desired floating point precision (default:
           default RealField precision).
 
         OUTPUT:
@@ -2339,7 +2339,7 @@ cdef class NumberFieldElement(FieldElement):
 
         .. note::
 
-           A ValueError will be saised if this function is called on
+           A ValueError will be raised if this function is called on
            0.
 
         .. note::
@@ -2386,7 +2386,7 @@ cdef class NumberFieldElement(FieldElement):
 
         .. note::
 
-           A ValueError will be saised if this function is called on
+           A ValueError will be raised if this function is called on
            0.
 
         .. note::
