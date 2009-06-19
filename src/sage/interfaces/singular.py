@@ -123,7 +123,7 @@ interface documentation::
     x1^2*x2^2,
     x0*x2^3-x1^2*x2^2+x1*x2^3,
     x0*x1-x0*x2-x1*x2,
-    x0^2*x2-x0*x1*x2
+    x0^2*x2-x0*x2^2-x1*x2^2
 
 This example illustrates moving a polynomial from one ring to
 another. It also illustrates calling a method of an object with an
@@ -326,7 +326,7 @@ class Singular(Expect):
         x1^2*x2^2,
         x0*x2^3-x1^2*x2^2+x1*x2^3,
         x0*x1-x0*x2-x1*x2,
-        x0^2*x2-x0*x1*x2
+        x0^2*x2-x0*x2^2-x1*x2^2
 
     AUTHORS:
 
@@ -373,6 +373,12 @@ class Singular(Expect):
         Expect._start(self, alt_message)
         # Load some standard libraries.
         self.lib('general')   # assumed loaded by misc/constants.py
+
+        # these options are required by the new coefficient rings
+        # supported by Singular 3-1-0.
+        self.option("redTail")
+        self.option("redThrough")
+        self.option("intStrategy")
 
     def __reduce__(self):
         """
@@ -726,7 +732,7 @@ class Singular(Expect):
             x1^2*x2^2,
             x0*x2^3-x1^2*x2^2+x1*x2^3,
             x0*x1-x0*x2-x1*x2,
-            x0^2*x2-x0*x1*x2
+            x0^2*x2-x0*x2^2-x1*x2^2
         """
         if isinstance(gens, str):
             gens = self(gens)
@@ -976,7 +982,7 @@ class Singular(Expect):
          EXAMPLES::
 
              sage: singular.trait_names()
-             ['headStand',
+             ['exteriorPower',
               ...
               'stdfglm']
          """
@@ -1606,7 +1612,7 @@ class SingularElement(ExpectElement):
 
             sage: R = singular.ring(0,'(x,y)','dp')
             sage: R.trait_names()
-            ['headStand',
+            ['exteriorPower',
              ...
              'stdfglm']
         """

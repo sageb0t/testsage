@@ -22,6 +22,7 @@ Elliptic and Plane Curves
    sage/schemes/elliptic_curves/ell_local_data
    sage/schemes/elliptic_curves/kodaira_symbol
    sage/schemes/elliptic_curves/weierstrass_morphism
+   sage/schemes/elliptic_curves/ell_curve_isogeny
    sage/schemes/elliptic_curves/period_lattice
    sage/schemes/elliptic_curves/formal_group
    sage/schemes/elliptic_curves/ell_tate_curve
@@ -30,6 +31,7 @@ Elliptic and Plane Curves
    sage/schemes/elliptic_curves/ell_modular_symbols
    sage/schemes/elliptic_curves/sha_tate
    sage/schemes/elliptic_curves/padics
+   sage/schemes/elliptic_curves/cm
 
 .. _ch:jacobians:
 
