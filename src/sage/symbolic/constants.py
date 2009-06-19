@@ -1245,7 +1245,7 @@ class Mertens(Constant):
         import sage.libs.mpmath.all as a
         return a.eval_constant('mertens', R)
 
-mertens = Mertens().expression()
+merten = mertens = Mertens().expression()
 
 class Glaisher(Constant):
     r"""
