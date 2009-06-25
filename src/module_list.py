@@ -742,11 +742,6 @@ ext_modules = [
     Extension('sage.misc.session',
               sources = ['sage/misc/session.pyx']),
 
-    Extension('sage.misc.darwin_utilities',
-            sources = ['sage/misc/darwin_memory_usage.c',
-                       'sage/misc/darwin_utilities.pyx'],
-            depends = ['sage/misc/darwin_memory_usage.h']),
-
     ################################
     ##
     ## sage.modular
@@ -1297,3 +1292,13 @@ ext_modules = [
               libraries = ["pynac"]),
 
     ]
+
+# Only include darwin_utilities on OS_X >= 10.5
+UNAME = os.uname()
+if UNAME[0] == "Darwin" and not UNAME[2].startswith('8.'):
+    ext_modules.append(
+        Extension('sage.misc.darwin_utilities',
+            sources = ['sage/misc/darwin_memory_usage.c',
+                       'sage/misc/darwin_utilities.pyx'],
+            depends = ['sage/misc/darwin_memory_usage.h'])
+        )
