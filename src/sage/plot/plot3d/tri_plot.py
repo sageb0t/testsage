@@ -19,7 +19,7 @@ TODO:
 
 """
 
-from colors import hue
+from sage.plot.colors import hue
 from math import sqrt
 from random import random
 
