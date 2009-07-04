@@ -5223,7 +5223,7 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
         # We know that N|A, so A = N is optimal.
         N = self.conductor()
         b = ZZ(Integers(4*N)(D).sqrt(extend=False) % (2*N))
-        return (-b + D.sqrt(prec=prec)) / (2*N)
+        return (-b + ZZ(D).sqrt(prec=prec)) / (2*N)
 
     def heegner_point(self, D, prec=None, max_prec=2000):
         """
@@ -5270,6 +5270,7 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
             sage: f.discriminant().factor()
             47^2
         """
+        D = ZZ(D)
         if not self.satisfies_heegner_hypothesis(D):
             raise ValueError, "D (=%s) must satisfy the Heegner hypothesis" % D
         if prec is None:
@@ -6882,7 +6883,7 @@ class ModularParameterization:
         # \Gamma_0(N) to a better representative?
         q = (2*CC.gen()*CC.pi()*z).exp()
         nterms = (-prec/q.abs().log2()).ceil()
-        # Use Horner's rule to sum the integral of the the form
+        # Use Horner's rule to sum the integral of the form
         enumerated_an = list(enumerate(self._E.anlist(nterms)))[1:]
         lattice_point = 0
         for n, an in reversed(enumerated_an):
