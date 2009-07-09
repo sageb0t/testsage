@@ -2,7 +2,7 @@
 Univariate Polynomials over GF(2) via NTL's GF2X.
 
 AUTHOR:
-    -- Martin Albrecht (2008-10) initial implementation
+- Martin Albrecht (2008-10) initial implementation
 """
 
 # We need to define this stuff before including the templating stuff
@@ -27,7 +27,8 @@ cdef class Polynomial_GF2X(Polynomial_template):
     """
     Univariate Polynomials over GF(2) via NTL's GF2X.
 
-    EXAMPLE:
+    EXAMPLE::
+
         sage: P.<x> = GF(2)[]
         sage: x^3 + x^2 + 1
         x^3 + x^2 + 1
@@ -36,7 +37,8 @@ cdef class Polynomial_GF2X(Polynomial_template):
         """
         Create a new univariate polynomials over GF(2).
 
-        EXAMPLE:
+        EXAMPLE::
+
             sage: P.<x> = GF(2)[]
             sage: x^3 + x^2 + 1
             x^3 + x^2 + 1
@@ -50,7 +52,8 @@ cdef class Polynomial_GF2X(Polynomial_template):
 
     def __getitem__(self, int i):
         """
-        EXAMPLE:
+        EXAMPLE::
+
             sage: P.<x> = GF(2)[]
             sage: f = x^3 + x^2 + 1; f
             x^3 + x^2 + 1
@@ -66,7 +69,8 @@ cdef class Polynomial_GF2X(Polynomial_template):
 
     def _pari_(self, variable=None):
         """
-        EXAMPLE:
+        EXAMPLE::
+
             sage: P.<x> = GF(2)[]
             sage: f = x^3 + x^2 + 1
             sage: pari(f)
@@ -80,17 +84,19 @@ cdef class Polynomial_GF2X(Polynomial_template):
 
     def modular_composition(Polynomial_GF2X self, Polynomial_GF2X g, Polynomial_GF2X h, algorithm=None):
         """
-        Compute f(g) % h.
+        Compute `f(g) \pmod h`.
 
-        Both implementations Use Brent-Kung's Algorithm 2.1 (Fast
-        Algorithms for Manipulation Formal Power Series, JACM 1978)
+        Both implementations use Brent-Kung's Algorithm 2.1 (*Fast Algorithms
+        for Manipulation of Formal Power Series*, JACM 1978).
 
         INPUT:
-            g -- a polynomial
-            h -- a polynomial
-            algorithm -- either 'native' or 'ntl' (default: 'native')
 
-        EXAMPLE:
+        - ``g`` -- a polynomial
+        - ``h`` -- a polynomial
+        - ``algorithm`` -- either 'native' or 'ntl' (default: 'native')
+
+        EXAMPLE::
+
             sage: P.<x> = GF(2)[]
             sage: r = 279
             sage: f = x^r + x +1
@@ -106,8 +112,9 @@ cdef class Polynomial_GF2X(Polynomial_template):
             True
 
         AUTHORS:
-             -- Paul Zimmermann (2008-10) initial implementation
-             -- Martin Albrecht (2008-10) performance improvements
+
+        - Paul Zimmermann (2008-10) initial implementation
+        - Martin Albrecht (2008-10) performance improvements
         """
         if g.parent() is not self.parent() or h.parent() is not self.parent():
             raise TypeError("Parents of the first three parameters must match.")
