@@ -542,7 +542,7 @@ cdef class Rational(sage.structure.element.FieldElement):
         elif i == 0: return 0
         else: return 1
 
-    def copy(self):
+    def __copy__(self):
         """
         Return a copy of self.
 
@@ -551,7 +551,7 @@ cdef class Rational(sage.structure.element.FieldElement):
         EXAMPLES::
 
             sage: a = -17/37
-            sage: a.copy() is a
+            sage: copy(a) is a
             False
 
         Coercion does not make a new copy::

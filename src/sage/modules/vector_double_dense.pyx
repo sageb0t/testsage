@@ -132,12 +132,13 @@ cdef class Vector_double_dense(free_module_element.FreeModuleElement):
 
         EXAMPLE:
             sage: a = vector(RDF, range(9))
-            sage: a == a.copy()
+            sage: a == copy(a)
             True
         """
         if self._degree == 0:
             return self
-        return self._new(self._vector_numpy.copy())
+        from copy import copy
+        return self._new(copy(self._vector_numpy))
 
     def __init__(self, parent, entries, coerce = True, copy = True):
         """
@@ -299,7 +300,8 @@ cdef class Vector_double_dense(free_module_element.FreeModuleElement):
             (0.0, 2.0, 4.0)
         """
         if self._degree == 0:
-            return self.copy()
+            from copy import copy
+            return copy(self)
 
         cdef Vector_double_dense _right, _left
         _right = right
@@ -317,7 +319,8 @@ cdef class Vector_double_dense(free_module_element.FreeModuleElement):
             True
         """
         if self._degree == 0:
-            return self.copy()
+            from copy import copy
+            return copy(self)
 
         cdef Vector_double_dense _right, _left
         _right = right
@@ -339,7 +342,8 @@ cdef class Vector_double_dense(free_module_element.FreeModuleElement):
         if not right.parent() == self.parent():
             right = self.parent().ambient_module()(right)
         if self._degree == 0:
-            return self.copy()
+            from copy import copy
+            return copy(self)
 
         cdef Vector_double_dense _right, _left
         _right = right
@@ -363,7 +367,8 @@ cdef class Vector_double_dense(free_module_element.FreeModuleElement):
             right = self.parent().ambient_module()(right)
 
         if self._degree == 0:
-            return self.copy()
+            from copy import copy
+            return copy(self)
 
         cdef Vector_double_dense _right, _left
         _right = right
@@ -381,7 +386,8 @@ cdef class Vector_double_dense(free_module_element.FreeModuleElement):
             (0, 3.0, 6.0)
         """
         if self._degree == 0:
-            return self.copy()
+            from copy import copy
+            return copy(self)
 
         return self._new(self._python_dtype(left)*self._vector_numpy)
 
@@ -395,7 +401,8 @@ cdef class Vector_double_dense(free_module_element.FreeModuleElement):
             (0, 3.0, 6.0)
         """
         if self._degree == 0:
-            return self.copy()
+            from copy import copy
+            return copy(self)
 
         return self._new(self._vector_numpy*self._python_dtype(right))
 
@@ -499,7 +506,8 @@ cdef class Vector_double_dense(free_module_element.FreeModuleElement):
             sage: v.numpy()
             array([], dtype=float64)
         """
-        return self._vector_numpy.copy()
+        from copy import copy
+        return copy(self._vector_numpy)
 
     cdef _replace_self_with_numpy(self,cnumpy.ndarray numpy_array):
         """
