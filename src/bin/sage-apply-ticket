@@ -57,13 +57,24 @@ def all_patches(n):
         raise IOError, "could not fetch %s"%ticket_url
 
     attachment_lines = []
+    comment_lines = []
+    found_dd = False
     for line in f.readlines():
         if '/attachment/' in line:
             attachment_lines.append(line)
+            comment_lines.append('')
+        if found_dd:
+            if len(attachment_lines) == 0:
+                raise RuntimeError, "Failure parsing trac... sorry"  #blame Tom
+            comment_lines[-1] = line.strip()
+            found_dd = False
+        if '<dd>' in line:
+            found_dd = True
     f.close()
 
     attachment_names = []
-    for x in attachment_lines:
+    comments = []
+    for x,y in zip(attachment_lines,comment_lines):
         beg = x.find('/sage_trac/')
         end = x.find('" title')
         if not end > beg >= 0:
@@ -72,8 +83,9 @@ def all_patches(n):
         name = name.replace('/attachment/', '/raw-attachment/', 1)
         if name not in attachment_names:
             attachment_names.append(name)
+            comments.append(y)
 
-    return attachment_names
+    return attachment_names, comments
 
 def get_all_patches(patch_ls, directory=None, overwrite=False):
     """
@@ -110,15 +122,20 @@ def get_all_patches(patch_ls, directory=None, overwrite=False):
 
     return patch_files, directory
 
-def do_patch_queue_editing(order):
+def do_patch_queue_editing(order,comments):
     import sage.misc.misc as misc
     tmp_file = os.path.normpath(misc.tmp_filename())
     f = open(tmp_file, 'w')
-    for patchname in order:
+    for patchname, comment in zip(order,comments):
         f.write(patchname + "\n")
+        if comment:
+            f.write("# " + comment + "\n")
 
     f.write(r"""
 # Delete and order patches to apply.  Lines beginning with '#' are removed.
+# If a ticket should be applied to any repo other than sage, prepend 'repo|',
+# for example, to apply the patch to the 'scripts' repo,
+# scripts|http://trac...
 """)
     f.close()
     if not os.environ.has_key('EDITOR'):
@@ -133,18 +150,28 @@ def do_patch_queue_editing(order):
     f.close()
 
     new_order = []
+    with_repos = []
     for patchname in patchnames:
         patchname = patchname.strip()
         if (not patchname) or patchname.startswith('#'):
             continue
+
+        if '|' in patchname:
+            r, patchname = patchname.split('|')
+            repo = repositories[r]
+        else:
+            repo = DEFAULT_REPOSITORY
+
         if not patchname in order:
             raise ValueError, "%s not a patchname in %s" % (patchname, order)
         new_order.append(patchname)
+        patchfile = patchname.split('/')[-1]
+        with_repos.append((patchfile,repo))
 
     if not new_order:
         raise ValueError, "No patches to be applied -- aborting"
 
-    return new_order
+    return new_order, with_repos
 
 def apply_patches(patch_ls, patch_directory, order=None, dry_run=True, behavior='pop'):
     """
@@ -311,27 +338,12 @@ def get_touched_files_for_patches(patches, directory):
         f.close()
     return touched_files
 
-#################################################################
-## Main functions
-#################################################################
-
-def merge_and_run(n,
+def get_patches_with_users_help(n,
                   directory=None,
-                  overwrite=False,
-                  behavior='pop'):
-    """
-    Merge patches from ticket n and test the sage library.
-    Returns True when everything finishes cleanly, and raises
-    a ValueError otherwise.
-    """
-
-    import sage.misc.misc as misc
-    tmp_file = misc.tmp_filename()
-
-    print_section("Merging patches from ticket number %s."%n)
+                  overwrite=False):
 
     ## get the patches from the ticket
-    patch_url_ls = all_patches(n)
+    patch_url_ls,patch_comments = all_patches(n)
     if len(patch_url_ls) == 0:
         raise ValueError, "no patches to merge"
 
@@ -341,42 +353,148 @@ def merge_and_run(n,
     print
 
     old_patch_url_ls = patch_url_ls
-    if len(patch_url_ls) > 1:
-        print "I found more than one patch -- you need to edit the queue"
-        patch_url_ls = do_patch_queue_editing(patch_url_ls)
+
+    print "Please edit the queue before I apply"
+    patch_url_ls, order = do_patch_queue_editing(patch_url_ls,patch_comments)
+
+    if len(patch_url_ls) == 0:
+        raise ValueError, "no patches to merge"
 
     ## grab all patch files from trac
     patches, directory = get_all_patches(patch_url_ls,
-                                         directory=directory,
-                                         overwrite=overwrite)
+                           directory=directory,
+                           overwrite=overwrite)
+
+    return patches, directory, order
+
+def collect_patches_for_run():
+    ticket_ls = all_tickets(report='11')
+
+    ticket_bundle = []
+
+    for number, title in ticket_ls:
+        try:
+            print_section('Fetching ticket number %s'%number)
+            patches, directory, order = get_patches_with_users_help(number)
+            ticket_bundle.append((number,title,patches,directory, order))
+        except:
+            print "failed"
+    return ticket_bundle
+
+def log_ticket(ticket,message,log={},init=False,return_log=False):
+    if return_log:
+        return log
+    elif init:
+        for k in log.keys():
+            del log[k]
+    else:
+        log[ticket] = message
+
+#################################################################
+## Main functions
+#################################################################
+
+def merge_and_run(n,
+                  directory=None,
+                  overwrite=False,
+                  behavior='pop',
+                  verbose=False):
+    """
+    Merge patches from ticket n and test the sage library.
+    Returns True when everything finishes cleanly, and raises
+    a ValueError otherwise.
+    """
+
+    print_section("Merging patches from ticket number %s."%n)
+
+    patches, directory, order = get_patches_with_users_help(n,directory,overwrite)
+
+    return apply_and_test(n,patches,directory,behavior,verbose=verbose,order=order)
+
+def apply_and_test(n,patches,directory,behavior,verbose=False,archive=False,order=None):
+
+    start_dir = os.getcwd()
+    os.chdir(SAGE_ROOT)
+
+    import sage.misc.misc as misc
+    tmp_file = misc.tmp_filename()
 
     ## apply the patches to the various repos
     applied_patches, repos_used, order = apply_patches(patches,
                                                        directory,
                                                        dry_run=False,
-                                                       behavior=behavior)
+                                                       behavior=behavior,
+                                                       order=order)
+
+    try:
+        error = run_tests(patches,
+                          directory,
+                          behavior,
+                          applied_patches,
+                          repos_used,
+                          order,
+                          tmp_file,
+                          verbose=verbose)
+    except:
+        error = 'unexpected exception'
+
+    os.chdir(start_dir)
+
+    if error:
+        if behavior == 'pop' or behavior == 'finish':
+            print "Popping patches from queue ..."
+            clear_queue(applied_patches, repos_used)
+
+        log_ticket(n,'error, %s'%error)
+        if archive:
+            archive_log(n,tmp_file)
+        raise ValueError, error
+    else:
+        log_ticket(n,'success')
+
+def archive_log(ticketnum, tmp_file):
+    dir = os.getcwd()
+    os.chdir(SAGE_ROOT+'/tmp)
+    os.system('cp %s %s-mergelog'%(tmp_file,ticketnum))
+    os.system('tar -rf mergelog.tar %s-mergelog'%(ticketnum))
+    os.system('rm %s-mergelog'%(ticketnum))
+    os.chdir(dir)
+
+def verbosity_command(command, tmp_file, verbose):
+    if verbose:
+        #hack to get return code from teed process.
+        #note, $PIPESTATUS[0] should work, but it's broken on every
+        #bash I've tried.
+
+        os.system("bash -c '%s; echo $? > %s.err' 2>&1 | tee -a %s"%(command,tmp_file,tmp_file))
+        return int( file('%s.err'%tmp_file).read() )
+#        os.system("%s 2>&1 | tee -a %s"%(command, tmp_file))
+    else:
+        return os.system("%s 2>&1 >> %s"%(command, tmp_file))
+
+def run_tests(patches,
+              directory,
+              behavior,
+              applied_patches,
+              repos_used,
+              order,
+              tmp_file,
+              verbose=False):
 
     print_section('Rebuilding Sage')
 
     ## now we test everything.
-    start_dir = os.getcwd()
-    os.chdir(SAGE_ROOT)
 
     ## rebuild sage with the new changes.
-    res = os.system('sage -b')
+
+    res = verbosity_command('sage -b', tmp_file, verbose=verbose)
     if res:
-        if behavior == 'pop' or behavior == 'finish':
-            print "Popping patches from queue ..."
-            clear_queue(applied_patches, repos_used)
-        raise ValueError, "sage failed to build"
+        return "sage failed to build"
 
     ## first, check that sage even starts up.
     res = os.system('sage-starts')
     if res:
-        if behavior == 'pop' or behavior == 'finish':
-            print "Popping patches from queue ..."
-            clear_queue(applied_patches, repos_used)
-        raise ValueError, "sage cannot start with patches applied"
+        return "sage cannot start with patches applied"
 
     if False:
         print_section('Building Sage documentation')
@@ -384,16 +502,13 @@ def merge_and_run(n,
         # currently, we only check to see if the doc build script actually
         # raised an exception.  i don't know if it's possible that it
         # could do something else to signal bad behavior.
-        os.system("%s -docbuild all --jsmath html 2>&1 | tee -a %s"%(SAGE_COMMAND,
-                                                                     tmp_file))
+        verbosity_command("%s -docbuild all --jsmath html"%SAGE_COMMAND, tmp_file, verbose)
+
         f = open(tmp_file)
         for line in f.readlines():
             if line == 'Traceback (most recent call last):':
-                if behavior == 'pop' or behavior == 'finish':
-                    print "Popping patches from queue ..."
-                    clear_queue(applied_patches, repos_used)
                 f.close()
-                raise ValueError, "error building html documentation."
+                return "error building html documentation."
         f.close()
 
     test_success = None
@@ -424,7 +539,7 @@ def merge_and_run(n,
         elif test_type == 'long':
             files_to_test = DOCTEST_DIRS
         else:
-            raise ValueError, "unknown test type %s"%test_type
+            return "unknown test type %s"%test_type
 
         ## we run the docs and library individually, so that
         ## we can produce better error messages.
@@ -434,7 +549,8 @@ def merge_and_run(n,
         print test_command
         print
 
-        os.system(test_command + ' 2>&1 | tee -a %s' % tmp_file)
+        verbosity_command(test_command, tmp_file, verbose)
+
         f = open(tmp_file)
         line = f.readlines()[-3]
         f.close()
@@ -457,13 +573,11 @@ def merge_and_run(n,
         elif behavior == 'pop':
             print "All tests passed! Popping patches from queue ..."
             clear_queue(applied_patches, repos_used)
-        return True
+        return None
     else:
         # tests failed, so don't commit, but either leave tickets
         # applied or clear the queue
-        if behavior == 'pop' or behavior == 'finish':
-            clear_queue(applied_patches, repos_used)
-        raise ValueError, "tests failed"
+        return "tests failed"
 
 def all_tickets(report='11'):
     r"""
@@ -490,16 +604,19 @@ def all_tickets(report='11'):
     f.close()
     return tickets
 
-def test_all_tickets():
+def test_all_tickets(behavior, verbose=False):
     ticket_ls = all_tickets(report='11')
     working_tickets = []
     untested_tickets = []
     failed_tickets = []
 
-    for number, title in ticket_ls:
+    os.system('tar -cf %s/tmp/mergelog.tar COPYING.txt'%SAGE_ROOT) #I'd like to make an empty tar, but tar cowardly refuses
+
+    ticket_bundle = collect_patches_for_run()
+    for number,title,patches,directory,order in ticket_bundle:
         print_section('Testing ticket number %s'%number)
         try:
-            merge_and_run(number, behavior='pop')
+            apply_and_test(number,patches,directory,behavior,verbose=verbose,archive=True,order=order)
             print "Ticket #%s passed!"%number
             working_tickets.append(number)
         except:
@@ -510,6 +627,12 @@ def test_all_tickets():
             else:
                 print "Ticket #%s failed with %s: %s"%(number, exception.__name__, msg)
                 failed_tickets.append(number)
+
+    print
+    print "Ticket Log"
+    log = log_ticket(None,None,return_log=True)
+    for n in log.keys():
+        print "#%s -- %s"%(n,log[n])
 
     print
     print "Tickets to merge: ", working_tickets
@@ -538,16 +661,17 @@ if __name__ == '__main__':
     behavior = 'pop'
     test_type = 'files'
     test_options = [ 'none', 'files', 'directory', 'long' ]
+    verbose = False
 
     if len(sys.argv) < 2:
         usage_message()
         sys.exit(1)
 
-    args, extra_args = getopt.getopt(sys.argv[2:], 'd:oflt:r:n:',
+    args, extra_args = getopt.getopt(sys.argv[2:], 'd:oflt:r:n:v',
                                      ['directory=', 'overwrite',
                                       'finish', 'leave-in-queue', 'test=',
                                       'repository=',
-                                      'num-threads='])
+                                      'num-threads=','verbose'])
 
     for arg, opt in args:
         if arg in ['-d', '--directory']:
@@ -603,6 +727,9 @@ if __name__ == '__main__':
             NUM_THREADS = num
             continue
 
+        if arg in ['-v', '--verbose']:
+            verbose = True
+
     ## make sure we got a ticket number to test, unless we were called with
     ## -c, in which case we print and exit.
     if sys.argv[1] in ['-c', '--candidates']:
@@ -614,7 +741,7 @@ if __name__ == '__main__':
         print
         sys.exit(0)
     elif sys.argv[1] in ['-a', '--all']:
-        test_all_tickets()
+        test_all_tickets(behavior=behavior,verbose=verbose)
         sys.exit(0)
     else:
         try:
@@ -626,7 +753,7 @@ if __name__ == '__main__':
     try:
         # we don't need the return value from merge_and_run here
         merge_and_run(num, overwrite=overwrite, directory=directory,
-                      behavior=behavior)
+                      behavior=behavior,verbose=verbose)
         sys.exit(0)
     except:
         exc, msg, traceback = sys.exc_info()
