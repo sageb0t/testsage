@@ -1,14 +1,14 @@
-Un peu de mathématiques plus avancées
-=====================================
+Quelques mathématiques plus avancées
+====================================
 
 Géométrie algébrique
 --------------------
 
-Il est possible de définir des variétés algébriques arbitraires en Sage,
+Il est possible de définir des variétés algébriques arbitraires avec Sage,
 mais les fonctionnalités non triviales sont parfois limitées aux anneaux
 sur  :math:`\QQ` ou sur les corps finis. Calculons par exemple
-la réunion de deux courbes planes affines, puis récupérons les courbes
-en tant que composantes irréductibles de la réunion.
+la réunion de deux courbes planes affines, puis récupérons chaque courbe
+en tant que composante irréductible de la réunion.
 
 ::
 
@@ -50,11 +50,11 @@ irréductibles.
     ]
 
 Ainsi, par exemple,  :math:`(1,0)` et :math:`(0,1)` appartiennent aux
-deux courbes (ce qui parait bien évident???) ; il en va de même de certains
+deux courbes (ce dont on pouvait directement s'apercevoir) ; il en va de même des
 points (quadratiques), dont la coordonnée en :math:`y` satisfait à
 l'équation :math:`2y^2 + 4y + 3=0`.
 
-Sage peut calculer l'idéal torique de l a cubique gauche dans l'espace
+Sage peut calculer l'idéal torique de la cubique gauche dans l'espace
 projectif de dimension 3.
 
 ::
@@ -82,8 +82,8 @@ Courbes elliptiques
 
 Les fonctionnalités relatives aux courbes elliptiques comprennent la
 plupart des fonctionnalités de PARI, l'accès aux données des tables en
-ligne de Cremona (ceci requiert un paquet de base de donnée
-optionnel), les fonctionnalités de mwrank, c'est-à-dire la 2-descente
+ligne de Cremona (ceci requiert le chargement d'une base de donnée
+optionnelle), les fonctionnalités de mwrank, c'est-à-dire la 2-descente
 avec calcul du groupe de Mordell-Weil complet, l'algorithme SEA, le
 calcul de toutes les isogénies, beaucoup de nouveau code pour les
 courbes sur :math:`\QQ` et une partie du code de descente
@@ -92,8 +92,7 @@ algébrique de Denis Simon.
 La commande ``EllipticCurve`` permet de créer une courbe elliptique avec
 beaucoup de souplesse :
 
--  EllipticCurve([:math:`a_1`, :math:`a_2`, :math:`a_3`, :math:`a_4`,
-   :math:`a_6`]) : renvoie la courbe elliptique
+-  EllipticCurve([:math:`a_1`, :math:`a_2`, :math:`a_3`, :math:`a_4`, :math:`a_6`]) : renvoie la courbe elliptique
 
    .. math::  y^2+a_1xy+a_3y=x^3+a_2x^2+a_4x+a_6,
 
@@ -105,17 +104,16 @@ beaucoup de souplesse :
 -  EllipticCurve([:math:`a_4`, :math:`a_6`]) : idem
    avec :math:`a_1=a_2=a_3=0`.
 
--  EllipticCurve(label) : Renvoie la courbe elliptique sur QQ ???  de la
+-  EllipticCurve(label) : Renvoie la courbe elliptique sur  :math:`\QQ`  de la
    base de données de Cremona selon son nom dans la (nouvelle !)
    nomenclature de Cremona. Les courbes sont étiquetées par une chaîne de
-   caractère telle que ``"11a"`` or ``"37b2"``. La lettre doit être en
+   caractère telle que ``"11a"`` ou ``"37b2"``. La lettre doit être en
    minuscule (pour faire la différence avec l'ancienne nomenclature).
 
 -  EllipticCurve(j) : renvoie une courbe elliptique de
    :math:`j`-invariant :math:`j`.
 
--  EllipticCurve(R, [:math:`a_1`, :math:`a_2`, :math:`a_3`, :math:`a_4`,
-   :math:`a_6`]) : Crée la courbe elliptique sur l'anneau :math:`R` donnée
+-  EllipticCurve(R, [:math:`a_1`, :math:`a_2`, :math:`a_3`, :math:`a_4`,  :math:`a_6`]) : Crée la courbe elliptique sur l'anneau :math:`R` donnée
    par les coefficients :math:`a_i` comme ci-dessus.
 
 Illustrons chacune de ces constructions :
@@ -163,7 +161,7 @@ nulle) :
     sage: E.conductor()
     37
 
-Les courbes elliptiques sur les nombres complexes sont paramétrés par
+Les courbes elliptiques sur les nombres complexes sont paramétrées par
 leur   :math:`j`-invariant. Sage calcule le :math:`j`-invariant comme
 suit :
 
@@ -187,7 +185,7 @@ conducteur est différent.
     sage: F.conductor()
     37
 
-Toutefois, le twist??? de :math:`F` par 2 donne une courbe isomorphe.
+Toutefois, le twist de :math:`F` par 2 donne une courbe isomorphe.
 
 .. link
 
@@ -244,7 +242,7 @@ nombre de Tamagawa, son régulateur, etc.
     sage: E.rank()
     3
 
-On peut aussi accéder à la base de donnée de Cremona directement.
+On peut aussi accéder à la base de données de Cremona directement.
 
 ::
 
@@ -258,17 +256,16 @@ On peut aussi accéder à la base de donnée de Cremona directement.
      'b3': [[0, 1, 1, -3, 1], 0, 3]}
 
 Les objets extraits de la base de données ne sont pas de type
-``EllipticCurve``, mais de simples entrées de base de données
-formées de quelques champs.
-Par défaut, Sage est distribué avec une
-petite version de la base de donnée de Cremona qui ne contient que des
-informations limitées sur les courbes elliptiques
-de conducteur :math:`\leq 10000`. Il existe également en option une
-version plus complète qui contient des données étendues portant sur toute
-les courbes de conducteur jusqu'à :math:`120000` (à la date d'octobre
-2005). Une autre, énorme (2GB) base de données optionnelle, fournie dans
-un package séparé, contient des centaines de millions de courbes
-elliptiques de la base de donnée de Stein-Watkins.
+``EllipticCurve``, mais de simples entrées de base de données formées de
+quelques champs. Par défaut, Sage est distribué avec une version réduite
+de la base de données de Cremona qui ne contient que des informations
+limitées sur les courbes elliptiques de conducteur :math:`\leq 10000`.
+Il existe également en option une version plus complète qui contient des
+données étendues portant sur toute les courbes de conducteur jusqu'à
+:math:`120000` (à la date d'octobre 2005). Une autre - énorme (2GB) -
+base de données optionnelle, fournie dans un package séparé, contient
+des centaines de millions de courbes elliptiques de la bases de donnée de
+Stein-Watkins.
 
 Caractères de Dirichlet
 -----------------------
@@ -341,7 +338,7 @@ caractères, de même qu'une décomposition en produit direct correspondant
     6 and degree 2
     ]
 
-Construisons maintenant le groupe de caractères de Dirichlet modulo 20,
+Construisons à present le groupe de caractères de Dirichlet modulo 20,
 mais à valeur dans  :math:`\QQ(i)`:
 
 ::
@@ -390,14 +387,13 @@ Ici, ``NumberField(x^4 + 1, 'a')`` indique à Sage d'utiliser le symbole
 défini par le polynôme :math:`x^4 + 1`). Le nom "a" n'est pas déclaré à
 ce point. Une fois que  ``a = K.0`` (ou de manière équivalente ``a =
 K.gen()``) est évalué, le symbole "a" représente une racine du polynôme
-générateur ???? :math:`x^4+1`.
+générateur :math:`x^4+1`.
 
 Formes modulaires
 -----------------
 
 Sage peut accomplir des calculs relatifs aux formes modulaires,
-notamment des calculs de dimension, d'espace de symboles modulaires
-????, d'opérateurs de Hecke et de décomposition.
+notamment des calculs de dimension, d'espace de symboles modulaires, d'opérateurs de Hecke et de décomposition.
 
 Il y a plusieurs fonctions disponibles pour calculer la dimension
 d'espaces de formes modulaires. Par exemple,
@@ -412,7 +408,7 @@ d'espaces de formes modulaires. Par exemple,
     6112
 
 Nous illustrons ci-dessous le calcul des opérateurs de Hecke sur un
-espace de symboles modulaires ????? de niveau ??? :math:`1` et de poids
+espace de symboles modulaires de niveau :math:`1` et de poids
 :math:`12`.
 
 ::
@@ -447,8 +443,7 @@ Nous pouvons aussi créer des espaces pour :math:`\Gamma_0(N)` et
     Modular Symbols space of dimension 11 for Gamma_1(11) of weight 2 with
     sign 0 and over Rational Field
 
-Calculons quelques polynômes caractéristiques et développement selon
-:math:`q` ????? (développmt de Fourier ??).
+Calculons quelques polynômes caractéristiques et développements en série de Fourier.
 
 ::
 
@@ -491,7 +486,7 @@ On peut même calculer des espaces de formes modulaires avec caractères.
       + (-2*zeta6 + 4)*q^6 + (2*zeta6 - 1)*q^8 - zeta6*q^9 + O(q^10)
     ]
 
-Voici un autre exemple de comment Sage peut calculer l'action d'un
+Voici un autre exemple montrant comment Sage peut calculer l'action d'un
 opérateur de Hecke sur un espace de formes modulaires.
 
 ::

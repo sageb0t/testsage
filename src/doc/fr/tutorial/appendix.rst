@@ -14,7 +14,7 @@ Reference Manual*, de G. Rossum et F. Drake.) Les opérations sont
 données par priorités croissantes.
 
 ==========================  =================
-Operateurs                  Description
+Opérateur                   Description
 ==========================  =================
 or                          ou booléen
 and  	     		    et booléen
