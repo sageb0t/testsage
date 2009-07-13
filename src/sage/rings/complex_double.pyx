@@ -1153,8 +1153,12 @@ cdef class ComplexDoubleElement(FieldElement):
             sage: a = CDF(3,-2)
             sage: a.real()
             3.0
+            sage: a.real_part()
+            3.0
         """
         return RealDoubleElement(self._complex.dat[0])
+
+    real_part = real
 
     def imag(self):
         """
@@ -1165,8 +1169,12 @@ cdef class ComplexDoubleElement(FieldElement):
             sage: a = CDF(3,-2)
             sage: a.imag()
             -2.0
+            sage: a.imag_part()
+            -2.0
         """
         return RealDoubleElement(self._complex.dat[1])
+
+    imag_part = imag
 
     def parent(self):
         """
