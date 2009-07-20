@@ -195,7 +195,7 @@ cdef class MPolynomialRing_generic(sage.rings.ring.CommutativeRing):
         """
         Return string representation of this object.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: PolynomialRing(QQ, names=[])
             Multivariate Polynomial Ring in no variables over Rational Field
@@ -213,7 +213,7 @@ cdef class MPolynomialRing_generic(sage.rings.ring.CommutativeRing):
         """
         Return structured string representation of self.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: P.<x,y,z> = PolynomialRing(QQ,order=TermOrder('degrevlex',1)+TermOrder('lex',2))
             sage: print P.repr_long()
@@ -428,7 +428,7 @@ cdef class MPolynomialRing_generic(sage.rings.ring.CommutativeRing):
         - ``n`` -- number of variables
         - ``d`` -- degree
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: P.<x,y> = PolynomialRing(ZZ)
             sage: C,t = P._precomp_counts(10,2)
@@ -473,7 +473,7 @@ cdef class MPolynomialRing_generic(sage.rings.ring.CommutativeRing):
         - ``n`` -- number of variables
         - ``d`` -- degree
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: P.<x,y> = PolynomialRing(QQ)
             sage: P._to_monomial(0,10,2)
@@ -710,7 +710,7 @@ cdef class MPolynomialRing_generic(sage.rings.ring.CommutativeRing):
         - ``names`` -- variable names
         - ``order`` -- a term order
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: P.<x,y,z> = PolynomialRing(GF(127),3,order='lex')
             sage: x > y^2
