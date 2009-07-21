@@ -277,7 +277,7 @@ cdef class NumberFieldElement_quadratic(NumberFieldElement_absolute):
         mpz_set(x.denom, self.denom)
         return x
 
-    def __new__(self, parent=None, f=None):
+    def __cinit__(self):
         mpz_init(self.a)
         mpz_init(self.b)
         mpz_init(self.denom)
