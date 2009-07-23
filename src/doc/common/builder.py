@@ -17,6 +17,7 @@ SAGE_DOC = os.environ['SAGE_DOC']
 LANGUAGES = ['en', 'fr']
 SPHINXOPTS  = ""
 PAPER       = ""
+OMIT        = ["introspect"]  # docs/dirs to omit when listing and building 'all'
 
 if PAPER == "a4":
     PAPEROPTS = "-D latex_paper_size=a4"
@@ -270,7 +271,8 @@ class AllBuilder(object):
         documents = []
         for lang in LANGUAGES:
             for document in os.listdir(os.path.join(SAGE_DOC, lang)):
-                documents.append(os.path.join(lang, document))
+                if document not in OMIT:
+                    documents.append(os.path.join(lang, document))
         return documents
 
 class WebsiteBuilder(DocBuilder):
@@ -650,8 +652,12 @@ def get_builder(name):
         return ReferenceBuilder(name)
     elif name.endswith('website'):
         return WebsiteBuilder(name)
-    else:
+    elif name in get_documents() or name in AllBuilder().get_all_documents():
         return DocBuilder(name)
+    else:
+        print "'%s' is not a recognized document. Type 'sage -docbuild -D' for a list"%name
+        print "of documents, or 'sage -docbuild --help' for more help."
+        sys.exit(1)
 
 def format_columns(lst, align='<', cols=None, indent=4, pad=3, width=80):
     """
