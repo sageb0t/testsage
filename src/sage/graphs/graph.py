@@ -4472,6 +4472,8 @@ class GenericGraph(SageObject):
 
         The algorithm is not specified, then a reasonable choice is made for speed.
 
+        ::
+
             sage: g=graphs.PathGraph(1000)
             sage: g.subgraph(range(10)) # uses the 'add' algorithm
             Subgraph of (Path Graph): Graph on 10 vertices
@@ -4592,8 +4594,6 @@ class GenericGraph(SageObject):
             [0, 1]
 
         Using the property arguments::
-
-        ::
 
             sage: C = graphs.CubeGraph(2)
             sage: S = C._subgraph_by_adding(vertices=C.vertices(), edge_property=(lambda e: e[0][0] == e[1][0]))
@@ -4738,8 +4738,6 @@ class GenericGraph(SageObject):
             [0, 1]
 
         Using the property arguments::
-
-        ::
 
             sage: C = graphs.CubeGraph(2)
             sage: S = C._subgraph_by_deleting(vertices=C.vertices(), edge_property=(lambda e: e[0][0] == e[1][0]))
