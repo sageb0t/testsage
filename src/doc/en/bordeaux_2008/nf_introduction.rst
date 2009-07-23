@@ -28,7 +28,7 @@ specific embedding of the number field :math:`K` into
     3*alpha^2 + 3*alpha + 3
 
 The variable :math:`x`
-------------------------
+----------------------
 
 Note that we did *not* define :math:`x` above before using it.
 You could "break" the above example by redefining :math:`x` to be
@@ -59,7 +59,7 @@ field using the indeterminate :math:`x`, you have several
 options. You can reset :math:`x` to its default value at the
 start of Sage, you can redefine :math:`x` to be a symbolic
 variable, or you can define :math:`x` to be a polynomial
-indeterminant (a polygen)::
+indeterminate (a polygen)::
 
     sage: reset('x')
     sage: x
