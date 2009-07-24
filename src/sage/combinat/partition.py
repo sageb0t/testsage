@@ -708,7 +708,7 @@ class Partition_class(CombinatorialObject):
 
     def conjugate(self):
         """
-        Returns the conjugate partition of the partition ``self`. This
+        Returns the conjugate partition of the partition ``self``. This
         is also called the associated partition in the literature.
 
         EXAMPLES::
