@@ -1159,7 +1159,7 @@ class PermutationGroup_generic(group.FiniteGroup):
           cohomology', http://front.math.ucdavis.edu/0706.0549.
         """
         if not is_package_installed('gap_packages'):
-             raise RuntimeError, "You must intall the optional gap_packages package."
+             raise RuntimeError, "You must install the optional gap_packages package."
         load_hap()
         from sage.rings.arith import is_prime
         if not (p == 0 or is_prime(p)):
@@ -1196,7 +1196,7 @@ class PermutationGroup_generic(group.FiniteGroup):
         - David Joyner and Graham Ellis
         """
         if not is_package_installed('gap_packages'):
-             raise RuntimeError, "You must intall the optional gap_packages package."
+             raise RuntimeError, "You must install the optional gap_packages package."
         load_hap()
         from sage.rings.arith import is_prime
         if not (p == 0 or is_prime(p)):
@@ -1254,7 +1254,7 @@ class PermutationGroup_generic(group.FiniteGroup):
           http://front.math.ucdavis.edu/0706.0549
         """
         if not is_package_installed('gap_packages'):
-             raise RuntimeError, "You must intall the optional gap_packages package."
+             raise RuntimeError, "You must install the optional gap_packages package."
         load_hap()
         from sage.rings.arith import is_prime
         if not (p == 0 or is_prime(p)):
@@ -1288,7 +1288,7 @@ class PermutationGroup_generic(group.FiniteGroup):
         - David Joyner and Graham Ellis
         """
         if not is_package_installed('gap_packages'):
-             raise RuntimeError, "You must intall the optional gap_packages package."
+             raise RuntimeError, "You must install the optional gap_packages package."
         gap.eval('LoadPackage("hap")')
         from sage.rings.arith import is_prime
         if not (p == 0 or is_prime(p)):
@@ -2091,7 +2091,7 @@ class PermutationGroup_generic(group.FiniteGroup):
         - David Joyner and Graham Ellis
         """
         if not is_package_installed('gap_packages'):
-             raise RuntimeError, "You must intall the optional gap_packages package."
+             raise RuntimeError, "You must install the optional gap_packages package."
         load_hap()
         from sage.rings.arith import is_prime
         if not (p == 0 or is_prime(p)):
