@@ -3853,4 +3853,6 @@ function jsmath_init() {
 
 {% include "jmol_lib.js" %}
 
+{% include "canvas3d_lib.js" %}
+
 {% include "async_lib.js" %}
