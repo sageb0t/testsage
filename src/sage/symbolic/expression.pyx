@@ -518,7 +518,7 @@ cdef class Expression(CommutativeRingElement):
             sage: latex(abs(x))
             {\left| x \right|}
             sage: latex((x*y).conjugate())
-            \bar{x} \bar{y}
+            \overline{x} \overline{y}
 
         Check spacing of coefficients of mul expressions (#3202)::
 
