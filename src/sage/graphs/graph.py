@@ -167,7 +167,7 @@ examples are covered here.
        sage: G.plot().show()    # or G.show()
 
 -  incidence matrix: In an incidence matrix, each row represents a
-   vertex and each column reprensents an edge.
+   vertex and each column represents an edge.
 
    ::
 
@@ -304,7 +304,7 @@ down by their designated table names, type
     sage: graph_db_info()
     {...}
 
-For more details on datatypes or keyword input, enter
+For more details on data types or keyword input, enter
 
 ::
 
@@ -1113,7 +1113,7 @@ class GenericGraph(SageObject):
         If weighted == True, the weighted adjacency matrix is used for M,
         and the diagonal entries are the row-sums of M.
 
-        Note that any additional keywords will be pased on to either
+        Note that any additional keywords will be passed on to either
         the adjacency_matrix or weighted_adjacency_matrix method.
 
         AUTHORS:
@@ -2576,7 +2576,7 @@ class GenericGraph(SageObject):
            priority over minimal.
 
         -  ``maximal (boolean)`` - whether or not to compute
-           the maximal genus of the graph (i.e., testin all embeddings). If
+           the maximal genus of the graph (i.e., testing all embeddings). If
            maximal is False, then either minimal must be True or on_embedding
            must not be None. If on_embedding is not None, it will take
            priority over maximal. However, maximal takes priority over the
@@ -2672,7 +2672,7 @@ class GenericGraph(SageObject):
                 faces = len(self.trace_faces(on_embedding))
                 return (2-verts+edges-faces)/2
         else: # then compute either maximal or minimal genus of all embeddings
-            # Construct an intitial combinatorial embedding for graph
+            # Construct an initial combinatorial embedding for graph
             part = []
             for vertex in G.vertices():
                 part.append(G.neighbors(vertex))
@@ -3044,7 +3044,7 @@ class GenericGraph(SageObject):
     def delete_vertex(self, vertex, in_order=False):
         """
         Deletes vertex, removing all incident edges. Deleting a
-        non-existant vertex will raise an exception.
+        non-existent vertex will raise an exception.
 
         INPUT:
 
@@ -3104,7 +3104,7 @@ class GenericGraph(SageObject):
     def delete_vertices(self, vertices):
         """
         Remove vertices from the (di)graph taken from an iterable container
-        of vertices. Deleting a non-existant vertex will raise an
+        of vertices. Deleting a non-existent vertex will raise an
         exception.
 
         EXAMPLES::
@@ -3362,7 +3362,7 @@ class GenericGraph(SageObject):
             3
 
         Note that since the intersection option is available, the
-        vertex_iterator() function is sub-optimal, speedwise, but note the
+        vertex_iterator() function is sub-optimal, speed-wise, but note the
         following optimization::
 
             sage: timeit V = P.vertices()                   # not tested
@@ -3426,7 +3426,7 @@ class GenericGraph(SageObject):
             [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
         Note that the output of the vertices() function is always sorted.
-        This is sub-optimal, speedwise, but note the following
+        This is sub-optimal, speed-wise, but note the following
         optimizations::
 
             sage: timeit V = P.vertices()                     # not tested
@@ -8227,7 +8227,7 @@ class GenericGraph(SageObject):
             for v in G_to:
                 b_new[v] = b[G_to[v]]
             b = b_new
-            # b is a translation of the labelings
+            # b is a translation of the labellings
             acting_vertices = {}
             translation_d = {}
             m = G.order()
@@ -8273,7 +8273,7 @@ class GenericGraph(SageObject):
             for v in G_to:
                 b_new[v] = b[G_to[v]]
             b = b_new
-            # b is a translation of the labelings
+            # b is a translation of the labellings
             acting_vertices = {}
             translation_d = {}
             m = G.order()
@@ -8677,7 +8677,7 @@ class Graph(GenericGraph):
 
        #.  A dictionary of lists
 
-       #.  A numpy matrix or ndarray
+       #.  A NumPy matrix or ndarray
 
        #.  A Sage adjacency matrix or incidence matrix
 
@@ -8841,7 +8841,7 @@ class Graph(GenericGraph):
           [1 0 1 1 0 1]
           [0 1 1 1 1 0]
 
-    #. A numpy matrix or ndarray::
+    #. A NumPy matrix or ndarray::
 
         sage: import numpy
         sage: A = numpy.array([[0,1,1],[1,0,1],[1,1,0]])
@@ -9719,7 +9719,7 @@ class Graph(GenericGraph):
         Returns the betweenness centrality (fraction of number of shortest
         paths that go through each vertex) as a dictionary keyed by
         vertices. The betweenness is normalized by default to be in range
-        (0,1). This wraps Networkx's implementation of the algorithm
+        (0,1). This wraps NetworkX's implementation of the algorithm
         described in [1].
 
         Measures of the centrality of a vertex within a graph determine the
@@ -9955,7 +9955,7 @@ class Graph(GenericGraph):
 
         ALGORITHM:
 
-        This function is based on Networkx's implementation of the Bron and
+        This function is based on NetworkX's implementation of the Bron and
         Kerbosch Algorithm [BroKer1973]_.
 
         REFERENCE:
@@ -10085,7 +10085,7 @@ class Graph(GenericGraph):
 
            - ``cliquer`` - This wraps the C program Cliquer [NisOst2003]_.
 
-           - ``networkx`` - This function is based on Networkx's implementation
+           - ``networkx`` - This function is based on NetworkX's implementation
              of the Bron and Kerbosch Algorithm [BroKer1973]_.
 
          - ``cliques`` - an optional list of cliques that can be input if
@@ -10257,7 +10257,7 @@ class Graph(GenericGraph):
 
            - ``cliquer`` - This wraps the C program Cliquer [NisOst2003]_.
 
-           - ``networkx`` - This function is based on Networkx's implementation
+           - ``networkx`` - This function is based on NetworkX's implementation
                 of the Bron and Kerbosch Algorithm [BroKer1973]_.
 
         -  ``vertices`` - the vertices to inspect (default is entire graph).
@@ -10593,7 +10593,7 @@ class DiGraph(GenericGraph):
             sage: DiGraph(g)
             Digraph on 5 vertices
 
-       Note that in all cases, we copy the networkX structure.
+       Note that in all cases, we copy the NetworkX structure.
 
        ::
 
@@ -11300,7 +11300,7 @@ class DiGraph(GenericGraph):
         """
         if vertices in self:
             for d in self.in_degree_iterator(vertices):
-                return d # (weird, but works: only happends once!)
+                return d # (weird, but works: only happens once!)
         elif labels:
             di = {}
             for v, d in self.in_degree_iterator(vertices, labels=labels):
@@ -11372,7 +11372,7 @@ class DiGraph(GenericGraph):
         """
         if vertices in self:
             for d in self.out_degree_iterator(vertices):
-                return d # (weird, but works: only happends once!)
+                return d # (weird, but works: only happens once!)
         elif labels:
             di = {}
             for v, d in self.out_degree_iterator(vertices, labels=labels):
