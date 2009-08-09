@@ -29,7 +29,7 @@ ai = arith_llong()
 # MAX_MODULUS = min(int(sqrt(int(MOD_INT_OVERFLOW))-1), int(2)**int(20))
 
 # Hard coded because currently matrix_modn_dense is implemented using C ints
-# which are always 32-bit.   Once this gets firxed, i.e., there is a better
+# which are always 32-bit.   Once this gets fixed, i.e., there is a better
 # matrix_modn class, then this can change.
 MAX_MODULUS = 46341
 
@@ -74,7 +74,7 @@ cdef class MultiModularBasis_base:
     def __new__(self, *args, **kwds):
         r"""
         Allocate the space for the moduli and precomputation lists
-        and initalize the first element of that list.
+        and initialize the first element of that list.
 
         EXAMPLES::
 
@@ -508,7 +508,7 @@ cdef class MultiModularBasis_base:
         INPUT:
 
         - ``z``      - a placeholder for the constructed integer
-                        z MUST be initalized IF and ONLY IF offset > 0
+                        z MUST be initialized IF and ONLY IF offset > 0
         - ``b``      - array holding the reductions mod each m_i.
                         It MUST have length at least len
         - ``offset`` - first prime in list to reduce against
@@ -551,7 +551,7 @@ cdef class MultiModularBasis_base:
 
         - ``z``      - a placeholder for the constructed integers
                          z MUST be allocated and have length at least vc
-                        z[j] MUST be initalized IF and ONLY IF offset > 0
+                        z[j] MUST be initialized IF and ONLY IF offset > 0
         - ``b``      - array holding the reductions mod each m_i.
                         MUST have length at least len
         - ``vn``     - length of z and each b[i]
@@ -858,7 +858,7 @@ cdef class MultiModularBasis(MultiModularBasis_base):
         INPUT:
 
         - ``z`` - a placeholder for the constructed integer
-                   z MUST NOT be initalized
+                   z MUST NOT be initialized
         - ``b`` - array holding the reductions mod each $m_i$.
                    It MUST have length at least len(self)
         """
@@ -874,7 +874,7 @@ cdef class MultiModularBasis(MultiModularBasis_base):
 
         - ``z``  - a placeholder for the constructed integers
                     z MUST be allocated and have length at least vn,
-                    but each z[j] MUST NOT be initalized
+                    but each z[j] MUST NOT be initialized
         - ``b``  - array holding the reductions mod each $m_i$.
                     It MUST have length at least len(self)
         - ``vn`` - length of z and each b[i]
@@ -884,7 +884,7 @@ cdef class MultiModularBasis(MultiModularBasis_base):
 cdef class MutableMultiModularBasis(MultiModularBasis):
     """
     Class used for performing multi-modular methods,
-    with the possiblity of removing bad primes.
+    with the possibility of removing bad primes.
     """
     def next_prime(self):
         """
