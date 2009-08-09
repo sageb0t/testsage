@@ -275,7 +275,7 @@ TESTS: We test an automatic coercion::
 """
 
 #We could also do these calculations without using the singular
-#interface (behind the scenes the interface is used by SAGE):
+#interface (behind the scenes the interface is used by Sage):
 #    sage: x, y = PolynomialRing(RationalField(), 2, names=['x','y']).gens()
 #    sage: C = ProjectivePlaneCurve(y**9 - x**2*(x-1)**9)
 #    sage: C.genus()
@@ -519,7 +519,7 @@ class Singular(Expect):
             sage: set_verbose(0)
             sage: o = s.hilb()
         """
-        # Syncrhonize the interface and clear any variables that are queued up to
+        # Synchronize the interface and clear any variables that are queued up to
         # be cleared.
         self._synchronize()
         if len(self.__to_clear) > 0:
@@ -527,7 +527,7 @@ class Singular(Expect):
                 self._eval_line('if(defined(%s)>0){kill %s;};'%(var,var), wait_for_prompt=True)
             self.__to_clear = []
 
-        # Uncomment the print statements below for low-level debuging of
+        # Uncomment the print statements below for low-level debugging of
         # code that involves the singular interfaces.  Everything goes
         # through here.
         #print "input: %s"%x
@@ -624,7 +624,7 @@ class Singular(Expect):
         could be anything, and can be recovered using X.name().
 
         The object X returned can be used like any Sage object, and wraps
-        an object in self. The standard arithmetic operators work. Morever
+        an object in self. The standard arithmetic operators work. Moreover
         if foo is a function then X.foo(y,z,...) calls foo(X, y, z, ...)
         and returns the corresponding object.
 
@@ -951,7 +951,7 @@ class Singular(Expect):
 
     def current_ring(self):
         """
-        Returns the current ring of the runnging Singular session.
+        Returns the current ring of the running Singular session.
 
         EXAMPLES::
 
@@ -1190,7 +1190,7 @@ class SingularElement(ExpectElement):
             # a copy of a ring/qring. We use ringlist, but this
             # is only possible if we make self the active ring,
             # use ringlist, and switch back to the previous
-            # basering.
+            # base ring.
             br=self.parent().current_ring()
             self.set_ring()
             OUT = (self.ringlist()).ring()
@@ -1368,7 +1368,7 @@ class SingularElement(ExpectElement):
         variable_str = "*".join(R.variable_names())
 
         # This returns a string which looks like a list where the first
-        # half of the list is filled with monomials occuring in the
+        # half of the list is filled with monomials occurring in the
         # Singular polynomial and the second half filled with the matching
         # coefficients.
         #
@@ -1669,7 +1669,7 @@ class SingularElement(ExpectElement):
 
     def attrib(self, name, value=None):
         """
-        Get and set attributs for self.
+        Get and set attributes for self.
 
         INPUT:
 
