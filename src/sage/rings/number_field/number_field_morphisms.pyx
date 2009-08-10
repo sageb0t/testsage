@@ -92,7 +92,7 @@ cdef class NumberFieldEmbedding(Morphism):
 
 cdef class EmbeddedNumberFieldMorphism(NumberFieldEmbedding):
     r"""
-    This allows one to go from one number field in another consistantly,
+    This allows one to go from one number field in another consistently,
     assuming they both have specified embeddings into an ambient field
     (by default it looks for an embedding into $\C$).
     """
@@ -134,7 +134,7 @@ cdef class EmbeddedNumberFieldMorphism(NumberFieldEmbedding):
             ambient_field = CDF
         gen_image = matching_root(K.polynomial().change_ring(L), K.gen(), ambient_field=ambient_field, margin=2)
         if gen_image is None:
-            raise ValueError, "No consistant embedding of all of %s into %s." % (K, L)
+            raise ValueError, "No consistent embedding of all of %s into %s." % (K, L)
         NumberFieldEmbedding.__init__(self, K, L, gen_image)
         self.ambient_field = ambient_field
 
@@ -155,7 +155,7 @@ cdef class EmbeddedNumberFieldMorphism(NumberFieldEmbedding):
 
 cdef class EmbeddedNumberFieldConversion(Map):
     r"""
-    This allows one to cast one number field in another consistantly,
+    This allows one to cast one number field in another consistently,
     assuming they both have specified embeddings into an ambient field
     (by default it looks for an embedding into $\C$).
 
@@ -197,7 +197,7 @@ cdef class EmbeddedNumberFieldConversion(Map):
         minpoly = x.minpoly()
         gen_image = matching_root(minpoly.change_ring(self._codomain), x, self.ambient_field, 4)
         if gen_image is None:
-            raise ValueError, "No consistant embedding of %s into %s." % (self._domain, self._codomain)
+            raise ValueError, "No consistent embedding of %s into %s." % (self._domain, self._codomain)
         return gen_image
 
 cpdef matching_root(poly, target, ambient_field=None, margin=1, max_prec=None):
@@ -296,7 +296,7 @@ cpdef closest(target, values, margin=1):
 
 def create_embedding_from_approx(K, gen_image):
     """
-    This creates a morphsim into from K into the parent
+    This creates a morphism into from K into the parent
     of gen_image, choosing as the image of the generator
     the closest root to gen_image in its parent.
 

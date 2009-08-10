@@ -891,7 +891,7 @@ cdef class CommutativeRing(Ring):
         Algebraically extends self by taking the quotient self[x] / (f(x)).
 
         INPUT:
-            poly -- A polynomial whose coefficients are coercable into self
+            poly -- A polynomial whose coefficients are coercible into self
             name -- (optional) name for the root of f
 
         EXAMPLES:
@@ -1198,7 +1198,7 @@ cdef class PrincipalIdealDomain(IntegralDomain):
         Polynomial rings over fields are GCD domains as well. Here is a simple
         example over the ring of polynomials over the rationals as well as
         over an extension ring. Note that \code(gcd) requires x and y to be
-        coercable:
+        coercible:
             sage: R.<x> = PolynomialRing(QQ)
             sage: S.<a> = NumberField(x^2 - 2, 'a')
             sage: f = (x - a)*(x + a); g = (x - a)*(x^2 - 2)
@@ -1525,7 +1525,7 @@ cdef class FiniteField(Field):
         r"""
         Returns a string denoting the name of the field in LaTeX.
 
-        The \code(misc.latex.latex) funciton calls the \code{_latex_} attribute
+        The \code(misc.latex.latex) function calls the \code{_latex_} attribute
         when available.
 
         EXAMPLES:
@@ -1633,7 +1633,7 @@ cdef class FiniteField(Field):
         """
         Compares this finite field with other.
 
-        WARNING: The notation of equality of finite fields in SAGE is
+        WARNING: The notation of equality of finite fields in Sage is
         currently not stable, i.e., it may change in a future version.
 
         EXAMPLES:
@@ -1877,7 +1877,7 @@ cdef class FiniteField(Field):
 
     def __len__(self):
         """
-        len(k) returns the cardlinality of k, i.e., the number of elements in k.
+        len(k) returns the cardinality of k, i.e., the number of elements in k.
         """
         return self.order()
 
@@ -1916,7 +1916,7 @@ cdef class FiniteField(Field):
         Although $f$ is irreducible over the base field, we can double-check
         whether or not $f$ factors in $F$ as follows. The command
         \code{F[x](f)} coerces $f$ as a polynomial with coefficients in $F$.
-        (Instead of a polynomial with coefficeints over the base field.)
+        (Instead of a polynomial with coefficients over the base field.)
             sage: f.factor()
             x^2 + 6*x + 3
             sage: F[x](f).factor()

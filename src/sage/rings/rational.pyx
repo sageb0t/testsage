@@ -909,7 +909,7 @@ cdef class Rational(sage.structure.element.FieldElement):
 
         -  ``p`` - a prime number
 
-        - ``prec`` (int) -- desired floating point precision (defult:
+        - ``prec`` (int) -- desired floating point precision (default:
           default RealField precision).
 
         OUTPUT:
@@ -941,11 +941,11 @@ cdef class Rational(sage.structure.element.FieldElement):
 
     def local_height_arch(self, prec=None):
         r"""
-        Returns the archimdean local height of this rational number at the infinite place.
+        Returns the Archimedean local height of this rational number at the infinite place.
 
         INPUT:
 
-        - ``prec`` (int) -- desired floating point precision (defult:
+        - ``prec`` (int) -- desired floating point precision (default:
           default RealField precision).
 
         OUTPUT:
@@ -980,7 +980,7 @@ cdef class Rational(sage.structure.element.FieldElement):
 
         INPUT:
 
-        - ``prec`` (int) -- desired floating point precision (defult:
+        - ``prec`` (int) -- desired floating point precision (default:
           default RealField precision).
 
         OUTPUT:
@@ -991,7 +991,7 @@ cdef class Rational(sage.structure.element.FieldElement):
         ALGORITHM:
 
         This is the sum of the local heights at all primes `p`, which
-        may be computed without fatorization as the log of the
+        may be computed without factorization as the log of the
         denominator.
 
         EXAMPLES::
@@ -1022,7 +1022,7 @@ cdef class Rational(sage.structure.element.FieldElement):
 
         INPUT:
 
-        - ``prec`` (int) -- desired floating point precision (defult:
+        - ``prec`` (int) -- desired floating point precision (default:
           default RealField precision).
 
         OUTPUT:
@@ -1054,7 +1054,7 @@ cdef class Rational(sage.structure.element.FieldElement):
 
         INPUT:
 
-        - ``prec`` (int) -- desired floating point precision (defult:
+        - ``prec`` (int) -- desired floating point precision (default:
           default RealField precision).
 
         OUTPUT:
@@ -1667,7 +1667,7 @@ cdef class Rational(sage.structure.element.FieldElement):
 
         .. note::
 
-           Use this function when you nede test test if a rational
+           Use this function when you need to test if a rational
            number is an n'th power, but do not need to know the value
            of its n'th root.  If the value is needed, use nth_root().
 

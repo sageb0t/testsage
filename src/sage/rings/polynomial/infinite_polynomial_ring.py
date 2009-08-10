@@ -540,7 +540,7 @@ class InfinitePolynomialGen(SageObject):
 
     def __init__(self, parent, name):
         """
-        EXAPMLES::
+        EXAMPLES::
 
             sage: X.<x> = InfinitePolynomialRing(QQ)
             sage: loads(dumps(x))
@@ -615,7 +615,7 @@ class InfinitePolynomialGen(SageObject):
 
     def __repr__(self):
         """
-        EXAPMLES::
+        EXAMPLES::
 
             sage: X.<x,y> = InfinitePolynomialRing(QQ)
             sage: x
