@@ -1187,7 +1187,7 @@ class Worksheet:
 
         OUTPUT:
 
-        -  ``string`` - a string of HTML as a bunch of table
+        -  ``string`` -- a string of HTML as a bunch of table
            rows.
 
         EXAMPLES::
@@ -2011,7 +2011,7 @@ class Worksheet:
         -  ``text`` - a string
 
         -  ``ignore_ids`` - bool (default: False); if True
-           ignore all the id's in the code block.
+           ignore all the id's in the {{{}}} code block.
 
         EXAMPLES: We create a new test notebook and a worksheet.
 
@@ -2123,13 +2123,16 @@ class Worksheet:
     ##########################################################
     def html(self, include_title=True, do_print=False,
              confirm_before_leave=False, read_only=False):
-        """
+        r"""
         INPUT:
+
         - publish - a boolean stating whether the worksheet is published
+
         - do_print - a boolean
 
         OUTPUT:
-        - returns the html for the worksheet
+
+        - string -- the html for the worksheet
 
         EXAMPLES::
 
@@ -2186,7 +2189,8 @@ class Worksheet:
     def html_save_discard_buttons(self):
         r"""
         OUTPUT:
-        - returns the html for the save, discard, etc. buttons
+
+        - string -- the html for the save, discard, etc. buttons
 
         EXAMPLES::
 
@@ -2200,11 +2204,14 @@ class Worksheet:
     def html_share_publish_buttons(self, select=None, backwards=False):
         r"""
         INPUT:
+
         - select - a boolean
+
         - backwards - a boolean
 
         OUTPUT:
-        - returns the html for the share, publish, etc. buttons
+
+        - string -- the html for the share, publish, etc. buttons
 
         EXAMPLES::
 
@@ -2221,9 +2228,10 @@ class Worksheet:
 # <option title="Configure this worksheet" value="worksheet_settings();">Worksheet settings</option>
 
     def html_menu(self):
-        """
+        r"""
         OUTPUT:
-        - returns the html for the menus of the worksheet
+
+        - string -- the html for the menus of the worksheet
 
         EXAMPLES::
 
@@ -2241,13 +2249,16 @@ class Worksheet:
                         doc_worksheet = self.is_doc_worksheet())
 
     def html_worksheet_body(self, do_print, publish=False):
-        """
+        r"""
         INPUT:
+
         - publish - a boolean stating whether the worksheet is published
+
         - do_print - a boolean
 
         OUTPUT:
-        - returns the html for the File menu of the worksheet
+
+        - string -- the html for the File menu of the worksheet
 
         EXAMPLES::
 
@@ -3899,11 +3910,14 @@ def first_word(s):
 def format_completions_as_html(cell_id, completions):
     """
     INPUT:
+
     - cell_id - id for the cell of the completions
+
     - completions - list of completions in row-major order
 
     OUTPUT:
-    - html for the completions formatted in rows and columns
+
+    - string -- html for the completions formatted in rows and columns
     """
     if len(completions) == 0:
         return ''
