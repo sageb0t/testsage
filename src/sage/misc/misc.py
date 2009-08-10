@@ -59,7 +59,7 @@ if ' ' in DOT_SAGE:
     if UNAME[:6] == 'CYGWIN':
         # on windows/cygwin it is typical for the home directory
         # to have a space in it.  Fortunately, users also have
-        # write privilegs to c:\cygwin\home, so we just put
+        # write privileges to c:\cygwin\home, so we just put
         # .sage there.
         DOT_SAGE="/home/.sage"
     else:
@@ -252,7 +252,7 @@ class GlobalCputime:
         sage: P = PolynomialRing(QQ,7,'x')
         sage: I = sage.rings.ideal.Katsura(P)
         sage: gb = I.groebner_basis() # calls Singular
-        sage: cputime(subprocesses=True) - t # outpt random
+        sage: cputime(subprocesses=True) - t # output random
         0.462987
 
     For further processing we can then convert this container to a
@@ -314,7 +314,7 @@ class GlobalCputime:
             sage: P = PolynomialRing(QQ,7,'x')
             sage: I = sage.rings.ideal.Katsura(P)
             sage: gb = I.groebner_basis() # calls Singular
-            sage: cputime(subprocesses=True) - t # outpt random
+            sage: cputime(subprocesses=True) - t # output random
             0.462987
         """
         if not isinstance(other, GlobalCputime):
@@ -848,7 +848,7 @@ def srange(start, end=None, step=1, universe=None, check=True, include_endpoint=
     .. note::
 
        This function is called ``srange`` to distinguish
-       it from the builtin Python ``range`` command.  The s
+       it from the built-in Python ``range`` command.  The s
        at the beginning of the name stands for "Sage".
 
     .. seealso: :func:`xsrange` -- iterator version
@@ -1059,7 +1059,7 @@ def ellipsis_range(*args, **kwds):
         []
 
     TESTS: These were carefully chosen tests, only to be changed if the
-    semantics of ellipsis ranges change. In otherwords, if they don't
+    semantics of ellipsis ranges change. In other words, if they don't
     pass it's probably a bug in the implementation, not in the
     doctest.
 
@@ -1191,7 +1191,7 @@ def ellipsis_iter(*args, **kwds):
     TESTS:
 
     These were carefully chosen tests, only to be changed if the
-    semantics of ellipsis ranges change. In otherwords, if they don't
+    semantics of ellipsis ranges change. In other words, if they don't
     pass it's probably a bug in the implementation, not in the
     doctest.
 
@@ -1630,7 +1630,7 @@ def tmp_dir(name='dir'):
         os.makedirs(tmp)
     except IOError:
         # Put in local directory instead, e.g., because user doesn't
-        # have privileges to write in SAGE's tmp directory.  That's OK.
+        # have privileges to write in Sage's tmp directory.  That's OK.
         n = 0
         while True:
             tmp = "/temp/tmp_%s_%s"%(name, n)
@@ -1899,7 +1899,7 @@ def attrcall(name, *args, **kwds):
        want to call
 
     -  ``args, kwds`` - arguments and keywords to be passed
-       to the methdod
+       to the method
 
     EXAMPLES::
 
