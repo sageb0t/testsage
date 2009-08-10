@@ -399,7 +399,7 @@ def dimension_cusp_forms(X, k=2):
 
 def dimension_eis(X, k=2):
     """
-    The dimension of the space of eisenstein series for the given
+    The dimension of the space of Eisenstein series for the given
     congruence subgroup.
 
     INPUT:
