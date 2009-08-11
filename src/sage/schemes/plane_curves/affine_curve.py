@@ -107,7 +107,7 @@ class AffineCurve_generic(Curve_generic):
         r"""
         Return local coordinates to precision n at the given point.
 
-            Behaviour is flakey - some choices of `n` are worst that
+            Behaviour is flaky - some choices of `n` are worst that
             others.
 
         INPUT:
