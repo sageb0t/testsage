@@ -35,7 +35,7 @@ abstract base classes.
                         FieldElement
                             FiniteFieldElement
                         CommutativeAlgebraElement
-                    AlgebraElement   (note -- can't derive from module, since no multiple inheritence)
+                    AlgebraElement   (note -- can't derive from module, since no multiple inheritance)
                         CommutativeAlgebra ??? (should be removed from element.pxd)
                         Matrix
                     InfinityElement
@@ -65,7 +65,7 @@ with assumed properties.
 
 Sage has a special system in place for handling arithmetic operations
 for all Element subclasses. There are various rules that must be
-followed by both arithmetic implementors and callers.
+followed by both arithmetic implementers and callers.
 
 A quick summary for the impatient:
 
@@ -76,7 +76,7 @@ A quick summary for the impatient:
   always use "x + y".
 
 Now in more detail. The aims of this system are to provide (1) an efficient
-calling protocol from both python and cython, (2) uniform coercion semantics
+calling protocol from both Python and Cython, (2) uniform coercion semantics
 across Sage, (3) ease of use, (4) readability of code.
 
 We will take addition of RingElements as an example; all other operators
@@ -84,7 +84,7 @@ and classes are similar. There are four relevant functions.
 
 - **def RingElement.__add__**
 
-   This function is called by python or pyrex when the binary "+" operator
+   This function is called by Python or Pyrex when the binary "+" operator
    is encountered. It ASSUMES that at least one of its arguments is a
    RingElement; only a really twisted programmer would violate this
    condition. It has a fast pathway to deal with the most common case
@@ -119,13 +119,13 @@ and classes are similar. There are four relevant functions.
    directly, instead of using "x + y".
 
    The default implementation of this function is to call _add_,
-   so if no-one has defined a python implementation, the correct pyrex
+   so if no-one has defined a python implementation, the correct Pyrex
    implementation will get called.
 
 -  **cpdef RingElement._add_**
 
    This is the function you should override to implement addition in a
-   pyrex subclass of RingElement.
+   Pyrex subclass of RingElement.
 
    The two arguments to this function are guaranteed to have the
    SAME PARENT. Its return value MUST have the SAME PARENT as its
@@ -570,7 +570,7 @@ cdef class Element(sage_object.SageObject):
             if HAS_DICTIONARY(left):
                 left_cmp = left._cmp_
                 if PY_TYPE_CHECK(left_cmp, MethodType):
-                    # it must have been overriden
+                    # it must have been overridden
                     return left_cmp(right)
 
             return left._cmp_c_impl(right)
@@ -620,7 +620,7 @@ cdef class Element(sage_object.SageObject):
         if HAS_DICTIONARY(left):   # fast check
             left_cmp = left.__cmp__
             if PY_TYPE_CHECK(left_cmp, MethodType):
-                # it must have been overriden
+                # it must have been overridden
                 return _rich_to_bool(op, left_cmp(right))
 
         return left._richcmp_c_impl(right, op)
@@ -800,7 +800,7 @@ cdef class ModuleElement(Element):
         """
         Top-level negation operator for ModuleElements, which
         may choose to implement _neg_ rather than __neg__ for
-        consistancy.
+        consistency.
         """
         return self._neg_()
 
@@ -1428,7 +1428,7 @@ cdef class CommutativeRingElement(RingElement):
             sage: n.mod([15,6])
             2
 
-        EXAMPLE: Univiate polynomials
+        EXAMPLE: Univariate polynomials
 
         ::
 
@@ -2722,7 +2722,7 @@ def coerce_cmp(x,y):
 # We define this base class here to avoid circular cimports.
 cdef class CoercionModel:
     """
-    Most basic coersion scheme. If it doesn't already match, throw an error.
+    Most basic coercion scheme. If it doesn't already match, throw an error.
     """
     cpdef canonical_coercion(self, x, y):
         if parent_c(x) is parent_c(y):

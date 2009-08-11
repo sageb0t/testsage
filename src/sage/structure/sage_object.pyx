@@ -9,7 +9,7 @@ from cStringIO import StringIO
 
 sys_modules = sys.modules
 
-# changeto import zlib to use zlib instead; but this
+# change to import zlib to use zlib instead; but this
 # slows down loading any data stored in the other format
 import zlib; comp = zlib
 import bz2; comp_other = bz2
@@ -26,9 +26,9 @@ cdef process(s):
 
 cdef class SageObject:
 
-    #############################################################################
+    #######################################################################
     # Textual representation code
-    #############################################################################
+    #######################################################################
 
     def rename(self, x=None):
         r"""
@@ -211,7 +211,7 @@ cdef class SageObject:
     # Coercions to interface objects
     #############################################################################
 
-    # SAGE
+    # Sage
     def _sage_(self):
         return self
 
@@ -721,7 +721,7 @@ cdef bint make_pickle_jar = os.environ.has_key('SAGE_PICKLE_JAR')
 def picklejar(obj, dir=None):
     """
     Create pickled sobj of obj in dir, with name the absolute value of
-    the hash of the pickle of obj.  This is used in conjection with
+    the hash of the pickle of obj.  This is used in conjunction with
     sage.structure.sage_object.unpickle_all.
 
     To use this to test the whole Sage library right now, set the
