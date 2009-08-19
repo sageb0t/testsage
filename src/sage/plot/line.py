@@ -242,6 +242,7 @@ def line(points, **kwds):
         from sage.plot.plot3d.shapes2 import line3d
         return line3d(points, **kwds)
 
+@rename_keyword(color='rgbcolor')
 @options(alpha=1, rgbcolor=(0,0,1), thickness=1)
 def line2d(points, **options):
     r"""
