@@ -132,6 +132,7 @@ from sage.rings.polynomial.polynomial_ring_constructor import PolynomialRing
 from sage.rings.fraction_field import FractionField
 from sage.misc.cachefunc import cached_method
 from sage.groups.class_function import ClassFunction
+from sage.misc.package import is_package_installed
 
 def load_hap():
      """
@@ -1157,6 +1158,8 @@ class PermutationGroup_generic(group.FiniteGroup):
         - D. Joyner, 'A primer on computational group homology and
           cohomology', http://front.math.ucdavis.edu/0706.0549.
         """
+        if not is_package_installed('gap_packages'):
+             raise RuntimeError, "You must install the optional gap_packages package."
         load_hap()
         from sage.rings.arith import is_prime
         if not (p == 0 or is_prime(p)):
@@ -1192,6 +1195,8 @@ class PermutationGroup_generic(group.FiniteGroup):
 
         - David Joyner and Graham Ellis
         """
+        if not is_package_installed('gap_packages'):
+             raise RuntimeError, "You must install the optional gap_packages package."
         load_hap()
         from sage.rings.arith import is_prime
         if not (p == 0 or is_prime(p)):
@@ -1248,6 +1253,8 @@ class PermutationGroup_generic(group.FiniteGroup):
         - D. Joyner, "A primer on computational group homology and cohomology",
           http://front.math.ucdavis.edu/0706.0549
         """
+        if not is_package_installed('gap_packages'):
+             raise RuntimeError, "You must install the optional gap_packages package."
         load_hap()
         from sage.rings.arith import is_prime
         if not (p == 0 or is_prime(p)):
@@ -1280,6 +1287,8 @@ class PermutationGroup_generic(group.FiniteGroup):
 
         - David Joyner and Graham Ellis
         """
+        if not is_package_installed('gap_packages'):
+             raise RuntimeError, "You must install the optional gap_packages package."
         gap.eval('LoadPackage("hap")')
         from sage.rings.arith import is_prime
         if not (p == 0 or is_prime(p)):
@@ -1659,7 +1668,7 @@ class PermutationGroup_generic(group.FiniteGroup):
         s = gap.eval("x")
         if s == "fail":
             return None
-        # slice and dice the GAP return to build a SAGE group homomorphism
+        # slice and dice the GAP return to build a Sage group homomorphism
         src, dst = s.split("->")
         # we eval to get things as lists
         srcs = from_gap_list(self, src)
@@ -2081,6 +2090,8 @@ class PermutationGroup_generic(group.FiniteGroup):
 
         - David Joyner and Graham Ellis
         """
+        if not is_package_installed('gap_packages'):
+             raise RuntimeError, "You must install the optional gap_packages package."
         load_hap()
         from sage.rings.arith import is_prime
         if not (p == 0 or is_prime(p)):

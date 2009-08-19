@@ -263,7 +263,7 @@ class CoveringDesign(SageObject):
             True if all t-sets are in at least one block
 
         NOTES:
-            This is very slow and wasteful of memory.  A faster cython
+            This is very slow and wasteful of memory.  A faster Cython
             version will be added soon.
 
         EXAMPLES:

@@ -254,7 +254,7 @@ class pAdicLseries(SageObject):
 
         -  ``sign`` - +1 (default) or -1 (only implemented without twists)
 
-        -  ``quadratic_twist`` - a fundamental discriminant of a quardratic field or +1 (default)
+        -  ``quadratic_twist`` - a fundamental discriminant of a quadratic field or +1 (default)
 
         EXAMPLES::
 
@@ -667,7 +667,7 @@ class pAdicLseriesOrdinary(pAdicLseries):
 
         -  ``n`` - (default: 2) a positive integer
         -  ``quadratic_twist`` - (default: +1) a fundamental discriminant
-           of a qudratic field, coprime to the
+           of a quadratic field, coprime to the
            conductor of the curve
         -  ``prec`` - (default: 5) maximal number of terms of the series
            to compute; to compute as many as possible just
@@ -884,7 +884,7 @@ class pAdicLseriesSupersingular(pAdicLseries):
 
         - ``n`` - (default: 3) a positive integer
 
-        - ``prec`` - (default: 5) maxima number of terms of the series
+        - ``prec`` - (default: 5) maximum number of terms of the series
           to compute; to compute as many as possible just
           give a very large number for prec; the result will
           still be correct.
@@ -1266,7 +1266,7 @@ class pAdicLseriesSupersingular(pAdicLseries):
         The result is written in the basis `\omega`, `\varphi(\omega)`, and hence the
         coordinates of the result are independent of the chosen Weierstrass equation.
 
-        NOTE: The definition here is corrected with repect to Perrin-Riou's article [PR]. See
+        NOTE: The definition here is corrected with respect to Perrin-Riou's article [PR]. See
         [SW].
 
         REFERENCES:
@@ -1328,7 +1328,7 @@ class pAdicLseriesSupersingular(pAdicLseries):
         omega_vec = vector([K(1),K(0)])
 
         # note the correction here with respect to Perrin-Riou's definition.
-        # only this way the result will be indep of the choice of v1 and v2.
+        # only this way the result will be independent of the choice of v1 and v2.
         reg1 = regv(v1)/Dp_pairing(omega_vec,v1)**(rk-1)
 
         reg2 = regv(v2)/Dp_pairing(omega_vec,v2)**(rk-1)

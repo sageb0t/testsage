@@ -1,15 +1,17 @@
 """
-Univariate Polynomials
+Univariate Polynomials over domains and fields
 
 AUTHORS:
-    -- William Stein: first version
-    -- Martin Albrecht: Added singular coercion.
-    -- David Harvey: split off polynomial_integer_dense_ntl.pyx (2007-09)
-    -- Robert Bradshaw: split off polynomial_modn_dense_ntl.pyx (2007-09)
+
+- William Stein: first version
+- Martin Albrecht: Added singular coercion.
+- David Harvey: split off polynomial_integer_dense_ntl.pyx (2007-09)
+- Robert Bradshaw: split off polynomial_modn_dense_ntl.pyx (2007-09)
 
 TESTS:
 
-We test coercion in a particularly complicated situation:
+We test coercion in a particularly complicated situation::
+
     sage: W.<w>=QQ['w']
     sage: WZ.<z>=W['z']
     sage: m = matrix(WZ,2,2,[1,z,z,z^2])
@@ -49,7 +51,8 @@ class Polynomial_generic_sparse(Polynomial):
     """
     A generic sparse polynomial.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: R.<x> = PolynomialRing(PolynomialRing(QQ, 'y'), sparse=True)
         sage: f = x^3 - x + 17
         sage: type(f)
@@ -57,7 +60,8 @@ class Polynomial_generic_sparse(Polynomial):
         sage: loads(f.dumps()) == f
         True
 
-    A more extensive example:
+    A more extensive example::
+
         sage: A.<T> = PolynomialRing(Integers(5),sparse=True) ; f = T^2+1 ; B = A.quo(f)
         sage: C.<s> = PolynomialRing(B)
         sage: C
@@ -111,7 +115,8 @@ class Polynomial_generic_sparse(Polynomial):
         Return a new copy of the dict of the underlying
         elements of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<w> = PolynomialRing(Integers(8), sparse=True)
             sage: f = 5 + w^1997 - w^10000; f
             7*w^10000 + w^1997 + 5
@@ -127,7 +132,8 @@ class Polynomial_generic_sparse(Polynomial):
         """
         Return the coefficients of the monomials appearing in self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<w> = PolynomialRing(Integers(8), sparse=True)
             sage: f = 5 + w^1997 - w^10000; f
             7*w^10000 + w^1997 + 5
@@ -140,7 +146,8 @@ class Polynomial_generic_sparse(Polynomial):
         """
         Return the exponents of the monomials appearing in self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<w> = PolynomialRing(Integers(8), sparse=True)
             sage: f = 5 + w^1997 - w^10000; f
             7*w^10000 + w^1997 + 5
@@ -151,7 +158,8 @@ class Polynomial_generic_sparse(Polynomial):
 
     def valuation(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<w> = PolynomialRing(GF(9,'a'), sparse=True)
             sage: f = w^1997 - w^10000
             sage: f.valuation()
@@ -175,10 +183,10 @@ class Polynomial_generic_sparse(Polynomial):
         is with respect to the generator. Otherwise, _derivative(var) is called
         recursively for each coefficient of this polynomial.
 
-        SEE ALSO:
-            self.derivative()
+        .. seealso:: :meth:`.derivative`
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<w> = PolynomialRing(ZZ, sparse=True)
             sage: f = R(range(9)); f
             8*w^8 + 7*w^7 + 6*w^6 + 5*w^5 + 4*w^4 + 3*w^3 + 2*w^2 + w
@@ -230,7 +238,8 @@ class Polynomial_generic_sparse(Polynomial):
 
     def _repr(self, name=None):
         r"""
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<w> = PolynomialRing(CDF, sparse=True)
             sage: f = CDF(1,2) + w^5 - CDF(pi)*w + CDF(e)
             sage: f._repr()
@@ -239,8 +248,9 @@ class Polynomial_generic_sparse(Polynomial):
             '1.0*z^5 - 3.14159265359*z + 3.71828182846 + 2.0*I'
 
         AUTHOR:
-            -- David Harvey (2006-08-05), based on Polynomial._repr()
-            -- Francis Clarke (2008-09-08) improved for 'negative' coefficients
+
+        - David Harvey (2006-08-05), based on Polynomial._repr()
+        - Francis Clarke (2008-09-08) improved for 'negative' coefficients
         """
         s = " "
         m = self.degree() + 1
@@ -285,7 +295,8 @@ class Polynomial_generic_sparse(Polynomial):
         Negative indexes are allowed and always return 0 (so you can
         view the polynomial as embedding Laurent series).
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<w> = PolynomialRing(RDF, sparse=True)
             sage: e = RDF(e)
             sage: f = sum(e^n*w^n for n in range(4)); f
@@ -303,7 +314,8 @@ class Polynomial_generic_sparse(Polynomial):
 
     def __getslice__(self, i, j):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x> = PolynomialRing(RealField(19), sparse=True)
             sage: f = (2-3.5*x)^3; f
             -42.875*x^3 + 73.500*x^2 - 42.000*x + 8.0000
@@ -326,11 +338,12 @@ class Polynomial_generic_sparse(Polynomial):
 
     def _unsafe_mutate(self, n, value):
         r"""
-        Change the coefficient of $x^n$ to value.
+        Change the coefficient of `x^n` to value.
 
         ** NEVER USE THIS ** -- unless you really know what you are doing.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<z> = PolynomialRing(CC, sparse=True)
             sage: f = z^2 + CC.0; f
             1.00000000000000*z^2 + 1.00000000000000*I
@@ -359,7 +372,8 @@ class Polynomial_generic_sparse(Polynomial):
         Return a new copy of the list of the underlying
         elements of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<z> = PolynomialRing(Integers(100), sparse=True)
             sage: f = 13*z^5 + 15*z^2 + 17*z
             sage: f.list()
@@ -381,7 +395,8 @@ class Polynomial_generic_sparse(Polynomial):
         """
         Return the degree of this sparse polynomial.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<z> = PolynomialRing(ZZ, sparse=True)
             sage: f = 13*z^50000 + 15*z^2 + 17*z
             sage: f.degree()
@@ -394,13 +409,14 @@ class Polynomial_generic_sparse(Polynomial):
 
     def _add_(self, right):
         r"""
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x> = PolynomialRing(Integers(), sparse=True)
             sage: (x^100000 + 2*x^50000) + (4*x^75000 - 2*x^50000 + 3*x)
             x^100000 + 4*x^75000 + 3*x
 
         AUTHOR:
-            -- David Harvey (2006-08-05)
+        - David Harvey (2006-08-05)
         """
         output = dict(self.__coeffs)
 
@@ -416,7 +432,8 @@ class Polynomial_generic_sparse(Polynomial):
 
     def _mul_(self, right):
         r"""
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x> = PolynomialRing(ZZ, sparse=True)
             sage: (x^100000 - x^50000) * (x^100000 + x^50000)
              x^200000 - x^100000
@@ -424,7 +441,7 @@ class Polynomial_generic_sparse(Polynomial):
              0
 
         AUTHOR:
-            -- David Harvey (2006-08-05)
+        - David Harvey (2006-08-05)
         """
         output = {}
 
@@ -443,10 +460,11 @@ class Polynomial_generic_sparse(Polynomial):
 
     def shift(self, n):
         r"""
-        Returns this polynomial multiplied by the power $x^n$. If $n$ is negative,
-        terms below $x^n$ will be discarded. Does not change this polynomial.
+        Returns this polynomial multiplied by the power `x^n`. If `n` is negative,
+        terms below `x^n` will be discarded. Does not change this polynomial.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x> = PolynomialRing(ZZ, sparse=True)
             sage: p = x^100000 + 2*x + 4
             sage: type(p)
@@ -461,7 +479,7 @@ class Polynomial_generic_sparse(Polynomial):
              x^100002 + 2*x^3 + 4*x^2
 
         AUTHOR:
-            -- David Harvey (2006-08-06)
+        - David Harvey (2006-08-06)
         """
         n = int(n)
         if n == 0:
@@ -486,12 +504,13 @@ class Polynomial_generic_domain(Polynomial, IntegralDomainElement):
         r"""
         Return True if this polynomial is a unit.
 
-        EXERCISE (Atiyah-McDonald, Ch 1): Let $A[x]$ be a polynomial
-        ring in one variable.  Then $f=\sum a_i x^i \in A[x]$ is a
-        unit if and only if $a_0$ is a unit and $a_1,\ldots, a_n$ are
+        *EXERCISE* (Atiyah-McDonald, Ch 1): Let `A[x]` be a polynomial
+        ring in one variable.  Then `f=\sum a_i x^i \in A[x]` is a
+        unit if and only if `a_0` is a unit and `a_1,\ldots, a_n` are
         nilpotent.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<z> = PolynomialRing(ZZ, sparse=True)
             sage: (2 + z^3).is_unit()
             False
@@ -519,7 +538,8 @@ class Polynomial_generic_field(Polynomial_singular_repr,
         Returns a tuple (quotient, remainder) where
             self = quotient*other + remainder.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<y> = PolynomialRing(QQ)
             sage: K.<t> = NumberField(y^2 - 2)
             sage: P.<x> = PolynomialRing(K)
@@ -563,7 +583,8 @@ class Polynomial_generic_field(Polynomial_singular_repr,
 
 class Polynomial_generic_sparse_field(Polynomial_generic_sparse, Polynomial_generic_field):
     """
-    EXAMPLES:
+    EXAMPLES::
+
         sage: R.<x> = PolynomialRing(Frac(RR['t']), sparse=True)
         sage: f = x^3 - x + 17
         sage: type(f)
@@ -604,7 +625,8 @@ class Polynomial_rational_dense(Polynomial_generic_field):
 
         if isinstance(x, Polynomial):
             if x.parent() == self.parent():
-                self.__poly = x.__poly.copy()
+                from copy import copy
+                self.__poly = copy(x.__poly)
                 return
             else:
                 x = [QQ(a) for a in x.list()]
@@ -669,14 +691,16 @@ class Polynomial_rational_dense(Polynomial_generic_field):
 
     def is_irreducible(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x> = QQ[]
             sage: (x^2 + 2).is_irreducible()
             True
             sage: (x^2 - 1).is_irreducible()
             False
 
-        See \#5140:
+        See trac #5140::
+
             sage: (2*x).is_irreducible()
             True
 
@@ -691,31 +715,33 @@ class Polynomial_rational_dense(Polynomial_generic_field):
         Return the Galois group of f as a permutation group.
 
         INPUT:
-            self -- an irreducible polynomial
 
-            pari_group -- bool (default: False); if True instead return
-                          the Galois group as a PARI group.  This has
-                          a useful label in it, and may be slightly faster
-                          since it doesn't require looking up a group in
-                          Gap.  To get a permutation group from a PARI
-                          group P, type PermutationGroup(P).
+        - ``self`` -- an irreducible polynomial
 
-            algorithm -- 'pari', 'kash', 'magma' (default: 'pari', except
-                          when the degree is >= 12 when 'kash' is tried)
-                          NOTE: 'magma' also does not return a proven
-                          correct result.  Please see the Magma docs
-                          for how to get a proven result.
+        - ``pari_group`` -- bool (default: False); if True instead return the
+          Galois group as a PARI group.  This has a useful label in it, and may
+          be slightly faster since it doesn't require looking up a group in
+          Gap.  To get a permutation group from a PARI group P, type
+          ``PermutationGroup(P)``.
 
-        ALGORITHM: The Galois group is computed using PARI in C
-        library mode, or possibly kash or magma.
+        - ``algorithm`` -- ``'pari'``, ``'kash'``, ``'magma'`` (default: ``'pari'``,
+          except when the degree is `\ge 12` when ``'kash'`` is tried). NOTE:
+          ``'magma'`` also does not return a proven correct result.  Please see
+          the Magma docs for how to get a proven result.
 
-        \note{The PARI documentation contains the following warning:
-        The method used is that of resolvent polynomials and is
-        sensitive to the current precision. The precision is updated
-        internally but, in very rare cases, a wrong result may be
-        returned if the initial precision was not sufficient.}
+        ALGORITHM: The Galois group is computed using PARI in C library mode,
+        or possibly kash or magma.
 
-        EXAMPLES:
+        .. note::
+
+            The PARI documentation contains the following warning: The method
+            used is that of resolvent polynomials and is sensitive to the
+            current precision. The precision is updated internally but, in very
+            rare cases, a wrong result may be returned if the initial precision
+            was not sufficient.
+
+        EXAMPLES::
+
             sage: R.<x> = PolynomialRing(QQ)
             sage: f = x^4 - 17*x^3 - 2*x + 1
             sage: G = f.galois_group(); G            # optional - database_gap
@@ -726,9 +752,12 @@ class Polynomial_rational_dense(Polynomial_generic_field):
             24
 
         It is potentially useful to instead obtain the corresponding
-        PARI group, which is little more than a $4$-tuple.  See the
+        PARI group, which is little more than a 4-tuple.  See the
         PARI manual for the exact details.  (Note that the third
         entry in the tuple is in the new standard ordering.)
+
+        ::
+
             sage: f = x^4 - 17*x^3 - 2*x + 1
             sage: G = f.galois_group(pari_group=True); G
             PARI group [24, -1, 5, "S4"] of degree 4
@@ -736,9 +765,11 @@ class Polynomial_rational_dense(Polynomial_generic_field):
             Transitive group number 5 of degree 4
 
         You can use KASH to compute Galois groups as well.  The
-        avantage is that KASH can compute Galois groups of fields up
+        advantage is that KASH can compute Galois groups of fields up
         to degree 23, whereas PARI only goes to degree 11.  (In my
         not-so-thorough experiments PARI is faster than KASH.)
+
+        ::
 
             sage: f = x^4 - 17*x^3 - 2*x + 1
             sage: f.galois_group(algorithm='kash')      # optional - kash
@@ -788,9 +819,10 @@ class Polynomial_rational_dense(Polynomial_generic_field):
     def quo_rem(self, right):
         """
         Returns a tuple (quotient, remainder) where
-            self = quotient*right + remainder.
+        self = quotient*right + remainder.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x> = QQ[]
             sage: f = x^5 + 17*x + 3
             sage: g = x^3 - 19
@@ -808,7 +840,8 @@ class Polynomial_rational_dense(Polynomial_generic_field):
 
     def _mul_(self, right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x> = QQ[]
             sage: (x - QQ('2/3'))*(x^2 - 8*x + 16)
             x^3 - 26/3*x^2 + 64/3*x - 32/3
@@ -817,7 +850,8 @@ class Polynomial_rational_dense(Polynomial_generic_field):
 
     def _sub_(self, right):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x> = QQ[]
             sage: x^5 + 17*x^3 + x+ 3 - (x^3 - 19)
             x^5 + 16*x^3 + x + 22
@@ -843,7 +877,8 @@ class Polynomial_rational_dense(Polynomial_generic_field):
         """
         Returns isolating intervals for the real roots of this polynomial.
 
-        EXAMPLE:
+        EXAMPLE::
+
             sage: R.<x> = PolynomialRing(QQ)
             sage: f = (x - 1/2) * (x - 3/4) * (x - 3/2)
             sage: f.real_root_intervals()
@@ -854,20 +889,22 @@ class Polynomial_rational_dense(Polynomial_generic_field):
 
         return real_roots(self)
 
-    def copy(self):
+    def __copy__(self):
         """
         Return a copy of this polynomial.
         """
         f = Polynomial_rational_dense(self.parent())
-        f.__poly = self.__poly.copy()
+        from copy import copy
+        f.__poly = copy(self.__poly)
         return f
 
     def degree(self, gen=None):
         """
-        Return the degree of this polynomial.  The zero polynomial
+        Return the degree of this polynomial. The zero polynomial
         has degree -1.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x> = QQ[]
             sage: (x^5 + 17*x^3 + x+ 3).degree()
             5
@@ -880,7 +917,8 @@ class Polynomial_rational_dense(Polynomial_generic_field):
 
     def discriminant(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: _.<x> = PolynomialRing(QQ)
             sage: f = x^3 + 3*x - 17
             sage: f.discriminant()
@@ -890,9 +928,10 @@ class Polynomial_rational_dense(Polynomial_generic_field):
 
     def disc(self):
         """
-        Same as discriminant().
+        Same as :meth:`.discriminant`.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: _.<x> = PolynomialRing(QQ)
             sage: f = x^3 + 3*x - 17
             sage: f.disc()
@@ -902,9 +941,10 @@ class Polynomial_rational_dense(Polynomial_generic_field):
 
     def numerator(self):
         """
-        Returns the numerator of self as a polynomial in ZZ[x].
+        Returns the numerator of self as a polynomial in `\ZZ[x]`.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x> = QQ[]
             sage: (x/2).numerator()
             x
@@ -922,9 +962,10 @@ class Polynomial_rational_dense(Polynomial_generic_field):
 
     def denominator(self):
         """
-        Returns the denominator of self as an element of ZZ.
+        Returns the denominator of self as an element of `\ZZ`.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<x> = QQ[]
             sage: (x/2).denominator()
             2
@@ -942,12 +983,15 @@ class Polynomial_rational_dense(Polynomial_generic_field):
         Return the factorization of self modulo the prime p.
 
         INPUT:
-            p -- prime
+
+        - ``p`` -- prime
 
         OUTPUT:
-            factorization of self reduced modulo p.
 
-        EXAMPLES:
+        factorization of self reduced modulo p.
+
+        EXAMPLES::
+
             sage: R.<x> = QQ[]
             sage: (x^5 + 17*x^3 + x+ 3).factor_mod(3)
             x * (x^2 + 1)^2
@@ -968,13 +1012,16 @@ class Polynomial_rational_dense(Polynomial_generic_field):
         Return p-adic factorization of self to given precision.
 
         INPUT:
-            p -- prime
-            prec -- integer; the precision
+
+        - p -- prime
+        - prec -- integer; the precision
 
         OUTPUT:
-            factorization of self viewed as a polynomial over the p-adics
 
-        EXAMPLES:
+        factorization of self viewed as a polynomial over the p-adics
+
+        EXAMPLES::
+
             sage: R.<x> = QQ[]
             sage: f = x^3 - 2
             sage: f.factor_padic(2)
@@ -1000,7 +1047,8 @@ class Polynomial_rational_dense(Polynomial_generic_field):
         Return a new copy of the list of the underlying
         elements of self.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: _.<x> = PolynomialRing(QQ)
             sage: f = x^3 + 3*x - 17/13; f
             x^3 + 3*x - 17/13
@@ -1026,7 +1074,7 @@ class Polynomial_rational_dense(Polynomial_generic_field):
 
     def rescale(self, a):
         """
-        Return f(a*X).
+        Return `f(a*X)`.
         """
         b = 1
         c = []
@@ -1037,9 +1085,9 @@ class Polynomial_rational_dense(Polynomial_generic_field):
 
     def hensel_lift(self, p, e):
         """
-        Assuming that self factors modulo $p$ into distinct factors,
-        computes the Hensel lifts of these factors modulo $p^e$.  We
-        assume that $p$ has integer coefficients.
+        Assuming that self factors modulo `p` into distinct factors,
+        computes the Hensel lifts of these factors modulo `p^e`.  We
+        assume that `p` has integer coefficients.
         """
         p = integer.Integer(p)
         if not p.is_prime():
@@ -1083,7 +1131,8 @@ class Polynomial_padic_generic_dense(Polynomial_generic_dense, Polynomial_generi
 
     def _repr(self, name=None):
         r"""
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R.<w> = PolynomialRing(Zp(5, prec=5, type = 'capped-abs', print_mode = 'val-unit'))
             sage: f = 24 + R(4/3)*w + w^4
             sage: f._repr()
@@ -1092,7 +1141,7 @@ class Polynomial_padic_generic_dense(Polynomial_generic_dense, Polynomial_generi
             '(1 + O(5^5))*z^4 + (1043 + O(5^5))*z + (24 + O(5^5))'
 
         AUTHOR:
-            -- David Roe (2007-03-03), based on Polynomial_generic_dense._repr()
+        - David Roe (2007-03-03), based on Polynomial_generic_dense._repr()
         """
         s = " "
         n = m = self.degree()

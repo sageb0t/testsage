@@ -110,7 +110,7 @@ class UniqueRepresentation:
         sage: x.value, y.value
         (1, 1)
 
-    Unless overriden by the derived class, equality testing is
+    Unless overridden by the derived class, equality testing is
     implemented by comparing identities, which is as fast as it can get::
 
         sage: x == y
@@ -126,7 +126,7 @@ class UniqueRepresentation:
     if this could be a problem.
 
     The arguments can consist of any combination of positional or
-    keyword arguements, as taken by a usual :meth:`__init__`
+    keyword arguments, as taken by a usual :meth:`__init__`
     function. However, all values passed in should be hashable::
 
         sage: MyClass(value = [1,2,3])
@@ -284,7 +284,7 @@ class UniqueRepresentation:
 
     It is often easy in a derived subclass to reconstruct the
     constructors arguments from the instance data structure. When this
-    is the case, :meth:`__reduce__` should be overriden; automagically
+    is the case, :meth:`__reduce__` should be overridden; automagically
     the arguments won't be stored anymore:
 
         sage: class MyClass3(UniqueRepresentation):

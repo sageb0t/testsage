@@ -387,7 +387,7 @@ class FiniteField_ext_pariElement(FiniteFieldElement):
             self.__multiplicative_order = order
             return order
 
-    def copy(self):
+    def __copy__(self):
         """
         Return a copy of this element.
 
@@ -398,9 +398,9 @@ class FiniteField_ext_pariElement(FiniteFieldElement):
             sage: a = k(5)
             sage: a
             2
-            sage: a.copy()
+            sage: copy(a)
             2
-            sage: b = a.copy()
+            sage: b = copy(a)
             sage: a == b
             True
             sage: a is b

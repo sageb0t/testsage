@@ -471,7 +471,7 @@ cdef class pAdicGenericElement(LocalGenericElement):
 
         OUTPUT::
 
-            polynomial -- degree n polynomial aproximately satisfied by self
+            polynomial -- degree n polynomial approximately satisfied by self
 
         EXAMPLES::
 
@@ -519,7 +519,7 @@ cdef class pAdicGenericElement(LocalGenericElement):
 
         OUTPUT::
 
-            polynomial -- degree n polynomial aproximately satisfied by self
+            polynomial -- degree n polynomial approximately satisfied by self
 
         EXAMPLES::
 

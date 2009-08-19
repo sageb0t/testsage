@@ -218,7 +218,7 @@ class Animation(SageObject):
     def png(self, dir=None):
         """
         Return the absolute path to a temp directory that contains the
-        rendered png's of all the images in this animation.
+        rendered PNG's of all the images in this animation.
 
         EXAMPLES::
 
@@ -417,7 +417,7 @@ class Animation(SageObject):
            print the path to the saved file
 
         If filename is None, then in notebook mode, display the animation;
-        othewise, save the animation to a gif file. If filename ends in
+        otherwise, save the animation to a gif file. If filename ends in
         '.gif', save to a gif file. If filename ends in '.sobj', save to an
         sobj file.
 

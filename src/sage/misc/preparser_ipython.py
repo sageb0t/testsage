@@ -41,7 +41,7 @@ def switch_interface(name, verbose=True):
     if name == 'sage':
         interface = None
         if verbose:
-            print "\n  --> Exiting back to SAGE <-- \n"
+            print "\n  --> Exiting back to Sage <-- \n"
     else:
         if not (interface is None):
             interface._post_interact()
@@ -89,8 +89,6 @@ def preparse_ipython(line, reset=True):
         if interface_name in ['gap', 'magma', 'kash', 'singular']:
             if not line.endswith(';'):
                 line += ';'
-            if magma_colon_equals and interface_name == 'magma':
-                line = line.replace(':=','=').replace('=',':=')
         elif interface_name == 'mathematica':
             line = 'InputForm[%s]'%line
 
@@ -117,7 +115,7 @@ def preparse_ipython(line, reset=True):
 
     # TODO: this is a very lazy temporary bug fix.
     # Nobody uses this logging stuff anymore, anyways, because
-    # of the SAGE notebook.
+    # of the Sage notebook.
     try:
         return """logstr(%r)"""%t
     except UnboundLocalError:
@@ -131,7 +129,7 @@ def preparse_imports_from_sage(interface, line, locals={}):
     This function extracts any "sage(zzz)"'s, parses
     them, and replaces them by appropriate objects
     in the interface.   This is used for moving
-    objects from SAGE back into the interface.
+    objects from Sage back into the interface.
     """
     import sage_eval
     i = line.find('%s('%interface_name)

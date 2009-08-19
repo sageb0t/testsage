@@ -570,7 +570,7 @@ class GenericSQLQuery(SageObject):
         from copy import copy
         return copy(self.__query_string__)
 
-    def copy(self):
+    def __copy__(self):
         """
         Returns a copy of the query.
 
@@ -579,7 +579,7 @@ class GenericSQLQuery(SageObject):
             sage: q = 'select graph_id,graph6,num_vertices,num_edges from graph_data where graph_id<=(?) and num_vertices=(?)'
             sage: param = (22,5)
             sage: Q = GenericSQLQuery(G,q,param)
-            sage: R = Q.copy()
+            sage: R = copy(Q)
             sage: R.get_query_string()
             'select graph_id,graph6,num_vertices,num_edges from graph_data where graph_id<=(?) and num_vertices=(?)'
             sage: R.show()
@@ -997,7 +997,7 @@ class SQLQuery(GenericSQLQuery):
         else:
             self.__query_string__ = ''
 
-    def copy(self):
+    def __copy__(self):
         """
         Returns a copy of itself.
 
@@ -1029,7 +1029,7 @@ class SQLQuery(GenericSQLQuery):
             55                   E?C_                 6
             210                  F???W                7
             211                  F??G_                7
-            sage: R = Q.copy()
+            sage: R = copy(Q)
             sage: print R
             Query for sql database: ...graphs.db
             Query string: SELECT graph_data.graph_id, graph_data.graph6, graph_data.num_vertices FROM graph_data WHERE graph_data.num_edges < ?
@@ -1151,8 +1151,9 @@ class SQLQuery(GenericSQLQuery):
                 self.__param_tuple__ = self.__param_tuple__ + other.__param_tuple__
 
         else:
-            if not self.__query_string__: return other.copy()
-            if not other.__query_string__: return self.copy()
+            from copy import copy
+            if not self.__query_string__: return copy(other)
+            if not other.__query_string__: return copy(self)
             if join_table is None or join_dict is None:
                 pattern = ' JOIN '
                 if re.search(pattern,self.__query_string__) or re.search(pattern,other.__query_string__):
@@ -1164,7 +1165,7 @@ class SQLQuery(GenericSQLQuery):
                 if s[0] != o[0]:
                     raise ValueError('Input queries query different tables but join parameters are NoneType')
 
-            q = self.copy()
+            q = copy(self)
 
             # inner join clause
             if join_dict is not None:
@@ -1284,9 +1285,10 @@ class SQLQuery(GenericSQLQuery):
 
             self.__param_tuple__ = self.__param_tuple__ + other.__param_tuple__
         else:
-            q = self.copy()
+            from copy import copy
+            q = copy(self)
             if not self.__query_string__: return q
-            if not other.__query_string__: return other.copy()
+            if not other.__query_string__: return copy(other)
             if join_table is None or join_dict is None:
                 pattern = ' JOIN '
                 if re.search(pattern,self.__query_string__) or re.search(pattern,other.__query_string__):
@@ -1351,7 +1353,9 @@ class SQLQuery(GenericSQLQuery):
                 self.__query_string__ = re.sub(' WHERE ',' WHERE NOT ( ',self.__query_string__) + ' )'
             else: return
         else:
-            if not self.__query_string__: return self.copy()
+            if not self.__query_string__:
+                from copy import copy
+                return copy(self)
             q = SQLQuery(self.__database__)
             q.__query_string__ = re.sub(' WHERE ',' WHERE NOT ( ',self.__query_string__)
             q.__query_string__ += ' )'
@@ -1538,7 +1542,7 @@ class GenericSQLDatabase(SageObject):
                 s += '\n'
         return s
 
-    def copy(self):
+    def __copy__(self):
         """
         Returns an instance of SQLDatabase that points to a copy database,
         and allows modification.
@@ -1547,7 +1551,7 @@ class GenericSQLDatabase(SageObject):
             sage: DB = SQLDatabase()
             sage: DB.create_table('lucy',{'id':{'sql':'INTEGER', 'primary_key':True, 'index':True},'a1':{'sql':'bool','primary_key':False}, 'b2':{'sql':'int', 'primary_key':False}})
             sage: DB.add_rows('lucy', [(0,1,1),(1,1,4),(2,0,7),(3,1,384),(4,1,978932)],['id','a1','b2'])
-            sage: d = DB.copy()
+            sage: d = copy(DB)
 
             sage: d.show('lucy')
             a1                   id                   b2
@@ -1586,7 +1590,6 @@ class GenericSQLDatabase(SageObject):
             1                    4                    978932
 
         """
-        from copy import copy
         # copy .db file
         new_loc = tmp_filename() + '.db'
         os.system('cp '+ self.__dblocation__ + ' ' + new_loc)
@@ -2183,7 +2186,7 @@ class SQLDatabase(GenericSQLDatabase):
 
             self.vacuum()
         except sqlite.Error, e:
-            print 'A sqlite error occured: ', e.args[0]
+            print 'A sqlite error occurred: ', e.args[0]
             # delete added column from skeleton
             self.__skeleton__[table_name].pop(col_name)
 

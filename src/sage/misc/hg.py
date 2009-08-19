@@ -49,7 +49,7 @@ sage_trac_re = re.compile('http[s]?://(sagetrac\.org|trac\.sagemath\.org)/sage_t
 def get_remote_file(f, **kwds):
     """
     Wrap the get_remote_file method to move the file if it ends in
-    ?stuff, as happens with funny urls from web servers.
+    ?stuff, as happens with funny URLs from web servers.
     """
     g = get_remote_file0(f, **kwds)
     i = g.find('?')
@@ -160,7 +160,7 @@ class HG:
         print("Getting status of modified or unknown files:")
         self('status')
         print "\n---\n"
-        if self.__name == "SAGE Library Source Code":
+        if self.__name == "Sage Library Source Code":
             b = branch_current_hg()
             if b == '': b='main'
             elif b[-1] == '/':
@@ -421,7 +421,7 @@ class HG:
         Show new changesets found in the given source and display the
         corresponding diffs. This even works if the source is a bundle file
         (ends in .hg or .bundle). This is great because it lets you "see
-        inside" the myserious binary-only .hg files.
+        inside" the mysterious binary-only .hg files.
 
         Show new changesets found in the specified path/URL or the default
         pull location. These are the changesets that would be pulled if a
@@ -618,7 +618,7 @@ class HG:
         unified diff.
 
         By default this command tells you exactly what you have changed in
-        your working repository since you last commited changes.
+        your working repository since you last committed changes.
 
         INPUT:
 
@@ -827,9 +827,9 @@ class HG:
         self('pull %s %s'%(options, url))
         if self.__target == 'sage':
             print ""
-            print "Now building the new SAGE libraries"
+            print "Now building the new Sage libraries"
             os.system('sage -b')
-            print "You *MUST* restart SAGE in order for the changes to take effect!"
+            print "You *MUST* restart Sage in order for the changes to take effect!"
 
         print "If it says use 'hg merge' above, then you should"
         print "type hg_%s.merge()."%self.__obj_name
@@ -1051,7 +1051,7 @@ class HG:
         INPUT:
 
         - ``files`` - space separated string of file names (optional)
-          If specified only those files are commited. The path must be
+          If specified only those files are committed. The path must be
           absolute or relative to self.dir().
 
         - ``comment`` - optional changeset comment. If you don't give
@@ -1064,7 +1064,7 @@ class HG:
               -m --message    use <text> as commit message
               -l --logfile    read the commit message from <file>
               -d --date       record datecode as commit date
-              -u --user       record user as commiter
+              -u --user       record user as committer
               -I --include    include names matching the given patterns
               -X --exclude    exclude names matching the given patterns
 
@@ -1077,7 +1077,7 @@ class HG:
            add method.
         """
         if embedded() and comment is None:
-            raise RuntimeError, "You're using the SAGE notebook, so you *must* explicitly specify the comment in the commit command."
+            raise RuntimeError, "You're using the Sage notebook, so you *must* explicitly specify the comment in the commit command."
         if diff:
             self.diff(files)
 
@@ -1138,7 +1138,7 @@ class HG:
         # make sure that we don't accidentally create a file ending in '.hg.hg'
         if filename[-3:] == '.hg':
             filename = filename[:-3]
-        # We write to a local tmp file, then move, since unders
+        # We write to a local tmp file, then move, since under
         # windows hg has a bug that makes it fail to write
         # to any filename that is at all complicated!
         filename = os.path.abspath(filename)

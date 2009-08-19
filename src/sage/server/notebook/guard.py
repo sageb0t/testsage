@@ -27,7 +27,7 @@ import random
 import time
 import md5
 
-# SAGE's twist stuff
+# Sage's twist stuff
 import twist
 
 class Session(object):
@@ -144,7 +144,7 @@ class MySessionWrapper(object):
     def locateChild(self, request, segments):
         """Serve Resources depending on users Authentication status.
 
-        Inital logic occurs here to decide the
+        Initial logic occurs here to decide the
         authentication status of a given user.
         """
         if segments and segments[0] == "login":
@@ -198,7 +198,7 @@ class MySessionWrapper(object):
         return self, ()
 
     def _delegate(self, request, segments):
-        """Identify session by the http cookie.
+        """Identify session by the HTTP cookie.
 
         If no session exists, create a new session defined
         by a uid, and then set that uid as the cookie.
@@ -212,7 +212,7 @@ class MySessionWrapper(object):
 
     def requestPasswordAuthentication(self, request, segments):
         """
-        Try to athenticate with a username and password from
+        Try to authenticate with a username and password from
         a web login form.  Depending on the given credentials,
         return a custom 'view' of protected resources.
 
@@ -245,7 +245,7 @@ class MySessionWrapper(object):
     def getSession(self, request):
         """Get a user's session defined by the requests cookie.
 
-        Pull the cookie out of the http header and
+        Pull the cookie out of the HTTP header and
         pass it to the session manager, will handles
         find the users actual session object.
         """
@@ -256,7 +256,7 @@ class MySessionWrapper(object):
 
     def getCredentials(self, request):
         """Get username, password from post args
-        or if they dont exist we have an anonymous
+        or if they don't exist we have an anonymous
         session
         """
         if request.args.get('startup_token', [''])[0]:
@@ -297,7 +297,7 @@ class MySessionWrapper(object):
 
         This pops the uid that defines the users session
         out of the sessions dict.  A new anonymous session
-        is immediatly created for this user.
+        is immediately created for this user.
         """
         #log.msg("=== logout ===")
         self.sessionManager.expiredSession(session)

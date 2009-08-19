@@ -172,7 +172,7 @@ cdef class NamedConvertMap(Map):
         return self._codomain._element_constructor(self._call_(x), *args, **kwds)
 
 # Perhaps this could be a method, extracting (<PyMethodDescrObject *>(<object>Parent).coerce_map_from).d_method.ml_meth and/or PyCFunction_GET_FUNCTION(method)
-# and constructing a CCallableConvertMap_class if it is bound ot the codomain.
+# and constructing a CCallableConvertMap_class if it is bound to the codomain.
 
 cdef class CallableConvertMap(Map):
     cdef bint _parent_as_first_arg
@@ -196,7 +196,7 @@ cdef class CallableConvertMap(Map):
               From: Integer Ring
               To:   Rational Field
 
-        Create a homomorphism from $\R$ to $\R^+$ viewed as additave groups.
+        Create a homomorphism from $\R$ to $\R^+$ viewed as additive groups.
 
         ::
 

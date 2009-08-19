@@ -173,7 +173,7 @@ cdef class ntl_ZZ_pX:
 
         EXAMPLES:
             sage: x = ntl.ZZ_pX([0,5,-3],11)
-            sage: y = x.copy()
+            sage: y = copy(x)
             sage: x == y
             True
             sage: x is y
@@ -185,22 +185,6 @@ cdef class ntl_ZZ_pX:
         #self.c.restore_c() # restored in _new()
         r.x = self.x
         return r
-
-    def copy(self):
-        """
-        Return a copy of self.
-
-        EXAMPLES:
-            sage: x = ntl.ZZ_pX([0,5,-3],11)
-            sage: y = x.copy()
-            sage: x == y
-            True
-            sage: x is y
-            False
-            sage: x[0] = 4; y
-            [0 5 8]
-        """
-        return self.__copy__()
 
     def get_modulus_context(self):
         """
@@ -1078,7 +1062,7 @@ cdef class ntl_ZZ_pX:
 
     def invmod(self, ntl_ZZ_pX modulus):
         """
-        Returns the inverse of self modulo the modulus using ntl's InvMod.
+        Returns the inverse of self modulo the modulus using NTL's InvMod.
         """
         cdef ntl_ZZ_pX r = self._new()
         _sig_on
@@ -1299,7 +1283,7 @@ cdef class ntl_ZZ_pX:
             sage: f.charpoly_mod(g)
             [0 0 0 0 1]
 
-        However, since $f^2 = 0$ moduluo $g$, its minimal polynomial
+        However, since $f^2 = 0$ modulo $g$, its minimal polynomial
         is of degree $2$.
             sage: f.minpoly_mod(g)
             [0 0 1]

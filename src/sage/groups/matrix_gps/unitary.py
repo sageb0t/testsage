@@ -155,7 +155,7 @@ class GeneralUnitaryGroup_finite_field(UnitaryGroup_finite_field):
 
     def _repr_(self):
         """
-        Return text representatin of self.
+        Return text representation of self.
 
         EXAMPLES::
 
@@ -205,7 +205,7 @@ class SpecialUnitaryGroup_finite_field(UnitaryGroup_finite_field):
 
     def _latex_(self):
         """
-        Return latex representatin of this group.
+        Return latex representation of this group.
 
         EXAMPLES::
 

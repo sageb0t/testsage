@@ -28,7 +28,7 @@ def strassen_window_multiply(C, A,B, cutoff):
     Uses strassen multiplication at high levels and then uses
     MatrixWindow methods at low levels. EXAMPLES: The following matrix
     dimensions are chosen especially to exercise the eight possible
-    parity combinations that ocould ccur while subdividing the matrix
+    parity combinations that could occur while subdividing the matrix
     in the strassen recursion. The base case in both cases will be a
     (4x5) matrix times a (5x6) matrix.
 
@@ -256,7 +256,7 @@ def strassen_echelon(MatrixWindow A, cutoff):
     -  ``A`` - matrix window
 
     -  ``cutoff`` - size at which algorithm reverts to
-       naive gaussian elemination and multiplication must be at least 1.
+       naive Gaussian elimination and multiplication must be at least 1.
 
     OUTPUT: The list of pivot columns
 
@@ -572,7 +572,7 @@ for n in range(5):
 
 ##     EXAMPLES:
 ##         The following matrix dimensions are chosen especially to exercise the
-##         eight possible parity combinations that ocould ccur while subdividing
+##         eight possible parity combinations that could occur while subdividing
 ##         the matrix in the strassen recursion. The base case in both cases will
 ##         be a (4x5) matrix times a (5x6) matrix.
 

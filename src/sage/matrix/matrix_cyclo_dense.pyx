@@ -1075,7 +1075,7 @@ cdef class Matrix_cyclo_dense(matrix_dense.Matrix_dense):
 
         OUTPUT:
             matrix over GF(p) whose columns correspond to the entries
-            of all the charpolys of the reduction of self modulo all
+            of all the characteristic polynomials of the reduction of self modulo all
             the primes over p.
 
         EXAMPLES:
@@ -1089,12 +1089,12 @@ cdef class Matrix_cyclo_dense(matrix_dense.Matrix_dense):
             [4 0 0]
             [0 0 0]
         """
-        tm = verbose("Computing characteristic polynomial of cyclomotic matrix modulo %s."%p)
+        tm = verbose("Computing characteristic polynomial of cyclotomic matrix modulo %s."%p)
         # Reduce self modulo all primes over p
         R, denom = self._reductions(p)
         # Compute the characteristic polynomial of each reduced matrix
         F = [A.charpoly('x') for A in R]
-        # Put the charpolys together as the rows of a mod-p matrix
+        # Put the characteristic polynomials together as the rows of a mod-p matrix
         k = R[0].base_ring()
         S = matrix(k, len(F), self.nrows()+1, [f.list() for f in F])
         # multiply by inverse of reduction matrix to lift
@@ -1460,7 +1460,7 @@ cdef class Matrix_cyclo_dense(matrix_dense.Matrix_dense):
                         found += 1
                     else:
                         # this means that the rank profile mod this
-                        # prime is worse than those that came befroe,
+                        # prime is worse than those that came before,
                         # so we just loop
                         p = previous_prime(p)
                         continue

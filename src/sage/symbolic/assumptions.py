@@ -16,7 +16,7 @@ class GenericDeclaration(SageObject):
         -  ``var`` - the variable about which assumptions are
            being made
 
-        -  ``assumption`` - a maxima feature, either user
+        -  ``assumption`` - a Maxima feature, either user
            defined or in the list given by maxima('features')
 
         EXAMPLES::
