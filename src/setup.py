@@ -879,6 +879,7 @@ code = setup(name = 'sage',
                      'sage.stats.hmm',
 
                      'sage.symbolic',
+                     'sage.symbolic.integration',
 
                      'sage.parallel',
 
