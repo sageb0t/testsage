@@ -304,7 +304,7 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
             [14.0 16.0 18.0]
         """
         if self._nrows == 0 or self._ncols == 0:
-            return self.copy()
+            return self.__copy__()
 
         cdef Matrix_double_dense M, _right, _left
         _right = right
@@ -324,7 +324,7 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
             True
         """
         if self._nrows == 0 or self._ncols == 0:
-            return self.copy()
+            return self.__copy__()
 
         cdef Matrix_double_dense M,_right,_left
         _right = right
@@ -348,7 +348,7 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
             True
         """
         if self._nrows == 0 or self._ncols == 0:
-            return self.copy()
+            return self.__copy__()
 
         cdef Matrix_double_dense M
         M = self._new()
@@ -456,7 +456,7 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
         if self._nrows != self._ncols:
             raise ArithmeticError, "self must be a square matrix"
         if self._nrows == 0 and self._ncols == 0:
-            return self.copy()
+            return self.__copy__()
 
         # Maybe we should cache the (P)LU decomposition and use scipy.lu_solve?
         cdef Matrix_double_dense M
@@ -566,7 +566,7 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
             raise TypeError,"LU decomposition only works for square matrix"
 
         if self._ncols == 0:
-            return self.copy(), self.copy(), self.copy()
+            return self.__copy__(), self.__copy__(), self.__copy__()
 
         if self.fetch('LU_valid')!=True:
             self._c_compute_LU()
@@ -697,7 +697,7 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
         if not self.is_square():
             raise ArithmeticError, "self must be a square matrix"
         if self._nrows == 0:
-            return [], self.copy()
+            return [], self.__copy__()
         global scipy
         if scipy is None:
             import scipy
@@ -734,7 +734,7 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
         if not self.is_square():
             raise ArithmeticError, "self must be a square matrix"
         if self._nrows == 0:
-            return [], self.copy()
+            return [], self.__copy__()
         global scipy
         if scipy is None:
             import scipy

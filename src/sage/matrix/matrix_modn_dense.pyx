@@ -1028,7 +1028,7 @@ cdef class Matrix_modn_dense(matrix_dense.Matrix_dense):
         elif algorithm == 'gauss':
             self._echelon_in_place_classical()
         elif algorithm == 'all':
-            A = self.copy()
+            A = self.__copy__()
             self._echelonize_linbox()
             A._echelon_in_place_classical()
             if A != self:
@@ -1426,7 +1426,7 @@ cdef class Matrix_modn_dense(matrix_dense.Matrix_dense):
         # Replace self by its Hessenberg form, and set H to this form
         # for notation below.
         cdef Matrix_modn_dense H
-        H = self.copy()
+        H = self.__copy__()
         H.hessenbergize()
 
         # We represent the intermediate polynomials that come up in

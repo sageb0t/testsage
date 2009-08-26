@@ -1755,7 +1755,7 @@ cdef class Matrix(matrix1.Matrix):
             except TypeError, msg:
                 raise TypeError, "%s\nHessenberg form only possible for matrices over a field"%msg
         else:
-            H = self.copy()
+            H = self.__copy__()
             H.hessenbergize()
         #end if
         self.cache('hessenberg_form', H)
@@ -1796,7 +1796,7 @@ cdef class Matrix(matrix1.Matrix):
             sage: A.hessenbergize()
             Traceback (most recent call last):
             ...
-            ValueError: matrix is immutable; please change a copy instead (use self.copy()).
+            ValueError: matrix is immutable; please change a copy instead (i.e., use copy(M) to change a copy of M).
         """
         cdef Py_ssize_t i, j, m, n, r
         n = self._nrows
@@ -2809,7 +2809,7 @@ cdef class Matrix(matrix1.Matrix):
 
             if g.degree() == 1:
                 # Just use kernel -- much easier.
-                B = self.copy()
+                B = self.__copy__()
                 for k from 0 <= k < self.nrows():
                     B[k,k] += g[0]
                 if m > 1 and not is_diagonalizable:
@@ -4010,7 +4010,7 @@ cdef class Matrix(matrix1.Matrix):
             sage: a.echelonize()
             Traceback (most recent call last):
             ...
-            ValueError: matrix is immutable; please change a copy instead (use self.copy()).
+            ValueError: matrix is immutable; please change a copy instead (i.e., use copy(M) to change a copy of M).
             sage: a.echelon_form()
             [ 1  0 -1]
             [ 0  1  2]
@@ -4119,7 +4119,7 @@ cdef class Matrix(matrix1.Matrix):
             if y:
                 return x, y
 
-        E = self.copy()
+        E = self.__copy__()
         if algorithm == 'default':
             v = E.echelonize(cutoff=cutoff, **kwds)
         else:
@@ -4141,7 +4141,7 @@ cdef class Matrix(matrix1.Matrix):
         E = self.fetch('echelon_classical')
         if not E is None:
             return E
-        E = self.copy()
+        E = self.__copy__()
         E._echelon_in_place_classical()
         self.cache('echelon_classical', E)
         return E
@@ -5590,7 +5590,7 @@ cdef class Matrix(matrix1.Matrix):
         """
         assert self._nrows == self._ncols, "Can only Cholesky decompose square matrices"
         if self._nrows == 0:
-            return self.copy()
+            return self.__copy__()
         return self._cholesky_decomposition_()
 
     def _cholesky_decomposition_(self):
@@ -5599,7 +5599,7 @@ cdef class Matrix(matrix1.Matrix):
 
         This generic implementation uses a standard recursion.
         """
-        A = self.copy()
+        A = self.__copy__()
         L = A.parent()(0)
         n = self.nrows()
         for k in range(0, n-1 + 1):
@@ -6189,7 +6189,7 @@ cdef class Matrix(matrix1.Matrix):
         left_mat = self.new_matrix(self.nrows(), self.nrows(), 1)
         right_mat = self.new_matrix(self.ncols(), self.ncols(), 1)
         if self == 0 or (self.nrows() <= 1 and self.ncols() <= 1):
-            return self.copy(), left_mat, right_mat
+            return self.__copy__(), left_mat, right_mat
 
         # data type checks on R
         if not R.is_integral_domain() or not R.is_noetherian():
@@ -6346,7 +6346,7 @@ def _smith_diag(d):
         True
     """
 
-    dp = d.copy()
+    dp = d.__copy__()
     n = min(d.nrows(), d.ncols())
     R = d.base_ring()
     left = d.new_matrix(d.nrows(), d.nrows(), 1)
@@ -6411,7 +6411,7 @@ def _generic_clear_column(m):
     if m.nrows() <= 1 or m.ncols() <= 0:
         return m.new_matrix(m.nrows(), m.nrows(), 1), m
 
-    a = m.copy()
+    a = m.__copy__()
     left_mat = m.new_matrix(m.nrows(), m.nrows(), 1)
     R = m.base_ring()
 
@@ -6521,7 +6521,7 @@ def _smith_onestep(m):
         True
     """
 
-    a = m.copy()
+    a = m.__copy__()
     left_mat = m.new_matrix(m.nrows(), m.nrows(), 1)
     right_mat = m.new_matrix(m.ncols(), m.ncols(), 1)
 
