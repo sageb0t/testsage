@@ -25,3 +25,5 @@ Modular Symbols
    sage/modular/modsym/ghlist
 
    sage/modular/modsym/relation_matrix
+
+   sage/modular/modsym/p1list_nf
