@@ -521,9 +521,11 @@ def preparser(on=True):
         InteractiveShell.prefilter = ipython_prefilter
 
 import sagedoc
+import sageinspect
 import IPython.OInspect
 IPython.OInspect.getdoc = sagedoc.my_getdoc
 IPython.OInspect.getsource = sagedoc.my_getsource
+IPython.OInspect.getargspec = sageinspect.sage_getargspec
 
 #We monkey-patch IPython to disable the showing of plots
 #when doing introspection on them. This fixes Trac #2163.
