@@ -108,7 +108,8 @@ cdef class Ring(ParentWithGens):
         that contains x.
 
         EXAMPLES:
-        We create several polynomial rings.::
+
+        We create several polynomial rings::
 
             sage: ZZ['x']
             Univariate Polynomial Ring in x over Integer Ring
@@ -815,11 +816,12 @@ cdef class Ring(ParentWithGens):
         Uses Python's randint.
 
         TESTS:
+
         The following example returns a ``NotImplementedError`` since the
         generic ring class ``__call__`` function returns a
         ``NotImplementedError``. Note that
         ``sage.rings.ring.Ring.random_element`` performs a call in the generic
-        ring class by a random integer.::
+        ring class by a random integer::
 
             sage: R = sage.rings.ring.Ring(ZZ); R
             <type 'sage.rings.ring.Ring'>
@@ -922,10 +924,11 @@ cdef class CommutativeRing(Ring):
         of prime ideals.
 
         TESTS:
+
         ``krull_dimension`` is not implemented for generic commutative
         rings. Fields and PIDs, with Krull dimension equal to 0 and 1,
         respectively, have naive implementations of ``krull_dimension``.
-        Orders in number fields also have Krull dimension 1.::
+        Orders in number fields also have Krull dimension 1::
 
             sage: R = CommutativeRing(ZZ)
             sage: R.krull_dimension()
@@ -1036,7 +1039,7 @@ cdef class CommutativeRing(Ring):
 
         INPUT:
 
-        - ``poly`` -- A polynomial whose coefficients are coercable into self
+        - ``poly`` -- A polynomial whose coefficients are coercible into self
         - ``name`` -- (optional) name for the root of f
 
         EXAMPLES::
@@ -1221,7 +1224,8 @@ cdef class DedekindDomain(IntegralDomain):
         Return 1 since Dedekind domains have Krull dimension 1.
 
         EXAMPLES:
-        The following are examples of Dedekind domains (noetherian integral
+
+        The following are examples of Dedekind domains (Noetherian integral
         domains of Krull dimension one that are integrally closed over its
         field of fractions)::
 
@@ -1233,7 +1237,7 @@ cdef class DedekindDomain(IntegralDomain):
             1
 
         The following are not Dedekind domains but have
-        a ``krull_dimension`` function.::
+        a ``krull_dimension`` function::
 
             sage: QQ.krull_dimension()
             0
@@ -1261,7 +1265,8 @@ cdef class DedekindDomain(IntegralDomain):
         Return True since Dedekind domains are integrally closed.
 
         EXAMPLES:
-        The following are examples of Dedekind domains (noetherian integral
+
+        The following are examples of Dedekind domains (Noetherian integral
         domains of Krull dimension one that are integrally closed over its
         field of fractions). (Note that the ring of integers does not have
         an implemented ``is_integrally_closed`` function.)
@@ -1310,9 +1315,10 @@ cdef class DedekindDomain(IntegralDomain):
 
     def is_noetherian(self):
         r"""
-        Return True since Dedekind domains are noetherian.
+        Return True since Dedekind domains are Noetherian.
 
         EXAMPLES:
+
         The integers, `\ZZ`, and rings of integers of number
         fields are Dedekind domains::
 
@@ -1349,6 +1355,7 @@ cdef class PrincipalIdealDomain(IntegralDomain):
         of self.
 
         EXAMPLES:
+
         The integers are a principal ideal domain and hence a GCD domain::
 
             sage: ZZ.gcd(42, 48)
@@ -1361,7 +1368,7 @@ cdef class PrincipalIdealDomain(IntegralDomain):
             sage: 88.factor()
             2^3 * 11
 
-        In a field, any nonzero element is a gcd of any nonempty set
+        In a field, any nonzero element is a GCD of any nonempty set
         of elements.  For concreteness, Sage returns 1 in these cases::
 
             sage: QQ.gcd(ZZ(42), ZZ(48)); type(QQ.gcd(ZZ(42), ZZ(48)))
@@ -1372,7 +1379,7 @@ cdef class PrincipalIdealDomain(IntegralDomain):
 
         Polynomial rings over fields are GCD domains as well. Here is a simple
         example over the ring of polynomials over the rationals as well as
-        over an extension ring. Note that \code(gcd) requires x and y to be
+        over an extension ring. Note that ``gcd`` requires x and y to be
         coercible::
 
             sage: R.<x> = PolynomialRing(QQ)
@@ -1483,6 +1490,7 @@ cdef class Field(PrincipalIdealDomain):
         of fields.
 
         EXAMPLES:
+
         Examples with fields::
 
             sage: QQ.category()
@@ -1511,6 +1519,7 @@ cdef class Field(PrincipalIdealDomain):
         Return the fraction field of self.
 
         EXAMPLES:
+
         Since fields are their own field of fractions, we simply get the
         original field in return::
 
@@ -1546,7 +1555,7 @@ cdef class Field(PrincipalIdealDomain):
     def divides(self, x, y, coerce=True):
         """
         Return True if x divides y in this field (usually True in a
-        field!).  If coerce is True (the default), first coerce x and
+        field!).  If ``coerce`` is True (the default), first coerce x and
         y into self.
 
         EXAMPLES::
@@ -1611,7 +1620,7 @@ cdef class Field(PrincipalIdealDomain):
     def is_integrally_closed(self):
         """
         Return True since fields are trivially integrally closed in
-        their fraction field (since they are there fraction field).
+        their fraction field (since they are their fraction field).
 
         EXAMPLES::
 
@@ -1622,7 +1631,7 @@ cdef class Field(PrincipalIdealDomain):
 
     def is_noetherian(self):
         """
-        Return True since fields are noetherian rings.
+        Return True since fields are Noetherian rings.
 
         EXAMPLES::
 
@@ -1749,6 +1758,7 @@ cdef class FiniteField(Field):
         ``_latex_`` attribute when available.
 
         EXAMPLES:
+
         The ``latex`` command parses the string::
 
             sage: GF(81, 'a')._latex_()
@@ -1804,7 +1814,7 @@ cdef class FiniteField(Field):
     def _macaulay2_init_(self):
         """
         Returns the string representation of self that Macaulay2 can
-        under stand.
+        understand.
 
         EXAMPLES::
 
@@ -1858,8 +1868,10 @@ cdef class FiniteField(Field):
         """
         Compares this finite field with other.
 
-        .. warning:: The notation of equality of finite fields in Sage is
-        currently not stable, i.e., it may change in a future version.
+        .. warning::
+
+            The notation of equality of finite fields in Sage is
+            currently not stable, i.e., it may change in a future version.
 
         EXAMPLES::
 
@@ -1990,7 +2002,7 @@ cdef class FiniteField(Field):
 
     def zeta(self, n=None):
         """
-        Returns an element of multiplicative order n in this this
+        Returns an element of multiplicative order n in this
         finite field, if there is one.  Raises a ValueError if there
         is not.
 
@@ -2415,6 +2427,7 @@ cdef class CommutativeAlgebra(CommutativeRing):
         Return True since this algebra is commutative.
 
         EXAMPLES:
+
         Any commutative ring is a commutative algebra over itself::
 
             sage: A = sage.rings.ring.CommutativeAlgebra
@@ -2424,13 +2437,13 @@ cdef class CommutativeAlgebra(CommutativeRing):
             True
 
         Trying to create a commutative algebra over a non-commutative ring
-        will result in a ``TypeError``
+        will result in a ``TypeError``.
         """
         return True
 
 def is_Ring(x):
     """
-    Return true if x is a ring.
+    Return True if x is a ring.
 
     EXAMPLES::
 
