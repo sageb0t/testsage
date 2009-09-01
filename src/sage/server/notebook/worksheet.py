@@ -9,7 +9,7 @@ The worksheet module is responsible for running calculations in a
 worksheet, spawning Sage processes that do all of the actual work
 and are controlled via pexpect, and reporting on results of
 calculations. The state of the cells in a worksheet is stored on
-the filesystem (not in the notebook pickle sobj).
+the file system (not in the notebook pickle sobj).
 
 AUTHORS:
 
@@ -280,7 +280,7 @@ class Worksheet:
         OUTPUT:
 
         -  ``-1,0,1`` - comparison is on the underlying
-           filenames.
+           file names.
 
         EXAMPLES::
 
@@ -710,7 +710,7 @@ class Worksheet:
 
     def attached_data_files(self):
         """
-        Return a list of the filenames of files in the worksheet data
+        Return a list of the file names of files in the worksheet data
         directory.
 
         OUTPUT: list of strings
@@ -813,7 +813,7 @@ class Worksheet:
 
         INPUT:
 
-        -  ``sysem`` - string (default: 'sage')
+        -  ``system`` - string (default: 'sage')
 
         EXAMPLES::
 
@@ -862,7 +862,7 @@ class Worksheet:
 
            The reason the input is a string and lower case instead of
            a Python bool is because this gets called indirectly from
-           javascript. (And, Jason Grout wrote this and didn't realize
+           JavaScript. (And, Jason Grout wrote this and didn't realize
            how unpythonic this design is - it should be redone to use
            True/False.)
 
@@ -1100,7 +1100,7 @@ class Worksheet:
 
         -  ``comment`` - string
 
-        -  ``usename`` - string
+        -  ``username`` - string
 
         EXAMPLES: We create a worksheet and rate it, then look at the
         ratings.
@@ -1213,7 +1213,7 @@ class Worksheet:
 
     def rating(self):
         """
-        Return overall aerage rating of self.
+        Return overall average rating of self.
 
         OUTPUT: float or the int -1 to mean "not rated"
 
@@ -1846,7 +1846,7 @@ class Worksheet:
     def limit_snapshots(self):
         r"""
         This routine will limit the number of snapshots of a worksheet,
-        as specified by a hard-cioded value below.
+        as specified by a hard-coded value below.
 
         Prior behavior was to allow unlimited numbers of snapshots and
         so this routine will not delete files created prior to this change.
@@ -2011,7 +2011,7 @@ class Worksheet:
         -  ``text`` - a string
 
         -  ``ignore_ids`` - bool (default: False); if True
-           ignore all the id's in the {{{}}} code block.
+           ignore all the IDs in the {{{}}} code block.
 
         EXAMPLES: We create a new test notebook and a worksheet.
 
@@ -2132,7 +2132,7 @@ class Worksheet:
 
         OUTPUT:
 
-        - string -- the html for the worksheet
+        - string -- the HTML for the worksheet
 
         EXAMPLES::
 
@@ -2190,7 +2190,7 @@ class Worksheet:
         r"""
         OUTPUT:
 
-        - string -- the html for the save, discard, etc. buttons
+        - string -- the HTML for the save, discard, etc. buttons
 
         EXAMPLES::
 
@@ -2211,7 +2211,7 @@ class Worksheet:
 
         OUTPUT:
 
-        - string -- the html for the share, publish, etc. buttons
+        - string -- the HTML for the share, publish, etc. buttons
 
         EXAMPLES::
 
@@ -2231,7 +2231,7 @@ class Worksheet:
         r"""
         OUTPUT:
 
-        - string -- the html for the menus of the worksheet
+        - string -- the HTML for the menus of the worksheet
 
         EXAMPLES::
 
@@ -2258,7 +2258,7 @@ class Worksheet:
 
         OUTPUT:
 
-        - string -- the html for the File menu of the worksheet
+        - string -- the HTML for the File menu of the worksheet
 
         EXAMPLES::
 
@@ -3052,7 +3052,7 @@ class Worksheet:
         -  ``C`` - a Cell
 
         -  ``username`` - the name of the user that is
-           evaluating this cell (mainly used for loging)
+           evaluating this cell (mainly used for login)
 
         .. note::
 
