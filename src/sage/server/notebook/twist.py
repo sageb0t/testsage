@@ -1738,7 +1738,7 @@ class Main_css(resource.Resource):
 
 class Reset_css(resource.Resource):
     def render(self, ctx):
-        s = css.reset
+        s = template('css/reset.css')
         gzip_handler(ctx)
         return http.Response(stream=s)
 
