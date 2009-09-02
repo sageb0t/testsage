@@ -869,6 +869,17 @@ ext_modules = [
 
     ################################
     ##
+    ## sage.numerical
+    ##
+    ################################
+
+    Extension("sage.numerical.mip",
+              ["sage/numerical/mip.pyx"],
+            include_dirs=["local/include/"],
+            libraries=["csage","stdc++"]),
+
+    ################################
+    ##
     ## sage.plot
     ##
     ################################
