@@ -301,7 +301,7 @@ class SymmetricFunctionAlgebra_classical(sfa.SymmetricFunctionAlgebra_generic):
             except:
                 raise TypeError, "do not know how to make x (= %s) an element of self"%(x)
 
-    def is_field(self):
+    def is_field(self, proof = True):
         """
         EXAMPLES::
 

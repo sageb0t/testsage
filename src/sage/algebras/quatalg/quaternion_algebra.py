@@ -363,7 +363,7 @@ class QuaternionAlgebra_abstract(Algebra):
         """
         return self.base_ring().is_exact()
 
-    def is_field(self):
+    def is_field(self, proof = True):
         """
         Return ``False`` always, since all quaternion algebras are
         noncommutative and all fields are commutative.
@@ -394,7 +394,7 @@ class QuaternionAlgebra_abstract(Algebra):
         """
         return self.base_ring().is_finite()
 
-    def is_integral_domain(self):
+    def is_integral_domain(self, proof = True):
         """
         Return ``False`` always, since all quaternion algebras are
         noncommutative and integral domains are commutative (in Sage).
