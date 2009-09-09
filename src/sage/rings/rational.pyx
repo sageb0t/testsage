@@ -842,7 +842,7 @@ cdef class Rational(sage.structure.element.FieldElement):
         from sage.rings.arith import gcd, lcm
         return gcd(nums) / lcm(denoms)
 
-    def gcd(self, other):
+    def gcd(self, other, **kwds):
         """
         Return a gcd of the rational numbers self and other.
 
