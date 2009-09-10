@@ -1393,8 +1393,8 @@ class MPolynomialSystem_gf2(MPolynomialSystem_generic):
             from sage.rings.polynomial.pbori import GroebnerStrategy
             g = GroebnerStrategy()
             for p in self.gens():
-                g.addAsYouWish(p)
-            g.optRedTail=True
+                g.add_as_you_wish(p)
+            g.reduction_strategy.opt_red_tail=True
             return g
 
 class MPolynomialSystem_gf2e(MPolynomialSystem_generic):
