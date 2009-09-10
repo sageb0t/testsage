@@ -3305,6 +3305,32 @@ class StandardPermutations_n(CombinatorialClass):
         for p in Permutations_set(range(1,self.n+1)):
             yield Permutation_class(p)
 
+    def element_in_conjugacy_classes(self,nu):
+        r"""
+        Returns a permutation with cycle type ``nu``
+
+        If the size of ``nu`` is smaller than the size of permutations in ``self``, then some fixed points are added.
+
+        EXAMPLES ::
+
+            sage: PP=Permutations(5)
+            sage: PP.element_in_conjugacy_classes([2,2])
+            [2, 1, 4, 3, 5]
+        """
+        nu=sage.combinat.partition.Partition(nu)
+        if nu.size() > self.n:
+            raise ValueError, "The size of the partition (=%s) should be lower than the size of the permutations(=%s)"%(nu.size,self.n)
+        l=[]
+        i=0
+        for nui in nu:
+            for j in range(nui-1):
+                l.append(i+j+2)
+            l.append(i+1)
+            i+=nui
+        for i in range(nu.size(),self.n):
+            l.append(i+1)
+        return Permutation(l)
+
     def cardinality(self):
         """
         EXAMPLES::
