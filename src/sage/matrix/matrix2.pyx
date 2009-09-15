@@ -4,8 +4,7 @@ Base class for matrices, part 2
 TESTS::
 
     sage: m = matrix(ZZ['x'], 2, 3, [1..6])
-    sage: loads(dumps(m)) == m
-    True
+    sage: TestSuite(m).run()
 """
 
 # For design documentation see matrix/docs.py.
