@@ -423,7 +423,7 @@ class SBox(SageObject):
 
           This code is mainly called internally.
         """
-        A = self.difference_distribution_matrix().copy()
+        A = self.difference_distribution_matrix().__copy__()
         A[0,0] = 0
         return max(map(abs, A.list()))
 
@@ -517,7 +517,7 @@ class SBox(SageObject):
             sage: S.maximal_linear_bias_absolute()
             2
         """
-        A = self.linear_approximation_matrix().copy()
+        A = self.linear_approximation_matrix().__copy__()
         A[0,0] = 0
         return max(map(abs, A.list()))
 
