@@ -4231,19 +4231,13 @@ cdef class Expression(CommutativeRingElement):
             sage: x.arcsin()
             arcsin(x)
             sage: SR(0.5).arcsin()
-            arcsin(0.500000000000000)
-
-        Use .n() to get a numerical approximation::
-
-            sage: SR(0.5).arcsin().n()
             0.523598775598299
-
             sage: SR(0.999).arcsin()
-            arcsin(0.999000000000000)
-            sage: SR(-0.999).arcsin()
-            -arcsin(0.999000000000000)
-            sage: SR(0.999).arcsin().n()
             1.52607123962616
+            sage: SR(1/3).arcsin()
+            arcsin(1/3)
+            sage: SR(-1/3).arcsin()
+            -arcsin(1/3)
 
         TESTS::
 
@@ -4273,11 +4267,6 @@ cdef class Expression(CommutativeRingElement):
             sage: SR(1/2).arccos()
             1/3*pi
             sage: SR(0.4).arccos()
-            arccos(0.400000000000000)
-
-        Use .n() to get a numerical approximation::
-
-            sage: SR(0.4).arccos().n()
             1.15927948072741
             sage: plot(lambda x: SR(x).arccos(), -1,1)
 
@@ -4310,11 +4299,6 @@ cdef class Expression(CommutativeRingElement):
             sage: SR(1/2).arctan()
             arctan(1/2)
             sage: SR(0.5).arctan()
-            arctan(0.500000000000000)
-
-        Use .n() to get a numerical approximation::
-
-            sage: SR(0.5).arctan().n()
             0.463647609000806
             sage: plot(lambda x: SR(x).arctan(), -20,20)
 
@@ -4347,12 +4331,7 @@ cdef class Expression(CommutativeRingElement):
             '%pi/4'
 
             sage: SR(-0.7).arctan2(SR(-0.6))
-            -pi + arctan(1.16666666666667)
-
-        Use .n() to get a numerical approximation::
-
-            sage: SR(-0.7).arctan2(SR(-0.6)).n()
-            -2.27942259892257
+            -pi + 0.862170054667226
 
         TESTS:
 
@@ -4434,11 +4413,6 @@ cdef class Expression(CommutativeRingElement):
             sage: SR(0).sinh()
             0
             sage: SR(1.0).sinh()
-            sinh(1.00000000000000)
-
-        Use .n() to get a numerical approximation::
-
-            sage: SR(1.0).sinh().n()
             1.17520119364380
             sage: maxima('sinh(1.0)')
             1.175201193643801
@@ -4447,8 +4421,6 @@ cdef class Expression(CommutativeRingElement):
             sage: SR(1).sinh().n(90)
             1.1752011936438014568823819
             sage: SR(RIF(1)).sinh()
-            sinh(1)
-            sage: SR(RIF(1)).sinh().n()
             1.175201193643802?
 
         TESTS::
@@ -4479,21 +4451,12 @@ cdef class Expression(CommutativeRingElement):
             sage: SR(0).cosh()
             1
             sage: SR(1.0).cosh()
-            cosh(1.00000000000000)
-
-        Use .n() to get a numerical approximation::
-
-            sage: SR(1.0).cosh().n()
             1.54308063481524
             sage: maxima('cosh(1.0)')
             1.543080634815244
-            sage: SR(1.0000000000000000000000000).cosh()
-            cosh(1.000000000000000000000000)
-            sage: SR(1).cosh().n(90)
+            sage: SR(1.00000000000000000000000000).cosh()
             1.5430806348152437784779056
             sage: SR(RIF(1)).cosh()
-            cosh(1)
-            sage: SR(RIF(1)).cosh().n()
             1.543080634815244?
 
         TESTS::
@@ -4524,11 +4487,6 @@ cdef class Expression(CommutativeRingElement):
             sage: SR(0).tanh()
             0
             sage: SR(1.0).tanh()
-            tanh(1.00000000000000)
-
-        Use .n() to get a numerical approximation::
-
-            sage: SR(1.0).tanh().n()
             0.761594155955765
             sage: maxima('tanh(1.0)')
             .7615941559557649
@@ -4560,11 +4518,6 @@ cdef class Expression(CommutativeRingElement):
             sage: SR(1).arcsinh()
             arcsinh(1)
             sage: SR(1.0).arcsinh()
-            arcsinh(1.00000000000000)
-
-        Use .n() to get a numerical approximation::
-
-            sage: SR(1.0).arcsinh().n()
             0.881373587019543
             sage: maxima('asinh(1.0)')
             0.881373587019543
@@ -4597,11 +4550,6 @@ cdef class Expression(CommutativeRingElement):
             sage: SR(1/2).arccosh()
             arccosh(1/2)
             sage: SR(CDF(1/2)).arccosh()
-            arccosh(0.5)
-
-        Use .n() to get a numerical approximation::
-
-            sage: SR(CDF(1/2)).arccosh().n()
             1.0471975512*I
             sage: maxima('acosh(0.5)')
             1.047197551196598*%i
@@ -4630,11 +4578,6 @@ cdef class Expression(CommutativeRingElement):
             sage: SR(1/2).arctanh()
             arctanh(1/2)
             sage: SR(0.5).arctanh()
-            arctanh(0.500000000000000)
-
-        Use .n() to get a numerical approximation::
-
-            sage: SR(0.5).arctanh().n()
             0.549306144334055
             sage: SR(0.5).arctanh().tanh()
             0.500000000000000
@@ -4673,19 +4616,14 @@ cdef class Expression(CommutativeRingElement):
             sage: SR(1/2).exp()
             e^(1/2)
             sage: SR(0.5).exp()
-            e^0.500000000000000
-            sage: (pi*I).exp()
-            -1
-
-        Use .n() to get a numerical approximation::
-
-            sage: SR(0.5).exp().n()
             1.64872127070013
             sage: math.exp(0.5)
             1.6487212707001282
 
             sage: SR(0.5).exp().log()
             0.500000000000000
+            sage: (pi*I).exp()
+            -1
 
         TESTS:
 
@@ -4722,11 +4660,6 @@ cdef class Expression(CommutativeRingElement):
             sage: SR(1/2).log()
             log(1/2)
             sage: SR(0.5).log()
-            log(0.500000000000000)
-
-        Use .n() to get a numerical approximation::
-
-            sage: SR(0.5).log().n()
             -0.693147180559945
             sage: SR(0.5).log().exp()
             0.500000000000000
@@ -4761,8 +4694,6 @@ cdef class Expression(CommutativeRingElement):
             sage: SR(3).zeta()
             zeta(3)
             sage: SR(CDF(0,1)).zeta()
-            zeta(1.0*I)
-            sage: SR(CDF(0,1)).zeta().n()
             0.00330022368532 - 0.418155449141*I
             sage: CDF(0,1).zeta()
             0.00330022368532 - 0.418155449141*I
@@ -4852,15 +4783,8 @@ cdef class Expression(CommutativeRingElement):
             sage: SR(10).gamma()
             362880
             sage: SR(10.0r).gamma()
-            gamma(10.0000000000000)
-
-        Use .n() to get a numerical approximation::
-
-            sage: SR(10.0r).gamma().n()
             362880.000000000
             sage: SR(CDF(1,1)).gamma()
-            gamma(1.0 + 1.0*I)
-            sage: SR(CDF(1,1)).gamma().n()
             0.498015668118 - 0.154949828302*I
 
             sage: gp('gamma(1+I)') # 32-bit
