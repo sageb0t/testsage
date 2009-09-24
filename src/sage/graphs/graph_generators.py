@@ -2362,8 +2362,8 @@ class GraphGenerators():
         REFERENCES:
 
         - Lee, Hyeong-Ok, Jong-Seok Kim, Eunseuk Oh, and Hyeong-Seok Lim.
-         “Hyper-Star Graph: A New Interconnection Network Improving the
-         Network Cost of the Hypercube.” In Proceedings of the First EurAsian
+         "Hyper-Star Graph: A New Interconnection Network Improving the
+         Network Cost of the Hypercube." In Proceedings of the First EurAsian
          Conference on Information and Communication Technology, 858-865.
          Springer-Verlag, 2002.
 
@@ -2413,8 +2413,8 @@ class GraphGenerators():
 
         REFERENCES:
 
-        - Wei-Kuo, Chiang, and Chen Rong-Jaye. “The (n, k)-star graph: A
-        generalized star graph.” Information Processing Letters 56,
+        - Wei-Kuo, Chiang, and Chen Rong-Jaye. "The (n, k)-star graph: A
+        generalized star graph." Information Processing Letters 56,
         no. 5 (December 8, 1995): 259-264.
 
         AUTHORS:
@@ -2471,7 +2471,7 @@ class GraphGenerators():
 
         - S.B. Akers, D. Horel and B. Krishnamurthy, The star graph: An
         attractive alternative to the previous n-cube. In: Proc. Internat.
-        Conf. on Parallel Processing (1987), pp. 393–400.
+        Conf. on Parallel Processing (1987), pp. 393--400.
 
         AUTHORS:
 
