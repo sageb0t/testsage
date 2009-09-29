@@ -25,9 +25,7 @@ TESTS::
 #                  http://www.gnu.org/licenses/
 ################################################################################
 
-import operator
-
-import copy
+import operator, copy, re
 
 import sage.rings.rational
 import sage.rings.integer
@@ -1334,8 +1332,7 @@ cdef class Polynomial(CommutativeAlgebraElement):
 
         INPUT:
 
-        -  ``name`` - None or a string; used for printing the
-           variable.
+        - ``name`` - None or a string; used for printing the variable.
 
         EXAMPLES::
 
@@ -1346,6 +1343,9 @@ cdef class Polynomial(CommutativeAlgebraElement):
             '(-t^3 + 1)*x^3 - t^2*x^2 - x + 1'
             sage: f._repr('z')
             '(-t^3 + 1)*z^3 - t^2*z^2 - z + 1'
+            sage: P.<y> = RR[]
+            sage: y, -y
+            (y, -y)
         """
         s = " "
         m = self.degree() + 1
@@ -1371,9 +1371,9 @@ cdef class Polynomial(CommutativeAlgebraElement):
                     var = ""
                 s += "%s%s"%(x,var)
         s = s.replace(" + -", " - ")
-        s = s.replace(" 1*"," ")
-        s = s.replace(" -1*", " -")
-        if s==" ":
+        s = re.sub(r' 1(\.0+)?\*',' ', s)
+        s = re.sub(r' -1(\.0+)?\*',' -', s)
+        if s == " ":
             return "0"
         return s[1:]
 
@@ -1408,6 +1408,9 @@ cdef class Polynomial(CommutativeAlgebraElement):
             sage: f = X^3 - omega*X
             sage: latex(f)
             X^{3} - \omega X
+            sage: R.<x> = RDF[]
+            sage: latex(x+2)
+            x + 2.0
 
         The following illustrates the fix of trac #2586::
 
@@ -1438,8 +1441,8 @@ cdef class Polynomial(CommutativeAlgebraElement):
                     var = ""
                 s += "%s %s"%(x,var)
         s = s.replace(" + -", " - ")
-        s = s.replace(" 1 |"," ")
-        s = s.replace(" -1 |", " -")
+        s = re.sub(" 1(\.0+)? \|"," ", s)
+        s = re.sub(" -1(\.0+)? \|", " -", s)
         s = s.replace("|","")
         if s==" ":
             return "0"
@@ -1654,9 +1657,9 @@ cdef class Polynomial(CommutativeAlgebraElement):
             sage: S.<y> = PolynomialRing(RR)
             sage: f = y^10 - 1.393493*y + 0.3
             sage: f._mul_karatsuba(f)
-            1.00000000000000*y^20 - 2.78698600000000*y^11 + 0.600000000000000*y^10 + 1.11022302462516e-16*y^8 - 1.11022302462516e-16*y^6 - 1.11022302462516e-16*y^3 + 1.94182274104900*y^2 - 0.836095800000000*y + 0.0900000000000000
+            y^20 - 2.78698600000000*y^11 + 0.600000000000000*y^10 + 1.11022302462516e-16*y^8 - 1.11022302462516e-16*y^6 - 1.11022302462516e-16*y^3 + 1.94182274104900*y^2 - 0.836095800000000*y + 0.0900000000000000
             sage: f._mul_fateman(f)
-            1.00000000000000*y^20 - 2.78698600000000*y^11 + 0.600000000000000*y^10 + 1.94182274104900*y^2 - 0.836095800000000*y + 0.0900000000000000
+            y^20 - 2.78698600000000*y^11 + 0.600000000000000*y^10 + 1.94182274104900*y^2 - 0.836095800000000*y + 0.0900000000000000
 
         Advantages:
 
@@ -1965,7 +1968,7 @@ cdef class Polynomial(CommutativeAlgebraElement):
 
             sage: R.<x> = RR[]
             sage: f = x + RR('0.3'); f
-            1.00000000000000*x + 0.300000000000000
+            x + 0.300000000000000
             sage: f.denominator()
             Traceback (most recent call last):
             ...
@@ -2272,25 +2275,25 @@ cdef class Polynomial(CommutativeAlgebraElement):
 
             sage: R.<x> = RealField(100)[]
             sage: F = factor(x^2-3); F
-            (1.0000000000000000000000000000*x - 1.7320508075688772935274463415) * (1.0000000000000000000000000000*x + 1.7320508075688772935274463415)
+            (x - 1.7320508075688772935274463415) * (x + 1.7320508075688772935274463415)
             sage: expand(F)
-            1.0000000000000000000000000000*x^2 - 3.0000000000000000000000000000
+            x^2 - 3.0000000000000000000000000000
             sage: factor(x^2 + 1)
-            1.0000000000000000000000000000*x^2 + 1.0000000000000000000000000000
+            x^2 + 1.0000000000000000000000000000
             sage: C = ComplexField(100)
             sage: R.<x> = C[]
             sage: F = factor(x^2+3); F
-            (1.0000000000000000000000000000*x - 1.7320508075688772935274463415*I) * (1.0000000000000000000000000000*x + 1.7320508075688772935274463415*I)
+            (x - 1.7320508075688772935274463415*I) * (x + 1.7320508075688772935274463415*I)
             sage: expand(F)
-            1.0000000000000000000000000000*x^2 + 3.0000000000000000000000000000
+            x^2 + 3.0000000000000000000000000000
             sage: factor(x^2+1)
-            (1.0000000000000000000000000000*x - 1.0000000000000000000000000000*I) * (1.0000000000000000000000000000*x + 1.0000000000000000000000000000*I)
+            (x - I) * (x + I)
             sage: f = C.0 * (x^2 + 1) ; f
-            1.0000000000000000000000000000*I*x^2 + 1.0000000000000000000000000000*I
+            I*x^2 + I
             sage: F = factor(f); F
-            (1.0000000000000000000000000000*I) * (1.0000000000000000000000000000*x - 1.0000000000000000000000000000*I) * (1.0000000000000000000000000000*x + 1.0000000000000000000000000000*I)
+            (1.0000000000000000000000000000*I) * (x - I) * (x + I)
             sage: expand(F)
-            1.0000000000000000000000000000*I*x^2 + 1.0000000000000000000000000000*I
+            I*x^2 + I
 
         Over a complicated number field::
 
@@ -2331,7 +2334,7 @@ cdef class Polynomial(CommutativeAlgebraElement):
             sage: f.factor() # random output (unfortunately)
             (1.0*x - 1.00000859959) * (1.0*x^2 - 1.99999140041*x + 0.999991400484)
             sage: (-2*x^2 - 1).factor()
-            (-2.0) * (1.0*x^2 + 0.5)
+            (-2.0) * (x^2 + 0.5)
             sage: (-2*x^2 - 1).factor().expand()
             -2.0*x^2 - 1.0
 
@@ -3799,7 +3802,7 @@ cdef class Polynomial(CommutativeAlgebraElement):
             sage: f.roots()
             [(1.25992104989487, 1)]
             sage: f.factor()
-            (1.00000000000000*x - 1.25992104989487) * (1.00000000000000*x^2 + 1.25992104989487*x + 1.58740105196820)
+            (x - 1.25992104989487) * (x^2 + 1.25992104989487*x + 1.58740105196820)
             sage: x = RealField(100)['x'].0
             sage: f = x^3 -2
             sage: f.roots()
@@ -3878,7 +3881,7 @@ cdef class Polynomial(CommutativeAlgebraElement):
 
             sage: R.<x> = CDF[]
             sage: f = R.cyclotomic_polynomial(5); f
-            1.0*x^4 + 1.0*x^3 + 1.0*x^2 + 1.0*x + 1.0
+            x^4 + x^3 + x^2 + x + 1.0
             sage: f.roots(multiplicities=False)   # slightly random
             [0.309016994375 + 0.951056516295*I, 0.309016994375 - 0.951056516295*I, -0.809016994375 + 0.587785252292*I, -0.809016994375 - 0.587785252292*I]
             sage: [z^5 for z in f.roots(multiplicities=False)]     # slightly random
@@ -3902,7 +3905,7 @@ cdef class Polynomial(CommutativeAlgebraElement):
             sage: x = CDF['x'].0
             sage: i = CDF.0
             sage: f = x^3 + 2*i; f
-            1.0*x^3 + 2.0*I
+            x^3 + 2.0*I
             sage: f.roots()
             [(-1.09112363597 - 0.629960524947*I, 1),
              (... + 1.25992104989*I, 1),
@@ -3916,7 +3919,7 @@ cdef class Polynomial(CommutativeAlgebraElement):
              3.96533069372e-16 + 1.99840144433e-15*I,
              4.19092485179e-17 - 8.881784197e-16*I]
             sage: f = i*x^3 + 2; f
-            1.0*I*x^3 + 2.0
+            I*x^3 + 2.0
             sage: f.roots()
             [(-1.09112363597 + 0.629960524947*I, 1),
              (... - 1.25992104989*I, 1),
