@@ -3966,7 +3966,7 @@ cdef class BooleanPolynomial(MPolynomial):
 
 cdef class PolynomialFactory:
     """
-    Implements PolyBoRi's ``Polynomial()'' constructor.
+    Implements PolyBoRi's ``Polynomial()`` constructor.
     """
     def lead(self, x):
         """
@@ -4002,7 +4002,7 @@ cdef class PolynomialFactory:
 
 cdef class MonomialFactory:
     """
-    Implements PolyBoRi's ``Monomial()'' constructor.
+    Implements PolyBoRi's ``Monomial()`` constructor.
     """
     def __call__(self, x=None):
         """
@@ -4027,7 +4027,7 @@ cdef class MonomialFactory:
 
 cdef class VariableFactory:
     """
-    Implements PolyBoRi's ``Variable()'' constructor.
+    Implements PolyBoRi's ``Variable()`` constructor.
     """
     def __call__(self, x=None):
         """
