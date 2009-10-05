@@ -261,6 +261,11 @@ following information:
    "integer" for anything that behaves like an integer; you do not
    have to put a precise type name such as ``int``.
 
+-  Instead of INPUT and OUTPUT blocks, you can include descriptions of
+   the arguments and output using Sphinx/ReST markup, as described in
+   http://sphinx.pocoo.org/markup/desc.html#info-field-lists.  See
+   below for an example.
+
 -  An EXAMPLES block for examples. This is not optional. These
    examples are used for automatic testing before each release and new
    functions without these doctests will not be accepted for inclusion
@@ -284,9 +289,7 @@ following information:
    therefore whom to contact if they have questions).
 
 Use the following template when documenting functions. Note the
-indentation:
-
-::
+indentation::
 
     def point(self, x=1, y=2):
         r"""
@@ -294,7 +297,9 @@ indentation:
 
         INPUT:
 
-         - ``x`` - integer (default: 1) the ...
+         - ``x`` - integer (default: 1) the description of the
+	   argument x goes here.  If it contains multiple lines, all
+	   the lines after the first need to be indented.
 
          - ``y`` - integer (default: 2) the ...
 
@@ -344,6 +349,27 @@ indentation:
         - First_name Last_name (yyyy-mm-dd)
         """
         <body of the function>
+
+If you used Sphinx/ReST markup for the arguments, the beginning of the
+docstring would look like this::
+
+    def point(self, x=1, y=2):
+        r"""
+        This function returns the point `(x^5,y)`.
+
+        :param x: the description of the argument x goes here.
+	   If it contains multiple lines, all the lines after the
+	   first need to be indented.
+
+	:type x: integer; default 1
+
+	:param y: the ...
+
+	:type y: integer; default 2
+
+	:returns: the ...
+
+	:rtype: integer, the return type
 
 You are strongly encouraged to:
 
