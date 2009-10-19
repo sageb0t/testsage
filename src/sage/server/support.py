@@ -376,7 +376,7 @@ def variables(with_types=True):
         w = [x for x, v in sage_globals.iteritems() if \
              _is_new_var(x, v)]
     w.sort()
-    return w
+    return tuple(w)
 
 def syseval(system, cmd, dir=None):
     """
