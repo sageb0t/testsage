@@ -417,7 +417,7 @@ def _search_src_or_doc(what, string, extra1='', extra2='', extra3='', extra4='',
 def search_src(string, extra1='', extra2='', extra3='', extra4='', extra5='', interact=True, path_re='', module='sage'):
     r"""
     Search Sage library source code for lines containing ``string``.
-    The search is not case sensitive.
+    The search is case-sensitive.
 
     INPUT:
 
@@ -448,7 +448,7 @@ def search_src(string, extra1='', extra2='', extra3='', extra4='', extra5='', in
 
     The ``string`` and ``extraN`` arguments are treated as regular
     expressions, as is ``path_re``, and errors will be raised if they
-    are invalid. The matches will always be case-insensitive.
+    are invalid. The matches will always be case-sensitive.
 
     .. note::
 
@@ -498,6 +498,14 @@ def search_src(string, extra1='', extra2='', extra3='', extra4='', extra5='', in
         sage: print search_src(" fetch\(", "def", "pyx", interact=False) # random # long time
         matrix/matrix0.pyx:    cdef fetch(self, key):
 
+    As noted above, the search is case-sensitive::
+
+        sage: s = search_src('MatRiX', path_re='matrix', interact=False); s; s.find('x') > 0
+        ''
+        False
+        sage: s = search_src('Matrix', path_re='matrix', interact=False); s.find('x') > 0
+        True
+
     A little recursive narcissism: let's do a doctest that searches for
     this function's doctests. Note that you can't put "sage:" in the
     doctest string because it will get replaced by the Python ">>>"
@@ -539,7 +547,7 @@ def search_src(string, extra1='', extra2='', extra3='', extra4='', extra5='', in
 def search_doc(string, extra1='', extra2='', extra3='', extra4='', extra5='', interact=True, path_re=''):
     """
     Search Sage HTML documentation for lines containing ``string``. The
-    search is not case sensitive.
+    search is case-sensitive.
 
     The file paths in the output are relative to
     ``$SAGE_ROOT/devel/sage/doc/output``.
@@ -562,7 +570,7 @@ def search_doc(string, extra1='', extra2='', extra3='', extra4='', extra5='', in
 
     The ``string`` and ``extraN`` arguments are treated as regular
     expressions, as is ``path_re``, and errors will be raised if they
-    are invalid. The matches will always be case-insensitive.
+    are invalid. The matches will always be case-sensitive.
 
     In the command-line interface, each line of the results
     has the form ``filename:num:line of code``, where ``num`` is the
@@ -586,7 +594,7 @@ def search_doc(string, extra1='', extra2='', extra3='', extra4='', extra5='', in
 def search_def(name, extra1='', extra2='', extra3='', extra4='', extra5='', interact=True, path_re='', module='sage'):
     r"""
     Search Sage library source code for function definitions containing
-    ``name``. The search is not case sensitive.
+    ``name``. The search is case sensitive.
 
     INPUT:
 
@@ -612,7 +620,7 @@ def search_def(name, extra1='', extra2='', extra3='', extra4='', extra5='', inte
 
     The ``string`` and ``extraN`` arguments are treated as regular
     expressions, as is ``path_re``, and errors will be raised if they
-    are invalid. The matches will always be case-insensitive.
+    are invalid. The matches will always be case-sensitive.
 
     In the command-line interface, each line of the results has the form
     ``filename:num:line of code``, where ``num`` is the line number in
