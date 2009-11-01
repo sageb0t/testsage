@@ -141,7 +141,7 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
         Constructor from `[a_4,a_6]` sets `a_1=a_2=a_3=0`::
 
             sage: EllipticCurve([4,5]).ainvs()
-            [0, 0, 0, 4, 5]
+            (0, 0, 0, 4, 5)
 
         The base ring need not be a field::
 
@@ -475,7 +475,7 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
         return y**2 + a[0]*x*y + a[2]*y == x**3 + a[1]*x**2 + a[3]*x + a[4]
 
     def __call__(self, *args, **kwds):
-        """
+        r"""
         EXAMPLES::
 
             sage: E = EllipticCurve([0, 0, 1, -1, 0])
@@ -496,9 +496,7 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
             sage: P.curve()
             Elliptic Curve defined by y^2 + y = x^3 - x over Rational Field
 
-        Points can be specified by given a 2-tuple or 3-tuple
-
-        ::
+        Points can be specified by given a 2-tuple or 3-tuple::
 
             sage: E([0,0])
             (0 : 0 : 1)
@@ -511,9 +509,7 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
             sage: E(105, -69, 125)
             (21/25 : -69/125 : 1)
 
-        We create points on an elliptic curve over a prime finite field.
-
-        ::
+        We create points on an elliptic curve over a prime finite field::
 
             sage: E = EllipticCurve([GF(7)(0), 1])
             sage: E([2,3])
@@ -523,9 +519,7 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
             ...
             TypeError: Coordinates [0, 0, 1] do not define a point on Elliptic Curve defined by y^2 = x^3 + 1 over Finite Field of size 7
 
-        We create a point on an elliptic curve over a number field.
-
-        ::
+        We create a point on an elliptic curve over a number field::
 
             sage: x = polygen(RationalField())
             sage: K = NumberField(x**3 + x + 1, 'a'); a = K.gen()
@@ -623,7 +617,8 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
 
         EXAMPLES:
         Suppose we have a point with large height on a rational elliptic curve
-        whose denominator contains a factor of 11:
+        whose denominator contains a factor of 11::
+
             sage: E = EllipticCurve([1,-1,0,94,9])
             sage: R = E([0,3]) + 5*E([8,31])
             sage: factor(R.xy()[0].denominator())
@@ -631,13 +626,15 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
 
         Since 11 is a factor of the denominator, this point corresponds to the
         point at infinity on the same curve but reduced modulo 11. The reduce
-        function tells us this:
+        function tells us this::
+
             sage: E11 = E.change_ring(GF(11))
             sage: S = E11._reduce_point(R, 11)
             sage: E11(S)
             (0 : 1 : 0)
 
-        The 0 point reduces as expected:
+        The 0 point reduces as expected::
+
             sage: E11._reduce_point(E(0), 11)
             (0 : 1 : 0)
 
@@ -651,7 +648,7 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
         return R.curve().change_ring(rings.GF(p))([x*d, y*d, d])
 
     def is_x_coord(self, x):
-        """
+        r"""
         Returns True if ``x`` is the `x`-coordinate of a point on this curve.
 
         .. note::
@@ -843,7 +840,7 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
             raise ValueError, "No point with x-coordinate %s on %s"%(x, self)
 
     def _homset_class(self, *args, **kwds):
-        """
+        r"""
         Internal function. Returns the (abstract) group of points on this
         elliptic curve over a ring.
 
@@ -856,7 +853,7 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
         return homset.SchemeHomsetModule_abelian_variety_coordinates_field(*args, **kwds)
 
     def __getitem__(self, n):
-        """
+        r"""
         Placeholder for standard indexing function.
 
         EXAMPLES::
@@ -870,7 +867,7 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
         raise NotImplementedError, "not implemented."
 
     def __is_over_RationalField(self):
-        """
+        r"""
         Internal function. Returns true iff the base ring of this elliptic
         curve is the field of rational numbers.
 
@@ -886,7 +883,7 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
         return isinstance(self.base_ring(), rings.RationalField)
 
     def is_on_curve(self, x, y):
-        """
+        r"""
         Returns True if `(x,y)` is an affine point on this curve.
 
         INPUT:
@@ -905,35 +902,37 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
         return y**2 +a[0]*x*y + a[2]*y == x**3 + a[1]*x**2 + a[3]*x + a[4]
 
     def a_invariants(self):
-        """
-        The `a`-invariants of this elliptic curve, as a list.
+        r"""
+        The `a`-invariants of this elliptic curve, as a tuple.
 
         OUTPUT:
 
-        (list) - a (new) list of the 5 `a`-invariants.
+        (tuple) - a 5-tuple of the `a`-invariants of this elliptic curve.
 
         EXAMPLES::
 
             sage: E = EllipticCurve([1,2,3,4,5])
             sage: E.a_invariants()
-            [1, 2, 3, 4, 5]
+            (1, 2, 3, 4, 5)
             sage: E = EllipticCurve([0,1])
             sage: E
             Elliptic Curve defined by y^2 = x^3 + 1 over Rational Field
             sage: E.a_invariants()
-            [0, 0, 0, 0, 1]
+            (0, 0, 0, 0, 1)
             sage: E = EllipticCurve([GF(7)(3),5])
             sage: E.a_invariants()
-            [0, 0, 0, 3, 5]
+            (0, 0, 0, 3, 5)
 
-        We check that a new list is returned::
+        ::
 
             sage: E = EllipticCurve([1,0,0,0,1])
             sage: E.a_invariants()[0] = 100000000
-            sage: E
-            Elliptic Curve defined by y^2 + x*y = x^3 + 1 over Rational Field
+            Traceback (most recent call last):
+            ...
+            TypeError: 'tuple' object does not support item assignment
+
         """
-        return list(self.__ainvs)
+        return tuple(self.__ainvs)
 
     ainvs = a_invariants
 
@@ -998,7 +997,7 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
         return self.__ainvs[4]
 
     def b_invariants(self):
-        """
+        r"""
         Returns the `b`-invariants of this elliptic curve, as a tuple.
 
         OUTPUT:
@@ -1039,7 +1038,7 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
         try:
             return self.__b_invariants
         except AttributeError:
-            a1,a2,a3,a4,a6 = tuple(self.ainvs())
+            a1,a2,a3,a4,a6 = self.ainvs()
             self.__b_invariants = a1*a1 + 4*a2, \
                                   a1*a3 + 2*a4, \
                                   a3**2 + 4*a6, \
@@ -1172,7 +1171,7 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
         return self.c_invariants()[1]
 
     def discriminant(self):
-        """
+        r"""
         Returns the discriminant of this elliptic curve.
 
         EXAMPLES::
@@ -1258,7 +1257,7 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
     change_ring = base_extend
 
     def base_ring(self):
-        """
+        r"""
         Returns the base ring of the elliptic curve.
 
         EXAMPLES::
@@ -1282,7 +1281,7 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
         return self.__base_ring
 
     def gens(self):
-        """
+        r"""
         Placeholder function to return generators of an elliptic curve.
 
         .. note::
@@ -1305,7 +1304,7 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
         raise NotImplementedError, "not implemented."
 
     def gen(self, i):
-        """
+        r"""
         Function returning the i'th generator of this elliptic curve.
 
         .. note::
@@ -1379,7 +1378,7 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
         return self.change_weierstrass_model(1/u,0,0,0)
 
     def discriminant(self):
-        """
+        r"""
         Returns the discriminant of this elliptic curve.
 
         EXAMPLES::
@@ -1405,7 +1404,7 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
             return self.__discriminant
 
     def j_invariant(self):
-        """
+        r"""
         Returns the j-invariant of this elliptic curve.
 
         EXAMPLES::
@@ -2747,5 +2746,5 @@ class EllipticCurve_generic(plane_curve.ProjectiveCurve_generic):
             pass
 
         from sage.libs.pari.all import pari
-        self._pari_curve = pari(self.a_invariants()).ellinit(precision=prec)
+        self._pari_curve = pari(list(self.a_invariants())).ellinit(precision=prec)
         return self._pari_curve

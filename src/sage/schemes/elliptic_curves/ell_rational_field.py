@@ -143,7 +143,7 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
     short form (sets `a_1=a_2=a_3=0`)::
 
         sage: EllipticCurve([4,5]).ainvs()
-        [0, 0, 0, 4, 5]
+        (0, 0, 0, 4, 5)
 
     Construction from a database label::
 
@@ -173,7 +173,7 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
         Constructor from `[a_4,a_6]` sets `a_1=a_2=a_3=0`::
 
             sage: EllipticCurve([4,5]).ainvs()
-            [0, 0, 0, 4, 5]
+            (0, 0, 0, 4, 5)
 
         Constructor from a label::
 
@@ -186,7 +186,7 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
         if isinstance(ainvs, str):
             label = ainvs
             X = sage.databases.cremona.CremonaDatabase()[label]
-            EllipticCurve_number_field.__init__(self, Q, X.a_invariants())
+            EllipticCurve_number_field.__init__(self, Q, list(X.a_invariants()))
             for attr in ['rank', 'torsion_order', 'cremona_label', 'conductor',
                          'modular_degree', 'gens', 'regulator']:
                 s = "_EllipticCurve_rational_field__"+attr
@@ -294,7 +294,7 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
             Traceback (most recent call last):
             ...
             RuntimeError: Elliptic curve ... not in the database.
-            sage: E._set_conductor(EllipticCurve(E.a_invariants()).database_curve().conductor())
+            sage: E._set_conductor(EllipticCurve(list(E.a_invariants())).database_curve().conductor())
             sage: E.conductor()             # returns correct value
             37
         """
@@ -473,7 +473,7 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
         else:
             from sage.interfaces.all import Mwrank
             mwrank = Mwrank(options=options)
-        return mwrank(self.a_invariants())
+        return mwrank(list(self.a_invariants()))
 
     def conductor(self, algorithm="pari"):
         """
@@ -533,7 +533,7 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
             try:
                 return self.__conductor_gp
             except AttributeError:
-                self.__conductor_gp = Integer(gp.eval('ellglobalred(ellinit(%s,0))[1]'%self.a_invariants()))
+                self.__conductor_gp = Integer(gp.eval('ellglobalred(ellinit(%s,0))[1]'%list(self.a_invariants())))
                 return self.__conductor_gp
 
         elif algorithm == "mwrank":
@@ -646,7 +646,7 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
         # EllipticCurve('903b3').pari_curve() fails without this loop:
         while True:
             try:
-                self._pari_curve[prec] = pari(self.a_invariants()).ellinit(precision=prec)
+                self._pari_curve[prec] = pari(list(self.a_invariants())).ellinit(precision=prec)
                 return self._pari_curve[prec]
             except PariError:
                 prec *= 2
@@ -736,7 +736,7 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
         except AttributeError:
             misc.verbose("Looking up %s in the database."%self)
             D = sage.databases.cremona.CremonaDatabase()
-            ainvs = self.minimal_model().ainvs()
+            ainvs = list(self.minimal_model().ainvs())
             try:
                 self.__database_curve = D.elliptic_curve_from_ainvs(self.conductor(), ainvs)
             except RuntimeError:
@@ -804,7 +804,7 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
             1000000000000001426441464441649
         """
         p = rings.Integer(p)
-        return sea.ellsea(self.minimal_model().a_invariants(), p, early_abort=early_abort)
+        return sea.ellsea(list(self.minimal_model().a_invariants()), p, early_abort=early_abort)
 
     #def __pari_double_prec(self):
     #    EllipticCurve_number_field._EllipticCurve__pari_double_prec(self)
@@ -840,7 +840,7 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
         except AttributeError:
             pass
         self.__mwrank_curve = mwrank.mwrank_EllipticCurve(
-            self.ainvs(), verbose=verbose)
+            list(self.ainvs()), verbose=verbose)
         return self.__mwrank_curve
 
     def two_descent(self, verbose=True,
@@ -1320,7 +1320,7 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
             RuntimeError: failed to compute analytic rank
         """
         if algorithm == 'cremona':
-            return rings.Integer(gp_cremona.ellanalyticrank(self.minimal_model().a_invariants()))
+            return rings.Integer(gp_cremona.ellanalyticrank(list(self.minimal_model().a_invariants())))
         elif algorithm == 'rubinstein':
             try:
                 from sage.lfunctions.lcalc import lcalc
@@ -1386,12 +1386,12 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
              Elliptic Curve defined by y^2 + y = x^3 - x^2 over Rational Field]
         """
         if p is None:
-            X = eval(gp_cremona.allisog(self.minimal_model().a_invariants()))
+            X = eval(gp_cremona.allisog(list(self.minimal_model().a_invariants())))
             Y = [(p, [constructor.EllipticCurve(ainvs) for ainvs in L]) for p, L in X]
             Y.sort()
             return Y
         else:
-            X = eval(gp_cremona.p_isog(self.minimal_model().a_invariants(), p))
+            X = eval(gp_cremona.p_isog(list(self.minimal_model().a_invariants()), p))
             Y = [constructor.EllipticCurve(ainvs) for ainvs in X]
             Y.sort()
             return Y
@@ -3000,7 +3000,7 @@ class EllipticCurve_rational_field(EllipticCurve_number_field):
                   ai = [ai[i]/p**(e*[1,2,3,4,6][i]) for i in range(5)]
         for z in ai:
             assert z.denominator() == 1, "bug in global_integral_model: %s" % ai
-        return constructor.EllipticCurve(ai)
+        return constructor.EllipticCurve(list(ai))
 
     integral_model = global_integral_model
 
