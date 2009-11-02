@@ -1831,8 +1831,7 @@ class PermutationGroup_generic(group.FiniteGroup):
 
     def is_isomorphic(self, right):
         """
-        Return ``True`` if the groups are isomorphic. If mode="verbose" then an
-        isomorphism is printed.
+        Return ``True`` if the groups are isomorphic.
 
         INPUT:
 
