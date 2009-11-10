@@ -1023,6 +1023,19 @@ class Maxima(Expect):
         """
         return '='
 
+    def _inequality_symbol(self):
+        """
+        Returns the equality symbol in Maxima.
+
+        EXAMPLES::
+
+             sage: maxima._inequality_symbol()
+             '#'
+             sage: maxima((x != 1))
+             x#1
+        """
+        return '#'
+
     def function(self, args, defn, rep=None, latex=None):
         """
         Return the Maxima function with given arguments and definition.
@@ -1628,7 +1641,7 @@ class MaximaElement(ExpectElement):
             True
         """
         P = self._check_valid()
-        return P.eval('is(%s = 0);'%self.name()) == P._false_symbol()
+        return P.eval('is(%s = 0);'%self.name()) == P._false_symbol() # but be careful, since for relations things like is(equal(a,b)) are what Maxima needs
 
     def __cmp__(self, other):
         """
@@ -1654,6 +1667,7 @@ class MaximaElement(ExpectElement):
         """
 
         # thanks to David Joyner for telling me about using "is".
+        # but be careful, since for relations things like is(equal(a,b)) are what Maxima needs
         P = self.parent()
         try:
             if P.eval("is (%s < %s)"%(self.name(), other.name())) == P._true_symbol():
