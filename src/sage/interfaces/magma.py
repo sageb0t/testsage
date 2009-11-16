@@ -145,11 +145,17 @@ coercion system compared to Sage's::
     sage: y * 1.0                                                         # optional - magma
     Traceback (most recent call last):
     ...
-    TypeError: unsupported operand parent(s) for '*': 'Magma' and 'Real Field with 53 bits of precision'
+    TypeError: Error evaluating Magma code.
+    ...
+    Runtime error in '*': Bad argument types
+    Argument types given: RngUPolElt[RngInt], FldReElt
     sage: y * (2/3)                                                       # optional - magma
     Traceback (most recent call last):
     ...
-    TypeError: unsupported operand parent(s) for '*': 'Magma' and 'Rational Field'
+    TypeError: Error evaluating Magma code.
+    ...
+    Runtime error in '*': Bad argument types
+    Argument types given: RngUPolElt[RngInt], FldRatElt
 
 AUTHORS:
 
@@ -444,7 +450,7 @@ class Magma(Expect):
         ::
 
             sage: magma.eval("a := %s;"%(10^10000))    # optional - magma
-            "
+            ''
         """
         x = self._preparse(x)
         x = str(x).rstrip()
@@ -563,11 +569,11 @@ class Magma(Expect):
             sage: S = magma.objgens(R, 'X,Y')          # optional - magma
             sage: R                                    # optional - magma
             Polynomial ring of rank 2 over Rational Field
-            Lexicographical Order
+            Order: Lexicographical
             Variables: X, Y
             sage: S                                    # optional - magma
             Polynomial ring of rank 2 over Rational Field
-            Lexicographical Order
+            Order: Lexicographical
             Variables: X, Y
         """
         var = self._next_var_name()
@@ -600,7 +606,7 @@ class Magma(Expect):
             Power series ring in t over Rational Field
             sage: magma('PolynomialRing(RationalField(), 3)', 'x,y,z')  # optional - magma
             Polynomial ring of rank 3 over Rational Field
-            Lexicographical Order
+            Order: Lexicographical
             Variables: x, y, z
 
         We test a coercion between different Magma instances::
@@ -835,11 +841,11 @@ class Magma(Expect):
 
         EXAMPLES: Attaching a file that exists is fine::
 
-            sage: magma.attach('%s/data/extcode/magma/sage/basic.m'%Sage_ROOT)    # optional - magma
+            sage: magma.attach('%s/data/extcode/magma/sage/basic.m'%SAGE_ROOT)    # optional - magma
 
         Attaching a file that doesn't exist raises an exception::
 
-            sage: magma.attach('%s/data/extcode/magma/sage/basic2.m'%Sage_ROOT)     # optional - magma
+            sage: magma.attach('%s/data/extcode/magma/sage/basic2.m'%SAGE_ROOT)     # optional - magma
             Traceback (most recent call last):
             ...
             RuntimeError: Error evaluating Magma code...
@@ -981,7 +987,7 @@ class Magma(Expect):
             101
             sage: magma.function_call('PolynomialRing', [QQ,2])      # optional - magma
             Polynomial ring of rank 2 over Rational Field
-            Lexicographical Order
+            Order: Lexicographical
             Variables: $.1, $.2
 
         Next, we illustrate multiple return values::
@@ -1371,8 +1377,9 @@ class Magma(Expect):
             sage: R.<x,y> = QQ[]
             sage: magma.ideal([x^2, y^3*x])         # optional - magma
             Ideal of Polynomial ring of rank 2 over Rational Field
-            Graded Reverse Lexicographical Order
+            Order: Graded Reverse Lexicographical
             Variables: x, y
+            Homogeneous
             Basis:
             [
             x^2,
@@ -2000,7 +2007,7 @@ class MagmaElement(ExpectElement):
             sage: V                                             # optional - magma
             Full Vector space of degree 2 over GF(3)
             sage: w = V.__iter__(); w                           # optional - magma
-            <generator object at ...>
+            <generator object __iter__ at ...>
             sage: w.next()                                      # optional - magma
             (0 0)
             sage: w.next()                                      # optional - magma
@@ -2090,7 +2097,7 @@ class MagmaElement(ExpectElement):
         ::
 
             sage: magma.eval('R<x> := PolynomialRing(RationalField()); f := (x-17/2)^3;')     # optional - magma
-            "
+            ''
             sage: latex(magma('f'))                               # optional - magma
             x^{3}-\frac{51}{2}x^{2}+\frac{867}{4}x-\frac{4913}{8}
 
@@ -2102,7 +2109,7 @@ class MagmaElement(ExpectElement):
         ::
 
             sage: magma.eval('K<a> := CyclotomicField(11)')       # optional - magma
-            "
+            ''
             sage: latex(magma('a^3 + a - 17/3'))                  # optional - magma
             \frac{-17}{3}+\zeta_{11}+\zeta_{11}^{3}
 
