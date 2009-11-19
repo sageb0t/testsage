@@ -769,6 +769,7 @@ code = setup(name = 'sage',
                      'sage.calculus',
 
                      'sage.categories',
+                     'sage.categories.examples',
 
                      'sage.coding',
 
