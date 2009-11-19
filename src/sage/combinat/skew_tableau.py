@@ -774,7 +774,7 @@ class StandardSkewTableaux_n(CombinatorialClass):
                 yield sst
 
 class StandardSkewTableaux_skewpartition(CombinatorialClass):
-    object_class = SkewTableau_class
+    Element = SkewTableau_class
     def __init__(self, skp):
         """
         TESTS::

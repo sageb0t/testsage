@@ -2413,7 +2413,8 @@ class RestrictedPartitions_nsk(CombinatorialClass):
         self.S = S
         self.S.sort()
         self.k = k
-        self.object_class = Partition_class
+
+    Element = Partition_class
 
     def __contains__(self, x):
         """
@@ -2541,7 +2542,7 @@ class PartitionTuples_nk(CombinatorialClass):
         self.n = n
         self.k = k
 
-    object_class = Partition_class
+    Element = Partition_class
 
     def __contains__(self, x):
         """
@@ -2904,7 +2905,7 @@ class Partitions_all(InfiniteAbstractCombinatorialClass):
         """
         pass
 
-    object_class = Partition_class
+    Element = Partition_class
 
     def cardinality(self):
         """
@@ -2976,7 +2977,7 @@ class Partitions_all(InfiniteAbstractCombinatorialClass):
         return Partitions_n(n)
 
 class Partitions_n(CombinatorialClass):
-    object_class = Partition_class
+    Element = Partition_class
     def __init__(self, n):
         """
         TESTS::
@@ -3157,7 +3158,7 @@ class Partitions_n(CombinatorialClass):
             yield p + [1]
 
 class Partitions_parts_in(CombinatorialClass):
-    object_class = Partition_class
+    Element = Partition_class
     def __init__(self, n, parts):
         """
         TESTS::
@@ -3558,7 +3559,8 @@ class PartitionsInBox_hw(CombinatorialClass):
         self.h = h
         self.w = w
         self._name = "Integer partitions which fit in a %s x %s box" % (self.h, self.w)
-        self._object_class = Partition_class
+
+    Element = Partition_class
 
     def __contains__(self, x):
         """

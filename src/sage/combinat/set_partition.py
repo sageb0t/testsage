@@ -141,7 +141,7 @@ def SetPartitions(s, part=None):
         return SetPartitions_set(set)
 
 class SetPartitions_setparts(CombinatorialClass):
-    object_class = Set_object_enumerated
+    Element = Set_object_enumerated
     def __init__(self, set, parts):
         """
         TESTS::

@@ -643,7 +643,7 @@ class SkewPartitions_all(CombinatorialClass):
         """
         pass
 
-    object_class = SkewPartition_class
+    Element = SkewPartition_class
 
     def __contains__(self, x):
         """
@@ -769,7 +769,7 @@ class SkewPartitions_n(CombinatorialClass):
         else:
             self.overlap = overlap
 
-    object_class = SkewPartition_class
+    Element = SkewPartition_class
 
     def __contains__(self, x):
         """
@@ -948,7 +948,7 @@ class SkewPartitions_rowlengths(CombinatorialClass):
         else:
             self.overlap = overlap
 
-    object_class = SkewPartition_class
+    Element = SkewPartition_class
 
     def __contains__(self, x):
         """
