@@ -374,3 +374,21 @@ class CachedInParentMethod(CachedMethod):
         return self._instance.parent().__dict__.setdefault(self._cache_name, {})
 
 cached_in_parent_method = CachedInParentMethod
+
+class ClearCacheOnPickle(object):
+    """
+    This class implements an appropriate __getstate__ method that
+    clears the cache of the methods (see @cached_method) before
+    passing them on to the caller, typically the pickle and copy modules.
+
+    The implemented __getstate__ method calls the __getstate__ methods
+    of classes later in the method resolution order. Therefore,
+    classes which wants this behaviour should inherit first from this
+    one.
+
+    """
+
+    def __getstate__(self):
+        """
+        """
+        return dict( (key, value) for (key, value) in super(ClearCacheOnPickle, self).__getstate__().iteritems() if not (type(key) == str and key[0:8] == '_cache__') )

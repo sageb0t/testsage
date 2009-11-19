@@ -101,3 +101,10 @@ from graded_algebras_with_basis      import GradedAlgebrasWithBasis
 from graded_coalgebras_with_basis    import GradedCoalgebrasWithBasis
 from graded_bialgebras_with_basis    import GradedBialgebrasWithBasis
 from graded_hopf_algebras_with_basis import GradedHopfAlgebrasWithBasis
+
+# coxeter groups
+from coxeter_groups import CoxeterGroups
+from finite_coxeter_groups import FiniteCoxeterGroups
+from weyl_groups import WeylGroups
+from finite_weyl_groups import FiniteWeylGroups
+from affine_weyl_groups import AffineWeylGroups

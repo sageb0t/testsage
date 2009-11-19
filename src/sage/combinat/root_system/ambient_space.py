@@ -1,9 +1,20 @@
+r"""
+Ambient spaces
+"""
+#*****************************************************************************
+#       Copyright (C) 2008-2009 Daniel Bump
+#       Copyright (C) 2008-2009 Nicolas M. Thiery <nthiery at users.sf.net>,
+#
+#  Distributed under the terms of the GNU General Public License (GPL)
+#                  http://www.gnu.org/licenses/
+#*****************************************************************************
 from sage.combinat.free_module import CombinatorialFreeModule, CombinatorialFreeModuleElement
 from root_lattice_realization import RootLatticeRealizationElement
 from weight_lattice_realization import WeightLatticeRealization
-from sage.rings.all import ZZ, QQ
+from sage.rings.all import QQ
+from sage.misc.cachefunc import ClearCacheOnPickle
 
-class AmbientSpace(CombinatorialFreeModule, WeightLatticeRealization):
+class AmbientSpace(ClearCacheOnPickle, CombinatorialFreeModule, WeightLatticeRealization):
     r"""
     Abstract class for ambient spaces
 
@@ -12,13 +23,34 @@ class AmbientSpace(CombinatorialFreeModule, WeightLatticeRealization):
     working on a partially initialized instance with just root_system
     as attribute. There is no safe default implementation for the later,
     so none is provided.
+
+    EXAMPLES::
+
+        sage: AL = RootSystem(['A',2]).ambient_lattice()
+
+    Caveat: Most of the ambient spaces currently have a basis indexed
+    by `0,\dots, n`, unlike the usual mathematical convention::
+
+        sage: e = AL.basis()
+        sage: e[0], e[1], e[2]
+        ((1, 0, 0), (0, 1, 0), (0, 0, 1))
+
+    This will be cleaned up!
+
+    TESTS::
+        sage: types = CartanType.samples(finite=True, crystalographic = True)
+        sage: for e in [ct.root_system().ambient_space() for ct in types]:
+        ...       if e is not None:
+        ...            TestSuite(e).run()
+
     """
     def __init__(self, root_system, base_ring):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: e = RootSystem(['A',3]).ambient_lattice()
-            sage: e == loads(dumps(e))
-            True
+            sage: s = e.simple_reflections()
+
         """
         self.root_system = root_system
         CombinatorialFreeModule.__init__(self, base_ring,
@@ -30,12 +62,28 @@ class AmbientSpace(CombinatorialFreeModule, WeightLatticeRealization):
         # Should we use dimension everywhere?
         self.n = self.dimension()
 
+    def _test_norm_of_simple_roots(self, **options):
+        """
+        Tests that the norm of the roots is, up to an overal constant factor,
+        the norm of the roots is given by the symmetrizer of the Cartan matrix.
+
+        Not yet implemented for reducible Cartan types.
+        """
+        tester = self._tester(**options)
+        T = self.cartan_type()
+        if T.is_reducible():
+            return
+        D = T.symmetrizer()
+        alpha = self.simple_roots()
+        tester.assertEquals(len( set( alpha[i].scalar(alpha[i]) / D[i] for i in self.index_set() ) ), 1)
+
     # FIXME: attribute or method?
     def dimension(self):
         """
         Returns the dimension of this ambient space.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.combinat.root_system.ambient_space import AmbientSpace
             sage: e = RootSystem(['F',4]).ambient_space()
             sage: AmbientSpace.dimension(e)
@@ -51,16 +99,18 @@ class AmbientSpace(CombinatorialFreeModule, WeightLatticeRealization):
         """
         Returns the smallest ground ring over which the ambient space can be realized.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: e = RootSystem(['F',4]).ambient_space()
             sage: e.smallest_base_ring()
             Rational Field
         """
         return QQ
 
-    def __repr__(self):
+    def _repr_(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: RootSystem(['A',4]).ambient_lattice()
             Ambient lattice of the Root system of type ['A', 4]
             sage: RootSystem(['B',4]).ambient_space()
@@ -71,7 +121,8 @@ class AmbientSpace(CombinatorialFreeModule, WeightLatticeRealization):
 
     def _name_string(self, capitalize=True, base_ring=False, type=True):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: RootSystem(['A',4]).ambient_lattice()._name_string()
             "Ambient lattice of the Root system of type ['A', 4]"
 
@@ -80,7 +131,8 @@ class AmbientSpace(CombinatorialFreeModule, WeightLatticeRealization):
 
     def __call__(self, v):
         """
-        TESTS:
+        TESTS::
+
             sage: R = RootSystem(['A',4]).ambient_lattice()
             sage: R([1,2,3,4,5])
             (1, 2, 3, 4, 5)
@@ -98,7 +150,8 @@ class AmbientSpace(CombinatorialFreeModule, WeightLatticeRealization):
         """
         Note that indexing starts at 1.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: e = RootSystem(['A',2]).ambient_lattice()
             sage: e[1]
             (1, 0, 0)
@@ -107,7 +160,8 @@ class AmbientSpace(CombinatorialFreeModule, WeightLatticeRealization):
 
     def coroot_lattice(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: e = RootSystem(["A", 3]).ambient_lattice()
             sage: e.coroot_lattice()
             Ambient lattice of the Root system of type ['A', 3]
@@ -118,7 +172,8 @@ class AmbientSpace(CombinatorialFreeModule, WeightLatticeRealization):
         r"""
         Returns the i-th simple coroot, as an element of this space
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: R = RootSystem(["A",3])
             sage: L = R.ambient_lattice()
             sage: L.simple_coroot(1)
@@ -132,7 +187,8 @@ class AmbientSpace(CombinatorialFreeModule, WeightLatticeRealization):
 
     def reflection(self, root, coroot=None):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: e = RootSystem(["A", 3]).ambient_lattice()
             sage: a = e.simple_root(0); a
             (-1, 0, 0, 0)
@@ -147,20 +203,10 @@ class AmbientSpace(CombinatorialFreeModule, WeightLatticeRealization):
         # (i.e. scalar and associated coroot are implemented)
         return lambda v: v - root.base_ring()(2*root.inner_product(v)/root.inner_product(root))*root
 
-    def _term(self, i):
-        """
-        Note that indexing starts at 0.
-
-        EXAMPLES:
-            sage: e = RootSystem(['A',2]).ambient_lattice()
-            sage: e._term(0)
-            (1, 0, 0)
-        """
-        return self.term(i)
-
     def __cmp__(self, other):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: e1 = RootSystem(['A',3]).ambient_lattice()
             sage: e2 = RootSystem(['B',3]).ambient_lattice()
             sage: e1 == e1
@@ -187,9 +233,10 @@ class AmbientSpaceElement(CombinatorialFreeModuleElement, RootLatticeRealization
         return hash(tuple(sorted([(m,c) for m,c in self._monomial_coefficients.iteritems()])))
 
     # For backward compatibility
-    def __repr__(self):
+    def _repr_(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: e = RootSystem(['A',2]).ambient_space()
             sage: e.simple_root(0)
             (-1, 0, 0)
@@ -201,7 +248,8 @@ class AmbientSpaceElement(CombinatorialFreeModuleElement, RootLatticeRealization
         The scalar product with elements of the coroot lattice
         embedded in the ambient space.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: e = RootSystem(['A',2]).ambient_space()
             sage: a = e.simple_root(0); a
             (-1, 0, 0)
@@ -211,7 +259,7 @@ class AmbientSpaceElement(CombinatorialFreeModuleElement, RootLatticeRealization
         self_mc = self._monomial_coefficients
         lambdacheck_mc = lambdacheck._monomial_coefficients
 
-        result = self.parent().base_ring().zero_element()
+        result = self.parent().base_ring().zero()
         for t,c in lambdacheck_mc.iteritems():
             if t not in self_mc:
                 continue
@@ -223,7 +271,8 @@ class AmbientSpaceElement(CombinatorialFreeModuleElement, RootLatticeRealization
 
     def associated_coroot(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: e = RootSystem(['F',4]).ambient_space()
             sage: a = e.simple_root(0); a
             (1/2, -1/2, -1/2, -1/2)
@@ -233,3 +282,17 @@ class AmbientSpaceElement(CombinatorialFreeModuleElement, RootLatticeRealization
         """
         # FIXME: make it work over ZZ!
         return self * self.base_ring()(2/self.inner_product(self))
+
+    def is_positive_root(self):
+        """
+        EXAMPLES::
+
+            sage: R = RootSystem(['A',3]).ambient_space()
+            sage: r=R.simple_root(1)+R.simple_root(2)
+            sage: r.is_positive_root()
+            True
+            sage: r=R.simple_root(1)-R.simple_root(2)
+            sage: r.is_positive_root()
+            False
+        """
+        return self.parent().rho().scalar(self) > 0
