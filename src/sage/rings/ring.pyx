@@ -276,10 +276,10 @@ cdef class Ring(ParentWithGens):
 
         EXAMPLES::
 
-            sage: QQ['x,y'].category()
+            sage: FreeAlgebra(QQ, 3, 'x').category() # todo: use a ring which is not an algebra!
             Category of rings
         """
-        from sage.categories.all import Rings
+        from sage.categories.rings import Rings
         return Rings()
 
     def ideal(self, *x, **kwds):
@@ -425,6 +425,8 @@ cdef class Ring(ParentWithGens):
             return x
         return self._zero_element
 
+    zero = zero_element # transitional
+
     def one_element(self):
         """
         Return the one element of this ring (cached), if it exists.
@@ -448,6 +450,8 @@ cdef class Ring(ParentWithGens):
             self._one_element = x
             return x
         return self._one_element
+
+    one = one_element # Transitional
 
     def is_atomic_repr(self):
         """
@@ -939,6 +943,17 @@ cdef class CommutativeRing(Ring):
         """
         import sage.modules.all
         return sage.modules.all.FreeModule(self, n)
+
+    def category(self):
+        """
+        Return the category to which this ring belongs.
+
+        EXAMPLES:
+            sage: QQ['x,y'].category()
+            Category of commutative rings
+        """
+        from sage.categories.commutative_rings import CommutativeRings
+        return CommutativeRings()
 
     def is_commutative(self):
         """
@@ -1556,7 +1571,7 @@ cdef class Field(PrincipalIdealDomain):
             sage: F.category()
             Category of number fields
         """
-        from sage.categories.all import Fields
+        from sage.categories.fields import Fields
         return Fields()
 
     def fraction_field(self):
@@ -2543,7 +2558,8 @@ def is_Ring(x):
         sage: is_Ring(ZZ)
         True
     """
-    return isinstance(x, Ring)
+    from sage.categories.rings import Rings
+    return isinstance(x, Ring) or x in Rings()
 
 from sage.structure.parent_gens import _certify_names
 
