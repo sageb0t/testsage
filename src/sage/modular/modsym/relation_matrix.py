@@ -382,7 +382,8 @@ def compute_presentation(syms, sign, field, sparse=None):
 
         sage: L = sage.modular.modsym.manin_symbols.ManinSymbolList_gamma0(8,2)
         sage: sage.modular.modsym.relation_matrix.compute_presentation(L, 1, GF(9,'a'), True)
-        ([2 0 0]
+        (
+        [2 0 0]
         [1 0 0]
         [0 0 0]
         [0 2 0]
@@ -393,7 +394,8 @@ def compute_presentation(syms, sign, field, sparse=None):
         [0 0 0]
         [0 1 0]
         [0 1 0]
-        [0 0 1], [1, 9, 11], [(1, 2), (1, 1), (0, 0), (9, 2), (0, 0), (11, 2), (0, 0), (9, 2), (0, 0), (9, 1), (9, 1), (11, 1)])
+        [0 0 1], [1, 9, 11], [(1, 2), (1, 1), (0, 0), (9, 2), (0, 0), (11, 2), (0, 0), (9, 2), (0, 0), (9, 1), (9, 1), (11, 1)]
+        )
     """
     if sparse is None:
         if syms.weight() >= 6:
@@ -433,22 +435,12 @@ def relation_matrix_wtk_g0(syms, sign, field, sparse):
 
         sage: L =  sage.modular.modsym.manin_symbols.ManinSymbolList_gamma0(8,2)
         sage: A = sage.modular.modsym.relation_matrix.relation_matrix_wtk_g0(L, 0, GF(2), True); A
-        ([0 0 0 0 0 0 0 0 1 0 0 0]
+        (
+        [0 0 0 0 0 0 0 0 1 0 0 0]
         [0 0 0 0 0 0 0 0 1 1 1 0]
         [0 0 0 0 0 0 1 0 0 1 1 0]
-        [0 0 0 0 0 0 1 0 0 0 0 0],
-         [(1, 1),
-          (1, 1),
-          (8, 1),
-          (10, 1),
-          (6, 1),
-          (11, 1),
-          (6, 1),
-          (9, 1),
-          (8, 1),
-          (9, 1),
-          (10, 1),
-          (11, 1)])
+        [0 0 0 0 0 0 1 0 0 0 0 0], [(1, 1), (1, 1), (8, 1), (10, 1), (6, 1), (11, 1), (6, 1), (9, 1), (8, 1), (9, 1), (10, 1), (11, 1)]
+        )
         sage: A[0].is_sparse()
         True
     """
