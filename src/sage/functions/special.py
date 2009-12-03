@@ -363,7 +363,7 @@ from sage.rings.all import ZZ, QQ, RR, RDF
 import sage.rings.commutative_ring as commutative_ring
 import sage.rings.ring as ring
 from sage.functions.other import real, imag
-from sage.symbolic.function import PrimitiveFunction, SFunction
+from sage.symbolic.function import BuiltinFunction
 from sage.calculus.calculus import maxima, symbolic_expression_from_maxima_element
 
 def meval(x):
@@ -379,7 +379,7 @@ def _init():
     maxima.eval('orthopoly_returns_intervals:false;')
     _done = True
 
-class MaximaFunction(PrimitiveFunction):
+class MaximaFunction(BuiltinFunction):
     def __init__(self, name, nargs=2, conversions={}):
         """
         EXAMPLES::
@@ -393,10 +393,8 @@ class MaximaFunction(PrimitiveFunction):
         """
         c = dict(maxima=name)
         c.update(conversions)
-        PrimitiveFunction.__init__(self, name=name, nargs=nargs,
+        BuiltinFunction.__init__(self, name=name, nargs=nargs,
                                    conversions=c)
-
-    __call__ = SFunction.__call__
 
     def _maxima_init_evaled_(self, *args):
         """
@@ -410,8 +408,15 @@ class MaximaFunction(PrimitiveFunction):
             sage: f._maxima_init_evaled_(1/2, 1/2)
             'jacobi_sn(1/2, 1/2)'
         """
-        return "%s(%s)"%(self.name(),
-                             ", ".join([(a if isinstance(a,str) else a._maxima_init_()) for a in args]))
+        args_maxima = []
+        for a in args:
+            if isinstance(a, str):
+                args_maxima.append(a)
+            elif hasattr(a, '_maxima_init_'):
+                args_maxima.append(a._maxima_init_())
+            else:
+                args_maxima.append(str(a))
+        return "%s(%s)"%(self.name(), ', '.join(args_maxima))
 
     def _evalf_(self, *args, **kwds):
         """
@@ -427,9 +432,6 @@ class MaximaFunction(PrimitiveFunction):
             sage: f(1/2,1/2).n()
             0.470750473655657
 
-            sage: f._evalf_(1/2, 1/2)
-            0.470750473655657
-
         TESTS::
 
             sage: f(1/2,1/2).n(150)
@@ -437,11 +439,11 @@ class MaximaFunction(PrimitiveFunction):
             ...
             NotImplementedError: jacobi_sn not implemented for precision > 53
         """
-        prec = kwds.get('prec', 0)
-        if prec > 53:
+        parent = kwds['parent']
+        if hasattr(parent, 'prec') and parent.prec() > 53:
             raise NotImplementedError, "%s not implemented for precision > 53"%self.name()
         _init()
-        return RR(maxima("%s, numer"%self._maxima_init_evaled_(*args)))
+        return parent(maxima("%s, numer"%self._maxima_init_evaled_(*args)))
 
     def _eval_(self, *args):
         """
@@ -476,7 +478,7 @@ class MaximaFunction(PrimitiveFunction):
 from sage.misc.cachefunc import cached_function
 
 @cached_function
-def maxima_function(*args, **kwds):
+def maxima_function(name):
     """
     Returns a function which is evaluated both symbolically and
     numerically via Maxima.  In particular, it returns an instance
@@ -488,7 +490,14 @@ def maxima_function(*args, **kwds):
        function are not created.
 
     """
-    return MaximaFunction(*args, **kwds)
+    # The superclass of MaximaFunction, BuiltinFunction, assumes that there
+    # will be only one symbolic function with the same name and class.
+    # We create a new class for each Maxima function wrapped.
+    class NewMaximaFunction(MaximaFunction):
+        def __init__(self):
+            MaximaFunction.__init__(self, name)
+
+    return NewMaximaFunction()
 
 def airy_ai(x):
    r"""
@@ -1281,17 +1290,6 @@ class EllipticPi(MaximaFunction):
         MaximaFunction.__init__(self, "elliptic_pi", nargs=3)
 
 elliptic_pi = EllipticPi()
-
-## Now implemented using polylog in calculus.py:
-## def dilog(t):
-##    """
-##    Te dilogarithm of t is the analytic continuation of the
-##    power series $\sum_{n \geq 1} t^n/n^2$.
-##    """
-##    try:
-##        return t.dilog()
-##    except AttributeError:
-##        raise NotImplementedError
 
 def lngamma(t):
     r"""
