@@ -1736,7 +1736,7 @@ class MaximaElement(ExpectElement):
         EXAMPLES::
 
             sage: complex(maxima('sqrt(-2)+1'))
-            (1+1.4142135623730947j)
+            (1+1.4142135623730951j)
         """
         return complex(self._sage_())
 
