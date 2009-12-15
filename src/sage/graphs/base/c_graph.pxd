@@ -39,5 +39,5 @@ cdef class CGraph:
 
 cdef int get_vertex(object u, dict vertex_ints, dict vertex_labels, CGraph G) except ? -2
 cdef object vertex_label(int u_int, dict vertex_ints, dict vertex_labels, CGraph G)
-cdef int check_vertex(object u, dict vertex_ints, dict vertex_labels, CGraph G) except ? -1
+cdef int check_vertex(object u, dict vertex_ints, dict vertex_labels, CGraph G, CGraph G_revx, bint reverse) except ? -1
 # TODO: edge functions!

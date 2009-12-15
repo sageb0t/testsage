@@ -8643,8 +8643,6 @@ class GenericGraph(SageObject):
             raise TypeError("Refinement function does not support multiple edges.")
         G = self.copy()
         perm_to = G.relabel(return_map=True)
-        self.show(layout='spring')
-        G.show(layout='spring')
         partition = [[perm_to[b] for b in cell] for cell in partition]
         perm_from = {}
         for v in self:
@@ -8809,7 +8807,8 @@ class GenericGraph(SageObject):
             G_to = {}
             for i in xrange(len(G_vertices)):
                 G_to[G_vertices[i]] = i
-            H = Graph(len(G_vertices), implementation='c_graph', loops=G.allows_loops())
+            DoDG = DiGraph if self._directed else Graph
+            H = DoDG(len(G_vertices), implementation='c_graph', loops=G.allows_loops())
             HB = H._backend
             for u,v in G.edge_iterator(labels=False):
                 u = G_to[u]; v = G_to[v]
@@ -8855,7 +8854,8 @@ class GenericGraph(SageObject):
             G_to = {}
             for i in xrange(len(G_vertices)):
                 G_to[G_vertices[i]] = i
-            H = Graph(len(G_vertices), implementation='c_graph', loops=G.allows_loops())
+            DoDG = DiGraph if self._directed else Graph
+            H = DoDG(len(G_vertices), implementation='c_graph', loops=G.allows_loops())
             HB = H._backend
             for u,v in G.edge_iterator(labels=False):
                 u = G_to[u]; v = G_to[v]
@@ -8900,7 +8900,8 @@ class GenericGraph(SageObject):
             G_to = {}
             for i in xrange(len(G_vertices)):
                 G_to[G_vertices[i]] = i
-            H = Graph(len(G_vertices), implementation='c_graph', loops=self.allows_loops())
+            DoDG = DiGraph if self._directed else Graph
+            H = DoDG(len(G_vertices), implementation='c_graph', loops=self.allows_loops())
             HB = H._backend
             for u,v in self.edge_iterator(labels=False):
                 u = G_to[u]; v = G_to[v]
@@ -9092,7 +9093,8 @@ class GenericGraph(SageObject):
         G_to = {}
         for i in xrange(len(self_vertices)):
             G_to[self_vertices[i]] = i
-        H = Graph(len(self_vertices), implementation='c_graph', loops=G.allows_loops())
+        DoDG = DiGraph if self._directed else Graph
+        H = DoDG(len(self_vertices), implementation='c_graph', loops=G.allows_loops())
         HB = H._backend
         for u,v in G.edge_iterator(labels=False):
             u = G_to[u]; v = G_to[v]
@@ -9103,7 +9105,7 @@ class GenericGraph(SageObject):
         G2_to = {}
         for i in xrange(len(other_vertices)):
             G2_to[other_vertices[i]] = i
-        H2 = Graph(len(other_vertices), implementation='c_graph', loops=G2.allows_loops())
+        H2 = DoDG(len(other_vertices), implementation='c_graph', loops=G2.allows_loops())
         H2B = H2._backend
         for u,v in G2.edge_iterator(labels=False):
             u = G2_to[u]; v = G2_to[v]
@@ -9200,7 +9202,8 @@ class GenericGraph(SageObject):
             G_to = {}
             for i in xrange(len(G_vertices)):
                 G_to[G_vertices[i]] = i
-            H = Graph(len(G_vertices), implementation='c_graph', loops=G.allows_loops())
+            DoDG = DiGraph if self._directed else Graph
+            H = DoDG(len(G_vertices), implementation='c_graph', loops=G.allows_loops())
             HB = H._backend
             for u,v in G.edge_iterator(labels=False):
                 u = G_to[u]; v = G_to[v]
@@ -9224,7 +9227,8 @@ class GenericGraph(SageObject):
             G_to = {}
             for i in xrange(len(G_vertices)):
                 G_to[G_vertices[i]] = i
-            H = Graph(len(G_vertices), implementation='c_graph', loops=G.allows_loops())
+            DoDG = DiGraph if self._directed else Graph
+            H = DoDG(len(G_vertices), implementation='c_graph', loops=G.allows_loops())
             HB = H._backend
             for u,v in G.edge_iterator(labels=False):
                 u = G_to[u]; v = G_to[v]
@@ -9246,7 +9250,8 @@ class GenericGraph(SageObject):
         G_to = {}
         for i in xrange(len(G_vertices)):
             G_to[G_vertices[i]] = i
-        H = Graph(len(G_vertices), implementation='c_graph', loops=self.allows_loops())
+        DoDG = DiGraph if self._directed else Graph
+        H = DoDG(len(G_vertices), implementation='c_graph', loops=self.allows_loops())
         HB = H._backend
         for u,v in self.edge_iterator(labels=False):
             u = G_to[u]; v = G_to[v]
@@ -9695,6 +9700,7 @@ class Graph(GenericGraph):
             format = 'NX'
 
         # At this point, format has been set.
+
         verts = None
 
         if format == 'graph6':
@@ -9928,7 +9934,7 @@ class Graph(GenericGraph):
             from sage.graphs.base.dense_graph import DenseGraphBackend
             CGB = SparseGraphBackend if sparse else DenseGraphBackend
             if format == 'Graph':
-                self._backend = CGB(0)
+                self._backend = CGB(0, directed=False)
                 self.add_vertices(verts)
                 self._weighted = weighted
                 self.allow_loops(loops, check=False)
@@ -9937,10 +9943,10 @@ class Graph(GenericGraph):
                     self._backend.add_edge(u,v,l,False)
             else:
                 if verts is not None:
-                    self._backend = CGB(0)
+                    self._backend = CGB(0, directed=False)
                     self.add_vertices(verts)
                 else:
-                    self._backend = CGB(num_verts)
+                    self._backend = CGB(num_verts, directed=False)
                 self._weighted = weighted
                 self.allow_loops(loops, check=False)
                 self.allow_multiple_edges(multiedges, check=False)
@@ -11798,7 +11804,7 @@ class DiGraph(GenericGraph):
             from sage.graphs.base.dense_graph import DenseGraphBackend
             CGB = SparseGraphBackend if sparse else DenseGraphBackend
             if format == 'DiGraph':
-                self._backend = CGB(0)
+                self._backend = CGB(0, directed=True)
                 self.add_vertices(verts)
                 self._weighted = weighted
                 self.allow_loops(loops, check=False)
@@ -11806,12 +11812,12 @@ class DiGraph(GenericGraph):
                 for u,v,l in data.edge_iterator():
                     self._backend.add_edge(u,v,l,True)
             else:
-                self._backend = CGB(0)
+                self._backend = CGB(0, directed=True)
                 if verts is not None:
-                    self._backend = CGB(0)
+                    self._backend = CGB(0, directed=True)
                     self.add_vertices(verts)
                 else:
-                    self._backend = CGB(num_verts)
+                    self._backend = CGB(num_verts, directed=True)
                 self._weighted = weighted
                 self.allow_loops(loops, check=False)
                 self.allow_multiple_edges(multiedges, check=False)
