@@ -637,8 +637,8 @@ class Documenter(object):
         try:
             sig = self.format_signature()
         except Exception, err:
-            # self.directive.warn('error while formatting signature for '
-            #                     '%s: %s' % (self.fullname, err))
+            self.directive.warn('error while formatting signature for '
+                                '%s: %s' % (self.fullname, err))
             sig = ''
 
         # generate the directive header and options, if applicable
@@ -786,8 +786,13 @@ class FunctionDocumenter(ModuleLevelDocumenter):
     def format_args(self):
         if inspect.isbuiltin(self.object) or \
                inspect.ismethoddescriptor(self.object):
-            # can never get arguments of a C function or method
-            return None
+            # can never get arguments of a C function or method unless
+            # a function to do so is supplied
+            if self.env.config.autodoc_builtin_argspec:
+                argspec = self.env.config.autodoc_builtin_argspec(self.object)
+                return inspect.formatargspec(*argspec)
+            else:
+                return None
         try:
             argspec = inspect.getargspec(self.object)
         except TypeError:
@@ -977,9 +982,14 @@ class MethodDocumenter(ClassLevelDocumenter):
     def format_args(self):
         if inspect.isbuiltin(self.object) or \
                inspect.ismethoddescriptor(self.object):
-            # can never get arguments of a C function or method
-            return None
-        argspec = inspect.getargspec(self.object)
+            # can never get arguments of a C function or method unless
+            # a function to do so is supplied
+            if self.env.config.autodoc_builtin_argspec:
+                argspec = self.env.config.autodoc_builtin_argspec(self.object)
+            else:
+                return None
+        else:
+            argspec = inspect.getargspec(self.object)
         if argspec[0] and argspec[0][0] in ('cls', 'self'):
             del argspec[0][0]
         return inspect.formatargspec(*argspec)
@@ -1100,6 +1110,7 @@ def setup(app):
 
     app.add_config_value('autoclass_content', 'class', True)
     app.add_config_value('autodoc_member_order', 'alphabetic', True)
+    app.add_config_value('autodoc_builtin_argspec', None, True)
     app.add_event('autodoc-process-docstring')
     app.add_event('autodoc-process-signature')
     app.add_event('autodoc-skip-member')
