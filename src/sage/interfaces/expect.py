@@ -1321,9 +1321,18 @@ If this all works, you can then make calls like:
         raise NotImplementedError
 
     def __getattr__(self, attrname):
-        if attrname[:1] == "_":
-            raise AttributeError
-        return self._function_class()(self, attrname)
+        """
+        TESTS::
+
+            sage: ParentWithBase.__getattribute__(singular, '_coerce_map_from_')
+            <built-in method _coerce_map_from_ of Singular object at ...>
+        """
+        try:
+            return ParentWithBase.__getattribute__(self, attrname)
+        except AttributeError:
+            if attrname[:1] == "_":
+                raise AttributeError
+            return self._function_class()(self, attrname)
 
     def __cmp__(self, other):
         """

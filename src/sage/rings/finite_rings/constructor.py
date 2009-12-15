@@ -56,7 +56,7 @@ EXAMPLES::
 ::
 
     sage: k = GF(5^2,'c'); type(k)
-    <class 'sage.rings.finite_rings.finite_field_givaro.FiniteField_givaro'>
+    <class 'sage.rings.finite_rings.finite_field_givaro.FiniteField_givaro_with_category'>
 
 ::
 
@@ -66,7 +66,7 @@ EXAMPLES::
 ::
 
     sage: k = GF(3^16,'c'); type(k)
-    <class 'sage.rings.finite_rings.finite_field_ext_pari.FiniteField_ext_pari'>
+    <class 'sage.rings.finite_rings.finite_field_ext_pari.FiniteField_ext_pari_with_category'>
 
 Finite Fields support iteration, starting with 0.
 
@@ -103,14 +103,14 @@ We output the base rings of several finite fields.
 ::
 
     sage: k = GF(9,'alpha'); type(k)
-    <class 'sage.rings.finite_rings.finite_field_givaro.FiniteField_givaro'>
+    <class 'sage.rings.finite_rings.finite_field_givaro.FiniteField_givaro_with_category'>
     sage: k.base_ring()
     Finite Field of size 3
 
 ::
 
     sage: k = GF(3^40,'b'); type(k)
-    <class 'sage.rings.finite_rings.finite_field_ext_pari.FiniteField_ext_pari'>
+    <class 'sage.rings.finite_rings.finite_field_ext_pari.FiniteField_ext_pari_with_category'>
     sage: k.base_ring()
     Finite Field of size 3
 
