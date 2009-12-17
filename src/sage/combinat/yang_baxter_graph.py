@@ -282,7 +282,8 @@ class YangBaxterGraph_generic(SageObject):
 
     def __copy__(self):
         r"""
-        Returns a copy of self.
+        Returns a copy of self.  Note that :meth:`.copy` is now
+        deprecated.
 
         EXAMPLES::
 
@@ -297,11 +298,29 @@ class YangBaxterGraph_generic(SageObject):
             sage: Y == B
             True
         """
+        from copy import copy
         Y = self.__class__(self._root, self._operators)
-        Y._digraph = self._digraph.copy()
+        Y._digraph = copy(self._digraph)
         return Y
 
-    copy = __copy__
+    def copy(self):
+        r"""
+        Returns a copy of self.  This method is deprecated.
+
+        EXAMPLES::
+
+            sage: from sage.combinat.yang_baxter_graph import SwapIncreasingOperator
+            sage: ops = [SwapIncreasingOperator(i) for i in range(3)]
+            sage: Y = YangBaxterGraph(root=(1,0,2,1,0), operators=ops); Y
+            Yang-Baxter graph with root vertex (1, 0, 2, 1, 0)
+            sage: B = Y.copy(); B
+            doctest:...: DeprecationWarning: the .copy() method is deprecated; please use the copy() function instead, for example, copy(g)
+            Yang-Baxter graph with root vertex (1, 0, 2, 1, 0)
+        """
+        from copy import copy
+        import sage.misc.misc
+        sage.misc.misc.deprecation("the .copy() method is deprecated; please use the copy() function instead, for example, copy(g)")
+        return copy(self)
 
     def _edges_in_bfs(self):
         r"""
@@ -480,8 +499,9 @@ class YangBaxterGraph_generic(SageObject):
             sage: Y.vertices()
             [(2, 1, 3, 4), (1, 2, 3, 4), (2, 3, 1, 4)]
         """
+        from copy import copy
         relabelling = self.vertex_relabelling_dict(v, relabel_operator)
-        Y = self if inplace else self.copy()
+        Y = self if inplace else copy(self)
         Y._root = relabelling[Y._root]
         Y._digraph.relabel(relabelling, inplace=True)
         if inplace is False:
@@ -514,10 +534,11 @@ class YangBaxterGraph_generic(SageObject):
             sage: Y.edges()
             [((0, 2, 1, 0), (2, 0, 1, 0), 17), ((2, 0, 1, 0), (2, 1, 0, 0), 27)]
         """
+        from copy import copy
         if inplace:
             Y = self
         else:
-            Y = self.copy()
+            Y = copy(self)
         digraph = Y._digraph
         for (u,v,i) in digraph.edges():
             digraph.set_edge_label(u,v,edge_dict[u,v])
@@ -571,7 +592,8 @@ class YangBaxterGraph_partition(YangBaxterGraph_generic):
 
     def __copy__(self):
         r"""
-        Returns a copy of self.
+        Returns a copy of self.  Note that :meth:`.copy` is now
+        deprecated.
 
         EXAMPLES::
 
@@ -584,11 +606,28 @@ class YangBaxterGraph_partition(YangBaxterGraph_generic):
             sage: Y == B
             True
         """
+        from copy import copy
         Y = self.__class__(self._partition)
-        Y._digraph = self._digraph.copy()
+        Y._digraph = copy(self._digraph)
         return Y
 
-    copy = __copy__
+    def copy(self):
+        r"""
+        Returns a copy of self.  Note that :meth:`.copy` is now
+        deprecated.
+
+        EXAMPLES::
+
+            sage: Y = YangBaxterGraph(partition=[3,2]); Y
+            Yang-Baxter graph of [3, 2], with top vertex (1, 0, 2, 1, 0)
+            sage: B = Y.copy(); B
+            doctest:...: DeprecationWarning: the .copy() method is deprecated; please use the copy() function instead, for example, copy(g)
+            Yang-Baxter graph of [3, 2], with top vertex (1, 0, 2, 1, 0)
+        """
+        from copy import copy
+        import sage.misc.misc
+        sage.misc.misc.deprecation("the .copy() method is deprecated; please use the copy() function instead, for example, copy(g)")
+        return copy(self)
 
     @lazy_attribute
     def _digraph(self):
@@ -721,7 +760,8 @@ class YangBaxterGraph_partition(YangBaxterGraph_generic):
             Y._vertex_ordering = sorted(Y._digraph.vertices())
             return
         else:
-            Y = self.copy()
+            from copy import copy
+            Y = copy(self)
             Y._root = relabelling[Y._root]
             return Y._digraph.relabel(relabelling, inplace=inplace)
 
