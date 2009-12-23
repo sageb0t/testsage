@@ -1203,7 +1203,7 @@ class Maxima(Expect):
         EXAMPLES::
 
             sage: maxima.version()
-            '5.19.1'
+            '5.20.1'
         """
         return maxima_version()
 
@@ -2689,7 +2689,7 @@ def maxima_version():
 
         sage: from sage.interfaces.maxima import maxima_version
         sage: maxima_version()
-        '5.19.1'
+        '5.20.1'
     """
     return os.popen('maxima --version').read().split()[-1]
 
