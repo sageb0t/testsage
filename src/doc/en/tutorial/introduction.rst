@@ -61,7 +61,7 @@ If you do not have Sage installed on a computer and just
 want to try some commands, use online at http://www.sagenb.org.
 
 See the Sage Installation Guide in the documentation section of the
-main Sage webpage [Sage]_ for instructions on installing Sage on your
+main Sage webpage [SA]_ for instructions on installing Sage on your
 computer. Here we merely make two comments.
 
 #. The Sage download file comes with "batteries included". In other
@@ -141,10 +141,3 @@ Longterm Goals for Sage
    functionality is provided for a given object and to view
    documentation and source code. Also attain a high level of user
    support.
-
-.. [Dive] Dive into Python, Freely available online at
-          http://diveintopython.org
-
-.. [PyT] The Python Tutorial, http://www.python.org/
-
-.. [Sage] Sage, http://www.sagemath.org
