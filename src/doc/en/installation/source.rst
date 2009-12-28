@@ -499,3 +499,7 @@ Special Notes
    rectify this issue, you can either change the default security
    context for Sage (??) or disable SELinux altogether by setting the
    line ``SELINUX=disabled`` in your ``/etc/sysconfig/selinux`` file.
+
+- To make SageTeX available to your users, see the instructions for
+  :ref:`installation in a multiuser environment
+  <sagetex_installation_multiuser>`.
