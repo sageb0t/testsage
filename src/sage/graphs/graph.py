@@ -388,6 +388,7 @@ from sage.rings.integer import Integer
 
 import sage.graphs.generic_graph_pyx as generic_graph_pyx
 from sage.graphs.generic_graph import GenericGraph
+from sage.graphs.digraph import DiGraph
 
 class Graph(GenericGraph):
     r"""
