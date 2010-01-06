@@ -252,7 +252,6 @@ ext_modules = [
     ## sage.graphs
     ##
     ################################
-    # sage.graphs
 
     Extension('sage.graphs.chrompoly',
               sources = ['sage/graphs/chrompoly.pyx'],
@@ -262,8 +261,8 @@ ext_modules = [
               sources = ['sage/graphs/cliquer.pyx'],
               libraries = ['cliquer']),
 
-    Extension('sage.graphs.graph_fast',
-              sources = ['sage/graphs/graph_fast.pyx'],
+    Extension('sage.graphs.generic_graph_pyx',
+              sources = ['sage/graphs/generic_graph_pyx.pyx'],
               libraries = ['gmp']),
 
     Extension('sage.graphs.planarity',
