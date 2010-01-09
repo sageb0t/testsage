@@ -266,7 +266,7 @@ def MacdonaldPolynomialsS(R, q=None, t=None):
         sage: S = MacdonaldPolynomialsS(QQ)
         sage: J = MacdonaldPolynomialsJ(QQ)
         sage: S(J([2]))
-        q*McdS[1, 1] + ((-1)/(-1))*McdS[2]
+        q*McdS[1, 1] + McdS[2]
         sage: S(J([1,1]))
         McdS[1, 1] + t*McdS[2]
         sage: from sage.combinat.sf.macdonald import qt_kostka
@@ -280,7 +280,7 @@ def MacdonaldPolynomialsS(R, q=None, t=None):
         sage: S = MacdonaldPolynomialsS(QQ)
         sage: J = MacdonaldPolynomialsJ(QQ)
         sage: S(J([2]))
-        q*McdS[1, 1] + ((-1)/(-1))*McdS[2]
+        q*McdS[1, 1] + McdS[2]
         sage: S(J([1,1]))
         McdS[1, 1] + t*McdS[2]
     """
