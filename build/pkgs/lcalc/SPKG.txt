@@ -6,6 +6,11 @@ Michael Rubinstein's L-function calculator.
 
 Michael Rubinstein <mrubinst@uwaterloo.ca>
 
+=== lcalc-1.23.p2 (Rishikesh, 14th January 2010) ===
+ * Replace the Makfile.sage with makepatch. This
+   should be better able to deal with later changes
+   in Makefile by Mike.
+
 === lcalc-1.23.p1 (Rishikesh, 13th January 2010) ===
  * For lcalc wrapper, changed so that the library is copied
  * Replace the hard coded path to pari makefile to the $SAGE_LOCAL
