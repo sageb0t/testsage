@@ -30,9 +30,10 @@ class MixedIntegerLinearProgram:
       - When set to ``False``, the ``MixedIntegerLinearProgram`` is defined as
         a minimization.
 
-    EXAMPLES::
+    EXAMPLES:
 
-         sage: ### Computation of a maximum stable set in Petersen's graph
+    Computation of a maximum stable set in Petersen's graph::
+
          sage: g = graphs.PetersenGraph()
          sage: p = MixedIntegerLinearProgram(maximization=True)
          sage: b = p.new_variable()
@@ -302,7 +303,9 @@ class MixedIntegerLinearProgram:
         EXAMPLE::
 
             sage: p = MixedIntegerLinearProgram()
-            sage: # available types are p.__REAL, p.__INTEGER and p.__BINARY
+
+        The available types are ``p.__REAL``, ``p.__INTEGER`` and ``p.__BINARY``::
+
             sage: x = p.new_variable(vtype=p.__REAL)
             sage: y = p.new_variable(dim=2)
             sage: p.add_constraint(x[2] + y[3][5], max=2)
@@ -503,25 +506,29 @@ class MixedIntegerLinearProgram:
             sage: p.add_constraint(x[3] + y[2][9] + 2*x[5], max=2)
             sage: p.solve() # optional - requires Glpk or COIN-OR/CBC
             2.0
-            sage: #
-            sage: # Returns the optimal value of y[2][9]
+
+        To return  the optimal value of ``y[2][9]``::
+
             sage: p.get_values(y[2][9]) # optional - requires Glpk or COIN-OR/CBC
             2.0
-            sage: #
-            sage: # Returns a dictionary identical to x
-            sage: # containing values for the corresponding
-            sage: # variables
+
+        To get a dictionary identical to ``x`` containing optimal
+        values for the corresponding variables ::
+
             sage: x_sol = p.get_values(x)
             sage: x_sol.keys()
             [3, 5]
-            sage: #
-            sage: # Obviously, it also works with
-            sage: # variables of higher dimension
+
+        Obviously, it also works with variables of higher dimension::
+
             sage: y_sol = p.get_values(y)
-            sage: #
-            sage: # We could also have tried :
+
+        We could also have tried ::
+
             sage: [x_sol, y_sol] = p.get_values(x, y)
-            sage: # Or
+
+        Or::
+
             sage: [x_sol, y_sol] = p.get_values([x, y])
         """
         val = []
@@ -684,14 +691,17 @@ class MixedIntegerLinearProgram:
 
             sage: p = MixedIntegerLinearProgram()
             sage: x = p.new_variable()
-            sage: # With the following instruction, all the variables
-            sage: # from x will be binary.
+
+        With the following instruction, all the variables
+        from x will be binary::
+
             sage: p.set_binary(x)
             sage: p.set_objective(x[0] + x[1])
             sage: p.add_constraint(-3*x[0] + 2*x[1], max=2)
-            sage: #
-            sage: # It is still possible, though, to set one of these
-            sage: # variables as real while keeping the others as they are.
+
+        It is still possible, though, to set one of these
+        variables as real while keeping the others as they are::
+
             sage: p.set_real(x[3])
         """
         if isinstance(e, MIPVariable):
@@ -749,14 +759,17 @@ class MixedIntegerLinearProgram:
 
             sage: p = MixedIntegerLinearProgram()
             sage: x = p.new_variable()
-            sage: # With the following instruction, all the variables
-            sage: # from x will be integers
+
+        With the following instruction, all the variables
+        from x will be integers::
+
             sage: p.set_integer(x)
             sage: p.set_objective(x[0] + x[1])
             sage: p.add_constraint(-3*x[0] + 2*x[1], max=2)
-            sage: #
-            sage: # It is still possible, though, to set one of these
-            sage: # variables as real while keeping the others as they are.
+
+        It is still possible, though, to set one of these
+        variables as real while keeping the others as they are::
+
             sage: p.set_real(x[3])
         """
         if isinstance(e, MIPVariable):
@@ -814,14 +827,17 @@ class MixedIntegerLinearProgram:
 
             sage: p = MixedIntegerLinearProgram()
             sage: x = p.new_variable()
-            sage: # With the following instruction, all the variables
-            sage: # from x will be real (they are by default, though).
+
+        With the following instruction, all the variables
+        from x will be real (they are by default, though)::
+
             sage: p.set_real(x)
             sage: p.set_objective(x[0] + x[1])
             sage: p.add_constraint(-3*x[0] + 2*x[1], max=2)
-            sage: #
-            sage: # It is still possible, though, to set one of these
-            sage: # variables as binary while keeping the others as they are.
+
+         It is still possible, though, to set one of these
+         variables as binary while keeping the others as they are::
+
             sage: p.set_binary(x[3])
         """
         if isinstance(e, MIPVariable):
@@ -1132,35 +1148,34 @@ class MIPSolverException(Exception):
             sage: MIPSolverException("Error")
             MIPSolverException()
 
-        TESTS::
+        TESTS:
 
-            sage: # No continuous solution
-            sage: #
+         No continuous solution::
+
             sage: p=MixedIntegerLinearProgram()
             sage: v=p.new_variable()
             sage: p.add_constraint(v[0],max=5.5)
             sage: p.add_constraint(v[0],min=7.6)
             sage: p.set_objective(v[0])
-            sage: #
-            sage: # Tests of GLPK's Exceptions
-            sage: #
+
+         Tests of GLPK's Exceptions::
+
             sage: p.solve(solver="GLPK") # optional - requires GLPK
             Traceback (most recent call last):
             ...
             MIPSolverException: 'GLPK : Solution is undefined'
-            sage: #
-            sage: #
-            sage: # No integer solution
-            sage: #
+
+         No integer solution::
+
             sage: p=MixedIntegerLinearProgram()
             sage: v=p.new_variable()
             sage: p.add_constraint(v[0],max=5.6)
             sage: p.add_constraint(v[0],min=5.2)
             sage: p.set_objective(v[0])
             sage: p.set_integer(v)
-            sage: #
-            sage: # Tests of GLPK's Exceptions
-            sage: #
+
+         Tests of GLPK's Exceptions::
+
             sage: p.solve(solver="GLPK") # optional - requires GLPK
             Traceback (most recent call last):
             ...
