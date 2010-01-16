@@ -631,7 +631,7 @@ class AbelianStratum(SageObject):
     INPUT:
 
     - ``marked_separatrix`` - None (default) or 'in' (for incoming separatrix)
-    or 'out' (for outgoing separatrix).
+      or 'out' (for outgoing separatrix).
 
     EXAMPLES:
 
