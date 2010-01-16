@@ -1408,7 +1408,7 @@ ext_modules = [
               sources = ['sage/symbolic/pynac.pyx'],
               language = 'c++',
               depends = [SAGE_ROOT + "/local/include/pynac/ginac.h"],
-              libraries = ["pynac"]),
+              libraries = ["pynac", "gsl"]),
 
     Extension('sage.symbolic.ring',
               sources = ['sage/symbolic/ring.pyx'],
