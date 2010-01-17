@@ -57,7 +57,13 @@ class PrimeNumbers(UniqueRepresentation, Parent):
 
         sage: TestSuite(P).run(verbose=True)
         running ._test_an_element() . . . pass
-        running ._test_element_pickling() . . . pass
+        running ._test_category() . . . pass
+        running ._test_elements() . . .
+          Running the test suite of self.an_element()
+          running ._test_category() . . . pass
+          running ._test_not_implemented_methods() . . . pass
+          running ._test_pickling() . . . pass
+          pass
         running ._test_not_implemented_methods() . . . pass
         running ._test_pickling() . . . pass
         running ._test_some_elements() . . . pass
@@ -319,7 +325,13 @@ class PrimeNumbers_Inherits(PrimeNumbers_Abstract):
 
         sage: TestSuite(P).run(verbose=True)
         running ._test_an_element() . . . pass
-        running ._test_element_pickling() . . . pass
+        running ._test_category() . . . pass
+        running ._test_elements() . . .
+          Running the test suite of self.an_element()
+          running ._test_category() . . . pass
+          running ._test_not_implemented_methods() . . . pass
+          running ._test_pickling() . . . pass
+          pass
         running ._test_not_implemented_methods() . . . pass
         running ._test_pickling() . . . pass
         running ._test_some_elements() . . . pass
@@ -430,12 +442,7 @@ class PrimeNumbers_Wrapper(PrimeNumbers_Abstract):
 
     TESTS::
 
-        sage: TestSuite(P).run(verbose=True)
-        running ._test_an_element() . . . pass
-        running ._test_element_pickling() . . . pass
-        running ._test_not_implemented_methods() . . . pass
-        running ._test_pickling() . . . pass
-        running ._test_some_elements() . . . pass
+        sage: TestSuite(P).run()
     """
     def __init__(self):
         """
@@ -585,9 +592,15 @@ class PrimeNumbers_Facade(PrimeNumbers_Abstract):
 
     TESTS::
 
-        sage: TestSuite(P).run(verbose=True)
+        sage: TestSuite(P).run(verbose = True)
         running ._test_an_element() . . . pass
-        running ._test_element_pickling() . . . pass
+        running ._test_category() . . . pass
+        running ._test_elements() . . .
+          Running the test suite of self.an_element()
+          running ._test_category() . . . pass
+          running ._test_not_implemented_methods() . . . pass
+          running ._test_pickling() . . . pass
+          pass
         running ._test_not_implemented_methods() . . . pass
         running ._test_pickling() . . . pass
         running ._test_some_elements() . . . pass
