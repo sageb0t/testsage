@@ -13,7 +13,7 @@ from hyperbolic import ( tanh, sinh, cosh, coth, sech, csch,
 
 reciprocal_trig_functions = {'sec': cos, 'csc': sin, 'cot': tan, 'sech': cosh, 'csch': sinh, 'coth': tanh}
 
-from other import ( ceil, floor, gamma, factorial,
+from other import ( ceil, floor, gamma, psi, factorial,
                     abs_symbolic, erf, sqrt,
                     real_part, real,
                     imag_part, imag, imaginary, conjugate)
