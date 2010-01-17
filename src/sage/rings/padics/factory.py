@@ -60,8 +60,8 @@ import weakref
 
 import padic_printing
 padic_field_cache = {}
-twenty = Integer(20)
-forty = Integer(40)
+DEFAULT_PREC = Integer(20)
+DEFAULT_HALT = Integer(40)
 class Qp_class(UniqueFactory):
     """
     A creation function for `p`-adic fields.
@@ -349,7 +349,7 @@ class Qp_class(UniqueFactory):
         sage: K = Qp(15, check=False); a = K(999); a
         9 + 6*15 + 4*15^2 + O(15^20)
     """
-    def create_key(self, p, prec = twenty, type = 'capped-rel', print_mode = None, halt = forty, names = None, ram_name = None, print_pos = None, print_sep = None, print_alphabet = None, print_max_terms = None, check = True):
+    def create_key(self, p, prec = DEFAULT_PREC, type = 'capped-rel', print_mode = None, halt = DEFAULT_HALT, names = None, ram_name = None, print_pos = None, print_sep = None, print_alphabet = None, print_max_terms = None, check = True):
         """
         Creates a key from input parameters for ``Qp``.
 
@@ -458,8 +458,8 @@ Qp = Qp_class("Qp")
 # Qq -- unramified extensions
 ######################################################
 
-def Qq(q, prec = twenty, type = 'capped-rel', modulus = None, names=None,
-          print_mode=None, halt = forty, ram_name = None, res_name = None, print_pos = None,
+def Qq(q, prec = DEFAULT_PREC, type = 'capped-rel', modulus = None, names=None,
+          print_mode=None, halt = DEFAULT_HALT, ram_name = None, res_name = None, print_pos = None,
        print_sep = None, print_max_ram_terms = None,
        print_max_unram_terms = None, print_max_terse_terms = None, check = True):
     """
@@ -920,7 +920,7 @@ def Qq(q, prec = twenty, type = 'capped-rel', modulus = None, names=None,
 # Short constructor names for different types
 ######################################################
 
-def QpCR(p, prec = twenty, print_mode = None, halt = forty, names = None, print_pos = None,
+def QpCR(p, prec = DEFAULT_PREC, print_mode = None, halt = DEFAULT_HALT, names = None, print_pos = None,
          print_sep = None, print_alphabet = None, print_max_terms = None, check=True):
     """
     A shortcut function to create capped relative `p`-adic fields.
@@ -937,7 +937,7 @@ def QpCR(p, prec = twenty, print_mode = None, halt = forty, names = None, print_
               print_pos=print_pos, print_sep=print_sep, print_alphabet=print_alphabet, print_max_terms=print_max_terms,
               type = 'capped-rel')
 
-#def QpL(p, prec = twenty, print_mode = None, halt = forty, names = None, print_pos = None,
+#def QpL(p, prec = DEFAULT_PREC, print_mode = None, halt = DEFAULT_HALT, names = None, print_pos = None,
 #        print_sep = None, print_alphabet = None, print_max_terms = None, check=True):
 #    """
 #    A shortcut function to create lazy p-adic fields.
@@ -951,8 +951,8 @@ def QpCR(p, prec = twenty, print_mode = None, halt = forty, names = None, print_
 #              print_pos=print_pos, print_sep=print_sep, print_alphabet=print_alphabet, print_max_terms=print_max_terms,
 #              type = 'lazy')
 
-def QqCR(q, prec = twenty, modulus = None, names=None,
-          print_mode=None, halt = forty, ram_name = None, print_pos = None,
+def QqCR(q, prec = DEFAULT_PREC, modulus = None, names=None,
+          print_mode=None, halt = DEFAULT_HALT, ram_name = None, print_pos = None,
        print_sep = None, print_alphabet = None, print_max_ram_terms = None,
        print_max_unram_terms = None, print_max_terse_terms = None, check = True):
     """
@@ -972,8 +972,8 @@ def QqCR(q, prec = twenty, modulus = None, names=None,
               print_max_unram_terms=print_max_unram_terms, print_max_terse_terms=print_max_terse_terms, check=check,
               type = 'capped-rel')
 
-#def QqL(q, prec = twenty, modulus = None, names=None,
-#          print_mode=None, halt = forty, ram_name = None, print_pos = None,
+#def QqL(q, prec = DEFAULT_PREC, modulus = None, names=None,
+#          print_mode=None, halt = DEFAULT_HALT, ram_name = None, print_pos = None,
 #       print_sep = None, print_alphabet = None, print_max_ram_terms = None,
 #       print_max_unram_terms = None, print_max_terse_terms = None, check = True):
 #    """
@@ -1348,7 +1348,7 @@ class Zp_class(UniqueFactory):
         sage: a + b
         1 + 5 + O(5^10)
     """
-    def create_key(self, p, prec = twenty, type = 'capped-rel', print_mode = None, halt = forty, names = None, ram_name = None, print_pos = None, print_sep = None, print_alphabet = None, print_max_terms = None, check = True):
+    def create_key(self, p, prec = DEFAULT_PREC, type = 'capped-rel', print_mode = None, halt = DEFAULT_HALT, names = None, ram_name = None, print_pos = None, print_sep = None, print_alphabet = None, print_max_terms = None, check = True):
         """
         Creates a key from input parameters for ``Zp``.
 
@@ -1459,8 +1459,8 @@ Zp = Zp_class("Zp")
 # Zq -- unramified extensions
 ######################################################
 
-def Zq(q, prec = twenty, type = 'capped-abs', modulus = None, names=None,
-          print_mode=None, halt = forty, ram_name = None, res_name = None, print_pos = None,
+def Zq(q, prec = DEFAULT_PREC, type = 'capped-abs', modulus = None, names=None,
+          print_mode=None, halt = DEFAULT_HALT, ram_name = None, res_name = None, print_pos = None,
        print_sep = None, print_max_ram_terms = None,
        print_max_unram_terms = None, print_max_terse_terms = None, check = True):
     """
@@ -1947,7 +1947,7 @@ def Zq(q, prec = twenty, type = 'capped-abs', modulus = None, names=None,
 # Short constructor names for different types
 ######################################################
 
-def ZpCR(p, prec = twenty, print_mode = None, halt = forty, names = None, print_pos = None,
+def ZpCR(p, prec = DEFAULT_PREC, print_mode = None, halt = DEFAULT_HALT, names = None, print_pos = None,
          print_sep = None, print_alphabet = None, print_max_terms = None, check=True):
     """
     A shortcut function to create capped relative `p`-adic rings.
@@ -1964,7 +1964,7 @@ def ZpCR(p, prec = twenty, print_mode = None, halt = forty, names = None, print_
               print_pos=print_pos, print_sep=print_sep, print_alphabet=print_alphabet, print_max_terms=print_max_terms,
               type = 'capped-rel')
 
-def ZpCA(p, prec = twenty, print_mode = None, halt = forty, names = None, print_pos = None,
+def ZpCA(p, prec = DEFAULT_PREC, print_mode = None, halt = DEFAULT_HALT, names = None, print_pos = None,
          print_sep = None, print_alphabet = None, print_max_terms = None, check=True):
     """
     A shortcut function to create capped absolute `p`-adic rings.
@@ -1980,7 +1980,7 @@ def ZpCA(p, prec = twenty, print_mode = None, halt = forty, names = None, print_
               print_pos=print_pos, print_sep=print_sep, print_alphabet=print_alphabet, print_max_terms=print_max_terms,
               type = 'capped-abs')
 
-def ZpFM(p, prec = twenty, print_mode = None, halt = forty, names = None, print_pos = None,
+def ZpFM(p, prec = DEFAULT_PREC, print_mode = None, halt = DEFAULT_HALT, names = None, print_pos = None,
          print_sep = None, print_alphabet = None, print_max_terms = None, check=True):
     """
     A shortcut function to create fixed modulus `p`-adic rings.
@@ -1996,7 +1996,7 @@ def ZpFM(p, prec = twenty, print_mode = None, halt = forty, names = None, print_
               print_pos=print_pos, print_sep=print_sep, print_alphabet=print_alphabet, print_max_terms=print_max_terms,
               type = 'fixed-mod')
 
-#def ZpL(p, prec = twenty, print_mode = None, halt = forty, names = None, print_pos = None,
+#def ZpL(p, prec = DEFAULT_PREC, print_mode = None, halt = DEFAULT_HALT, names = None, print_pos = None,
 #         print_sep = None, print_alphabet = None, print_max_terms = None, check=True):
 #    """
 #    A shortcut function to create lazy `p`-adic rings.
@@ -2010,8 +2010,8 @@ def ZpFM(p, prec = twenty, print_mode = None, halt = forty, names = None, print_
 #              print_pos=print_pos, print_sep=print_sep, print_alphabet=print_alphabet, print_max_terms=print_max_terms,
 #              type = 'lazy')
 
-def ZqCR(q, prec = twenty, modulus = None, names=None,
-          print_mode=None, halt = forty, ram_name = None, print_pos = None,
+def ZqCR(q, prec = DEFAULT_PREC, modulus = None, names=None,
+          print_mode=None, halt = DEFAULT_HALT, ram_name = None, print_pos = None,
        print_sep = None, print_alphabet = None, print_max_ram_terms = None,
        print_max_unram_terms = None, print_max_terse_terms = None, check = True):
     """
@@ -2030,8 +2030,8 @@ def ZqCR(q, prec = twenty, modulus = None, names=None,
               print_max_unram_terms=print_max_unram_terms, print_max_terse_terms=print_max_terse_terms, check=check,
               type = 'capped-rel')
 
-def ZqCA(q, prec = twenty, modulus = None, names=None,
-          print_mode=None, halt = forty, ram_name = None, print_pos = None,
+def ZqCA(q, prec = DEFAULT_PREC, modulus = None, names=None,
+          print_mode=None, halt = DEFAULT_HALT, ram_name = None, print_pos = None,
        print_sep = None, print_alphabet = None, print_max_ram_terms = None,
        print_max_unram_terms = None, print_max_terse_terms = None, check = True):
     """
@@ -2049,8 +2049,8 @@ def ZqCA(q, prec = twenty, modulus = None, names=None,
               print_max_unram_terms=print_max_unram_terms, print_max_terse_terms=print_max_terse_terms, check=check,
               type = 'capped-abs')
 
-def ZqFM(q, prec = twenty, modulus = None, names=None,
-          print_mode=None, halt = forty, ram_name = None, print_pos = None,
+def ZqFM(q, prec = DEFAULT_PREC, modulus = None, names=None,
+          print_mode=None, halt = DEFAULT_HALT, ram_name = None, print_pos = None,
        print_sep = None, print_alphabet = None, print_max_ram_terms = None,
        print_max_unram_terms = None, print_max_terse_terms = None, check = True):
     """
@@ -2068,8 +2068,8 @@ def ZqFM(q, prec = twenty, modulus = None, names=None,
               print_max_unram_terms=print_max_unram_terms, print_max_terse_terms=print_max_terse_terms, check=check,
               type = 'fixed-mod')
 
-#def ZqL(q, prec = twenty, modulus = None, names=None,
-#          print_mode=None, halt = forty, ram_name = None, print_pos = None,
+#def ZqL(q, prec = DEFAULT_PREC, modulus = None, names=None,
+#          print_mode=None, halt = DEFAULT_HALT, ram_name = None, print_pos = None,
 #       print_sep = None, print_alphabet = None, print_max_ram_terms = None,
 #       print_max_unram_terms = None, print_max_terse_terms = None, check = True):
 #    """
