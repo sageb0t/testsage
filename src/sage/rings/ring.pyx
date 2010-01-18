@@ -330,7 +330,7 @@ cdef class Ring(ParentWithGens):
         if isinstance(self, Ring):
             return self.ideal(x)
         else:
-            return x.ideal(self)    # switched because this is Pyrex / extension class
+            return x.ideal(self)    # switched because this is a Cython / extension class
 
     def _ideal_class_(self):
         r"""
@@ -1033,10 +1033,7 @@ cdef class CommutativeRing(Ring):
         else:
             from sage.rings.ideal_monoid import IdealMonoid
             M = IdealMonoid(self)
-            #try:
             self.__ideal_monoid = M
-            #except AttributeError:   # for pyrex classes
-            #    pass
             return M
 
     def quotient(self, I, names=None):
