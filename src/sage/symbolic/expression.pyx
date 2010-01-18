@@ -1695,7 +1695,7 @@ cdef class Expression(CommutativeRingElement):
             return True
         if self == 0:
             return False
-        return NotImplementedError
+        raise NotImplementedError
 
     cdef Expression coerce_in(self, z):
         """
