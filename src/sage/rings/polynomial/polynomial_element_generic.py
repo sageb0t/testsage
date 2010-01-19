@@ -38,6 +38,7 @@ from sage.rings.polynomial.polynomial_ring_constructor import PolynomialRing
 
 from sage.libs.pari.all import pari, pari_gen
 from sage.structure.factorization import Factorization
+from sage.structure.element import coerce_binop
 
 from sage.rings.infinity import infinity
 from sage.rings.rational_field import QQ
@@ -533,6 +534,7 @@ class Polynomial_generic_field(Polynomial_singular_repr,
                                Polynomial_generic_domain,
                                EuclideanDomainElement):
 
+    @coerce_binop
     def quo_rem(self, other):
         """
         Returns a tuple (quotient, remainder) where
@@ -549,7 +551,6 @@ class Polynomial_generic_field(Polynomial_singular_repr,
             (1, 0, 1)
         """
         P = self.parent()
-        other = P(other)
         if other.is_zero():
             raise ZeroDivisionError, "other must be nonzero"
 
@@ -823,6 +824,7 @@ class Polynomial_rational_dense(Polynomial_generic_field):
         else:
             return PermutationGroup(H)
 
+    @coerce_binop
     def quo_rem(self, right):
         """
         Returns a tuple (quotient, remainder) where
@@ -837,10 +839,6 @@ class Polynomial_rational_dense(Polynomial_generic_field):
             sage: q*g + r
             x^5 + 17*x + 3
         """
-        if not isinstance(right, Polynomial_rational_dense):
-            right = self.parent()(right)
-        if right.parent() != self.parent():
-            raise TypeError
         v = self.__poly.divrem(right.__poly)
         return Polynomial_rational_dense(self.parent(), v[0], construct=True), \
                Polynomial_rational_dense(self.parent(), v[1], construct=True)

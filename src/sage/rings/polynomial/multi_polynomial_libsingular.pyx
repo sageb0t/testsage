@@ -199,6 +199,7 @@ from sage.rings.integer_mod_ring import is_IntegerModRing
 from sage.rings.number_field.number_field_base cimport NumberField
 
 from sage.rings.arith import gcd
+from sage.structure.element import coerce_binop
 
 from sage.structure.parent cimport Parent
 from sage.structure.parent_base cimport ParentWithBase
@@ -3713,6 +3714,7 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
         id_Delete(&_I,r)
         return new_MP(parent,res)
 
+    @coerce_binop
     def gcd(self, right, algorithm=None, **kwds):
         """
         Return the greatest common divisor of self and right.
@@ -3827,6 +3829,7 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
         res = new_MP((<MPolynomialRing_libsingular>self._parent), _res)
         return res
 
+    @coerce_binop
     def lcm(self, MPolynomial_libsingular g):
         """
         Return the least common multiple of self and g.
@@ -3908,6 +3911,7 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
 
         return bool(singclap_isSqrFree(self._poly))
 
+    @coerce_binop
     def quo_rem(self, MPolynomial_libsingular right):
         """
         Returns quotient and remainder of self and right.
@@ -3945,9 +3949,6 @@ cdef class MPolynomial_libsingular(sage.rings.polynomial.multi_polynomial.MPolyn
         cdef MPolynomialRing_libsingular parent = <MPolynomialRing_libsingular>self._parent
         cdef ring *r = (<MPolynomialRing_libsingular>self._parent)._ring
         if(r != currRing): rChangeCurrRing(r)
-
-        if self._parent is not right._parent:
-            right = self._parent._coerce_c(right)
 
         if right.is_zero():
             raise ZeroDivisionError
