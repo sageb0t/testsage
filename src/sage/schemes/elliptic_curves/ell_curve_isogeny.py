@@ -1,11 +1,16 @@
 r"""
 Isogenies
 
-An isogeny `\varphi: E_1\to E_2` between two elliptic curves `E_1` and `E_2` is a morphism of curves that sends the
-origin of `E_1` to the origin of `E_2`. Such a morphism is automatically a morphism of group schemes and the kernel is a finite subgroup scheme of `E_1`.
-Such a subscheme can either be given by a list of generators, which have to be torsion points, or by a polynomial in the coordinate `x` of the Weierstrass equation of `E_1`.
+An isogeny `\varphi: E_1\to E_2` between two elliptic curves `E_1` and
+`E_2` is a morphism of curves that sends the origin of `E_1` to the
+origin of `E_2`. Such a morphism is automatically a morphism of group
+schemes and the kernel is a finite subgroup scheme of `E_1`.  Such a
+subscheme can either be given by a list of generators, which have to
+be torsion points, or by a polynomial in the coordinate `x` of the
+Weierstrass equation of `E_1`.
 
-The usual way to create and work with isogenies is illustrated with the following example::
+The usual way to create and work with isogenies is illustrated with
+the following example::
 
     sage: k = GF(11)
     sage: E = EllipticCurve(k,[1,1])
@@ -21,7 +26,8 @@ The usual way to create and work with isogenies is illustrated with the followin
     sage: phi.rational_maps()
     ((x^7 + 4*x^6 - 3*x^5 - 2*x^4 - 3*x^3 + 3*x^2 + x - 2)/(x^6 + 4*x^5 - 4*x^4 - 5*x^3 + 5*x^2), (x^9*y - 5*x^8*y - x^7*y + x^5*y - x^4*y - 5*x^3*y - 5*x^2*y - 2*x*y - 5*y)/(x^9 - 5*x^8 + 4*x^6 - 3*x^4 + 2*x^3))
 
-The functions directly accessible from an elliptic curve ``E`` over a field are ``isogeny`` and ``isogeny_codomain``.
+The functions directly accessible from an elliptic curve ``E`` over a
+field are ``isogeny`` and ``isogeny_codomain``.
 
 The most useful functions that apply to isogenies are
 
@@ -34,7 +40,8 @@ The most useful functions that apply to isogenies are
 
 .. Warning::
 
-   Only cyclic isogenies are implemented (except for [2]). Some algorithms may need the isogeny to be normalized.
+   Only cyclic isogenies are implemented (except for [2]). Some
+   algorithms may need the isogeny to be normalized.
 
 AUTHORS:
 
@@ -80,15 +87,19 @@ from sage.schemes.elliptic_curves.weierstrass_morphism import WeierstrassIsomorp
 from sage.sets.set import Set
 
 #
-# Private function for parsing input to determine the type of algorithm
+# Private function for parsing input to determine the type of
+# algorithm
 #
 def isogeny_determine_algorithm(E, kernel, codomain, degree, model):
     r"""
-    Helper function that allows the various isogeny functions to infer the algorithm type from the parameters passed in.
+    Helper function that allows the various isogeny functions to infer
+    the algorithm type from the parameters passed in.
 
-    If ``kernel`` is a list of points on the EllipticCurve `E`, then we assume the algorithm to use is Velu.
+    If ``kernel`` is a list of points on the EllipticCurve `E`, then
+    we assume the algorithm to use is Velu.
 
-    If ``kernel`` is a list of coefficients or a univariate polynomial we try to use the Kohel's algorithms.
+    If ``kernel`` is a list of coefficients or a univariate polynomial
+    we try to use the Kohel's algorithms.
 
     EXAMPLES:
 
@@ -136,13 +147,17 @@ def isogeny_codomain_from_kernel(E, kernel, degree=None):
 
     - ``E`` - The domain elliptic curve.
 
-    - ``kernel`` - Either a list of points in the kernel of the isogeny, or a kernel polynomial (specified as a either a univariate polynomial or a coefficient list.)
+    - ``kernel`` - Either a list of points in the kernel of the isogeny, or a
+                   kernel polynomial (specified as a either a univariate
+                   polynomial or a coefficient list.)
 
-    - ``degree`` - an integer, (default:``None``)  optionally specified degree of the kernel.
+    - ``degree`` - an integer, (default:``None``)  optionally specified degree
+                   of the kernel.
 
     OUTPUT:
 
-    (elliptic curve) the codomain of the separable normalized isogeny from this kernel
+    (elliptic curve) the codomain of the separable normalized isogeny
+    from this kernel
 
     EXAMPLES::
 
@@ -178,7 +193,7 @@ def isogeny_codomain_from_kernel(E, kernel, degree=None):
 
 def compute_codomain_formula(E, v, w):
     r"""
-    Given parameters `v` and `w` (as in velu / kohel / etc formulas)
+    Given parameters `v` and `w` (as in Velu / Kohel / etc formulas)
     computes the codomain curve.
 
     EXAMPLES:
@@ -206,7 +221,8 @@ def compute_codomain_formula(E, v, w):
 
 def compute_vw_kohel_even_deg1(x0, y0, a1, a2, a4):
     r"""
-    The formula for computing `v` and `w` using Kohel's formulas for isogenies of degree 2.
+    The formula for computing `v` and `w` using Kohel's formulas for
+    isogenies of degree 2.
 
     EXAMPLES:
 
@@ -232,7 +248,8 @@ def compute_vw_kohel_even_deg1(x0, y0, a1, a2, a4):
 
 def compute_vw_kohel_even_deg3(b2,b4,s1,s2,s3):
     r"""
-    The formula for computing `v` and `w` using Kohel's formulas for isogenies of degree 3.
+    The formula for computing `v` and `w` using Kohel's formulas for
+    isogenies of degree 3.
 
     EXAMPLES:
 
@@ -285,8 +302,8 @@ def compute_vw_kohel_odd(b2,b4,b6,s1,s2,s3,n):
 
 def compute_codomain_kohel(E, kernel, degree):
     r"""
-
-    This function computes the codomain from the kernel polynomial as per Kohel's formulas.
+    This function computes the codomain from the kernel polynomial as
+    per Kohel's formulas.
 
     EXAMPLES::
 
@@ -403,11 +420,13 @@ def compute_codomain_kohel(E, kernel, degree):
 def two_torsion_part(E, poly_ring, psi, degree):
     r"""
 
-    Returns the greatest common divisor of ``psi`` and the 2 torsion polynomial of `E`.
+    Returns the greatest common divisor of ``psi`` and the 2 torsion
+    polynomial of `E`.
 
     EXAMPLES:
 
-    Every function that computes the kernel polynomial via Kohel's formulas will call this function::
+    Every function that computes the kernel polynomial via Kohel's
+    formulas will call this function::
 
         sage: E = EllipticCurve(GF(19), [1,2,3,4,5])
         sage: R.<x> = GF(19)[]
@@ -435,35 +454,60 @@ class EllipticCurveIsogeny(Morphism):
     r"""
     Class Implementing Isogenies of Elliptic Curves
 
-    This class implements cyclic, separable, normalized isogenies of elliptic curves.
+    This class implements cyclic, separable, normalized isogenies of
+    elliptic curves.
 
-    Several different algorithms for computing isogenies are available.  These include:
+    Several different algorithms for computing isogenies are
+    available.  These include:
 
     - Velu's Formulas: Velu's original formulas for computing
-      isogenies.  This algorithm is selected by giving as the ``kernel`` parameter
-      a list of points which generate a finite subgroup.
+      isogenies.  This algorithm is selected by giving as the
+      ``kernel`` parameter a list of points which generate a finite
+      subgroup.
 
-    - Kohel's Formulas:
-      Kohel's original formulas for computing isogenies.
-      This algorithm is selected by giving as the ``kernel`` parameter a monic polynomial (or a coefficient list (little endian)) which will define the kernel of the isogeny.
+    - Kohel's Formulas: Kohel's original formulas for computing
+      isogenies.  This algorithm is selected by giving as the
+      ``kernel`` parameter a monic polynomial (or a coefficient list
+      (little endian)) which will define the kernel of the isogeny.
 
     INPUT:
 
-    - ``E``         - an elliptic curve, the domain of the isogeny to initialize.
-    - ``kernel``    - a kernel, either a point in ``E``, a list of points in ``E``, a monic kernel polynomial, or ``None``.
-      If initiating from a domain/codomain, this must be set to None.
-    - ``codomain``  - an elliptic curve (default:``None``).  If ``kernel`` is ``None``, then this must be the codomain of a cyclic, separable, normalized isogeny, furthermore, ``degree`` must be the degree of the isogeny from ``E`` to ``codomain``. If ``kernel`` is not ``None``, then this must be isomorphic to the codomain of the cyclic normalized separable isogeny defined by ``kernel``, in this case, the isogeny is post composed with an isomorphism so that this parameter is the codomain.
+    - ``E``         - an elliptic curve, the domain of the isogeny to
+                      initialize.
+
+    - ``kernel``    - a kernel, either a point in ``E``, a list of points
+                      in ``E``, a monic kernel polynomial, or ``None``.
+                      If initializing from a domain/codomain, this must be
+                      set to None.
+
+    - ``codomain``  - an elliptic curve (default:``None``).  If ``kernel``
+                      is ``None``, then this must be the codomain of a cyclic,
+                      separable, normalized isogeny, furthermore, ``degree``
+                      must be the degree of the isogeny from ``E`` to
+                      ``codomain``. If ``kernel`` is not ``None``, then this
+                      must be isomorphic to the codomain of the cyclic normalized
+                      separable isogeny defined by ``kernel``, in this case, the
+                      isogeny is post composed with an isomorphism so that this
+                      parameter is the codomain.
+
     - ``degree``    - an integer (default:``None``).
-      If ``kernel`` is ``None``, then this is the degree of the isogeny from ``E`` to ``codomain``.
-      If ``kernel`` is not ``None``, then this is used to determine whether or not to skip a gcd
-      of the kernel polynomial with the two torsion polynomial of ``E``.
-    - ``model``     - a string (default:``None``).  Only supported variable is ``minimal``, in which case if
-      ``E`` is a curve over the rationals, then the codomain is set to be the unique global minimum model.
+                      If ``kernel`` is ``None``, then this is the degree of the
+                      isogeny from ``E`` to ``codomain``.
+                      If ``kernel`` is not ``None``, then this is used to determine
+                      whether or not to skip a gcd of the kernel polynomial with the
+                      two torsion polynomial of ``E``.
+
+    - ``model``     - a string (default:``None``).  Only supported variable is
+                      ``minimal``, in which case if ``E`` is a curve over the
+                      rationals, then the codomain is set to be the unique global
+                      minimum model.
+
     - ``check`` (default: ``True``) checks if the input is valid to define an isogeny
 
     EXAMPLES:
 
-    A simple example of creating an isogeny of a field of small characteristic::
+    A simple example of creating an isogeny of a field of small
+    characteristic::
 
         sage: E = EllipticCurve(GF(7), [0,0,0,1,0])
         sage: phi = EllipticCurveIsogeny(E, E((0,0)) ); phi
@@ -511,7 +555,8 @@ class EllipticCurveIsogeny(Morphism):
         sage: phi_k(P) == phi_v.codomain()(0)
         True
 
-    We can create an isogeny that has kernel equal to the full 2 torsion::
+    We can create an isogeny that has kernel equal to the full 2
+    torsion::
 
         sage: E = EllipticCurve(GF(3), [0,0,0,1,1])
         sage: ker_list = E.division_polynomial(2).list()
@@ -603,7 +648,8 @@ class EllipticCurveIsogeny(Morphism):
         sage: phi_k.is_separable()
         True
 
-    We can also do this same example over the number field defined by the irreducible two torsion polynomial of `E`::
+    We can also do this same example over the number field defined by
+    the irreducible two torsion polynomial of `E`::
 
         sage: E = EllipticCurve('11a1')
         sage: P_list = E.torsion_points()
@@ -633,7 +679,8 @@ class EllipticCurveIsogeny(Morphism):
         sage: phi_v.is_separable()
         True
 
-    The following example shows how to specify an isogeny from domain and codomain::
+    The following example shows how to specify an isogeny from domain
+    and codomain::
 
         sage: E = EllipticCurve('11a1')
         sage: R.<x> = QQ[]
@@ -648,15 +695,16 @@ class EllipticCurveIsogeny(Morphism):
         sage: phi_s.rational_maps() == phi.rational_maps()
         True
 
-    However only cyclic normalized isogenies can be constructed this way. So it won't find the
-    isogeny [3]::
+    However only cyclic normalized isogenies can be constructed this
+    way. So it won't find the isogeny [3]::
 
         sage: E.isogeny(None, codomain=E,degree=9)
         Traceback (most recent call last):
         ...
         ValueError: The two curves are not linked by a cyclic normalized isogeny of degree 9
 
-    Also the presumed isogeny between the domain and codomain must be normalized::
+    Also the presumed isogeny between the domain and codomain must be
+    normalized::
 
         sage: E2.isogeny(None,codomain=E,degree=5)
         Traceback (most recent call last):
@@ -667,7 +715,8 @@ class EllipticCurveIsogeny(Morphism):
         sage: phi.dual().is_normalized()
         False
 
-    Here an example of a construction of a endomorphisms with cyclic kernel on a cm-curve::
+    Here an example of a construction of a endomorphisms with cyclic
+    kernel on a CM-curve::
 
         sage: K.<i> = NumberField(x^2+1)
         sage: E = EllipticCurve(K, [1,0])
@@ -818,8 +867,9 @@ class EllipticCurveIsogeny(Morphism):
         if not is_EllipticCurve(E):
             raise ValueError, "E parameter must be an EllipticCurve."
 
-        if type(kernel) != type([1,1]) and kernel in E : # a single point was given, we put it in a list
-                                                    # the first condition assures that [1,1] is treated as x+1
+        if type(kernel) != type([1,1]) and kernel in E :
+            # a single point was given, we put it in a list
+            # the first condition assures that [1,1] is treated as x+1
             kernel = [kernel]
 
         # if the kernel is None and the codomain isn't
@@ -829,9 +879,9 @@ class EllipticCurveIsogeny(Morphism):
 
         self.__check = check
 
-        if (None == kernel) and (None != codomain):
+        if (kernel is None) and (codomain is not None):
 
-            if (None == degree):
+            if (degree is None):
                 raise ValueError, "If specifying isogeny by domain and codomain, degree parameter must be set."
 
             # save the domain/codomain: really used now (trac #7096)
@@ -855,10 +905,10 @@ class EllipticCurveIsogeny(Morphism):
 
         self.__setup_post_isomorphism(codomain, model)
 
-        if (None != pre_isom):
+        if (pre_isom is not None):
             self.set_pre_isomorphism(pre_isom)
 
-        if (None != post_isom):
+        if (post_isom is not None):
             self.__set_post_isomorphism(old_codomain, post_isom)   #(trac #7096)
 
         # Inheritance house keeping
@@ -869,7 +919,8 @@ class EllipticCurveIsogeny(Morphism):
 
     def __call__(self, P, output_base_ring=None):
         r"""
-        Function that implements the call-ability of elliptic curve isogenies.
+        Function that implements the call-ability of elliptic curve
+        isogenies.
 
         EXAMPLES::
 
@@ -915,7 +966,7 @@ class EllipticCurveIsogeny(Morphism):
             raise InputError, "Input point must be on the domain curve of this isogeny."
 
         # if there is a pre isomorphism, apply it
-        if (None != self.__pre_isomorphism):
+        if (self.__pre_isomorphism is not None):
             temp_xP = self.__prei_x_coord_ratl_map(x=xP, y=yP)
             temp_yP = self.__prei_y_coord_ratl_map(x=xP, y=yP)
             (xP, yP) = (temp_xP, temp_yP)
@@ -931,13 +982,13 @@ class EllipticCurveIsogeny(Morphism):
             return self.__E2(0)
 
         # if there is a post isomorphism, apply it
-        if (None != self.__post_isomorphism):
+        if (self.__post_isomorphism is not None):
             tempX = self.__posti_x_coord_ratl_map(x=outP[0], y=outP[1])
             tempY = self.__posti_y_coord_ratl_map(x=outP[0], y=outP[1])
             outP = [tempX, tempY]
 
         if change_output_ring:
-            if (None == output_base_ring):
+            if (output_base_ring is None):
                 output_base_ring = E_P.base_ring()
             outE2 = self.__E2.change_ring(output_base_ring)
         else:
@@ -949,13 +1000,29 @@ class EllipticCurveIsogeny(Morphism):
 
         return outE2.point([R(outP[0]), R(outP[1]), R(1)], check=False)
 
+    def __getitem__(self, i):
+        self.__initialize_rational_maps()
+        if (i < 0) or (i > 2):
+            raise IndexError
+
+        if i == 0:
+            return self.__X_coord_rational_map
+        else:
+            return self.__Y_coord_rational_map
+
+    def __iter__(self):
+        self.__initialize_rational_maps()
+        return iter((self.__X_coord_rational_map, self.__Y_coord_rational_map))
+
     def __hash__(self):
         r"""
         Function that implements the hash ability of Isogeny objects.
 
-        This hashes the underlying kernel polynomial so that equal isogeny objects have the same hash value.
-        Also, this hashes the base field, and domain and codomain curves as well, so that isogenies with
-        the same kernel polynomial (over different base fields / curves) hash to different values.
+        This hashes the underlying kernel polynomial so that equal
+        isogeny objects have the same hash value.  Also, this hashes
+        the base field, and domain and codomain curves as well, so
+        that isogenies with the same kernel polynomial (over different
+        base fields / curves) hash to different values.
 
         EXAMPLES::
 
@@ -976,12 +1043,12 @@ class EllipticCurveIsogeny(Morphism):
 
         """
 
-        if (None != self.__this_hash):
+        if (self.__this_hash is not None):
             return self.__this_hash
 
         ker_poly_list = self.__kernel_polynomial_list
 
-        if (None == ker_poly_list):
+        if (ker_poly_list is None):
             ker_poly_list = self.__init_kernel_polynomial()
 
         this_hash = 0
@@ -1001,7 +1068,8 @@ class EllipticCurveIsogeny(Morphism):
         r"""
         Function that implements comparisons between isogeny objects.
 
-        This function works by comparing the underlying kernel objects.
+        This function works by comparing the underlying kernel
+        objects.
 
         EXAMPLES::
 
@@ -1026,15 +1094,16 @@ class EllipticCurveIsogeny(Morphism):
         if (not isinstance(other, EllipticCurveIsogeny)):
             return -1
 
-        if (None == self.__kernel_polynomial):
+        if (self.__kernel_polynomial is None):
             self.__init_kernel_polynomial()
 
         return cmp(self.__kernel_polynomial, other.kernel_polynomial())
 
     def __neg__(self):
         r"""
-        Function to implement unary negation (-) operator on isogenies.
-        Returns a copy of this isogeny that has been negated.
+        Function to implement unary negation (-) operator on
+        isogenies. Returns a copy of this isogeny that has been
+        negated.
 
         EXAMPLES:
 
@@ -1087,7 +1156,8 @@ class EllipticCurveIsogeny(Morphism):
 
     def _repr_(self):
         r"""
-        Special sage specific function that implement the functionality to display the isogeny self as a string.
+        Special sage specific function that implement the
+        functionality to display the isogeny self as a string.
 
         EXAMPLES::
 
@@ -1107,9 +1177,11 @@ class EllipticCurveIsogeny(Morphism):
 
     def _latex_(self):
         r"""
-        Special sage specific function that implements functionality to display an isogeny object as a latex string.
+        Special sage specific function that implements functionality
+        to display an isogeny object as a latex string.
 
-        This function returns a latex string representing the isogeny self as the `x` and `y` coordinate rational functions.
+        This function returns a latex string representing the isogeny
+        self as the `x` and `y` coordinate rational functions.
 
         EXAMPLES::
 
@@ -1135,7 +1207,8 @@ class EllipticCurveIsogeny(Morphism):
     # delete the hash value
     def __clear_cached_values(self):
         r"""
-        A private function to clear the hash if the codomain has been modified by a pre or post isomorphism.
+        A private function to clear the hash if the codomain has been
+        modified by a pre or post isomorphism.
 
         EXAMPLES::
 
@@ -1183,11 +1256,13 @@ class EllipticCurveIsogeny(Morphism):
     # performs the inheritance house keeping
     def __perform_inheritance_housekeeping(self):
         r"""
-        Internal helper function, sets values on the super classes of this class.
+        Internal helper function, sets values on the super classes of
+        this class.
 
         EXAMPLES:
 
-        The following examples will implicitly exercise this function::
+        The following examples will implicitly exercise this
+        function::
 
             sage: E = EllipticCurve(GF(43), [2,3,5,7,11])
             sage: R.<x> = GF(43)[]; f = x + 42
@@ -1216,7 +1291,8 @@ class EllipticCurveIsogeny(Morphism):
     # initializes the base field
     def __init_algebraic_structs(self, E):
         r"""
-        An internal function for EllipticCurveIsogeny objects that sets up the member variables necessary for algebra.
+        An internal function for EllipticCurveIsogeny objects that
+        sets up the member variables necessary for algebra.
 
         EXAMPLES:
 
@@ -1281,9 +1357,14 @@ class EllipticCurveIsogeny(Morphism):
         return
 
     # initializes the rational maps fields
-    def __initialize_rational_maps(self):
+    def __initialize_rational_maps(self, precomputed_maps=None):
         r"""
-        Private function that computes and initializes the rational maps.
+        Private function that computes and initializes the rational
+        maps.
+
+        INPUT:
+
+        - ``
 
         EXAMPLES:
 
@@ -1307,19 +1388,22 @@ class EllipticCurveIsogeny(Morphism):
         if (self.__rational_maps_initialized):
             return
 
-        if ("velu"==self.__algorithm):
-            (X_map, Y_map) = self.__initialize_rational_maps_via_velu()
-        if ("kohel"==self.__algorithm):
-            (X_map, Y_map) = self.__initialize_rational_maps_via_kohel()
+        if precomputed_maps is None:
+            if ("velu"==self.__algorithm):
+                (X_map, Y_map) = self.__initialize_rational_maps_via_velu()
+            if ("kohel"==self.__algorithm):
+                (X_map, Y_map) = self.__initialize_rational_maps_via_kohel()
+        else:
+            X_map, Y_map = precomputed_maps
 
-        if (None != self.__prei_x_coord_ratl_map):
+        if (self.__prei_x_coord_ratl_map is not None):
             prei_X_map = self.__prei_x_coord_ratl_map
             prei_Y_map = self.__prei_y_coord_ratl_map
 
             X_map = X_map.subs(x=prei_X_map, y=prei_Y_map)
             Y_map = Y_map.subs(x=prei_X_map, y=prei_Y_map)
 
-        if (None != self.__posti_x_coord_ratl_map):
+        if (self.__posti_x_coord_ratl_map is not None):
             X_map = self.__posti_x_coord_ratl_map.subs(x=X_map, y=Y_map)
             Y_map = self.__posti_y_coord_ratl_map.subs(x=X_map, y=Y_map)
 
@@ -1332,8 +1416,8 @@ class EllipticCurveIsogeny(Morphism):
 
     def __init_kernel_polynomial(self):
         r"""
-        Private function that initializes the kernel polynomial
-        (if the algorithm does not take it as a parameter.)
+        Private function that initializes the kernel polynomial (if
+        the algorithm does not take it as a parameter.)
 
         EXAMPLES:
 
@@ -1348,7 +1432,7 @@ class EllipticCurveIsogeny(Morphism):
 
         """
 
-        if (None != self.__kernel_polynomial_list):
+        if (self.__kernel_polynomial_list is not None):
             return self.__kernel_polynomial_list
 
         if ("velu" == self.__algorithm):
@@ -1360,7 +1444,8 @@ class EllipticCurveIsogeny(Morphism):
 
     def __set_pre_isomorphism(self, domain, isomorphism):
         r"""
-        Private function to set the pre isomorphism and domain (and keep track of the domain of the isogeny.)
+        Private function to set the pre isomorphism and domain (and
+        keep track of the domain of the isogeny.)
 
         EXAMPLES::
 
@@ -1393,7 +1478,7 @@ class EllipticCurveIsogeny(Morphism):
         self.__prei_x_coord_ratl_map = (x - r)/u**2
         self.__prei_y_coord_ratl_map = (y - s*(x-r) - t)/u**3
 
-        if (None != self.__kernel_polynomial):
+        if (self.__kernel_polynomial is not None):
             ker_poly = self.__kernel_polynomial
             ker_poly = ker_poly.subs(x=self.__prei_x_coord_ratl_map)
             kp_lc = ker_poly.univariate_polynomial().leading_coefficient()
@@ -1406,7 +1491,8 @@ class EllipticCurveIsogeny(Morphism):
 
     def __set_post_isomorphism(self, codomain, isomorphism):
         r"""
-        Private function to set the post isomorphism and codomain (and keep track of the codomain of the isogeny.)
+        Private function to set the post isomorphism and codomain (and
+        keep track of the codomain of the isogeny.)
 
         EXAMPLES:
 
@@ -1446,7 +1532,8 @@ class EllipticCurveIsogeny(Morphism):
 
     def __setup_post_isomorphism(self, codomain, model):
         r"""
-        Private function to set up the post isomorphism given the codomain.
+        Private function to set up the post isomorphism given the
+        codomain.
 
         EXAMPLES:
 
@@ -1483,9 +1570,9 @@ class EllipticCurveIsogeny(Morphism):
 
         oldE2 = self.__E2
 
-        if (None != model):
+        if (model is not None):
 
-            if (None != codomain):
+            if (codomain is not None):
                 raise ValueError, "Cannot specify a codomain and model flag simultaneously."
 
             if ('minimal' == model):
@@ -1499,7 +1586,7 @@ class EllipticCurveIsogeny(Morphism):
             else:
                 raise ValueError, "Unknown value of model flag."
 
-        elif (None != codomain):
+        elif (codomain is not None):
             if (not is_EllipticCurve(codomain)):
                 raise ValueError,  "Codomain parameter must be an elliptic curve."
 
@@ -1509,7 +1596,7 @@ class EllipticCurveIsogeny(Morphism):
             newE2 = codomain
             post_isom = oldE2.isomorphism_to(newE2)
 
-        if (None != post_isom):
+        if (post_isom is not None):
             self.__set_post_isomorphism(newE2, post_isom)
 
         return
@@ -1524,7 +1611,8 @@ class EllipticCurveIsogeny(Morphism):
 
     def __init_from_kernel_list(self, kernel_gens):
         r"""
-        Private function that initializes the isogeny from a list of points which generate the kernel (For Velu's formulas.)
+        Private function that initializes the isogeny from a list of
+        points which generate the kernel (For Velu's formulas.)
 
         EXAMPLES:
 
@@ -1565,8 +1653,9 @@ class EllipticCurveIsogeny(Morphism):
     #
     def __sort_kernel_list(self):
         r"""
-        Private function that sorts the list of points in the kernel (For Velu's formulas.)
-        sorts out the 2 torsion points, and puts them in a dictionary.
+        Private function that sorts the list of points in the kernel
+        (For Velu's formulas). Sorts out the 2 torsion points, and
+        puts them in a dictionary.
 
         EXAMPLES:
 
@@ -1621,7 +1710,8 @@ class EllipticCurveIsogeny(Morphism):
     #
     def __compute_E2_via_velu(self):
         r"""
-        Private function that computes the codomain via Velu's formulas.
+        Private function that computes the codomain via Velu's
+        formulas.
 
         EXAMPLES:
 
@@ -1643,7 +1733,8 @@ class EllipticCurveIsogeny(Morphism):
 
     def __velu_sum_helper(self, Qvalues, a1, a3, x, y):
         r"""
-        Private function for Velu's formulas, helper function to help perform the summation.
+        Private function for Velu's formulas, helper function to help
+        perform the summation.
 
         EXAMPLES:
 
@@ -1692,8 +1783,9 @@ class EllipticCurveIsogeny(Morphism):
 
     def __compute_via_velu_numeric(self, xP, yP):
         r"""
-        Private function that sorts the list of points in the kernel (For Velu's formulas.)
-        sorts out the 2 torsion points, and puts them in a diction
+        Private function that sorts the list of points in the kernel
+        (for Velu's formulas). Sorts out the 2 torsion points, and
+        puts them in a diction
 
         EXAMPLES:
 
@@ -1724,7 +1816,8 @@ class EllipticCurveIsogeny(Morphism):
 
     def __compute_via_velu(self, xP, yP):
         r"""
-        Private function for Velu's formulas, to perform the summation.
+        Private function for Velu's formulas, to perform the
+        summation.
 
         EXAMPLES:
 
@@ -1799,7 +1892,8 @@ class EllipticCurveIsogeny(Morphism):
 
     def __init_kernel_polynomial_velu(self):
         r"""
-        Private function for Velu's formulas, helper function to initialize the rational maps.
+        Private function for Velu's formulas, helper function to
+        initialize the rational maps.
 
         EXAMPLES:
 
@@ -1820,7 +1914,7 @@ class EllipticCurveIsogeny(Morphism):
 
         invX = 0
 
-        if (None != self.__pre_isomorphism):
+        if (self.__pre_isomorphism is not None):
             pre_isom = self.__pre_isomorphism
             u = pre_isom.u
             r = pre_isom.r
@@ -1851,7 +1945,8 @@ class EllipticCurveIsogeny(Morphism):
 
     def __init_from_kernel_polynomial(self, kernel_polynomial, degree=None):
         r"""
-        Private function that initializes the isogeny from a kernel polynomial.
+        Private function that initializes the isogeny from a kernel
+        polynomial.
 
         EXAMPLES:
 
@@ -1933,8 +2028,8 @@ class EllipticCurveIsogeny(Morphism):
 
     def __init_even_kernel_polynomial(self, E, psi_G):
         r"""
-        Private function that initializes the isogeny from a kernel polynomial,
-        for Kohel's algorithm in the even degree case.
+        Private function that initializes the isogeny from a kernel
+        polynomial, for Kohel's algorithm in the even degree case.
 
         EXAMPLES:
 
@@ -2037,7 +2132,8 @@ class EllipticCurveIsogeny(Morphism):
 
     def __init_odd_kernel_polynomial(self, E, psi):
         r"""
-        Private function that initializes the isogeny from a kernel polynomial.
+        Private function that initializes the isogeny from a kernel
+        polynomial.
 
         EXAMPLES:
 
@@ -2070,7 +2166,6 @@ class EllipticCurveIsogeny(Morphism):
              3)
 
         """
-
         n = psi.degree()
         d = 2*n + 1
 
@@ -2123,8 +2218,9 @@ class EllipticCurveIsogeny(Morphism):
     #
     def __compute_omega_fast(self, E, psi, psi_pr, phi, phi_pr):
         r"""
-        Private function that initializes the omega polynomial (from Kohel's formulas)
-        in the case that the characteristic of the underlying field is not 2.
+        Private function that initializes the omega polynomial (from
+        Kohel's formulas) in the case that the characteristic of the
+        underlying field is not 2.
 
         EXAMPLES:
 
@@ -2165,8 +2261,9 @@ class EllipticCurveIsogeny(Morphism):
 
     def __compute_omega_general(self, E, psi, psi_pr, phi, phi_pr):
         r"""
-        Private function that initializes the omega polynomial (from Kohel's formulas)
-        in the case of general characteristic of the underlying field.
+        Private function that initializes the omega polynomial (from
+        Kohel's formulas) in the case of general characteristic of the
+        underlying field.
 
         EXAMPLES:
 
@@ -2255,7 +2352,8 @@ class EllipticCurveIsogeny(Morphism):
 
     def __compute_via_kohel_numeric(self, xP, yP):
         r"""
-        Private function that computes a numeric result of this isogeny (via Kohel's formulas.)
+        Private function that computes a numeric result of this
+        isogeny (via Kohel's formulas.)
 
         EXAMPLES:
 
@@ -2340,7 +2438,8 @@ class EllipticCurveIsogeny(Morphism):
 
     def __initialize_rational_maps_via_kohel(self):
         r"""
-        Private function that computes and initializes the rational maps of this isogeny.
+        Private function that computes and initializes the rational
+        maps of this isogeny.
 
         EXAMPLES:
 
@@ -2369,7 +2468,8 @@ class EllipticCurveIsogeny(Morphism):
     #
     def __compute_E2_via_kohel(self):
         r"""
-        Private function that computes and initializes the codomain of the isogeny (via Kohel's.)
+        Private function that computes and initializes the codomain of
+        the isogeny (via Kohel's.)
 
         EXAMPLES:
 
@@ -2477,9 +2577,11 @@ class EllipticCurveIsogeny(Morphism):
 
     def is_separable(self):
         r"""
-        This function returns a bool indicating whether or not this isogeny is separable.
+        This function returns a bool indicating whether or not this
+        isogeny is separable.
 
-        This function always returns ``True`` as currently this class only implements separable isogenies.
+        This function always returns ``True`` as currently this class
+        only implements separable isogenies.
 
         EXAMPLES::
 
@@ -2523,14 +2625,15 @@ class EllipticCurveIsogeny(Morphism):
             x^3 + 3*x
 
         """
-        if(None == self.__kernel_polynomial):
+        if (self.__kernel_polynomial is None):
             self.__init_kernel_polynomial()
 
         return self.__kernel_polynomial.univariate_polynomial()
 
     def set_pre_isomorphism(self, preWI):
         r"""
-        Modifies this isogeny object to pre compose with the given Weierstrass isomorphism.
+        Modifies this isogeny object to pre compose with the given
+        Weierstrass isomorphism.
 
         EXAMPLES::
 
@@ -2595,7 +2698,7 @@ class EllipticCurveIsogeny(Morphism):
         if (self.__E1 != WIcod):
             raise ValueError, "Invalid parameter: isomorphism must have codomain curve equal to this isogenies' domain."
 
-        if (None == self.__pre_isomorphism):
+        if (self.__pre_isomorphism is None):
             isom = preWI
             domain = WIdom
         else:
@@ -2610,7 +2713,8 @@ class EllipticCurveIsogeny(Morphism):
 
     def set_post_isomorphism(self, postWI):
         r"""
-        Modifies this isogeny object to post compose with the given Weierstrass isomorphism.
+        Modifies this isogeny object to post compose with the given
+        Weierstrass isomorphism.
 
         EXAMPLES::
 
@@ -2657,7 +2761,7 @@ class EllipticCurveIsogeny(Morphism):
         if (self.__E2 != WIdom):
             raise ValueError, "Invalid parameter: isomorphism must have domain curve equal to this isogenies' codomain."
 
-        if (None == self.__post_isomorphism):
+        if (self.__post_isomorphism is None):
             isom = postWI
             codomain = WIcod
         else:
@@ -2672,8 +2776,8 @@ class EllipticCurveIsogeny(Morphism):
 
     def get_pre_isomorphism(self):
         r"""
-        Returns the pre-isomorphism of this isogeny.
-        If there has been no pre-isomorphism set, this returns ``None``.
+        Returns the pre-isomorphism of this isogeny.  If there has
+        been no pre-isomorphism set, this returns ``None``.
 
         EXAMPLES::
 
@@ -2704,8 +2808,8 @@ class EllipticCurveIsogeny(Morphism):
 
     def get_post_isomorphism(self):
         r"""
-        Returns the post-isomorphism of this isogeny.
-        If there has been no post-isomorphism set, this returns ``None``.
+        Returns the post-isomorphism of this isogeny.  If there has
+        been no post-isomorphism set, this returns ``None``.
 
         EXAMPLES::
 
@@ -2791,15 +2895,19 @@ class EllipticCurveIsogeny(Morphism):
 
     def is_normalized(self, via_formal=True, check_by_pullback=True):
         r"""
-        Returns ``True`` if this isogeny is normalized. An isogeny `\varphi\colon E\to E_2` between two given Weierstrass
-        equations is said to be normalized if the constant `c` is `1` in `\varphi*(\omega_2) = c\cdot\omega`, where `\omega` and `omega_2`
-        are the invariant differentials on `E` and `E_2` corresponding to the given equation.
+        Returns ``True`` if this isogeny is normalized. An isogeny
+        `\varphi\colon E\to E_2` between two given Weierstrass
+        equations is said to be normalized if the constant `c` is `1`
+        in `\varphi*(\omega_2) = c\cdot\omega`, where `\omega` and
+        `omega_2` are the invariant differentials on `E` and `E_2`
+        corresponding to the given equation.
 
         INPUT:
 
-        - ``via_formal`` - (default: ``True``) If ``True`` it simply checks if the leading
-          term of the formal series is 1. Otherwise it uses a deprecated algorithm
-          involving the second optional argument.
+        - ``via_formal`` - (default: ``True``) If ``True`` it simply checks if
+                           the leading term of the formal series is 1. Otherwise
+                           it uses a deprecated algorithm involving the second
+                           optional argument.
 
         - ``check_by_pullback`` -  (default:``True``) Deprecated.
 
@@ -2899,10 +3007,12 @@ class EllipticCurveIsogeny(Morphism):
             if (1 == inv_diff_quo):
                 f_normalized = True
             else:
-                # For some reason, in certain cases, when the isogeny is pre or post composed with a translation
-                # the resulting rational functions are too complicated for sage to simplify down to a constant
-                # in this case, we do some cheating by checking if the post-composition by isogeny has
-                # a non 1 scaling factor
+                # For some reason, in certain cases, when the isogeny
+                # is pre or post composed with a translation the
+                # resulting rational functions are too complicated for
+                # sage to simplify down to a constant in this case, we
+                # do some cheating by checking if the post-composition
+                # by isogeny has a non 1 scaling factor
                 if ( inv_diff_quo.numerator().is_constant() and (inv_diff_quo.denominator().is_constant) ):
                     f_normalized = False
                 else:
@@ -2910,16 +3020,17 @@ class EllipticCurveIsogeny(Morphism):
         else:
             check_prepost_isomorphism = True
 
-        #
-        # If we skip checking by the pullback of the invariant differential OR if that was inconclusive
-        # We explicitly check if there is a post isomorphism and if it has a non 1 scaling factor
-        # or if it is a just a translation.
-        # NOTE: This only works because we are using algorithms for calculating the isogenies that calculate
-        # a separable normalized isogeny, if this changes, this check will no longer be correct.
+        # If we skip checking by the pullback of the invariant
+        # differential OR if that was inconclusive We explicitly check
+        # if there is a post isomorphism and if it has a non 1 scaling
+        # factor or if it is a just a translation.  NOTE: This only
+        # works because we are using algorithms for calculating the
+        # isogenies that calculate a separable normalized isogeny, if
+        # this changes, this check will no longer be correct.
         #
         if (check_prepost_isomorphism):
             post_isom = self.__post_isomorphism
-            if (None != post_isom):
+            if (post_isom is not None):
                 if (1 == self.__base_field(post_isom.u)):
                     f_post_normalized = True
                 else:
@@ -2928,7 +3039,7 @@ class EllipticCurveIsogeny(Morphism):
                 f_post_normalized = True
 
             pre_isom = self.__pre_isomorphism
-            if (None != pre_isom):
+            if (pre_isom is not None):
                 if (1 == self.__base_field(pre_isom.u)):
                     f_pre_normalized = True
                 else:
@@ -2942,9 +3053,11 @@ class EllipticCurveIsogeny(Morphism):
 
     def dual(self):
         r"""
-        Computes and returns the dual isogeny of this isogeny. If `\varphi\colon E \to E_2` is the given isogeny,
-        then the dual is by definition the unique isogeny `\hat\varphi\colon E_2\to E` such that the compositions
-        `\hat\varphi\circ\varphi` and `\varphi\circ\hat\varphi` are the multiplication `[n]` by the
+        Computes and returns the dual isogeny of this isogeny. If
+        `\varphi\colon E \to E_2` is the given isogeny, then the dual
+        is by definition the unique isogeny `\hat\varphi\colon E_2\to
+        E` such that the compositions `\hat\varphi\circ\varphi` and
+        `\varphi\circ\hat\varphi` are the multiplication `[n]` by the
         degree of `\varphi` on `E` and `E_2` respectively.
 
         EXAMPLES::
@@ -3024,7 +3137,7 @@ class EllipticCurveIsogeny(Morphism):
         if (self.__base_field.characteristic() in [2,3]):
             raise NotImplemented
 
-        if (None != self.__dual):
+        if (self.__dual is not None):
             return self.__dual
 
         # trac 7096
@@ -3081,12 +3194,13 @@ class EllipticCurveIsogeny(Morphism):
 
     def formal(self,prec=20):
         r"""
-        Computes the formal isogeny as a power series in the variable `t=-x/y`
-        on the domain curve.
+        Computes the formal isogeny as a power series in the variable
+        `t=-x/y` on the domain curve.
 
         INPUT:
 
-        - ``prec``: (default = 20), the precision with which the computations in the formal group are carried out.
+        - ``prec`` - (default = 20), the precision with which the computations
+                     in the formal group are carried out.
 
         EXAMPLES::
 
@@ -3141,8 +3255,8 @@ class EllipticCurveIsogeny(Morphism):
 
     def is_injective(self):
         r"""
-        Method inherited from the morphism class.
-        Returns ``True`` if and only if this isogeny has trivial kernel.
+        Method inherited from the morphism class.  Returns ``True`` if
+        and only if this isogeny has trivial kernel.
 
         EXAMPLES::
 
@@ -3172,7 +3286,8 @@ class EllipticCurveIsogeny(Morphism):
 
     def is_surjective(self):
         r"""
-        For elliptic curve isogenies, always returns ``True`` (as a non-constant map of algebraic curves must be surjective).
+        For elliptic curve isogenies, always returns ``True`` (as a
+        non-constant map of algebraic curves must be surjective).
 
         EXAMPLES::
 
@@ -3247,7 +3362,8 @@ class EllipticCurveIsogeny(Morphism):
 
     def n(self):
         r"""
-        Numerical Approximation inherited from Map (through morphism), nonsensical for isogenies.
+        Numerical Approximation inherited from Map (through morphism),
+        nonsensical for isogenies.
 
         EXAMPLES::
 
@@ -3278,7 +3394,8 @@ def compute_isogeny_starks(E1, E2, ell):
 
     OUTPUT:
 
-    polynomial -- over the field of definition of ``E1``, ``E2``, that is the kernel polynomial of the isogeny from ``E1`` to ``E2``.
+    polynomial -- over the field of definition of ``E1``, ``E2``, that is the
+                  kernel polynomial of the isogeny from ``E1`` to ``E2``.
 
     ALGORITHM:
 
@@ -3438,9 +3555,9 @@ def split_kernel_polynomial(E1, ker_poly, ell):
 
 def compute_isogeny_kernel_polynomial(E1, E2, ell, algorithm="starks"):
     r"""
-    Computes the kernel polynomial of the degree ``ell`` isogeny between ``E1`` and ``E2``.
-    There must be a degree ``ell``, cyclic, separable, normalized isogeny from
-    ``E1`` to ``E2``.
+    Computes the kernel polynomial of the degree ``ell`` isogeny
+    between ``E1`` and ``E2``.  There must be a degree ``ell``,
+    cyclic, separable, normalized isogeny from ``E1`` to ``E2``.
 
     INPUT:
 
@@ -3454,7 +3571,8 @@ def compute_isogeny_kernel_polynomial(E1, E2, ell, algorithm="starks"):
 
     OUTPUT:
 
-    polynomial -- over the field of definition of ``E1``, ``E2``, that is the kernel polynomial of the isogeny from ``E1`` to ``E2``.
+    polynomial -- over the field of definition of ``E1``, ``E2``, that is the
+                  kernel polynomial of the isogeny from ``E1`` to ``E2``.
 
     EXAMPLES::
 
@@ -3492,7 +3610,8 @@ def compute_intermediate_curves(E1, E2):
     Intermediate domain and intermediate codomain, are in short
     Weierstrass form.
 
-    This is used so we can compute `\wp` functions from the short Weierstrass model more easily.
+    This is used so we can compute `\wp` functions from the short
+    Weierstrass model more easily.
 
     The underlying field must be of characteristic not equal to 2,3.
 
@@ -3503,7 +3622,8 @@ def compute_intermediate_curves(E1, E2):
 
     OUTPUT:
 
-    tuple -- (``pre_isomorphism``, ``post_isomorphism``, ``intermediate_domain``, ``intermediate_codomain``):
+    tuple -- (``pre_isomorphism``, ``post_isomorphism``, ``intermediate_domain``,
+              ``intermediate_codomain``):
 
     - ``intermediate_domain``: a short Weierstrass model isomorphic to ``E1``
     - ``intermediate_codomain``: a short Weierstrass model isomorphic to ``E2``
@@ -3582,7 +3702,10 @@ def compute_intermediate_curves(E1, E2):
 
 def compute_sequence_of_maps(E1, E2, ell):
     r"""
-    Given domain ``E1`` and codomain ``E2`` such that there is a degree ``ell`` separable normalized isogeny from ``E1`` to ``E2``,    returns pre/post isomorphism, as well as intermediate domain and codomain, and kernel polynomial.
+    Given domain ``E1`` and codomain ``E2`` such that there is a
+    degree ``ell`` separable normalized isogeny from ``E1`` to ``E2``,
+    returns pre/post isomorphism, as well as intermediate domain and
+    codomain, and kernel polynomial.
 
     EXAMPLES::
 
