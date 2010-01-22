@@ -95,7 +95,7 @@ class Homology_abvar(Homology):
 
             sage: H = J0(43).integral_homology()
             sage: type(H)
-            <class 'sage.modular.abvar.homology.IntegralHomology'>
+            <class 'sage.modular.abvar.homology.IntegralHomology_with_category'>
 
         TESTS::
 
@@ -336,7 +336,7 @@ class IntegralHomology(Homology_abvar):
             sage: H = J0(23).integral_homology(); H
             Integral Homology of Abelian variety J0(23) of dimension 2
             sage: type(H)
-            <class 'sage.modular.abvar.homology.IntegralHomology'>
+            <class 'sage.modular.abvar.homology.IntegralHomology_with_category'>
 
         TESTS::
 
@@ -496,7 +496,7 @@ class Homology_over_base(Homology_abvar):
             sage: H = J0(23).homology(GF(5)); H
             Homology with coefficients in Finite Field of size 5 of Abelian variety J0(23) of dimension 2
             sage: type(H)
-            <class 'sage.modular.abvar.homology.Homology_over_base'>
+            <class 'sage.modular.abvar.homology.Homology_over_base_with_category'>
 
         TESTS::
 

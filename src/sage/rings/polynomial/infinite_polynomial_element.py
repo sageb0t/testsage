@@ -334,7 +334,7 @@ class InfinitePolynomial_sparse(RingElement):
             res = self.parent()(res)
         return res
 
-    def _getAttributeNames(self):
+    def __dir__(self):
         """
         This method implements tab completion, see ticket #6854.
 
@@ -369,8 +369,6 @@ class InfinitePolynomial_sparse(RingElement):
             True
 
         """
-        if s=='__members__':
-            return dir(self._p)
         try:
             return getattr(self._p,s)
         except AttributeError:

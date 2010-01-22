@@ -108,10 +108,15 @@ Example of mathematical information::
         Integer Ring
 
         sage: i.parent().category()
-        Category of commutative rings
+        Category of euclidean domains
 
         sage: i.parent().categories()
-        [Category of commutative rings,
+        [Category of euclidean domains,
+         Category of principal ideal domains,
+         Category of gcd domains,
+         Category of integral domains,
+         Category of commutative rings,
+         Category of domains,
          Category of rings,
          Category of rngs,
          Category of commutative additive groups,
@@ -122,7 +127,7 @@ Example of mathematical information::
          Category of sets,
          Category of objects]
 
-        sage: CommutativeRings().category_graph().plot(talk = True)
+        sage: EuclideanDomains().category_graph().plot(talk = True)
 
 This illustrates the following relations between mathematical objects:
 
