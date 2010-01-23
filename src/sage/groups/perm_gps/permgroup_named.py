@@ -957,7 +957,7 @@ class PSL(PermutationGroup_plg):
         not a (smallish) "Hurwitz prime", an error message will be printed.
         """
         if self.matrix_degree()!=2:
-            return ValueError, "Degree must be 2."
+            raise ValueError("Degree must be 2.")
         F = self.base_ring()
         q = F.order()
         from sage.misc.misc import SAGE_EXTCODE
@@ -1000,7 +1000,7 @@ class PSL(PermutationGroup_plg):
         randomness to the ordering of the characters.
         """
         if self.matrix_degree()!=2:
-            return ValueError, "Degree must be 2."
+            raise ValueError("Degree must be 2.")
         F = self.base_ring()
         q = F.order()
         from sage.misc.misc import SAGE_EXTCODE
