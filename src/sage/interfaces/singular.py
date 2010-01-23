@@ -1721,7 +1721,7 @@ class SingularFunction(ExpectFunction):
 
         prefix = \
 """
-This function is an automatic generated pexpect wrapper around the Singular
+This function is an automatically generated pexpect wrapper around the Singular
 function '%s'.
 
 EXAMPLE::
