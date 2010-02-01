@@ -42,6 +42,7 @@ AUTHORS:
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
 
+from sage.structure.unique_representation import UniqueRepresentation
 from sage.rings.all import is_FiniteField, Integer, FiniteField
 from matrix_group import MatrixGroup_gap, MatrixGroup_gap_finite_field
 from matrix_group_element import MatrixGroupElement
@@ -58,6 +59,22 @@ def GL(n, R, var='a'):
         11064475422000000000000000
         sage: G.base_ring()
         Finite Field of size 5
+        sage: G.category()
+        Category of finite groups
+        sage: TestSuite(G).run()
+
+        sage: G = GL(6, QQ)
+        sage: G.category()
+        Category of groups
+        sage: TestSuite(G).run()
+
+    Here is the Cayley graph of (relatively small) finite General Linear Group::
+
+        sage: g = GL(2,3)
+        sage: d = g.cayley_graph(); d
+        Digraph on 48 vertices
+        sage: d.show(color_by_label=True, vertex_size=0.03, vertex_labels=False)
+        sage: d.show3d(color_by_label=True)
 
     ::
 
@@ -66,11 +83,13 @@ def GL(n, R, var='a'):
         sage: G = MatrixGroup(gens)
         sage: G.order()
         48
+        sage: G.cardinality()
+        48
         sage: H = GL(2,F)
         sage: H.order()
         48
-        sage: H == G
-        True
+        sage: H == G			# Do we really want this equality?
+        False
         sage: H.as_matrix_group() == G
         True
         sage: H.gens()
@@ -87,7 +106,8 @@ def GL(n, R, var='a'):
         return GeneralLinearGroup_finite_field(n, R)
     return GeneralLinearGroup_generic(n, R)
 
-class GeneralLinearGroup_generic(MatrixGroup_gap):
+class GeneralLinearGroup_generic(UniqueRepresentation, MatrixGroup_gap):
+
     def _gap_init_(self):
         """
         EXAMPLES::
@@ -134,14 +154,14 @@ class GeneralLinearGroup_generic(MatrixGroup_gap):
             [0 1 0]
             [0 0 1]
         """
-        if isinstance(x, MatrixGroupElement) and x.parent() is self:
+        if isinstance(x, self.element_class) and x.parent() is self:
             return x
         try:
             m = self.matrix_space()(x)
         except TypeError:
             raise TypeError, "Cannot coerce %s to a %s-by-%s matrix over %s"%(x,self.degree(),self.degree(),self.base_ring())
         if m.is_invertible():
-            return MatrixGroupElement(m, self)
+            return self.element_class(m, self)
         else:
             raise TypeError, "%s is not an invertible matrix"%(x)
 

@@ -276,7 +276,7 @@ def PermutationGroup(gens=None, gap_group=None, canonicalize=True):
         raise TypeError, "gens must be a tuple, list, or GapElement"
     return PermutationGroup_generic(gens=gens, gap_group=gap_group, canonicalize=canonicalize)
 
-class PermutationGroup_generic(group.FiniteGroup):
+class PermutationGroup_generic(group.Group):
     """
     EXAMPLES::
 
@@ -320,11 +320,12 @@ class PermutationGroup_generic(group.FiniteGroup):
             sage: A4.center()
             Permutation Group with generators [()]
             sage: A4.category()
-            Category of groups
+            Category of finite permutation groups
             sage: loads(A4.dumps()) == A4
             True
         """
-        super(PermutationGroup_generic, self).__init__()
+        from sage.categories.finite_permutation_groups import FinitePermutationGroups
+        super(PermutationGroup_generic, self).__init__(category = FinitePermutationGroups())
         if (gens is None and gap_group is None):
             raise ValueError, "you must specify gens or gap_group"
 
@@ -644,6 +645,9 @@ class PermutationGroup_generic(group.FiniteGroup):
             sage: G = PermutationGroup([[(1,2,3)], [(1,2)]])
             sage: [a for a in G]
             [(), (2,3), (1,2), (1,2,3), (1,3,2), (1,3)]
+
+        TODO: this currently returns an iterator over the elements of
+        ``self.list()``. This should be made into a real iterator.
         """
         return iter(self.list())
 
