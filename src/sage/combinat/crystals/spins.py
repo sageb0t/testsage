@@ -72,8 +72,8 @@ def CrystalOfSpins(ct):
          [-1, 1, -1],
          [-1, -1, 1],
          [-1, -1, -1]]
-	 sage: C.cartan_type()
-	 ['B', 3]
+         sage: C.cartan_type()
+         ['B', 3]
 
     ::
 
