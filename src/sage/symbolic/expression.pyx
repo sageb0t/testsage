@@ -5442,8 +5442,9 @@ cdef class Expression(CommutativeRingElement):
 
     def simplify_trig(self,expand=True):
         r"""
-        Optionally expands and then employs the identities
-        `\sin(x)^2 + \cos(x)^2 = 1` and `\cosh(x)^2 - \sinh(x)^2 = 1`
+        Optionally expands and then employs identities such as
+        `\sin(x)^2 + \cos(x)^2 = 1`, `\cosh(x)^2 - \sinh(x)^2 = 1`,
+        `\sin(x)\csc(x) = 1`, or `\tanh(x)=\sinh(x)/\cosh(x)`
         to simplify expressions containing tan, sec, etc., to sin,
         cos, sinh, cosh.
 
@@ -5467,6 +5468,12 @@ cdef class Expression(CommutativeRingElement):
             sin(x)^2 + cos(x)^2
             sage: f.simplify_trig()
             1
+            sage: h = sin(x)*csc(x)
+            sage: h.simplify_trig()
+            1
+            sage: k = tanh(x)*cosh(2*x)
+            sage: k.simplify_trig()
+            (2*sinh(x)^3 + sinh(x))/cosh(x)
 
         In some cases we do not want to expand::
 
@@ -5498,7 +5505,7 @@ cdef class Expression(CommutativeRingElement):
           method for simplifications. Possible values are
 
           - 'simple' (simplify rational functions into quotient of two
-            poylnomials),
+            polynomials),
 
           - 'full' (apply repeatedly, if necessary)
 
@@ -5507,7 +5514,7 @@ cdef class Expression(CommutativeRingElement):
         - ``map`` - (default: False) if True, the result is an
           expression whose leading operator is the same as that of the
           expression ``self`` but whose subparts are the results of
-          applying simplifaction rules to the corresponding subparts
+          applying simplification rules to the corresponding subparts
           of the expressions.
 
         ALIAS: :meth:`rational_simplify` and :meth:`simplify_rational`
@@ -5544,6 +5551,17 @@ cdef class Expression(CommutativeRingElement):
             (x^2 + x - log(x) - 2)/(x + 2)
             sage: f.simplify_rational(map=True)
             x - log(x)/(x + 2) - 1
+
+        Here is an example from the Maxima documentation of where
+        ``method='simple'`` produces an (possibly useful) intermediate
+        step::
+
+            sage: y = var('y')
+            sage: g = (x^(y/2) + 1)^2*(x^(y/2) - 1)^2/(x^y - 1)
+            sage: g.simplify_rational(method='simple')
+            -(2*x^y - x^(2*y) - 1)/(x^y - 1)
+            sage: g.simplify_rational()
+            x^y - 1
 
         With option ``method='noexpand'`` we only convert to common
         denominators and add. No expansion of products is performed::
@@ -5714,7 +5732,7 @@ cdef class Expression(CommutativeRingElement):
         ratnump(m)$ . Then logcontract(1/2*log(x)); will give
         log(sqrt(x))."
 
-        ALIAS: :meth:`log_simplify` and :meth:`log_simplify` are the
+        ALIAS: :meth:`log_simplify` and :meth:`simplify_log` are the
         same
 
         EXAMPLES::
@@ -5735,7 +5753,7 @@ cdef class Expression(CommutativeRingElement):
 
         This shows that the option ``method`` from the previous call
         has no influence to future calls (we changed some default
-        Maxima flag and have to ensure, that this flag has been
+        Maxima flag, and have to ensure that this flag has been
         restored)::
 
             sage: f.simplify_log('one')
@@ -5747,7 +5765,7 @@ cdef class Expression(CommutativeRingElement):
             sage: f.simplify_log()
             log(x*y^2) + 1/2*log(t)
 
-        To contract terms with no coefficient (more preciselly, with
+        To contract terms with no coefficient (more precisely, with
         coefficients 1 and -1) use option ``method``::
 
             sage: f = log(x)+2*log(y)-log(t)
@@ -5816,14 +5834,14 @@ cdef class Expression(CommutativeRingElement):
         Simplifies symbolic expression, which can contain logs.
 
         Expands logarithms of powers, logarithms of products and
-        logarithms of quotients.  the option ``mehotd`` tells, which
-        expression should be expanded.
+        logarithms of quotients.  The option ``method`` specifies
+        which expression types should be expanded.
 
         INPUT:
 
         - ``self`` - expression to be simplified
 
-        - ``method`` - (default: 'product') optional, governs which
+        - ``method`` - (default: 'products') optional, governs which
           expression is expanded. Possible values are
 
           - 'nothing' (no expansion),
@@ -5846,7 +5864,7 @@ cdef class Expression(CommutativeRingElement):
         set to false, all of these simplifications will be turned
         off. "
 
-        ALIAS: :meth:`log_expand` and :meth:`expand(log)` are the same
+        ALIAS: :meth:`log_expand` and :meth:`expand_log` are the same
 
         EXAMPLES::
 
@@ -5873,12 +5891,26 @@ cdef class Expression(CommutativeRingElement):
             sage: (log((3*x)^6)).log_expand('powers')
             log(729*x^6)
 
+        This shows that the option ``method`` from the previous call
+        has no influence to future calls (we changed some default
+        Maxima flag, and have to ensure that this flag has been
+        restored)::
+
+            sage: (log(3/4*x^pi)).log_expand()
+            pi*log(x) + log(3/4)
+
+            sage: (log(3/4*x^pi)).log_expand('all')
+            pi*log(x) + log(3) - log(4)
+
+            sage: (log(3/4*x^pi)).log_expand()
+            pi*log(x) + log(3/4)
+
         AUTHORS:
 
         - Robert Marik (11-2009)
         """
         from sage.calculus.calculus import maxima
-        maxima.eval('domain: real$')
+        maxima.eval('domain: real$ savelogexpand:logexpand$')
         if method == 'nothing':
             maxima_method='false'
         elif method == 'powers':
@@ -5889,10 +5921,10 @@ cdef class Expression(CommutativeRingElement):
             maxima_method='super'
         else:
             raise NotImplementedError, "unknown method, see the help for available methods"
-        self_m = self._maxima_()
-        res = self_m.ev("logexpand:%s"%maxima_method)
+        maxima.eval('logexpand:%s'%maxima_method)
+        res = self._maxima_()
         res = res.sage()
-        maxima.eval('domain: complex$')
+        maxima.eval('domain: complex$ logexpand:savelogexpand$')
         return res
 
     log_expand = expand_log
