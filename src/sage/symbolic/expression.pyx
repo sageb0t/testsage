@@ -5806,7 +5806,7 @@ cdef class Expression(CommutativeRingElement):
         maxima.eval('domain: complex$')
         if method is not None:
             maxima.eval('logconcoeffp:false$')
-            maxima.eval('logexpand:savelogexpand$')
+        maxima.eval('logexpand:savelogexpand$')
         return res
 
     log_simplify = simplify_log
