@@ -852,7 +852,7 @@ def solve_ineq_univar(ineq):
         sage: solve_ineq_univar((x^3-1)*x<=0)
         [[x >= 0, x <= 1]]
 
-    ALGORITHM::
+    ALGORITHM:
 
     Calls Maxima command solve_rat_ineq
 
@@ -916,7 +916,7 @@ def solve_ineq_fourier(ineq,vars=None):
         [[0 < y, y < x, 0 < x]]
         [[y < x, 0 < y]]
 
-    ALGORITHM::
+    ALGORITHM:
 
     Calls Maxima command fourier_elim
 
@@ -976,7 +976,7 @@ def solve_ineq(ineq, vars=None):
 
     - ``list`` -- output is list of solutions as a list of simple inequalities
       output [A,B,C] means (A or B or C) each A, B, C is again a list and
-      if A=[a,b], then A means (a and b)::
+      if A=[a,b], then A means (a and b).
 
     EXAMPLES::
 
@@ -1005,7 +1005,7 @@ def solve_ineq(ineq, vars=None):
         sage: solve_ineq([x-y<0,x+y-3<0]) # not tested - random
         [[x < y, y < -x + 3, x < (3/2)]]
 
-    ALGORITHM::
+    ALGORITHM:
 
     Calls solve_ineq_fourier if inequalities are list and
     solve_ineq_univar of the inequality is symbolic expression. See

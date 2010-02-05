@@ -638,8 +638,10 @@ class MPolynomialIdeal_singular_repr:
 
         INPUT:
 
-        -  ``algorithm`` - string:
+        - ``algorithm`` - string:
+
           -  ``'sy'`` - (default) use the shimoyama-yokoyama algorithm
+
           -  ``'gtz'`` - use the gianni-trager-zacharias algorithm
 
         OUTPUT:
