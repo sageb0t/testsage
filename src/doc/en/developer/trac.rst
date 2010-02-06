@@ -23,7 +23,7 @@ ticket, submit a patch, or create a new ticket. See the
 for more information about obtaining an account. This chapter contains
 various guidelines on using the trac server.
 
-Reporting Bugs
+Reporting bugs
 ==============
 
 "The first step is admitting you have a problem."
@@ -88,7 +88,7 @@ following information:
 
 Thank you in advance for reporting bugs to improve Sage in the future!
 
-Guidelines for Opening Tickets
+Guidelines for opening tickets
 ==============================
 
 In addition to bug reports, you should also open a ticket if you
@@ -119,7 +119,7 @@ points in mind.
 - If appropriate, provide URLs to background information or email
   threads relevant to the problem you are reporting.
 
-Patching Bugs/Working on Tickets
+Patching bugs/working on tickets
 ================================
 
 If you have code which fixes a bug or deals with some issue in
@@ -186,7 +186,7 @@ The following are some other relevant issues:
 
 .. _section-review-patches:
 
-Reviewing Patches
+Reviewing patches
 =================
 
 All code that goes into Sage is peer-reviewed, to ensure that the
@@ -261,7 +261,7 @@ think there are issues with the patch, explain them in the comment box
 as well. Browse the tickets on the trac server to see how things are
 done.
 
-Closing Tickets
+Closing tickets
 ===============
 
 **Do not close tickets.** That is the job of the acting Sage release
@@ -271,7 +271,7 @@ situation. You can also comment on the ticket, explaining why it
 should be closed. A related issue is re-opening tickets. You should
 refrain from re-opening a ticket that is already closed.
 
-Reasons to Invalidate Tickets
+Reasons to invalidate tickets
 =============================
 
 **One Issue Per Ticket**: A ticket must cover only one issue
@@ -324,7 +324,7 @@ some of the other rules listed above. An example would be to
 "Make Sage the best CAS in the world". There is no metric to
 measure this properly and it is highly subjective.
 
-Milestones vs. Releases
+Milestones vs. releases
 =======================
 
 Milestones are usually goals to be met while working toward a
@@ -343,7 +343,7 @@ Given the number of compilers and operating systems out there, one
 has to be realistic to expect problems. A compile farm would
 certainly help to catch issues early.
 
-Assigning Tickets
+Assigning tickets
 =================
 
 - Each ticket must have a milestone assigned. If you are unsure,
