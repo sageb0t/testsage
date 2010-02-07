@@ -1296,6 +1296,15 @@ ext_modules = [
 
     ################################
     ##
+    ## sage.sets
+    ##
+    ################################
+
+    Extension('sage.sets.disjoint_set',
+              sources = ['sage/sets/disjoint_set.pyx']),
+
+    ################################
+    ##
     ## sage.stats
     ##
     ################################
