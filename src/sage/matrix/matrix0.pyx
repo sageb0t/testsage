@@ -3400,7 +3400,7 @@ cdef class Matrix(sage.structure.element.Matrix):
         cpdef RingElement x
         x = self._base_ring(left)
         cdef Matrix ans
-        ans = self._parent.zero_matrix()
+        ans = self._parent.zero_matrix().__copy__()
         for r from 0 <= r < self._nrows:
             for c from 0 <= c < self._ncols:
                 ans.set_unsafe(r, c, x._mul_(<RingElement>self.get_unsafe(r, c)))
@@ -3443,7 +3443,7 @@ cdef class Matrix(sage.structure.element.Matrix):
         cpdef RingElement x
         x = self._base_ring(right)
         cdef Matrix ans
-        ans = self._parent.zero_matrix()
+        ans = self._parent.zero_matrix().__copy__()
         for r from 0 <= r < self._nrows:
             for c from 0 <= c < self._ncols:
                 ans.set_unsafe(r, c, (<RingElement>self.get_unsafe(r, c))._mul_(x))
