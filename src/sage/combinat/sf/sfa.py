@@ -190,6 +190,7 @@ from sage.misc.misc import repr_lincomb, prod, uniq
 from sage.algebras.algebra_element import AlgebraElement
 import operator
 from functools import partial
+from copy import copy
 
 def SymmetricFunctionAlgebra(R, basis="schur"):
     """
@@ -818,7 +819,7 @@ class SymmetricFunctionAlgebra_generic(CombinatorialFreeModule):
             #substitution.  We solve a len(pn) systems of
             #equations known_matrix_n*x = b_i for x, where e_i
             #is the ith standard basis vector
-            inverse = known_matrix_n.parent().zero_matrix()
+            inverse = copy(known_matrix_n.parent().zero_matrix())
 
             delta = lambda i: lambda j: one if i == j else zero
 
@@ -845,7 +846,7 @@ class SymmetricFunctionAlgebra_generic(CombinatorialFreeModule):
             #substitution.  We solve a len(pn) systems of
             #equations known_matrix_n*x = b_i for x, where e_i
             #is the ith standard basis vector
-            inverse = known_matrix_n.parent().zero_matrix()
+            inverse = copy(known_matrix_n.parent().zero_matrix())
 
             delta = lambda i: lambda j: one if i == j else zero
 
