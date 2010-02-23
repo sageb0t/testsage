@@ -83,9 +83,6 @@ cdef class EuclideanDomainElement(PrincipalIdealDomainElement):
 cdef class FieldElement(CommutativeRingElement):
     pass
 
-cdef class FiniteFieldElement(FieldElement):
-    pass
-
 cdef class AlgebraElement(RingElement):
     pass
 

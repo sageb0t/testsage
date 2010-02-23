@@ -34,7 +34,7 @@ import sage.rings.arith
 #import sage.rings.ring_element
 import sage.rings.integer_ring
 import sage.rings.rational_field
-import sage.rings.integer_mod_ring
+import sage.rings.finite_rings.integer_mod_ring
 import sage.rings.complex_field
 import sage.rings.fraction_field_element
 import sage.rings.infinity as infinity
@@ -2546,8 +2546,8 @@ cdef class Polynomial(CommutativeAlgebraElement):
 
         from sage.rings.number_field.all import is_NumberField, \
              is_RelativeNumberField, NumberField
-        from sage.rings.finite_field import is_FiniteField
-        from sage.rings.integer_mod_ring import is_IntegerModRing
+        from sage.rings.finite_rings.constructor import is_FiniteField
+        from sage.rings.finite_rings.integer_mod_ring import is_IntegerModRing
         from sage.rings.integer_ring import is_IntegerRing
         from sage.rings.rational_field import is_RationalField
 
