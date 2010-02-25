@@ -959,5 +959,3 @@ Le schéma suivant présente l'architecture du *Notebook* Sage :
 Dans le *notebook*, pour consulter l'aide d'une commande Sage ``cmd``,
 tapez ``cmd?`` dans le champ d'entrée des commandes puis tapez ``<échap>``
 (et non ``<maj-entrée>``).
-
-.. [Py] The Python language http://www.python.org/ , Reference Manual http://docs.python.org/ref/ref.html

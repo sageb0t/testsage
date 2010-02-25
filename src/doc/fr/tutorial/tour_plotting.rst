@@ -14,7 +14,8 @@ graphes en coordonnées polaires, des lignes de niveau et des
 représentations de champs de vecteurs. Nous présentons quelques exemples
 de ces objets ici. Pour plus d'exemples de graphiques avec Sage, on
 consultera :ref:`section-systems`, :ref:`section-maxima` et aussi la
-documentation "Sage Constructions".
+documentation
+`Sage Constructions <http://www.sagemath.org/doc/constructions/>`_
 
 La commande suivante produit un cercle jaune de rayon 1 centré à l'origine :
 
@@ -181,5 +182,3 @@ Un tore tordu :
     sage: fz = sin(u)+2*cos(v)
     sage: parametric_plot3d([fx, fy, fz], (u, 0, 2*pi), (v, 0, 2*pi),
     ...   frame=False, color="red")
-
-.. [Jmol] Jmol: an open-source Java viewer for chemical structures in 3D http://www.jmol.org/
