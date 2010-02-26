@@ -12,6 +12,8 @@ Polynomial Rings
 
    polynomial_rings_multivar
 
+   polynomial_rings_infinite
+
    polynomial_rings_laurent
 
    sage/rings/polynomial/pbori
