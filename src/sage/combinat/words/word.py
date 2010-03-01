@@ -5081,7 +5081,7 @@ exponent %s: the length of the word (%s) times the exponent \
 
         -  disjoint set data structure
 
-        EXAMPLES:
+        EXAMPLES::
 
             sage: W = Words(list('abc')+range(6))
             sage: u = W('abc')
