@@ -507,15 +507,15 @@ class GraphGenerators():
             x = float(cos((pi/4) - ((2*pi)/n1)*i) - n2/2 - 1)
             y = float(sin((pi/4) - ((2*pi)/n1)*i) - n2/2 - 1)
             j = n1-1-i
-            pos_dict[j] = [x,y]
-        for i in range(n1+n2)[n1:]:
+            pos_dict[j] = (x,y)
+        for i in range(n1,n1+n2):
             x = float(i - n1 - n2/2 + 1)
             y = float(i - n1 - n2/2 + 1)
-            pos_dict[i] = [x,y]
-        for i in range(2*n1+n2)[n1+n2:]:
+            pos_dict[i] = (x,y)
+        for i in range(n1+n2,2*n1+n2):
             x = float(cos((5*pi/4) + ((2*pi)/n1)*(i-n1-n2)) + n2/2 + 2)
             y = float(sin((5*pi/4) + ((2*pi)/n1)*(i-n1-n2)) + n2/2 + 2)
-            pos_dict[i] = [x,y]
+            pos_dict[i] = (x,y)
 
         import networkx
         G = networkx.barbell_graph(n1,n2)
@@ -543,7 +543,7 @@ class GraphGenerators():
             sage: g = graphs.BullGraph()
             sage: g.show() # long time
         """
-        pos_dict = {0:[0,0],1:[-1,1],2:[1,1],3:[-2,2],4:[2,2]}
+        pos_dict = {0:(0,0),1:(-1,1),2:(1,1),3:(-2,2),4:(2,2)}
         import networkx
         G = networkx.bull_graph()
         return graph.Graph(G, pos=pos_dict, name="Bull Graph")
@@ -598,10 +598,10 @@ class GraphGenerators():
             x = float(cos((pi/2) + ((2*pi)/n)*i))
             y = float(sin((pi/2) + ((2*pi)/n)*i))
             pos_dict[i] = [x,y]
-        for i in range(2*n)[n:]:
+        for i in range(n,2*n):
             x = float(2*(cos((pi/2) + ((2*pi)/n)*(i-n))))
             y = float(2*(sin((pi/2) + ((2*pi)/n)*(i-n))))
-            pos_dict[i] = [x,y]
+            pos_dict[i] = (x,y)
         import networkx
         G = networkx.circular_ladder_graph(n)
         return graph.Graph(G, pos=pos_dict, name="Circular Ladder graph")
@@ -629,7 +629,7 @@ class GraphGenerators():
             sage: G
             Claw graph: Graph on 4 vertices
         """
-        pos_dict = {0:[0,1],1:[-1,0],2:[0,0],3:[1,0]}
+        pos_dict = {0:(0,1),1:(-1,0),2:(0,0),3:(1,0)}
         import networkx
         G = networkx.complete_bipartite_graph(1,3)
         return graph.Graph(G, pos=pos_dict, name="Claw graph")
@@ -708,7 +708,7 @@ class GraphGenerators():
         for i in range(n):
             x = float(cos((pi/2) + ((2*pi)/n)*i))
             y = float(sin((pi/2) + ((2*pi)/n)*i))
-            pos_dict[i] = [x,y]
+            pos_dict[i] = (x,y)
         import networkx
         G = networkx.cycle_graph(n)
         return graph.Graph(G, pos=pos_dict, name="Cycle graph")
@@ -735,7 +735,7 @@ class GraphGenerators():
             sage: g = graphs.DiamondGraph()
             sage: g.show() # long time
         """
-        pos_dict = {0:[0,1],1:[-1,0],2:[1,0],3:[0,-1]}
+        pos_dict = {0:(0,1),1:(-1,0),2:(1,0),3:(0,-1)}
         import networkx
         G = networkx.diamond_graph()
         return graph.Graph(G, pos=pos_dict, name="Diamond Graph")
@@ -836,7 +836,7 @@ class GraphGenerators():
             y = -i
             for j in range(n2):
                 x = j
-                pos_dict[i,j] = [x,y]
+                pos_dict[i,j] = (x,y)
         import networkx
         G = networkx.grid_2d_graph(n1,n2)
         return graph.Graph(G, pos=pos_dict, name="2D Grid Graph")
@@ -1144,7 +1144,7 @@ class GraphGenerators():
             sage: g = graphs.HouseGraph()
             sage: g.show() # long time
         """
-        pos_dict = {0:[-1,0],1:[1,0],2:[-1,1],3:[1,1],4:[0,2]}
+        pos_dict = {0:(-1,0),1:(1,0),2:(-1,1),3:(1,1),4:(0,2)}
         import networkx
         G = networkx.house_graph()
         return graph.Graph(G, pos=pos_dict, name="House Graph")
@@ -1175,7 +1175,7 @@ class GraphGenerators():
             sage: g = graphs.HouseXGraph()
             sage: g.show() # long time
         """
-        pos_dict = {0:[-1,0],1:[1,0],2:[-1,1],3:[1,1],4:[0,2]}
+        pos_dict = {0:(-1,0),1:(1,0),2:(-1,1),3:(1,1),4:(0,2)}
         import networkx
         G = networkx.house_x_graph()
         return graph.Graph(G, pos=pos_dict, name="House Graph")
@@ -1219,7 +1219,7 @@ class GraphGenerators():
             sage: g = graphs.KrackhardtKiteGraph()
             sage: g.show() # long time
         """
-        pos_dict = {0:[-1,4],1:[1,4],2:[-2,3],3:[0,3],4:[2,3],5:[-1,2],6:[1,2],7:[0,1],8:[0,0],9:[0,-1]}
+        pos_dict = {0:(-1,4),1:(1,4),2:(-2,3),3:(0,3),4:(2,3),5:(-1,2),6:(1,2),7:(0,1),8:(0,0),9:(0,-1)}
         import networkx
         G = networkx.krackhardt_kite_graph()
         return graph.Graph(G, pos=pos_dict, name="Krackhardt Kite Graph")
@@ -1267,10 +1267,10 @@ class GraphGenerators():
         """
         pos_dict = {}
         for i in range(n):
-            pos_dict[i] = [i,1]
-        for i in range(2*n)[n:]:
+            pos_dict[i] = (i,1)
+        for i in range(n,2*n):
             x = i - n
-            pos_dict[i] = [x,0]
+            pos_dict[i] = (x,0)
         import networkx
         G = networkx.ladder_graph(n)
         return graph.Graph(G, pos=pos_dict, name="Ladder graph")
@@ -1323,11 +1323,11 @@ class GraphGenerators():
             x = float(cos((pi/4) - ((2*pi)/n1)*i) - n2/2 - 1)
             y = float(sin((pi/4) - ((2*pi)/n1)*i) - n2/2 - 1)
             j = n1-1-i
-            pos_dict[j] = [x,y]
-        for i in range(n1+n2)[n1:]:
+            pos_dict[j] = (x,y)
+        for i in range(n1, n1+n2):
             x = float(i - n1 - n2/2 + 1)
             y = float(i - n1 - n2/2 + 1)
-            pos_dict[i] = [x,y]
+            pos_dict[i] = (x,y)
 
         import networkx
         G = networkx.lollipop_graph(n1,n2)
@@ -1398,7 +1398,7 @@ class GraphGenerators():
             for i in range(n):
                 x = float(cos((pi/2) + ((2*pi)/n)*i))
                 y = float(sin((pi/2) + ((2*pi)/n)*i))
-                pos_dict[i] = [x,y]
+                pos_dict[i] = (x,y)
         # Draw 'line'
         else:
             counter = 0 # node index
@@ -1413,7 +1413,7 @@ class GraphGenerators():
                         x = j
                     else:
                         x = 9 - j
-                    pos_dict[counter] = [x,y]
+                    pos_dict[counter] = (x,y)
                     counter += 1
                 if lr: lr = False
                 else: lr = True
@@ -1423,7 +1423,7 @@ class GraphGenerators():
                     x = j
                 else:
                     x = 9 - j
-                pos_dict[counter] = [x,y]
+                pos_dict[counter] = (x,y)
                 counter += 1
 
         import networkx
@@ -1506,11 +1506,11 @@ class GraphGenerators():
             sage: G.show() # long time
         """
         pos_dict = {}
-        pos_dict[0] = [0,0]
-        for i in range(n+1)[1:]:
+        pos_dict[0] = (0,0)
+        for i in range(1,n+1):
             x = float(cos((pi/2) + ((2*pi)/n)*(i-1)))
             y = float(sin((pi/2) + ((2*pi)/n)*(i-1)))
-            pos_dict[i] = [x,y]
+            pos_dict[i] = (x,y)
         import networkx
         G = networkx.star_graph(n)
         return graph.Graph(G, pos=pos_dict, name="Star graph")
@@ -1581,11 +1581,11 @@ class GraphGenerators():
             sage: posdict23.show() # long time
         """
         pos_dict = {}
-        pos_dict[0] = [0,0]
-        for i in range(n)[1:]:
+        pos_dict[0] = (0,0)
+        for i in range(1,n):
             x = float(cos((pi/2) + ((2*pi)/(n-1))*(i-1)))
             y = float(sin((pi/2) + ((2*pi)/(n-1))*(i-1)))
-            pos_dict[i] = [x,y]
+            pos_dict[i] = (x,y)
         import networkx
         G = networkx.wheel_graph(n)
         return graph.Graph(G, pos=pos_dict, name="Wheel graph")
@@ -1854,16 +1854,16 @@ class GraphGenerators():
         """
         import networkx
         pos_dict = {}
-        for i in range(10)[5:]:
+        for i in range(5,10):
             x = float(cos((pi/2) + ((2*pi)/5)*i))
             y = float(sin((pi/2) + ((2*pi)/5)*i))
-            pos_dict[i] = [x,y]
+            pos_dict[i] = (x,y)
         for i in range(5):
             x = float(2*(cos((pi/2) + ((2*pi)/5)*(i-5))))
             y = float(2*(sin((pi/2) + ((2*pi)/5)*(i-5))))
-            pos_dict[i] = [x,y]
-        pos_dict[10] = [.5,0]
-        pos_dict[11] = [-.5,0]
+            pos_dict[i] = (x,y)
+        pos_dict[10] = (.5,0)
+        pos_dict[11] = (-.5,0)
 
         return graph.Graph(networkx.chvatal_graph(), pos=pos_dict, name="Chvatal Graph")
 
@@ -1925,11 +1925,11 @@ class GraphGenerators():
         for i in range(15):
             x = float(2.5*(cos((pi/2) + ((2*pi)/15)*i)))
             y = float(2.5*(sin((pi/2) + ((2*pi)/15)*i)))
-            pos_dict[i] = [x,y]
-        for i in range(20)[15:]:
+            pos_dict[i] = (x,y)
+        for i in range(15,20):
             x = float(cos((pi/2) + ((2*pi)/5)*i))
             y = float(sin((pi/2) + ((2*pi)/5)*i))
-            pos_dict[i] = [x,y]
+            pos_dict[i] = (x,y)
         return graph.Graph({0:[1,14,15],1:[2,11],2:[3,7],3:[2,4,16],4:[5,14], \
                             5:[6,10],6:[5,7,17],8:[7,9,13],9:[10,18],11:[10,12], \
                             12:[13,19],13:[14],15:[19],16:[15,17],18:[17,19]}, \
@@ -1968,12 +1968,12 @@ class GraphGenerators():
         for i in range(7):
             x = float(2*(cos((pi/2) + ((2*pi)/7)*i)))
             y = float(2*(sin((pi/2) + ((2*pi)/7)*i)))
-            pos_dict[i] = [x,y]
-        pos_dict[7] = [0,1]
-        pos_dict[8] = [-1,0]
-        pos_dict[9] = [0,-1]
-        pos_dict[10] = [1,0]
-        pos_dict[11] = [0,0]
+            pos_dict[i] = (x,y)
+        pos_dict[7] = (0,1)
+        pos_dict[8] = (-1,0)
+        pos_dict[9] = (0,-1)
+        pos_dict[10] = (1,0)
+        pos_dict[11] = (0,0)
         import networkx
         G = networkx.frucht_graph()
         return graph.Graph(G, pos=pos_dict, name="Frucht graph")
@@ -2013,7 +2013,7 @@ class GraphGenerators():
         for i in range(14):
             x = float(cos((pi/2) + (pi/7)*i))
             y = float(sin((pi/2) + (pi/7)*i))
-            pos_dict[i] = [x,y]
+            pos_dict[i] = (x,y)
         import networkx
         G = networkx.heawood_graph()
         return graph.Graph(G, pos=pos_dict, name="Heawood graph")
@@ -2180,7 +2180,7 @@ class GraphGenerators():
         for i in range(100):
             x = float(cos((pi/2) + ((2*pi)/100)*i))
             y = float(sin((pi/2) + ((2*pi)/100)*i))
-            pos_dict[vmap[vlist[i]]] = [x,y]
+            pos_dict[vmap[vlist[i]]] = (x,y)
         HS.set_pos(pos_dict)
         return HS
 
@@ -2264,7 +2264,7 @@ class GraphGenerators():
         for i in range(50):
             x = float(cos((pi/2) + ((2*pi)/50)*i))
             y = float(sin((pi/2) + ((2*pi)/50)*i))
-            pos_dict[map[D[i]]] = [x,y]
+            pos_dict[map[D[i]]] = (x,y)
         H.set_pos(pos_dict)
         return H
 
@@ -2312,9 +2312,11 @@ class GraphGenerators():
         if k>n/2:
             g.add_vertices(Subsets(n,k).list())
 
-        S=Subsets(Subsets(n,k),2)
-        l=lambda x:list(x)
-        [g.add_edge(s,t) for [s,t] in map(l,S) if s.intersection(t).cardinality() ==0 ]
+        S = Subsets(n,k)
+        for s in S:
+            for t in Subsets(S.s.difference(s),k):
+                g.add_edge(s,t)
+
         return g
 
     def OddGraph(self,n):
@@ -2455,7 +2457,7 @@ class GraphGenerators():
             'EFz_'
             sage: (graphs.ThomsenGraph()).show() # long time
         """
-        pos_dict = {0:[-1,1],1:[0,1],2:[1,1],3:[-1,0],4:[0,0],5:[1,0]}
+        pos_dict = {0:(-1,1),1:(0,1),2:(1,1),3:(-1,0),4:(0,0),5:(1,0)}
         import networkx
         G = networkx.complete_bipartite_graph(3,3)
         return graph.Graph(G, pos=pos_dict, name="Thomsen graph")
@@ -2560,12 +2562,12 @@ class GraphGenerators():
         for i in range(n):
             x = float(cos((pi/2) + ((2*pi)/n)*i))
             y = float(sin((pi/2) + ((2*pi)/n)*i))
-            pos_dict[i] = [x,y]
+            pos_dict[i] = (x,y)
         G=graph.Graph(n, name="Circulant graph ("+str(adjacency)+")")
         G._pos=pos_dict
         for v in G:
-            G.add_edges([[v,(v+j)%n] for j in adjacency])
-            G.add_edges([[v,(v-j)%n] for j in adjacency])
+            G.add_edges([(v,(v+j)%n) for j in adjacency])
+            G.add_edges([(v,(v-j)%n) for j in adjacency])
         return G
 
     def CompleteGraph(self, n):
@@ -2657,7 +2659,7 @@ class GraphGenerators():
         for i in range(n):
             x = float(cos((pi/2) + ((2*pi)/n)*i))
             y = float(sin((pi/2) + ((2*pi)/n)*i))
-            pos_dict[i] = [x,y]
+            pos_dict[i] = (x,y)
         import networkx
         G = networkx.complete_graph(n)
         return graph.Graph(G, pos=pos_dict, name="Complete graph")
@@ -2772,11 +2774,11 @@ class GraphGenerators():
         for i in range(n1):
             x = c1*i + c3
             y = 1
-            pos_dict[i] = [x,y]
+            pos_dict[i] = (x,y)
         for i in range(n1+n2)[n1:]:
             x = c2*(i-n1) + c4
             y = 0
-            pos_dict[i] = [x,y]
+            pos_dict[i] = (x,y)
         import networkx
         import sage.graphs.bipartite_graph as bipartite_graph
         G = networkx.complete_bipartite_graph(n1,n2)
@@ -2829,45 +2831,42 @@ class GraphGenerators():
 
         - Robert Miller
         """
-        from sage.rings.integer import Integer
-        # generate vertex labels:
-        # n positions, 0 or 1 for each
-        l = []
-        for i in range(2**n):
-            l.append(Integer(i).binary())
-        for i in range(len(l)):
-            l[i] = '0'*(n - len(l[i])) + l[i]
-
-        # determine adjacencies:
-        # adjacent vertices differ in
-        # exactly one position
-        d = {}
-        for i in range(len(l)):
-            a = []
-            for j in range(n):
-                if l[i][j] == '0':
-                    k = '1'
-                else: k = '0'
-                a.append(l[i][0:j] + k + l[i][j+1:n])
-            d[l[i]] = a
-
-        # get basis vectors for projection RR^n -> RR^2
-        ll = {}
         theta = float(pi/n)
+
+        d = {'':[]}
+        dn={}
+        p = {'':(float(0),float(0))}
+        pn={}
+
+        # construt recursively the adjacency dict and the positions
         for i in range(n):
-            ll[i] = (float(cos(i*theta)),float(sin(i*theta)))
+            ci = float(cos(i*theta))
+            si = float(sin(i*theta))
+            for v,e in d.iteritems():
+                v0 = v+'0'
+                v1 = v+'1'
+                l0 = [v1]
+                l1 = [v0]
+                for m in e:
+                    l0.append(m+'0')
+                    l1.append(m+'1')
+                dn[v0] = l0
+                dn[v1] = l1
+                x,y = p[v]
+                pn[v0] = (x, y)
+                pn[v1] = (x+ci, y+si)
+            d,dn = dn,{}
+            p,pn = pn,{}
 
-        # calculate positions
-        pos = {}
-        for vertex in d.iterkeys():
-            x = 0
-            y = 0
-            for i in range(n):
-                x += int(vertex[i])*ll[i][0]
-                y += int(vertex[i])*ll[i][1]
-            pos[vertex] = [x,y]
+        # construct the graph
+        r = graph.Graph(name="%d-Cube"%n)
+        r.add_vertices(d.keys())
+        for u,L in d.iteritems():
+            for v in L:
+                r.add_edge(u,v)
+        r.set_pos(p)
 
-        return graph.Graph(data=d, pos=pos, name="%d-Cube"%n)
+        return r
 
     def GeneralizedPetersenGraph(self, n,k):
         r"""
@@ -2923,11 +2922,11 @@ class GraphGenerators():
         for i in range(n):
             x = float(cos((pi/2) + ((2*pi)/n)*i))
             y = float(sin((pi/2) + ((2*pi)/n)*i))
-            pos_dict[i] = [x,y]
-        for i in range(2*n)[n:]:
+            pos_dict[i] = (x,y)
+        for i in range(n, 2*n):
             x = float(0.5*cos((pi/2) + ((2*pi)/n)*i))
             y = float(0.5*sin((pi/2) + ((2*pi)/n)*i))
-            pos_dict[i] = [x,y]
+            pos_dict[i] = (x,y)
         for i in range(n):
             G.add_edge(i, (i+1) % n)
             G.add_edge(i, i+n)
@@ -2966,26 +2965,28 @@ class GraphGenerators():
 
         - Michael Yurko (2009-09-01)
         """
-        from sage.combinat.permutation import Arrangements
-        #set from which to permute
-        set = [ "1" for i in xrange(k) ] + ["0" for i in xrange(n-k)]
-        #create dictionary of lists
-        #vertices are adjacent if the first element
-        #is swapped with the ith element
-        d = {}
-        for v in Arrangements(set,len(set)):
-            tmp_dict = {}
-            for i in xrange(1,n):
-                if v[0] != v[i]:
-                    #swap 0th and ith element
-                    v[0], v[i] = v[i], v[0]
-                    #convert to str and add to list
-                    vert = "".join(v)
-                    tmp_dict[vert] = None
-                    #swap back
-                    v[0], v[i] = v[i], v[0]
-            d["".join(v)] = tmp_dict
-        return graph.Graph(d, name="HS(%d,%d)"%(n,k))
+        from sage.combinat.combination import Combinations
+        # dictionnary associating the positions of the 1s to the corresponding
+        # string: e.g. if n=6 and k=3, comb_to_str([0,1,4])=='110010'
+        comb_to_str={}
+        for c in Combinations(n,k):
+            L = ['0']*n
+            for i in c:
+                L[i]='1'
+            comb_to_str[tuple(c)] = ''.join(L)
+
+        g=graph.Graph(name="HS(%d,%d)"%(n,k))
+        g.add_vertices(comb_to_str.values())
+
+        for c in Combinations(range(1,n),k): # 0 is not in c
+            L = []
+            u = comb_to_str[tuple(c)]
+            # switch 0 with the 1s
+            for i in range(len(c)):
+                v = tuple([0]+c[:i]+c[i+1:])
+                g.add_edge( u , comb_to_str[v] )
+
+        return g
 
     def NKStarGraph(self,n,k):
         r"""
