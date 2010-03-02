@@ -169,6 +169,7 @@ from bitset import FrozenBitset, Bitset
 
 from decorators import specialize
 
+from unknown import Unknown
 ##########################################################################
 def benchmark(n=-1):
     """
