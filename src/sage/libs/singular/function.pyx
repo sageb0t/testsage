@@ -1223,7 +1223,7 @@ cdef class SingularLibraryFunction(SingularFunction):
         self.call_handler = self.get_call_handler()
 
     cdef BaseCallHandler get_call_handler(self):
-        cdef idhdl* singular_idhdl = ggetid(self._name, 0)
+        cdef idhdl* singular_idhdl = ggetid(self._name)
         if singular_idhdl==NULL:
             raise NameError("Function '%s' is not defined."%self._name)
         if singular_idhdl.typ!=PROC_CMD:
@@ -1234,7 +1234,7 @@ cdef class SingularLibraryFunction(SingularFunction):
         return res
 
     cdef bint function_exists(self):
-        cdef idhdl* singular_idhdl = ggetid(self._name, 0)
+        cdef idhdl* singular_idhdl = ggetid(self._name)
         return singular_idhdl!=NULL
 
 cdef class SingularKernelFunction(SingularFunction):
