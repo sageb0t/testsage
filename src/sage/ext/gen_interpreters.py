@@ -98,8 +98,8 @@ from __future__ import with_statement
 
 import os
 import re
-from jinja import Environment
-from jinja.datastructure import ComplainingUndefined
+from jinja2 import Environment
+from jinja2.runtime import StrictUndefined
 from collections import defaultdict
 from distutils.extension import Extension
 
@@ -113,12 +113,12 @@ from distutils.extension import Extension
 # that will have to be changed.
 ##############################
 
-# We share a single jinja environment among all templating in this file.
-# We use trim_blocks=True (which means that we ignore white space after
-# "%}" jinja command endings), and set undefined_singleton to complain
-# if we use an undefined variable.
-jinja_env = Environment(trim_blocks=True,
-                        undefined_singleton=ComplainingUndefined)
+# We share a single jinja2 environment among all templating in this
+# file.  We use trim_blocks=True (which means that we ignore white
+# space after "%}" jinja2 command endings), and set undefined to
+# complain if we use an undefined variable.
+jinja_env = Environment(trim_blocks=True, undefined=StrictUndefined)
+
 # Allow 'i' as a shorter alias for the built-in 'indent' filter.
 jinja_env.filters['i'] = jinja_env.filters['indent']
 
@@ -168,7 +168,7 @@ def je(template, **kwargs):
     if len(template) > 0 and template[0] == '\n':
         template = template[1:]
 
-    # It looks like Jinja automatically removes one trailing newline?
+    # It looks like Jinja2 automatically removes one trailing newline?
     if len(template) > 0 and template[-1] == '\n':
         template = template + '\n'
 
@@ -423,8 +423,8 @@ class StorageType(object):
         return je("""
 {# XXX Variables here (and everywhere, really) should actually be Py_ssize_t #}
     cdef int _n_{{ name }}
-    cdef {{ self.cython_array_type() }} _{{ name }}
-""", self=self, name=name)
+    cdef {{ myself.cython_array_type() }} _{{ name }}
+""", myself=self, name=name)
 
     def alloc_chunk_data(self, name, len):
         r"""
@@ -443,13 +443,13 @@ class StorageType(object):
         """
         return je("""
         self._n_{{ name }} = {{ len }}
-        self._{{ name }} = <{{ self.c_ptr_type() }}>sage_malloc(sizeof({{ self.c_decl_type() }}) * {{ len }})
+        self._{{ name }} = <{{ myself.c_ptr_type() }}>sage_malloc(sizeof({{ myself.c_decl_type() }}) * {{ len }})
         if self._{{ name }} == NULL: raise MemoryError
-{% if self.needs_cython_init_clear() %}
+{% if myself.needs_cython_init_clear() %}
         for i in range({{ len }}):
-            {{ self.cython_init('self._%s[i]' % name) }}
+            {{ myself.cython_init('self._%s[i]' % name) }}
 {% endif %}
-""", self=self, name=name, len=len)
+""", myself=self, name=name, len=len)
 
     def dealloc_chunk_data(self, name):
         r"""
@@ -472,12 +472,12 @@ class StorageType(object):
         """
         return je("""
         if self._{{ name }}:
-{%     if self.needs_cython_init_clear() %}
+{%     if myself.needs_cython_init_clear() %}
             for i in range(self._n_{{ name }}):
-                {{ self.cython_clear('self._%s[i]' % name) }}
+                {{ myself.cython_clear('self._%s[i]' % name) }}
 {%     endif %}
             sage_free(self._{{ name }})
-""", self=self, name=name)
+""", myself=self, name=name)
 
 class StorageTypeAssignable(StorageType):
     r"""
@@ -670,8 +670,8 @@ class StorageTypePython(StorageTypeAssignable):
         return je("""
     cdef object _list_{{ name }}
     cdef int _n_{{ name }}
-    cdef {{ self.cython_array_type() }} _{{ name }}
-""", self=self, name=name)
+    cdef {{ myself.cython_array_type() }} _{{ name }}
+""", myself=self, name=name)
 
     def alloc_chunk_data(self, name, len):
         r"""
@@ -690,7 +690,7 @@ class StorageTypePython(StorageTypeAssignable):
         self._n_{{ name }} = {{ len }}
         self._list_{{ name }} = PyList_New(self._n_{{ name }})
         self._{{ name }} = (<PyListObject *>self._list_{{ name }}).ob_item
-""", self=self, name=name, len=len)
+""", myself=self, name=name, len=len)
 
     def dealloc_chunk_data(self, name):
         r"""
@@ -900,8 +900,8 @@ class StorageTypeMPFR(StorageTypeAutoReference):
             sage: ty_mpfr.cython_init('foo[i]')
             u'mpfr_init2(foo[i], self.domain.prec())'
         """
-        return je("mpfr_init2({{ loc }}, self.domain{{ self.id }}.prec())",
-                  self=self, loc=loc)
+        return je("mpfr_init2({{ loc }}, self.domain{{ myself.id }}.prec())",
+                  myself=self, loc=loc)
 
     def cython_clear(self, loc):
         r"""
@@ -927,8 +927,8 @@ class StorageTypeMPFR(StorageTypeAutoReference):
             u'rn = self.domain(bar[j])\nmpfr_set(foo[i], rn.value, GMP_RNDN)'
         """
         return je("""
-rn{{ self.id }} = self.domain({{ py }})
-mpfr_set({{ c }}, rn.value, GMP_RNDN)""", self=self, c=c, py=py)
+rn{{ myself.id }} = self.domain({{ py }})
+mpfr_set({{ c }}, rn.value, GMP_RNDN)""", myself=self, c=c, py=py)
 
 ty_mpfr = StorageTypeMPFR()
 
@@ -1183,9 +1183,9 @@ class MemoryChunkLonglivedArray(MemoryChunk):
             <BLANKLINE>
         """
         return je("""
-        count = args['{{ self.name }}']
-{% print self.storage_type.alloc_chunk_data(self.name, 'count') %}
-""", self=self)
+        count = args['{{ myself.name }}']
+{% print myself.storage_type.alloc_chunk_data(myself.name, 'count') %}
+""", myself=self)
 
     def dealloc_class_members(self):
         r"""
@@ -1248,11 +1248,11 @@ class MemoryChunkConstants(MemoryChunkLonglivedArray):
             <BLANKLINE>
         """
         return je("""
-        val = args['{{ self.name }}']
-{% print self.storage_type.alloc_chunk_data(self.name, 'len(val)') %}
+        val = args['{{ myself.name }}']
+{% print myself.storage_type.alloc_chunk_data(myself.name, 'len(val)') %}
         for i in range(len(val)):
-            {{ self.storage_type.assign_c_from_py('self._%s[i]' % self.name, 'val[i]') | i(12) }}
-""", self=self)
+            {{ myself.storage_type.assign_c_from_py('self._%s[i]' % myself.name, 'val[i]') | i(12) }}
+""", myself=self)
 
 class MemoryChunkArguments(MemoryChunkLonglivedArray):
     r"""
@@ -1281,11 +1281,11 @@ class MemoryChunkArguments(MemoryChunkLonglivedArray):
             <BLANKLINE>
         """
         return je("""
-cdef {{ self.storage_type.c_ptr_type() }} c_args = self._args
+cdef {{ myself.storage_type.c_ptr_type() }} c_args = self._args
 cdef int i
 for i from 0 <= i < len(args):
-    {{ self.storage_type.assign_c_from_py('self._args[i]', 'args[i]') | i(4) }}
-""", self=self)
+    {{ myself.storage_type.assign_c_from_py('self._args[i]', 'args[i]') | i(4) }}
+""", myself=self)
 
     def pass_argument(self):
         r"""
@@ -1382,9 +1382,9 @@ class MemoryChunkScratch(MemoryChunkLonglivedArray):
         # XXX This is a lot slower than it needs to be, because
         # we don't have a "cdef int i" in scope here.
         return je("""
-for i in range(self._n_{{ self.name }}):
-    Py_CLEAR(self._{{ self.name }}[i])
-""", self=self)
+for i in range(self._n_{{ myself.name }}):
+    Py_CLEAR(self._{{ myself.name }}[i])
+""", myself=self)
 
 class MemoryChunkRRRetval(MemoryChunk):
     r"""
@@ -1417,8 +1417,8 @@ class MemoryChunkRRRetval(MemoryChunk):
             u'        cdef RealNumber retval = (self.domain)()\n'
         """
         return je("""
-        cdef RealNumber {{ self.name }} = (self.domain)()
-""", self=self)
+        cdef RealNumber {{ myself.name }} = (self.domain)()
+""", myself=self)
 
     def pass_argument(self):
         r"""
@@ -1431,7 +1431,7 @@ class MemoryChunkRRRetval(MemoryChunk):
             sage: mc.pass_argument()
             u'&retval.value'
         """
-        return je("""&{{ self.name }}.value""", self=self)
+        return je("""&{{ myself.name }}.value""", myself=self)
 
     def pass_call_c_argument(self):
         r"""
@@ -1478,9 +1478,9 @@ class MemoryChunkPythonArguments(MemoryChunk):
             u"        count = args['args']\n        self._n_args = count\n"
         """
         return je("""
-        count = args['{{ self.name }}']
+        count = args['{{ myself.name }}']
         self._n_args = count
-""", self=self)
+""", myself=self)
 
     def setup_args(self):
         r"""
@@ -1578,8 +1578,8 @@ class MemoryChunkPyConstant(MemoryChunk):
             u'    cdef object _domain\n'
         """
         return je("""
-    cdef object _{{ self.name }}
-""", self=self)
+    cdef object _{{ myself.name }}
+""", myself=self)
 
     def init_class_members(self):
         r"""
@@ -1594,8 +1594,8 @@ class MemoryChunkPyConstant(MemoryChunk):
             u"        self._domain = args['domain']\n"
         """
         return je("""
-        self._{{ self.name }} = args['{{ self.name }}']
-""", self=self)
+        self._{{ myself.name }} = args['{{ myself.name }}']
+""", myself=self)
 
     def declare_parameter(self):
         r"""
@@ -2963,22 +2963,22 @@ class InterpreterGenerator(object):
 /* Automatically generated by ext/gen_interpreters.py.  Do not edit! */
 #include <Python.h>
 {% print s.header %}
-{{ self.func_header() }} {
+{{ myself.func_header() }} {
   while (1) {
     switch (*code++) {
-""", s=s, self=self, i=indent_lines))
+""", s=s, myself=self, i=indent_lines))
         for instr_desc in s.instr_descs:
             self.gen_code(instr_desc, w)
         w(je("""
     }
   }
-{% if self.uses_error_handler %}
+{% if myself.uses_error_handler %}
 error:
   return {{ s.err_return }};
 {% endif %}
 }
 
-""", s=s, i=indent_lines, self=self))
+""", s=s, i=indent_lines, myself=self))
 
     def write_wrapper(self, write):
         r"""
@@ -3055,7 +3055,7 @@ cdef extern from "tupleobject.h":
 from sage.ext.fast_callable cimport Wrapper
 {% print s.pyx_header %}
 
-cdef extern {{ self.func_header(cython=true) -}}
+cdef extern {{ myself.func_header(cython=true) -}}
 {% if s.err_return != 'NULL' %}
  except? {{ s.err_return -}}
 {% endif %}
@@ -3142,7 +3142,7 @@ metadata = InterpreterMetadata(by_opname={
 {% endfor %}
  ],
  ipow_range={{ s.ipow_range }})
-""", s=s, self=self, types=types, arg_ch=arg_ch, indent_lines=indent_lines, the_call=the_call, the_call_c=the_call_c, do_cleanup=do_cleanup))
+""", s=s, myself=self, types=types, arg_ch=arg_ch, indent_lines=indent_lines, the_call=the_call, the_call_c=the_call_c, do_cleanup=do_cleanup))
 
     def write_pxd(self, write):
         r"""
@@ -3195,7 +3195,7 @@ cdef class Wrapper_{{ s.name }}(Wrapper):
                      {{ arg_ch.storage_type.c_ptr_type() }} args,
                      {{ arg_ch.storage_type.c_ptr_type() }} result) except 0
 {% endif %}
-""", s=s, self=self, types=types, indent_lines=indent_lines, arg_ch=arg_ch))
+""", s=s, myself=self, types=types, indent_lines=indent_lines, arg_ch=arg_ch))
 
     def get_interpreter(self):
         r"""
