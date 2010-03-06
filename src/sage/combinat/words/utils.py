@@ -373,4 +373,4 @@ def clamp(x, min, max):
     else:
         return x
 
-from sage.combinat.words.word import Factorization
+from sage.combinat.words.finite_word import Factorization
