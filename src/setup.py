@@ -171,6 +171,11 @@ if compile_result_dir:
 else:
     record_compile = lambda x: x
 
+# Remove (potentially invalid) star import caches
+import sage.misc.lazy_import_cache
+if os.path.exists(sage.misc.lazy_import_cache.get_cache_file()):
+    os.unlink(sage.misc.lazy_import_cache.get_cache_file())
+
 ######################################################################
 # CODE for generating C/C++ code from Cython and doing dependency
 # checking, etc.  In theory distutils would run Cython, but I don't
