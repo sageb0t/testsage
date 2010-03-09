@@ -2839,7 +2839,7 @@ class GraphGenerators():
         pn={}
 
         # construt recursively the adjacency dict and the positions
-        for i in range(n):
+        for i in xrange(n):
             ci = float(cos(i*theta))
             si = float(sin(i*theta))
             for v,e in d.iteritems():
@@ -2982,7 +2982,7 @@ class GraphGenerators():
             L = []
             u = comb_to_str[tuple(c)]
             # switch 0 with the 1s
-            for i in range(len(c)):
+            for i in xrange(len(c)):
                 v = tuple([0]+c[:i]+c[i+1:])
                 g.add_edge( u , comb_to_str[v] )
 
