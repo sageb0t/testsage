@@ -819,6 +819,8 @@ code = setup(name = 'sage',
 
                      'sage.homology',
 
+                     'sage.interacts',
+
                      'sage.interfaces',
 
                      'sage.lfunctions',
