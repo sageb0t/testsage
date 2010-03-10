@@ -255,7 +255,7 @@ class CoxeterGroups(Category):
         @cached_method
         def simple_reflections(self):
             r"""
-            Returns the simple reflections `(s_i)_{i\in I}, as a family.
+            Returns the simple reflections `(s_i)_{i\in I}`, as a family.
 
             EXAMPLES::
 
@@ -540,8 +540,8 @@ class CoxeterGroups(Category):
             """
             Returns whether i is a right descent of self.
 
-            EXAMPLES::
-
+#            EXAMPLES::
+#
 #                sage:
             """
 
@@ -639,7 +639,7 @@ class CoxeterGroups(Category):
                 sage: sigma.length()
                 3
 
-            SEE ALSO :meth:`.reduced_word.
+            SEE ALSO :meth:`.reduced_word`
 
             Default implementation: recursively remove the first right
             descent until the identity is reached (see :meth:`.first_descent` and
@@ -786,14 +786,14 @@ class CoxeterGroups(Category):
                 self = self.apply_simple_reflection(i, side = side)
 
         def apply_simple_projection(self, i, side = 'right', toward_max = True):
-            """
+            r"""
             INPUT:
              - ``i`` - an element of the index set of the Coxeter group
              - ``side`` - 'left' or 'right' (default: 'right')
              - ``toward_max`` - a boolean (default: True) specifying the direction of the projection
 
             Returns the result of the application of the simple
-            projection `\pi_i` (resp. `\opi_i`) on self.
+            projection `\pi_i` (resp. `\overline\pi_i`) on self.
 
             See :meth:`CoxeterGroups.ParentMethods.simple_projections`
             for the definition of the simple projections.
