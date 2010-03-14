@@ -288,7 +288,7 @@ class log_html(Log):
         return "</pre>\n</body>\n</html>"
 
     def _title(self):
-        return 'SAGE Log %s'%self._time
+        return 'Sage Log %s'%self._time
 
 class log_dvi(Log):
     """
