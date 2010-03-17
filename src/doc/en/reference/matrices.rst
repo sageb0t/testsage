@@ -40,6 +40,9 @@ following additional ways to compute with matrices:
    over RDF and CDF (native floating-point real and complex numbers)
    use numpy.
 
+Finally, this module contains some data-structures for matrix-like
+objects like operation tables (e.g. the multiplication table of a group).
+
 .. toctree::
    :maxdepth: 2
 
@@ -77,3 +80,5 @@ following additional ways to compute with matrices:
    sage/matrix/matrix_real_double_dense
 
    sage/matrix/matrix_complex_double_dense
+
+   sage/matrix/operation_table
