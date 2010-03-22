@@ -1921,17 +1921,16 @@ class GenericGraph(GenericGraph_pyx):
 
         INPUT:
 
-        - ``root_vertex`` -- integer (default: the first vertex) This is the vertex
-        that will be used as root for all spanning out-trees if the graph
-        is a directed graph.
-        This argument is ignored if the graph is not a digraph.
+        - ``root_vertex`` -- integer (default: the first vertex) This is
+          the vertex that will be used as root for all spanning out-trees
+          if the graph is a directed graph. This argument is ignored if
+          the graph is not a digraph.
 
         REFERENCES:
 
-        - [1] http://mathworld.wolfram.com/MatrixTreeTheorem.html
+        [1] http://mathworld.wolfram.com/MatrixTreeTheorem.html
 
-        - [2] Lih-Hsing Hsu, Cheng-Kuan Lin, "Graph Theory and Interconnection
-        Networks"
+        [2] Lih-Hsing Hsu, Cheng-Kuan Lin, "Graph Theory and Interconnection Networks"
 
         AUTHORS:
 
@@ -1986,26 +1985,24 @@ class GenericGraph(GenericGraph_pyx):
         possible maximum outdegree of the current graph.
 
         Given a Graph `G`, is is polynomial to compute an orientation
-        `D` of the edges of `G` such that the maximum out-degree in `D`
-	 is minimized. This problem, though, is NP-complete in the
+        `D` of the edges of `G` such that the maximum out-degree in
+        `D` is minimized. This problem, though, is NP-complete in the
         weighted case [AMOZ06]_.
 
         INPUT:
 
         - ``use_edge_labels`` (boolean)
 
-            - When set to ``True``, uses edge labels as weights to
-              compute the orientation and assumes a weight of `1`
-              when there is no value available for a given edge.
-
-            - When set to ``False`` (default), gives a weight of 1
-              to all the edges.
+          - When set to ``True``, uses edge labels as weights to
+            compute the orientation and assumes a weight of `1`
+            when there is no value available for a given edge.
+          - When set to ``False`` (default), gives a weight of 1
+            to all the edges.
 
         EXAMPLE:
 
         Given a complete bipartite graph `K_{n,m}`, the maximum out-degree
-        of an optimal orientation is
-        `\left\lceil \frac {nm} {n+m}\right\rceil`::
+        of an optimal orientation is `\left\lceil \frac {nm} {n+m}\right\rceil`::
 
             sage: g = graphs.CompleteBipartiteGraph(3,4)
             sage: o = g.minimum_outdegree_orientation() # optional - requires GLPK or CBC
@@ -2019,7 +2016,6 @@ class GenericGraph(GenericGraph_pyx):
           Proceedings of the 12th Computing: The Australasian Theroy Symposium
           Volume 51, page 20
           Australian Computer Society, Inc. 2006
-
         """
 
         if self.is_directed():
@@ -7801,7 +7797,7 @@ class GenericGraph(GenericGraph_pyx):
         Returns the Wiener index of the graph.
 
         The Wiener index of a graph `G` can be defined in two equivalent
-        ways [KRG96]_ :
+        ways [1] :
 
         - `W(G) = \frac 1 2 \sum_{u,v\in G} d(u,v)` where `d(u,v)` denotes the distance between
           vertices `u` and `v`.
@@ -7813,7 +7809,7 @@ class GenericGraph(GenericGraph_pyx):
 
         EXAMPLE:
 
-        From [GYLL93]_, cited in [KRG96]_::
+        From [2], cited in [1]::
 
             sage: g=graphs.PathGraph(10)
             sage: w=lambda x: (x*(x*x -1)/6)
@@ -7822,15 +7818,12 @@ class GenericGraph(GenericGraph_pyx):
 
         REFERENCE:
 
-        .. [KRG96] Klavzar S., Rajapakse A., Gutman I. (1996). The Szeged and
-          the Wiener index of graphs .
-          Applied Mathematics Letters, 9 (5), pp. 45-49.
+        [1] Klavzar S., Rajapakse A., Gutman I. (1996). The Szeged and the
+        Wiener index of graphs. Applied Mathematics Letters, 9 (5), pp. 45-49.
 
-        .. [GYLL93] I Gutman, YN Yeh, SL Lee, YL Luo (1993),
-          Some recent results in the theory of the Wiener number.
-          INDIAN JOURNAL OF CHEMISTRY SECTION A
-          PUBLICATIONS & INFORMATION DIRECTORATE, CSIR
-
+        [2] I Gutman, YN Yeh, SL Lee, YL Luo (1993), Some recent results in
+        the theory of the Wiener number. INDIAN JOURNAL OF CHEMISTRY SECTION A
+        PUBLICATIONS & INFORMATION DIRECTORATE, CSIR
         """
 
         return sum([sum(v.itervalues()) for v in self.distance_all_pairs().itervalues()])/2
@@ -7871,18 +7864,18 @@ class GenericGraph(GenericGraph_pyx):
         For any `uv\in E(G)`, let
         `N_u(uv) = \{w\in G:d(u,w)<d(v,w)\}, n_u(uv)=|N_u(uv)|`
 
-        The Szeged index of a graph is then defined as [KRG96]_ :
+        The Szeged index of a graph is then defined as [1]:
         `\sum_{uv \in E(G)}n_u(uv)\times n_v(uv)`
 
         EXAMPLE:
 
-        True for any connected graph [KRG96]_::
+        True for any connected graph [1]::
 
             sage: g=graphs.PetersenGraph()
             sage: g.wiener_index()<= g.szeged_index()
             True
 
-        True for all trees [KRG96]_::
+        True for all trees [1]::
 
             sage: g=Graph()
             sage: g.add_edges(graphs.CubeGraph(5).min_spanning_tree())
@@ -7891,10 +7884,8 @@ class GenericGraph(GenericGraph_pyx):
 
         REFERENCE:
 
-        .. [KRG96] Klavzar S., Rajapakse A., Gutman I. (1996). The Szeged and
-          the Wiener index of graphs .
-          Applied Mathematics Letters, 9 (5), pp. 45-49.
-
+        [1] Klavzar S., Rajapakse A., Gutman I. (1996). The Szeged and the
+        Wiener index of graphs. Applied Mathematics Letters, 9 (5), pp. 45-49.
         """
         distances=self.distance_all_pairs()
         s=0
