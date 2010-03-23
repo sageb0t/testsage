@@ -2888,9 +2888,9 @@ class GenericGraph(GenericGraph_pyx):
         itself has no cut vertices. Two distinct blocks cannot overlap in
         more than a single cut vertex.
 
-        OUTPUT: ( B, C ), where B is a list of blocks- each is a list of
-        vertices and the blocks are the corresponding induced subgraphs-
-        and C is a list of cut vertices.
+        OUTPUT: ``( B, C )``, where ``B`` is a list of blocks- each is
+        a list of vertices and the blocks are the corresponding induced
+        subgraphs-and ``C`` is a list of cut vertices.
 
         EXAMPLES::
 
@@ -2921,16 +2921,16 @@ class GenericGraph(GenericGraph_pyx):
             ...
             NotImplementedError: ...
 
-        ALGORITHM: 8.3.8 in [1]. Notice that the termination condition on
-        line (23) of the algorithm uses "p[v] == 0" which in the book
-        means that the parent is undefined; in this case, v must be the
-        root s.  Since our vertex names start with 0, we substitute instead
-        the condition "v == s".  This is the terminating condition used
+        ALGORITHM: 8.3.8 in [Jungnickel05]_. Notice that the termination condition on
+        line (23) of the algorithm uses ``p[v] == 0`` which in the book
+        means that the parent is undefined; in this case, `v` must be the
+        root `s`.  Since our vertex names start with `0`, we substitute instead
+        the condition ``v == s``.  This is the terminating condition used
         in the general Depth First Search tree in Algorithm 8.2.1.
 
         REFERENCE:
 
-        - [1] D. Jungnickel, Graphs, Networks and Algorithms,
+        .. [Jungnickel05] D. Jungnickel, Graphs, Networks and Algorithms,
           Springer, 2005.
         """
         if not self: # empty graph
@@ -3868,10 +3868,10 @@ class GenericGraph(GenericGraph_pyx):
 
         This function returns a list of such paths.
 
-        NOTE:
+        .. NOTE::
 
-        This function is topological : it does not take the eventual
-        weights of the edges into account.
+            This function is topological : it does not take the eventual
+            weights of the edges into account.
 
         EXAMPLE:
 
@@ -6620,9 +6620,9 @@ class GenericGraph(GenericGraph_pyx):
         ordered list.
 
         The clustering coefficient of a graph is the fraction of possible
-        triangles that are triangles, c_i = triangles_i /
-        (k_i\*(k_i-1)/2) where k_i is the degree of vertex i, [1]. A
-        coefficient for the whole graph is the average of the c_i.
+        triangles that are triangles, `c_i = triangles_i /
+        (k_i\*(k_i-1)/2)` where `k_i` is the degree of vertex `i`, [1]. A
+        coefficient for the whole graph is the average of the `c_i`.
         Transitivity is the fraction of all possible triangles which are
         triangles, T = 3\*triangles/triads, [HSSNX]_.
 
@@ -6657,9 +6657,9 @@ class GenericGraph(GenericGraph_pyx):
         Returns the average clustering coefficient.
 
         The clustering coefficient of a graph is the fraction of possible
-        triangles that are triangles, c_i = triangles_i /
-        (k_i\*(k_i-1)/2) where k_i is the degree of vertex i, [1]. A
-        coefficient for the whole graph is the average of the c_i.
+        triangles that are triangles, `c_i = triangles_i /
+        (k_i\*(k_i-1)/2)` where `k_i` is the degree of vertex `i`, [1]. A
+        coefficient for the whole graph is the average of the `c_i`.
         Transitivity is the fraction of all possible triangles which are
         triangles, T = 3\*triangles/triads, [1].
 
@@ -6683,9 +6683,9 @@ class GenericGraph(GenericGraph_pyx):
         ordered list.
 
         The clustering coefficient of a graph is the fraction of possible
-        triangles that are triangles, c_i = triangles_i /
-        (k_i\*(k_i-1)/2) where k_i is the degree of vertex i, [1]. A
-        coefficient for the whole graph is the average of the c_i.
+        triangles that are triangles, `c_i = triangles_i /
+        (k_i\*(k_i-1)/2)` where `k_i` is the degree of vertex `i`, [1]. A
+        coefficient for the whole graph is the average of the `c_i`.
         Transitivity is the fraction of all possible triangles which are
         triangles, T = 3\*triangles/triads, [1].
 
@@ -6731,15 +6731,15 @@ class GenericGraph(GenericGraph_pyx):
         graph.
 
         The clustering coefficient of a graph is the fraction of possible
-        triangles that are triangles, c_i = triangles_i /
-        (k_i\*(k_i-1)/2) where k_i is the degree of vertex i, [1]. A
-        coefficient for the whole graph is the average of the c_i.
+        triangles that are triangles, `c_i = triangles_i /
+        (k_i\*(k_i-1)/2)` where `k_i` is the degree of vertex `i`, [1]. A
+        coefficient for the whole graph is the average of the `c_i`.
         Transitivity is the fraction of all possible triangles which are
         triangles, T = 3\*triangles/triads, [1].
 
         REFERENCE:
 
-        - [1] Aric Hagberg, Dan Schult and Pieter Swart. NetworkX
+        .. [1] Aric Hagberg, Dan Schult and Pieter Swart. NetworkX
           documentation. [Online] Available:
           https://networkx.lanl.gov/reference/networkx/
 
@@ -8527,10 +8527,10 @@ class GenericGraph(GenericGraph_pyx):
         """
         Returns the Cartesian product of self and other.
 
-        The Cartesian product of G and H is the graph L with vertex set
-        V(L) equal to the Cartesian product of the vertices V(G) and V(H),
-        and ((u,v), (w,x)) is an edge iff either - (u, w) is an edge of
-        self and v = x, or - (v, x) is an edge of other and u = w.
+        The Cartesian product of `G` and `H` is the graph `L` with vertex set
+        `V(L)` equal to the Cartesian product of the vertices `V(G)` and `V(H)`,
+        and `((u,v), (w,x))` is an edge iff either - `(u, w)` is an edge of
+        self and `v = x`, or - `(v, x)` is an edge of other and `u = w`.
 
         EXAMPLES::
 
@@ -8574,10 +8574,10 @@ class GenericGraph(GenericGraph_pyx):
         Returns the tensor product, also called the categorical product, of
         self and other.
 
-        The tensor product of G and H is the graph L with vertex set V(L)
-        equal to the Cartesian product of the vertices V(G) and V(H), and
-        ((u,v), (w,x)) is an edge iff - (u, w) is an edge of self, and -
-        (v, x) is an edge of other.
+        The tensor product of `G` and `H` is the graph `L` with vertex set `V(L)`
+        equal to the Cartesian product of the vertices `V(G)` and `V(H)`, and
+        `((u,v), (w,x))` is an edge iff - `(u, w)` is an edge of self, and -
+        `(v, x)` is an edge of other.
 
         EXAMPLES::
 
