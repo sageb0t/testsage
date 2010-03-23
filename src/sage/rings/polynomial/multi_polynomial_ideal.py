@@ -1058,7 +1058,7 @@ class MPolynomialIdeal_singular_repr:
 
         import sage.libs.singular
         vdim = sage.libs.singular.ff.vdim
-        vd = Integer(vdim(gb))
+        vd = Integer(vdim(gb, attributes={gb:{'isSB':1}}))
 
         if vd == -1:
             raise TypeError("ideal is not zero dimensional")
@@ -2114,7 +2114,7 @@ class MPolynomialIdeal_singular_repr:
             5*t - 5
         """
         if not self.is_homogeneous():
-            raise TypeError, "Ideal must be homogeneous."
+            raise TypeError("Ideal must be homogeneous.")
 
         import sage.libs.singular
         hilbPoly = sage.libs.singular.ff.poly__lib.hilbPoly
