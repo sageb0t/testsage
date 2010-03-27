@@ -828,6 +828,7 @@ code = setup(name = 'sage',
 
                      'sage.libs',
                      'sage.libs.fplll',
+                     'sage.libs.galrep',
                      'sage.libs.linbox',
                      'sage.libs.mwrank',
                      'sage.libs.ntl',
