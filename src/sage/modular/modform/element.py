@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Elements of modular forms spaces.
 """
@@ -401,7 +402,7 @@ class ModularForm_abstract(ModuleElement):
         EXAMPLES::
 
             sage: ModularForms(DirichletGroup(17).0^2,2).2.character()
-            [zeta8]
+            Dirichlet character modulo 17 of conductor 17 mapping 3 |--> zeta8
         """
         chi = self.parent().character()
         if chi is None:
@@ -1379,7 +1380,7 @@ class EisensteinSeries(ModularFormElement):
         EXAMPLES::
 
             sage: EisensteinForms(11,2).eisenstein_series()[0]._EisensteinSeries__defining_parameters()
-            (-1/24, [1], [1], Rational Field, 2, 11, 1, 1)
+            (-1/24, Dirichlet character modulo 1 of conductor 1 mapping 0 |--> 1, Dirichlet character modulo 1 of conductor 1 mapping 0 |--> 1, Rational Field, 2, 11, 1, 1)
         """
         try:
             return self.__defining_params
@@ -1406,7 +1407,7 @@ class EisensteinSeries(ModularFormElement):
         EXAMPLES::
 
             sage: EisensteinForms(DirichletGroup(17).0,99).eisenstein_series()[1].chi()
-            [zeta16]
+            Dirichlet character modulo 17 of conductor 17 mapping 3 |--> zeta16
         """
         return self.__chi
 
@@ -1417,7 +1418,7 @@ class EisensteinSeries(ModularFormElement):
         EXAMPLES::
 
             sage: EisensteinForms(DirichletGroup(17).0,99).eisenstein_series()[1].psi()
-            [1]
+             Dirichlet character modulo 17 of conductor 1 mapping 3 |--> 1
         """
         return self.__psi
 
@@ -1439,7 +1440,7 @@ class EisensteinSeries(ModularFormElement):
         EXAMPLES::
 
             sage: EisensteinForms(DirichletGroup(17).0,99).eisenstein_series()[1].parameters()
-            ([zeta16], [1], 1)
+            (Dirichlet character modulo 17 of conductor 17 mapping 3 |--> zeta16, Dirichlet character modulo 17 of conductor 1 mapping 3 |--> 1, 1)
         """
         return self.__chi, self.__psi, self.__t
 
@@ -1472,7 +1473,7 @@ class EisensteinSeries(ModularFormElement):
         EXAMPLES::
 
             sage: EisensteinForms(DirichletGroup(17).0,99).eisenstein_series()[1].character()
-            [zeta16]
+            Dirichlet character modulo 17 of conductor 17 mapping 3 |--> zeta16
 
             sage: chi = DirichletGroup(7)[4]
             sage: E = EisensteinForms(chi).eisenstein_series() ; E
