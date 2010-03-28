@@ -5,8 +5,9 @@
 #                  http://www.gnu.org/licenses/
 #############################################################################
 
-from sage.finance.time_series cimport TimeSeries
+cdef class IntList:
+    cdef int* _values
+    cdef Py_ssize_t _length
 
-cdef class HiddenMarkovModel:
-    cdef int N
-    cdef TimeSeries A, pi
+    cpdef int prod(self)
+    cpdef int sum(self)

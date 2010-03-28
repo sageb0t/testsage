@@ -50,8 +50,6 @@ scipy=None
 # This is for the Numpy C API to work
 cnumpy.import_array()
 
-from matrix_complex_double_dense import Matrix_complex_double_dense
-
 cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
     """
     Base class for matrices over the Real Double Field and the Complex
