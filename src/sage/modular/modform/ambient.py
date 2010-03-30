@@ -614,7 +614,10 @@ class ModularFormsAmbient(space.ModularFormsSpace,
         try:
             return self.__the_dim_cuspidal
         except AttributeError:
-            self.__the_dim_cuspidal = self.group().dimension_cusp_forms(self.weight())
+            if arithgroup.is_Gamma1(self.group()) and self.character() is not None:
+               self.__the_dim_cuspidal = self.group().dimension_cusp_forms(self.weight(), self.character())
+            else:
+               self.__the_dim_cuspidal = self.group().dimension_cusp_forms(self.weight())
         return self.__the_dim_cuspidal
 
     def _dim_eisenstein(self):
@@ -635,7 +638,10 @@ class ModularFormsAmbient(space.ModularFormsSpace,
             if self.weight() == 1:
                 self.__the_dim_eisenstein = len(self.eisenstein_params())
             else:
-                self.__the_dim_eisenstein = self.group().dimension_eis(self.weight())
+                if arithgroup.is_Gamma1(self.group()) and self.character() is not None:
+                    self.__the_dim_eisenstein = self.group().dimension_eis(self.weight(), self.character())
+                else:
+                    self.__the_dim_eisenstein = self.group().dimension_eis(self.weight())
         return self.__the_dim_eisenstein
 
     def _dim_new_cuspidal(self):
@@ -651,7 +657,10 @@ class ModularFormsAmbient(space.ModularFormsSpace,
         try:
             return self.__the_dim_new_cuspidal
         except AttributeError:
-            self.__the_dim_new_cuspidal = self.group().dimension_new_cusp_forms(self.weight())
+            if arithgroup.is_Gamma1(self.group()) and self.character() is not None:
+                self.__the_dim_new_cuspidal = self.group().dimension_new_cusp_forms(self.weight(), self.character())
+            else:
+                self.__the_dim_new_cuspidal = self.group().dimension_new_cusp_forms(self.weight())
         return self.__the_dim_new_cuspidal
 
     def _dim_new_eisenstein(self):
