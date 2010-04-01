@@ -758,7 +758,7 @@ class MixedIntegerLinearProgram:
             sage: p.set_real(x[3])
         """
         if isinstance(e, MIPVariable):
-            e.vtype = self.__BINARY
+            e._vtype = self.__BINARY
             if e.depth() == 1:
                 for v in e.values():
                     self._variables_type[self._variables[v]] = self.__BINARY
@@ -826,7 +826,7 @@ class MixedIntegerLinearProgram:
             sage: p.set_real(x[3])
         """
         if isinstance(e, MIPVariable):
-            e.vtype = self.__INTEGER
+            e._vtype = self.__INTEGER
             if e.depth() == 1:
                 for v in e.values():
                     self._variables_type[self._variables[v]] = self.__INTEGER
@@ -894,7 +894,7 @@ class MixedIntegerLinearProgram:
             sage: p.set_binary(x[3])
         """
         if isinstance(e, MIPVariable):
-            e.vtype = self.__REAL
+            e._vtype = self.__REAL
             if e.depth() == 1:
                 for v in e.values():
                     self._variables_type[self._variables[v]] = self.__REAL
