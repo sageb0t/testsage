@@ -1411,6 +1411,8 @@ maxima_var = re.compile("\%[a-z|A-Z|0-9|_]*")  # e.g., ?%jacobi_cd
 
 sci_not = re.compile("(-?(?:0|[1-9]\d*))(\.\d+)?([eE][-+]\d+)")
 
+polylog_ex = re.compile('li\[([0-9]+?)\]\(')
+
 def symbolic_expression_from_maxima_string(x, equals_sub=False, maxima=maxima):
     """
     Given a string representation of a Maxima expression, parse it and
@@ -1476,8 +1478,7 @@ def symbolic_expression_from_maxima_string(x, equals_sub=False, maxima=maxima):
                 syms[X[2:]] = function_factory(X[2:])
         s = s.replace("?%","")
 
-    regex=re.compile('li\[([0-9]+?)\]\(')
-    s = regex.sub('polylog(\\1,',s)
+    s = polylog_ex.sub('polylog(\\1,',s)
     s = multiple_replace(symtable, s)
     s = s.replace("%","")
 
