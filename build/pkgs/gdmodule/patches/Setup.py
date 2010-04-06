@@ -57,11 +57,17 @@ incdirs = dirtest([
 
 # Try to identify our libraries
 
-want_libs = [
-    "gd", "png12", "z", "freetype"
-]
-
-libs = filetest(libdirs, want_libs)
+import os
+if os.uname()[0][:6] == "CYGWIN":
+    want_libs = [
+        "gd", "png12", "z", "freetype", "iconv", "fontconfig",
+    ]
+    libs = filetest(libdirs, want_libs)
+else:
+    want_libs = [
+        "gd", "png12", "z", "freetype"
+    ]
+    libs = filetest(libdirs, want_libs)
 
 missing = []
 
@@ -101,6 +107,8 @@ for l in libs:
        macros.append(( "HAVE_LIB%s" % l.upper(), None ))
 
 # OK, now do it!
+
+print libs
 
 setup(name="gdmodule", version=this_version,
 
