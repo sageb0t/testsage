@@ -305,7 +305,7 @@ def griesmer_upper_bound(n,q,d,method=None):
             if not(add == 1):
                 if d%den==0:
                     add = int(d/den)
-		else:
+                else:
                     add = int(d/den)+1
             s = s + add
             den = den * q
@@ -333,13 +333,13 @@ def elias_upper_bound(n,q,d,method=None):
         return QQ(ans)
     else:
         def ff(n,d,w,q):
-	    return r*n*d*q**n/((w**2-2*r*n*w+r*n*d)*volume_hamming(n,q,w));
+            return r*n*d*q**n/((w**2-2*r*n*w+r*n*d)*volume_hamming(n,q,w));
     def get_list(n,d,q):
         I = []
         for i in range(1,int(r*n)+1):
-	    if i**2-2*r*n*i+r*n*d>0:
-	        I.append(i)
-	    return I
+            if i**2-2*r*n*i+r*n*d>0:
+                I.append(i)
+            return I
     I = get_list(n,d,q)
     bnd = min([ff(n,d,w,q) for w in I])
     return int(bnd)
