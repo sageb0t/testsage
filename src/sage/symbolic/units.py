@@ -1147,7 +1147,7 @@ class Units:
 units = Units(unitdict, '')
 
 def unitdocs(unit):
-    """
+    r"""
     Returns docstring for the given unit.
 
     INPUT:
