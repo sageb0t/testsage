@@ -28,6 +28,7 @@ class TestSuite(object):
 
         sage: TestSuite(1).run(verbose = True)
         running ._test_category() . . . pass
+        running ._test_eq() . . . pass
         running ._test_not_implemented_methods() . . . pass
         running ._test_pickling() . . . pass
 
@@ -46,12 +47,15 @@ class TestSuite(object):
         running ._test_elements() . . .
           Running the test suite of self.an_element()
           running ._test_category() . . . pass
+          running ._test_eq() . . . pass
           running ._test_not_implemented_methods() . . . pass
           running ._test_pickling() . . . pass
           pass
+        running ._test_elements_eq() . . . pass
         running ._test_enumerated_set_contains() . . . pass
         running ._test_enumerated_set_iter_cardinality() . . . pass
         running ._test_enumerated_set_iter_list() . . . pass
+        running ._test_eq() . . . pass
         running ._test_not_implemented_methods() . . . pass
         running ._test_pickling() . . . pass
         running ._test_some_elements() . . . pass
@@ -170,6 +174,7 @@ class TestSuite(object):
 
             sage: TestSuite(1).run(verbose = True)
             running ._test_category() . . . pass
+            running ._test_eq() . . . pass
             running ._test_not_implemented_methods() . . . pass
             running ._test_pickling() . . . pass
 
@@ -177,8 +182,10 @@ class TestSuite(object):
 
             sage: TestSuite(1).run(verbose = True, skip ="_test_pickling")
             running ._test_category() . . . pass
+            running ._test_eq() . . . pass
             running ._test_not_implemented_methods() . . . pass
             sage: TestSuite(1).run(verbose = True, skip =["_test_pickling", "_test_category"])
+            running ._test_eq() . . . pass
             running ._test_not_implemented_methods() . . . pass
 
         We now show (and test) some standard error reports::
@@ -261,11 +268,11 @@ class TestSuite(object):
             if method_name[0:6] == "_test_" and method_name not in skip:
                 # TODO: improve pretty printing
                 # could use the doc string of the test method?
-                tester.info(tester._prefix+"running .%s() . . . "%method_name, newline = False)
+                tester.info(tester._prefix+"running .%s() . . ."%method_name, newline = False)
                 test_method = getattr(self._instance, method_name)
                 try:
                     test_method(tester = tester)
-                    tester.info("pass")
+                    tester.info(" pass")
                 except catch_exception as e:
                     failed.append(method_name)
                     if isinstance(e, TestSuiteFailure):
@@ -276,7 +283,7 @@ class TestSuite(object):
                             print tester._prefix+"Failure in %s"%method_name
                     else:
                         if tester._verbose:
-                            tester.info("fail")
+                            tester.info(" fail")
                         else:
                             print tester._prefix+"Failure in %s:"%method_name
                         s = traceback.format_exc()
