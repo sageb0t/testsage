@@ -364,7 +364,7 @@ class DiGraphGenerators():
         if seed is None:
             seed = current_randstate().long_seed()
         import networkx
-        return DiGraph(networkx.gn_graph(n, kernel, seed))
+        return DiGraph(networkx.gn_graph(n, kernel, seed=seed))
 
     def RandomDirectedGNC(self, n, seed=None):
         """
@@ -398,7 +398,7 @@ class DiGraphGenerators():
         if seed is None:
             seed = current_randstate().long_seed()
         import networkx
-        return DiGraph(networkx.gnc_graph(n, seed))
+        return DiGraph(networkx.gnc_graph(n, seed=seed))
 
     def RandomDirectedGNP(self, n, p):
         r"""
@@ -466,7 +466,7 @@ class DiGraphGenerators():
         if seed is None:
             seed = current_randstate().long_seed()
         import networkx
-        return DiGraph(networkx.gnc_graph(n, seed))
+        return DiGraph(networkx.gnc_graph(n, seed=seed))
 
 ################################################################################
 #   DiGraph Iterators
