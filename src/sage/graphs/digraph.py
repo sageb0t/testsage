@@ -19,7 +19,10 @@ class DiGraph(GenericGraph):
     Directed graph.
 
     A digraph or directed graph is a set of vertices connected by oriented
-    edges (cf. http://en.wikipedia.org/wiki/Digraph_%28mathematics%29 ).
+    edges.
+
+    `Wikipedia article on digraphs
+    <http://en.wikipedia.org/wiki/Digraph_%28mathematics%29>`_
 
     One can very easily create a directed graph in Sage by typing::
 
@@ -1089,8 +1092,8 @@ class DiGraph(GenericGraph):
         Equivalently, a minimum feedback arc set of a DiGraph is a set
         `S` of arcs such that the digraph `G-S` is acyclic.
 
-        For more informations, see
-        ( http://en.wikipedia.org/wiki/Feedback_arc_set )
+        `Wikipedia article on Feedback arc sets
+        <http://en.wikipedia.org/wiki/Feedback_arc_set>`_.
 
         INPUT :
 
@@ -1198,8 +1201,8 @@ class DiGraph(GenericGraph):
         Equivalently, a minimum feedback vertex set of a DiGraph is a set
         `S` of vertices such that the digraph `G-S` is acyclic.
 
-        For more informations, see
-        ( http://en.wikipedia.org/wiki/Feedback_vertex_set )
+        `Wikipedia article on Feedback vertex sets
+        <http://en.wikipedia.org/wiki/Feedback_vertex_set>`_.
 
         INPUT :
 
