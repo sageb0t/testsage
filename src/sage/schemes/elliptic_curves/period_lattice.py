@@ -1026,7 +1026,7 @@ class PeriodLattice_ell(PeriodLattice):
                     C = ComplexField()
                     z = C(z)
                 except TypeError:
-                    raise TypeError, "%s is not a complex number"%s
+                    raise TypeError, "%s is not a complex number"%z
         prec = C.precision()
         from sage.matrix.all import Matrix
         from sage.modules.all import vector
@@ -1075,7 +1075,7 @@ class PeriodLattice_ell(PeriodLattice):
                     z = C(z)
                     z_is_real = z.is_real()
                 except TypeError:
-                    raise TypeError, "%s is not a complex number"%s
+                    raise TypeError, "%s is not a complex number"%z
         prec = C.precision()
         if self.real_flag:
             w1,w2 = self.basis(prec) # w1 real
@@ -1383,7 +1383,7 @@ class PeriodLattice_ell(PeriodLattice):
                     z = C(z)
                     z_is_real = z.is_real()
                 except TypeError:
-                    raise TypeError, "%s is not a complex number"%s
+                    raise TypeError, "%s is not a complex number"%z
         prec = C.precision()
 
         from sage.libs.all import pari
