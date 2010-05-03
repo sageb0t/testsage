@@ -85,7 +85,7 @@
 
 #define USE_DD_QD 0
 
-#if defined(__sun)
+#if defined(__sun) || defined(__CYGWIN__)
 extern "C" long double fabsl (long double);
 extern "C" long double sinl (long double);
 extern "C" long double cosl (long double);
@@ -148,7 +148,7 @@ const bool debugt = false;                                      // Same for the 
 const unsigned int min_precision = DBL_MANT_DIG;                            // The minimum precision that we will ever use.
 const unsigned int double_precision = DBL_MANT_DIG;                         // The assumed precision of a double.
 
-#ifdef __sparc
+#if defined(__sparc) || defined(__CYGWIN__)
 // On sparc solaris long double is bad/broken/different, etc.  E.g.,
 // LDBL_MANT_DIG is 113 rather than 106, which causes all kinds of trouble.
 // So we only use double_precision.
