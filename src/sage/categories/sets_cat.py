@@ -38,7 +38,7 @@ class EmptySetError(ValueError):
     pass
 
 class Sets(Category):
-    """
+    r"""
     The category of sets
 
     The base category for collections of elements with = (equality)
@@ -144,11 +144,11 @@ class Sets(Category):
 
     @cached_method
     def super_categories(self):
-        """
+        r"""
         We include SetsWithPartialMaps between Sets and Objects so that we
-        can define morphisms between sets that are only partially defined
-        (and have the Homset constructor not complain that SetsWithPartialMaps
-        is not a supercategory of Fields, for example.
+        can define morphisms between sets that are only partially defined.
+        This is also to have the Homset constructor not complain that
+        SetsWithPartialMaps is not a supercategory of Fields, for example.
 
         EXAMPLES::
 
@@ -158,7 +158,7 @@ class Sets(Category):
         return [SetsWithPartialMaps()]
 
     def __call__(self, X):
-        """
+        r"""
         Construct an object in this category from the data in ``X``.
 
         EXAMPLES::
@@ -224,7 +224,7 @@ class Sets(Category):
                 sage: S(17) # indirect doctest
                 17
 
-            Caveat: for some parents, element_class is a method, and
+            Caveat: For some parents, element_class is a method, and
             not an attribute. We do not provide a default
             implementation of _element_constructor for those.
 
