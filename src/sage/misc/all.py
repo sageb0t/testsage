@@ -170,6 +170,8 @@ from explain_pickle import explain_pickle, unpickle_newobj, unpickle_global, unp
 
 from bitset import FrozenBitset, Bitset
 
+from decorators import specialize
+
 ##########################################################################
 def benchmark(n=-1):
     """
