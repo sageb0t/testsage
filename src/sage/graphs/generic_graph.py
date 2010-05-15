@@ -2005,7 +2005,7 @@ class GenericGraph(GenericGraph_pyx):
             M[index,index]+=1
             return abs(M.determinant())
 
-    def minimum_outdegree_orientation(self, use_edge_labels=False):
+    def minimum_outdegree_orientation(self, use_edge_labels=False, solver=None, verbose=0):
         r"""
         Returns a DiGraph which is an orientation with the smallest
         possible maximum outdegree of the current graph.
@@ -2023,7 +2023,15 @@ class GenericGraph(GenericGraph_pyx):
             compute the orientation and assumes a weight of `1`
             when there is no value available for a given edge.
           - When set to ``False`` (default), gives a weight of 1
-              to all the edges.
+            to all the edges.
+
+        - ``solver`` -- Specify a Linear Program solver to be used.
+          If set to ``None``, the default one is used.
+          function of ``MixedIntegerLinearProgram``. See the documentation  of ``MixedIntegerLinearProgram.solve``
+          for more informations.
+
+        - ``verbose`` (integer) -- sets the level of verbosity. Set to 0
+          by default (quiet).
 
         EXAMPLE:
 
@@ -2077,7 +2085,7 @@ class GenericGraph(GenericGraph_pyx):
 
         p.set_binary(orientation)
 
-        p.solve()
+        p.solve(solver = solver, log = verbose)
 
         orientation = p.get_values(orientation)
 
@@ -3044,7 +3052,7 @@ class GenericGraph(GenericGraph_pyx):
             v = pv
         return B, C
 
-    def edge_cut(self, s, t, value_only=True, use_edge_labels=False, vertices=False):
+    def edge_cut(self, s, t, value_only=True, use_edge_labels=False, vertices=False, solver=None, verbose=0):
         r"""
         Returns a minimum edge cut between vertices `s` and `t`
         represented by a list of edges.
@@ -3070,6 +3078,14 @@ class GenericGraph(GenericGraph_pyx):
         - ``vertices`` - boolean (default: False). When set to True,
           also returns the two sets of vertices that are disconnected by
           the cut. Implies ``value_only=False``.
+
+        - ``solver`` -- Specify a Linear Program solver to be used.
+          If set to ``None``, the default one is used.
+          function of ``MixedIntegerLinearProgram``. See the documentation  of ``MixedIntegerLinearProgram.solve``
+          for more informations.
+
+        - ``verbose`` (integer) -- sets the level of verbosity. Set to 0
+          by default (quiet).
 
         OUTPUT:
 
@@ -3150,9 +3166,9 @@ class GenericGraph(GenericGraph_pyx):
         p.set_binary(b)
 
         if value_only:
-            return p.solve(objective_only=True)
+            return p.solve(objective_only=True, solver = solver, log = verbose)
         else:
-            obj = p.solve()
+            obj = p.solve(solver = solver, log = verbose)
             b = p.get_values(b)
             answer = [obj]
             if g.is_directed():
@@ -3172,7 +3188,7 @@ class GenericGraph(GenericGraph_pyx):
                 answer.append([l0, l1])
             return tuple(answer)
 
-    def vertex_cut(self, s, t, value_only=True, vertices=False):
+    def vertex_cut(self, s, t, value_only=True, vertices=False, solver=None, verbose=0):
         r"""
         Returns a minimum vertex cut between non adjacent vertices `s` and `t`
         represented by a list of vertices.
@@ -3191,6 +3207,14 @@ class GenericGraph(GenericGraph_pyx):
           True, also returns the two sets of vertices that
           are disconnected by the cut. Implies ``value_only``
           set to False.
+
+        - ``solver`` -- Specify a Linear Program solver to be used.
+          If set to ``None``, the default one is used.
+          function of ``MixedIntegerLinearProgram``. See the documentation  of ``MixedIntegerLinearProgram.solve``
+          for more informations.
+
+        - ``verbose`` (integer) -- sets the level of verbosity. Set to 0
+          by default (quiet).
 
         OUTPUT:
 
@@ -3263,9 +3287,9 @@ class GenericGraph(GenericGraph_pyx):
         p.set_binary(v)
 
         if value_only:
-            return p.solve(objective_only=True)
+            return p.solve(objective_only=True, solver = solver, log = verbose)
         else:
-            obj = p.solve()
+            obj = p.solve(solver = solver, log = verbose)
             b = p.get_values(b)
             answer = [obj,[x for x in g if b[x] == 1]]
             if vertices:
@@ -3282,7 +3306,7 @@ class GenericGraph(GenericGraph_pyx):
                 answer.append([l0, l1])
             return tuple(answer)
 
-    def vertex_cover(self,algorithm="Cliquer",value_only=False,log=0):
+    def vertex_cover(self,algorithm="Cliquer",value_only=False, solver=None, verbose=0):
         r"""
         Returns a minimum vertex cover of self represented
         by a list of vertices.
@@ -3324,6 +3348,14 @@ class GenericGraph(GenericGraph_pyx):
           that there will be no message printed by the solver. Only useful
           if ``algorithm="MILP"``.
 
+        - ``solver`` -- Specify a Linear Program solver to be used.
+          If set to ``None``, the default one is used.
+          function of ``MixedIntegerLinearProgram``. See the documentation  of ``MixedIntegerLinearProgram.solve``
+          for more informations.
+
+        - ``verbose`` (integer) -- sets the level of verbosity. Set to 0
+          by default (quiet).
+
         EXAMPLES:
 
         On the Pappus graph ::
@@ -3364,15 +3396,15 @@ class GenericGraph(GenericGraph_pyx):
             p.set_binary(b)
 
             if value_only:
-                return p.solve(objective_only=True, log=log)
+                return p.solve(objective_only=True, solver = solver, log = verbose)
             else:
-                p.solve()
+                p.solve(solver = solver, log = verbose)
                 b = p.get_values(b)
                 return set([v for v in g.vertices() if b[v] == 1])
         else:
             raise ValueError("Only two algorithms are available : Cliquer and MILP.")
 
-    def max_cut(self,value_only=True,use_edge_labels=True, vertices=False):
+    def max_cut(self,value_only=True,use_edge_labels=True, vertices=False, solver=None, verbose=0):
         r"""
         Returns a maximum edge cut of the graph. For more information, see the
         `Wikipedia article on cuts
@@ -3400,6 +3432,14 @@ class GenericGraph(GenericGraph_pyx):
               ``value_only=False``.
 
             The default value of this parameter is ``False``.
+
+        - ``solver`` -- Specify a Linear Program solver to be used.
+          If set to ``None``, the default one is used.
+          function of ``MixedIntegerLinearProgram``. See the documentation  of ``MixedIntegerLinearProgram.solve``
+          for more informations.
+
+        - ``verbose`` (integer) -- sets the level of verbosity. Set to 0
+          by default (quiet).
 
         EXAMPLE:
 
@@ -3479,9 +3519,9 @@ class GenericGraph(GenericGraph_pyx):
         p.set_objective(sum([weight(l ) * in_cut[reorder_edge(u,v)] for (u,v,l ) in g.edge_iterator()]))
 
         if value_only:
-            return p.solve(objective_only=True)
+            return p.solve(objective_only=True, solver = solver, log = verbose)
         else:
-            val = [p.solve()]
+            val = [p.solve(solver = solver, log = verbose)]
 
             in_cut = p.get_values(in_cut)
             in_set = p.get_values(in_set)
@@ -3505,7 +3545,7 @@ class GenericGraph(GenericGraph_pyx):
 
             return val
 
-    def flow(self,x,y,value_only=True,integer=False, use_edge_labels=True,vertex_bound=False):
+    def flow(self,x,y,value_only=True,integer=False, use_edge_labels=True,vertex_bound=False, solver=None, verbose=0):
         r"""
         Returns a maximum flow in the graph from ``x`` to ``y``
         represented by an optimal valuation of the edges. For more
@@ -3555,6 +3595,14 @@ class GenericGraph(GenericGraph_pyx):
               connectivity parameters )
 
               This parameter is set to ``False`` by default.
+
+        - ``solver`` -- Specify a Linear Program solver to be used.
+          If set to ``None``, the default one is used.
+          function of ``MixedIntegerLinearProgram``. See the documentation  of ``MixedIntegerLinearProgram.solve``
+          for more informations.
+
+        - ``verbose`` (integer) -- sets the level of verbosity. Set to 0
+          by default (quiet).
 
         EXAMPLES:
 
@@ -3645,9 +3693,9 @@ class GenericGraph(GenericGraph_pyx):
             p.set_integer(flow)
 
         if value_only:
-            return p.solve(objective_only=True)
+            return p.solve(objective_only=True, solver = solver, log = verbose)
 
-        obj=p.solve()
+        obj=p.solve(solver = solver, log = verbose)
         flow=p.get_values(flow)
 
         flow_graph = g.copy()
@@ -3765,7 +3813,7 @@ class GenericGraph(GenericGraph_pyx):
 
         return paths
 
-    def matching(self,value_only=False, use_edge_labels=True):
+    def matching(self,value_only=False, use_edge_labels=True, solver=None, verbose=0):
         r"""
         Returns a maximum weighted matching of the graph
         represented by the list of its edges. For more information, see the
@@ -3799,6 +3847,14 @@ class GenericGraph(GenericGraph_pyx):
               an edge has no label, `1` is assumed )
               when set to ``False``, each edge has weight `1`
 
+        - ``solver`` -- Specify a Linear Program solver to be used.
+          If set to ``None``, the default one is used.
+          function of ``MixedIntegerLinearProgram``. See the documentation  of ``MixedIntegerLinearProgram.solve``
+          for more informations.
+
+        - ``verbose`` (integer) -- sets the level of verbosity. Set to 0
+          by default (quiet).
+
         EXAMPLE::
 
            sage: g=graphs.PappusGraph()
@@ -3827,13 +3883,13 @@ class GenericGraph(GenericGraph_pyx):
         p.set_binary(b)
 
         if value_only:
-            return p.solve(objective_only=True)
+            return p.solve(objective_only=True, solver = solver, log = verbose)
         else:
-            p.solve()
+            p.solve(solver = solver, log = verbose)
             b=p.get_values(b)
             return [(u,v,w) for (u,v,w) in g.edges() if b[min(u,v)][max(u,v)] == 1]
 
-    def dominating_set(self, independent=False, value_only=False,log=0):
+    def dominating_set(self, independent=False, value_only=False, solver=None, verbose=0):
         r"""
         Returns a minimum dominating set of the graph
         represented by the list of its vertices. For more information, see the
@@ -3865,12 +3921,13 @@ class GenericGraph(GenericGraph_pyx):
             - If ``True``, computes a minimum independent
               dominating set.
 
-        - ``log`` (integer)
-          As minimum dominating set is a `NP`-complete problem, its
-          solving may take some time depending on the graph. Use
-          ``log`` to define the level of verbosity you want from the linear program solver.
+        - ``solver`` -- Specify a Linear Program solver to be used.
+          If set to ``None``, the default one is used.
+          function of ``MixedIntegerLinearProgram``. See the documentation  of ``MixedIntegerLinearProgram.solve``
+          for more informations.
 
-          By default ``log=0``, meaning that there will be no message printed by the solver.
+        - ``verbose`` (integer) -- sets the level of verbosity. Set to 0
+          by default (quiet).
 
         EXAMPLE:
 
@@ -3913,13 +3970,13 @@ class GenericGraph(GenericGraph_pyx):
         p.set_integer(b)
 
         if value_only:
-            return p.solve(objective_only=True,log=log)
+            return p.solve(objective_only=True, solver = solver, log = verbose)
         else:
-            obj=p.solve(log=log)
+            obj=p.solve(solver = solver, log = verbose)
             b=p.get_values(b)
             return [v for v in g.vertices() if b[v]==1]
 
-    def edge_connectivity(self,value_only=True,use_edge_labels=False, vertices=False):
+    def edge_connectivity(self,value_only=True,use_edge_labels=False, vertices=False, solver=None, verbose=0):
         r"""
         Returns the edge connectivity of the graph. For more information, see
         the
@@ -3948,6 +4005,14 @@ class GenericGraph(GenericGraph_pyx):
               ``value_only=False``.
 
             The default value of this parameter is ``False``.
+
+        - ``solver`` -- Specify a Linear Program solver to be used.
+          If set to ``None``, the default one is used.
+          function of ``MixedIntegerLinearProgram``. See the documentation  of ``MixedIntegerLinearProgram.solve``
+          for more informations.
+
+        - ``verbose`` (integer) -- sets the level of verbosity. Set to 0
+          by default (quiet).
 
         EXAMPLE:
 
@@ -4083,9 +4148,9 @@ class GenericGraph(GenericGraph_pyx):
         p.set_objective(sum([weight(l ) * in_cut[reorder_edge(u,v)] for (u,v,l) in g.edge_iterator()]))
 
         if value_only:
-            return p.solve(objective_only=True)
+            return p.solve(objective_only=True, solver = solver, log = verbose)
         else:
-            val = [p.solve()]
+            val = [p.solve(solver = solver, log = verbose)]
 
             in_cut = p.get_values(in_cut)
             in_set = p.get_values(in_set)
@@ -4109,7 +4174,7 @@ class GenericGraph(GenericGraph_pyx):
 
             return val
 
-    def vertex_connectivity(self,value_only=True, sets=False):
+    def vertex_connectivity(self,value_only=True, sets=False, solver=None, verbose=0):
         r"""
         Returns the vertex connectivity of the graph. For more information,
         see the
@@ -4130,6 +4195,14 @@ class GenericGraph(GenericGraph_pyx):
               Implies ``value_only=False``
 
             The default value of this parameter is ``False``.
+
+        - ``solver`` -- Specify a Linear Program solver to be used.
+          If set to ``None``, the default one is used.
+          function of ``MixedIntegerLinearProgram``. See the documentation  of ``MixedIntegerLinearProgram.solve``
+          for more informations.
+
+        - ``verbose`` (integer) -- sets the level of verbosity. Set to 0
+          by default (quiet).
 
         EXAMPLE:
 
@@ -4240,9 +4313,9 @@ class GenericGraph(GenericGraph_pyx):
         p.set_objective(sum([in_set[1][v] for v in g]))
 
         if value_only:
-            return p.solve(objective_only=True)
+            return p.solve(objective_only=True, solver = solver, log = verbose)
         else:
-            val = [int(p.solve())]
+            val = [int(p.solve(solver = solver, log = verbose))]
 
             in_set = p.get_values(in_set)
 
