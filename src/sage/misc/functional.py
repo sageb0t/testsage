@@ -2,7 +2,7 @@
 """
 Functional notation
 
-These are function so that you can write foo(x) instead of x.foo()
+These are functions so that you can write foo(x) instead of x.foo()
 in certain common cases.
 
 AUTHORS:
@@ -1441,6 +1441,8 @@ def squarefree_part(x):
         3
         sage: squarefree_part(10)
         10
+        sage: squarefree_part(216r) # see #8976
+        6
 
     ::
 
@@ -1464,7 +1466,7 @@ def squarefree_part(x):
     except AttributeError:
         pass
     F = factor(x)
-    n = x.parent()(1)
+    n = parent(x)(1)
     for p, e in F:
         if e%2 != 0:
             n *= p
