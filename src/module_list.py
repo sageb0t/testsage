@@ -196,6 +196,9 @@ ext_modules = [
             libraries = ['stdc++'],
             language='c++'),
 
+    Extension('sage.combinat.permutation_cython',
+              sources=['sage/combinat/permutation_cython.pyx']),
+
     ################################
     ##
     ## sage.crypto
