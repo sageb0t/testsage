@@ -243,7 +243,7 @@ from sage.rings.complex_double import CDF
 from sage.rings.real_lazy import RLF, CLF
 
 _nf_cache = {}
-def NumberField(polynomial, name=None, check=True, names=None, cache=True, embedding=None):
+def NumberField(polynomial, name=None, check=True, names=None, cache=True, embedding=None, latex_name=None):
     r"""
     Return *the* number field defined by the given irreducible
     polynomial and with variable with the given name. If check is True
@@ -461,9 +461,9 @@ def NumberField(polynomial, name=None, check=True, names=None, cache=True, embed
         return S
 
     if polynomial.degree() == 2:
-        K = NumberField_quadratic(polynomial, name, check, embedding)
+        K = NumberField_quadratic(polynomial, name, check, embedding, latex_name=latex_name)
     else:
-        K = NumberField_absolute(polynomial, name, None, check, embedding)
+        K = NumberField_absolute(polynomial, name, None, check, embedding, latex_name=latex_name)
 
     if cache:
         _nf_cache[key] = weakref.ref(K)
@@ -614,7 +614,7 @@ def NumberFieldTower(v, names, check=True, embeddings=None):
     #else:
     return w.extension(f, name, check=check, embedding=embeddings[0])
 
-def QuadraticField(D, names, check=True, embedding=True):
+def QuadraticField(D, names, check=True, embedding=True, latex_name=None):
     r"""
     Return a quadratic field obtained by adjoining a square root of
     `D` to the rational numbers, where `D` is not a
@@ -665,6 +665,14 @@ def QuadraticField(D, names, check=True, embedding=True):
 
         sage: QuadraticField(-11, 'a') is QuadraticField(-11, 'a')
         True
+
+    We can give the generator a special name for latex::
+
+        sage: K.<a> = QuadraticField(next_prime(10^10), latex_name=r'\sqrt{D}')
+        sage: 1+a
+        a + 1
+        sage: latex(1+a)
+        \sqrt{D} + 1
     """
     D = QQ(D)
     if check:
@@ -677,7 +685,7 @@ def QuadraticField(D, names, check=True, embedding=True):
             embedding = RLF(D).sqrt()
         else:
             embedding = CLF(D).sqrt()
-    return NumberField(f, names, check=False, embedding=embedding)
+    return NumberField(f, names, check=False, embedding=embedding, latex_name=latex_name)
 
 def is_AbsoluteNumberField(x):
     """
@@ -7191,7 +7199,7 @@ class NumberField_quadratic(NumberField_absolute):
         sage: QuadraticField(-4, 'b')
         Number Field in b with defining polynomial x^2 + 4
     """
-    def __init__(self, polynomial, name=None, check=True, embedding=None):
+    def __init__(self, polynomial, name=None, check=True, embedding=None, latex_name=None):
         """
         Create a quadratic number field.
 
@@ -7212,7 +7220,7 @@ class NumberField_quadratic(NumberField_absolute):
             sage: type(k.one_element())
             <type 'sage.rings.number_field.number_field_element_quadratic.NumberFieldElement_quadratic'>
         """
-        NumberField_absolute.__init__(self, polynomial, name=name, check=check, embedding=embedding)
+        NumberField_absolute.__init__(self, polynomial, name=name, check=check, embedding=embedding, latex_name=latex_name)
         self._element_class = number_field_element_quadratic.NumberFieldElement_quadratic
         c, b, a = [rational.Rational(t) for t in self.defining_polynomial().list()]
         # set the generator
