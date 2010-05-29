@@ -6,7 +6,7 @@ This module provides three types of probability distributions:
 - ``RealDistribution``: various real-valued probability distributions.
 
 - ``SphericalDistribution``: uniformly distributed points on the
-  surface of an `$n-1$` sphere in `$n$` dimensional euclidean space.
+  surface of an `n-1` sphere in `n` dimensional euclidean space.
 
 - ``GeneralDiscreteDistribution``: user-defined discrete distributions.
 
@@ -18,6 +18,8 @@ AUTHORS:
 
 - Carlo Hamalainen (2008-08): full doctest coverage, more documentation,
   GeneralDiscreteDistribution, misc fixes.
+
+- Kwankyu Lee (2010-05-29): F-distribution support.
 
 REFERENCES:
 
@@ -56,6 +58,7 @@ cdef enum:
     lognormal
     pareto
     t
+    F
     chisquared
     exppow
     weibull
@@ -362,7 +365,7 @@ cdef class RealDistribution(ProbabilityDistribution):
         sage: T.cum_distribution_function_inv(.5)
         2.0
 
-    The student's t distribution has one parameter ``nu``::
+    The t-distribution has one parameter ``nu``::
 
         sage: nu = 1
         sage: T = RealDistribution('t', nu)
@@ -375,7 +378,20 @@ cdef class RealDistribution(ProbabilityDistribution):
         sage: T.cum_distribution_function_inv(.5)
         0.0
 
-    The chi squared distribution has one parameter ``nu``::
+    The F-distribution has two parameters ``nu1`` and ``nu2``::
+
+        sage: nu1 = 9; nu2 = 17
+        sage: F = RealDistribution('F', [nu1,nu2])
+        sage: F.get_random_element() # random
+        1.65211335491
+        sage: F.distribution_function(1)
+        0.669502550519
+        sage: F.cum_distribution_function(3.68)
+        0.98997177723
+        sage: F.cum_distribution_function_inv(0.99)
+        3.68224152405
+
+    The chi-squared distribution has one parameter ``nu``::
 
         sage: nu = 1
         sage: T = RealDistribution('chisquared', nu)
@@ -534,7 +550,7 @@ cdef class RealDistribution(ProbabilityDistribution):
 
     def get_random_element(self):
         """
-        Get a random sample the probability distribution.
+        Get a random sample from the probability distribution.
 
         EXAMPLE::
 
@@ -557,6 +573,8 @@ cdef class RealDistribution(ProbabilityDistribution):
             result = gsl_ran_pareto(self.r, self.parameters[0], self.parameters[1])
         elif self.distribution_type == t:
             result = gsl_ran_tdist(self.r, self.parameters[0])
+        elif self.distribution_type == F:
+            result = gsl_ran_fdist(self.r, self.parameters[0], self.parameters[1])
         elif self.distribution_type == chisquared:
             result = gsl_ran_chisq(self.r, self.parameters[0])
         elif self.distribution_type == exppow:
@@ -565,8 +583,11 @@ cdef class RealDistribution(ProbabilityDistribution):
             result = gsl_ran_weibull(self.r, self.parameters[0], self.parameters[1])
         elif self.distribution_type == beta:
             result = gsl_ran_beta(self.r, self.parameters[0], self.parameters[1])
+        else:
+            raise TypeError, "Not a supported probability distribution"
 
         return sage.rings.real_double.RDF(result)
+
     def set_distribution(self, name = 'uniform', parameters = []):
         """
         This method can be called to change the current probability distribution.
@@ -625,8 +646,7 @@ cdef class RealDistribution(ProbabilityDistribution):
                 try:
                     float(x)
                 except:
-                    raise TypeError, "Lognormal distributions requires real parameters"
-
+                    raise TypeError, "Lognormal distribution requires real parameters"
             self.parameters = <double*>sage_malloc(sizeof(double)*2)
             self.parameters[0] = float(parameters[0])
             self.parameters[1] = float(parameters[1])
@@ -639,7 +659,17 @@ cdef class RealDistribution(ProbabilityDistribution):
             self.parameters = <double*>sage_malloc(sizeof(double))
             self.parameters[0] = float(parameters)
             self.distribution_type = t
-
+        elif name == 'F':
+            if len(parameters) != 2:
+                raise TypeError, "F-distribution requires two real parameters"
+            try:
+                map(float, parameters)
+            except:
+                raise TypeError, "F-distribution requires real parameters"
+            self.parameters = <double *>malloc(sizeof(double)*2)
+            self.parameters[0] = float(parameters[0])
+            self.parameters[1] = float(parameters[1])
+            self.distribution_type = F
         elif name == 'chisquared':
             try:
                 float(parameters)
@@ -655,8 +685,7 @@ cdef class RealDistribution(ProbabilityDistribution):
                 try:
                     float(x)
                 except:
-                    raise TypeError, "exponential power distributions requires real parameters"
-
+                    raise TypeError, "exponential power distribution requires real parameters"
             self.parameters = <double*>sage_malloc(sizeof(double)*2)
             self.parameters[0] = float(parameters[0])
             self.parameters[1] = float(parameters[1])
@@ -668,12 +697,10 @@ cdef class RealDistribution(ProbabilityDistribution):
                 map(float, parameters)
             except:
                 raise TypeError, "weibull distribution requires real parameters"
-
             self.parameters = <double *>sage_malloc(sizeof(double)*2)
             self.parameters[0] = float(parameters[0])
             self.parameters[1] = float(parameters[1])
             self.distribution_type = weibull
-
         elif name == 'beta':
             if len(parameters) != 2:
                 raise TypeError, "beta distribution requires two real parameters"
@@ -681,18 +708,16 @@ cdef class RealDistribution(ProbabilityDistribution):
                 map(float, parameters)
             except:
                 raise TypeError, "beta distribution requires real parameters"
-
             self.parameters = <double *>sage_malloc(sizeof(double)*2)
             self.parameters[0] = float(parameters[0])
             self.parameters[1] = float(parameters[1])
             self.distribution_type = beta
-
         else:
-            raise TypeError, "Not a valid probability distribution"
+            raise TypeError, "Not a supported probability distribution"
 
         self.name = name
 
-  # def _get_random_element_c():
+    #def _get_random_element_c():
 
     def reset_distribution(self):
         """
@@ -743,6 +768,8 @@ cdef class RealDistribution(ProbabilityDistribution):
             return sage.rings.real_double.RDF(gsl_ran_pareto_pdf(x, self.parameters[0], self.parameters[1]))
         elif self.distribution_type == t:
             return sage.rings.real_double.RDF(gsl_ran_tdist_pdf(x, self.parameters[0]))
+        elif self.distribution_type == F:
+            return sage.rings.real_double.RDF(gsl_ran_fdist_pdf(x, self.parameters[0], self.parameters[1]))
         elif self.distribution_type == chisquared:
             return sage.rings.real_double.RDF(gsl_ran_chisq_pdf(x, self.parameters[0]))
         elif self.distribution_type == exppow:
@@ -751,6 +778,8 @@ cdef class RealDistribution(ProbabilityDistribution):
             return sage.rings.real_double.RDF(gsl_ran_weibull_pdf(x, self.parameters[0], self.parameters[1]))
         elif self.distribution_type == beta:
             return sage.rings.real_double.RDF(gsl_ran_beta_pdf(x, self.parameters[0], self.parameters[1]))
+        else:
+            raise TypeError, "Not a supported probability distribution"
 
     def cum_distribution_function(self, x):
         """
@@ -775,6 +804,8 @@ cdef class RealDistribution(ProbabilityDistribution):
             return sage.rings.real_double.RDF(gsl_cdf_pareto_P(x, self.parameters[0], self.parameters[1]))
         elif self.distribution_type == t:
             return sage.rings.real_double.RDF(gsl_cdf_tdist_P(x, self.parameters[0]))
+        elif self.distribution_type == F:
+            return sage.rings.real_double.RDF(gsl_cdf_fdist_P(x, self.parameters[0], self.parameters[1]))
         elif self.distribution_type == chisquared:
             return sage.rings.real_double.RDF(gsl_cdf_chisq_P(x, self.parameters[0]))
         elif self.distribution_type == exppow:
@@ -783,6 +814,8 @@ cdef class RealDistribution(ProbabilityDistribution):
             return sage.rings.real_double.RDF(gsl_cdf_weibull_P(x, self.parameters[0], self.parameters[1]))
         elif self.distribution_type == beta:
             return sage.rings.real_double.RDF(gsl_cdf_beta_P(x, self.parameters[0], self.parameters[1]))
+        else:
+            raise TypeError, "Not a supported probability distribution"
 
     def cum_distribution_function_inv(self, x):
         """
@@ -807,6 +840,8 @@ cdef class RealDistribution(ProbabilityDistribution):
             return sage.rings.real_double.RDF(gsl_cdf_pareto_Pinv(x, self.parameters[0], self.parameters[1]))
         elif self.distribution_type == t:
             return sage.rings.real_double.RDF(gsl_cdf_tdist_Pinv(x, self.parameters[0]))
+        elif self.distribution_type == F:
+            return sage.rings.real_double.RDF(gsl_cdf_fdist_Pinv(x, self.parameters[0], self.parameters[1]))
         elif self.distribution_type == chisquared:
             return sage.rings.real_double.RDF(gsl_cdf_chisq_Pinv(x, self.parameters[0]))
         elif self.distribution_type == exppow:
@@ -816,6 +851,8 @@ cdef class RealDistribution(ProbabilityDistribution):
             return sage.rings.real_double.RDF(gsl_cdf_weibull_Pinv(x, self.parameters[0], self.parameters[1]))
         elif self.distribution_type == beta:
             return sage.rings.real_double.RDF(gsl_cdf_beta_Pinv(x, self.parameters[0], self.parameters[1]))
+        else:
+            raise TypeError, "Not a supported probability distribution"
 
     def plot(self, *args, **kwds):
         """
