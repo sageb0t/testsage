@@ -130,12 +130,15 @@ def EnumeratedSet(X):
     EXAMPLES::
 
         sage: EnumeratedSet([1,1,2,3])
+        doctest:1: DeprecationWarning: EnumeratedSet is deprecated; use Set instead.
         {1, 2, 3}
         sage: EnumeratedSet(ZZ)
         Traceback (most recent call last):
         ...
         ValueError: X (=Integer Ring) must be finite
     """
+    from sage.misc.misc import deprecation
+    deprecation('EnumeratedSet is deprecated; use Set instead.')
     try:
         if not X.is_finite():
             raise ValueError, "X (=%s) must be finite"%X
@@ -587,7 +590,7 @@ class Set_object_enumerated(Set_object):
         """
         EXAMPLES::
 
-            sage: S = EnumeratedSet(GF(19)); S
+            sage: S = Set(GF(19)); S
             {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}
             sage: print latex(S)
             \left\{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18\right\}
@@ -620,7 +623,7 @@ class Set_object_enumerated(Set_object):
 
         EXAMPLES::
 
-            sage: S = EnumeratedSet(GF(19))
+            sage: S = Set(GF(19))
             sage: I = iter(S)
             sage: I.next()
             0
@@ -640,7 +643,7 @@ class Set_object_enumerated(Set_object):
 
         EXAMPLES::
 
-            sage: S = EnumeratedSet(GF(2))
+            sage: S = Set(GF(2))
             sage: latex(S)
             \left\{0, 1\right\}
         """
@@ -652,7 +655,7 @@ class Set_object_enumerated(Set_object):
 
         EXAMPLES::
 
-            sage: S = EnumeratedSet(GF(2))
+            sage: S = Set(GF(2))
             sage: S
             {0, 1}
         """
