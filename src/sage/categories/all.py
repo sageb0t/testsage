@@ -7,9 +7,8 @@ from category_types import(
                         ChainComplexes,
 )
 
-from tensor     import CategoryWithTensorProduct, TensorCategory, tensor
-from cartesian_product import CategoryWithCartesianProduct, CartesianProductCategory, cartesian_product
-from dual       import DualityCategory
+from tensor     import tensor
+from cartesian_product import cartesian_product
 
 from functor  import (is_Functor,
                       ForgetfulFunctor,
