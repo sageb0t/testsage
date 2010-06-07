@@ -113,3 +113,9 @@ from finite_coxeter_groups import FiniteCoxeterGroups
 from weyl_groups import WeylGroups
 from finite_weyl_groups import FiniteWeylGroups
 from affine_weyl_groups import AffineWeylGroups
+
+# crystal bases
+from crystals import Crystals
+from highest_weight_crystals import HighestWeightCrystals
+from finite_crystals import FiniteCrystals
+from classical_crystals import ClassicalCrystals
