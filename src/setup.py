@@ -875,6 +875,7 @@ code = setup(name = 'sage',
                      'sage.rings.padics',
                      'sage.rings.polynomial',
                      'sage.rings.polynomial.padics',
+                     'sage.rings.semirings',
 
                      'sage.tests',
 
