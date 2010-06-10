@@ -1017,13 +1017,13 @@ cdef class Context:
 
 cdef class wrapped_libmp_function:
 
-    cdef public mpf_f, mpc_f, mpi_f, name, __doc__
+    cdef public mpf_f, mpc_f, mpi_f, name, __name__, __doc__
 
     def __init__(self, mpf_f, mpc_f=None, mpi_f=None, doc="<no doc>"):
         self.mpf_f = mpf_f
         self.mpc_f = mpc_f
         self.mpi_f = mpi_f
-        self.name = mpf_f.__name__[4:]
+        self.name = self.__name__ = mpf_f.__name__[4:]
         self.__doc__ = function_docs.__dict__.get(self.name, "Computes the %s of x" % doc)
 
     def __call__(self, x, **kwargs):
@@ -1070,10 +1070,10 @@ cdef class wrapped_libmp_function:
         raise NotImplementedError("%s of a %s" % (self.name, type(x)))
 
 cdef class wrapped_specfun:
-    cdef public f, name, __doc__
+    cdef public f, name, __name__, __doc__
 
     def __init__(self, name, f):
-        self.name = name
+        self.name = self.__name__ = name
         self.f = f
         self.__doc__ = function_docs.__dict__.get(name, "<no doc>")
 
