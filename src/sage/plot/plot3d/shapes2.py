@@ -171,9 +171,9 @@ def bezier3d(path, **options):
     as their opposite endpoint.  A curve can have 0, 1 or 2 control points
     listed between the endpoints.  In the input example for path below,
     the first and second curves have 2 control points, the third has one,
-    and the fourth has no control points:
+    and the fourth has no control points::
 
-    path = [[p1, c1, c2, p2], [c3, c4, p3], [c5, p4], [p5], ...]
+        path = [[p1, c1, c2, p2], [c3, c4, p3], [c5, p4], [p5], ...]
 
     In the case of no control points, a straight line will be drawn
     between the two endpoints.  If one control point is supplied, then
@@ -190,12 +190,13 @@ def bezier3d(path, **options):
     line(p3,c5) at p3 and tangent to line(p4,c5) at p4.  Curve(p4,p5) is a
     straight line.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: path = [[(0,0,0),(.5,.1,.2),(.75,3,-1),(1,1,0)],[(.5,1,.2),(1,.5,0)],[(.7,.2,.5)]]
         sage: b = bezier3d(path, color='green')
         sage: b
 
-    To construct a simple curve, create a list containing a single list:
+    To construct a simple curve, create a list containing a single list::
 
         sage: path = [[(0,0,0),(1,0,0),(0,1,0),(0,1,1)]]
         sage: curve = bezier3d(path, thickness=5, color='blue')
@@ -260,16 +261,16 @@ def polygon3d(points, **options):
 
 def frame3d(lower_left, upper_right, **kwds):
     """
-    Draw a frame in 3D.  Primarily used as a helper function for
-    creating frames for 3D graphics viewing.
+    Draw a frame in 3-D.  Primarily used as a helper function for
+    creating frames for 3-D graphics viewing.
 
     INPUT:
 
     - ``lower_left`` - the lower left corner of the frame, as a
-      list, tuple, or vector
+      list, tuple, or vector.
 
     - ``upper_right`` - the upper right corner of the frame, as a
-      list, tuple, or vector
+      list, tuple, or vector.
 
     Type ``line3d.options`` for a dictionary of the default
     options for lines, which are also available.
@@ -303,17 +304,17 @@ def frame_labels(lower_left, upper_right,
                  label_lower_left, label_upper_right, eps = 1,
                  **kwds):
     """
-    Draw correct labels for a given frame in 3D.  Primarily
-    used as a helper function for creating frames for 3D graphics
+    Draw correct labels for a given frame in 3-D.  Primarily
+    used as a helper function for creating frames for 3-D graphics
     viewing - do not use directly unless you know what you are doing!
 
     INPUT:
 
     - ``lower_left`` - the lower left corner of the frame, as a
-      list, tuple, or vector
+      list, tuple, or vector.
 
     - ``upper_right`` - the upper right corner of the frame, as a
-      list, tuple, or vector
+      list, tuple, or vector.
 
     - ``label_lower_left`` - the label for the lower left corner
       of the frame, as a list, tuple, or vector.  This label must actually
@@ -357,7 +358,7 @@ def frame_labels(lower_left, upper_right,
     lx0,ly0,lz0 = label_lower_left
     lx1,ly1,lz1 = label_upper_right
     if (lx1 - lx0) <= 0 or (ly1 - ly0) <= 0 or (lz1 - lz0) <= 0:
-        raise ValueError, "Ensure the upper right labels are above and to the right of the lower left labels."
+        raise ValueError("Ensure the upper right labels are above and to the right of the lower left labels.")
 
     # Helper function for formatting the frame labels
     from math import log
@@ -394,30 +395,30 @@ def frame_labels(lower_left, upper_right,
 
 def ruler(start, end, ticks=4, sub_ticks=4, absolute=False, snap=False, **kwds):
     """
-    Draw a ruler in 3D, with major and minor ticks.
+    Draw a ruler in 3-D, with major and minor ticks.
 
     INPUT:
 
     - ``start`` - the beginning of the ruler, as a list,
-      tuple, or vector
+      tuple, or vector.
 
     - ``end`` - the end of the ruler, as a list, tuple,
-      or vector
+      or vector.
 
     - ``ticks`` - (default: 4) the number of major ticks
-      shown on the ruler
+      shown on the ruler.
 
     - ``sub_ticks`` - (default: 4) the number of shown
-      subdivisions between each major tick
+      subdivisions between each major tick.
 
-    - ``absolute`` - (default: False) if True, makes a huge ruler
-      in the direction of an axis
+    - ``absolute`` - (default: ``False``) if ``True``, makes a huge ruler
+      in the direction of an axis.
 
-    - ``snap`` - (default: False) if True, snaps to an implied
-      grid
+    - ``snap`` - (default: ``False``) if ``True``, snaps to an implied
+      grid.
 
     Type ``line3d.options`` for a dictionary of the default
-    options for lines which are also available.
+    options for lines, which are also available.
 
     EXAMPLES:
 
@@ -504,24 +505,24 @@ def ruler(start, end, ticks=4, sub_ticks=4, absolute=False, snap=False, **kwds):
 
 def ruler_frame(lower_left, upper_right, ticks=4, sub_ticks=4, **kwds):
     """
-    Draw a frame made of 3D rulers, with major and minor ticks.
+    Draw a frame made of 3-D rulers, with major and minor ticks.
 
     INPUT:
 
     - ``lower_left`` - the lower left corner of the frame, as a
-      list, tuple, or vector
+      list, tuple, or vector.
 
     - ``upper_right`` - the upper right corner of the frame, as a
-      list, tuple, or vector
+      list, tuple, or vector.
 
     - ``ticks`` - (default: 4) the number of major ticks
-      shown on each ruler
+      shown on each ruler.
 
     - ``sub_ticks`` - (default: 4) the number of shown
-      subdivisions between each major tick
+      subdivisions between each major tick.
 
     Type ``line3d.options`` for a dictionary of the default
-    options for lines which are also available.
+    options for lines, which are also available.
 
     EXAMPLES:
 
@@ -640,15 +641,14 @@ class Point(PrimitiveObject):
 
     EXAMPLE:
 
-    We normally access this via the point3d function.  Note that extra
+    We normally access this via the ``point3d`` function.  Note that extra
     keywords are correctly used::
 
         sage: point3d((4,3,2),size=2,color='red',opacity=.5)
-
     """
     def __init__(self, center, size=1, **kwds):
         """
-        Create the graphics primitive :class:`Point` in 3D.  See the
+        Create the graphics primitive :class:`Point` in 3-D.  See the
         docstring of this class for full documentation.
 
         EXAMPLES::
@@ -665,8 +665,8 @@ class Point(PrimitiveObject):
 
     def bounding_box(self):
         """
-        Returns the lower and upper corners of a 3D bounding box for self.
-        This is used for rendering and self should fit entirely within this
+        Returns the lower and upper corners of a 3-D bounding box for ``self``.
+        This is used for rendering and ``self`` should fit entirely within this
         box.  In this case, we simply return the center of the point.
 
         TESTS::
@@ -680,7 +680,7 @@ class Point(PrimitiveObject):
     def tachyon_repr(self, render_params):
         """
         Returns representation of the point suitable for plotting
-        using Tachyon ray tracer.
+        using the Tachyon ray tracer.
 
         TESTS::
 
@@ -762,7 +762,7 @@ class Line(PrimitiveObject):
     """
     def __init__(self, points, thickness=5, corner_cutoff=.5, arrow_head=False, **kwds):
         """
-        Create the graphics primitive :class:`Line` in 3D.  See the
+        Create the graphics primitive :class:`Line` in 3-D.  See the
         docstring of this class for full documentation.
 
         EXAMPLES::
@@ -782,8 +782,8 @@ class Line(PrimitiveObject):
 
     def bounding_box(self):
         """
-        Returns the lower and upper corners of a 3D bounding box for self.
-        This is used for rendering and self should fit entirely within this
+        Returns the lower and upper corners of a 3-D bounding box for ``self``.
+        This is used for rendering and ``self`` should fit entirely within this
         box.  In this case, we return the highest and lowest values of each
         coordinate among all points.
 
@@ -803,7 +803,7 @@ class Line(PrimitiveObject):
     def tachyon_repr(self, render_params):
         """
         Returns representation of the line suitable for plotting
-        using Tachyon ray tracer.
+        using the Tachyon ray tracer.
 
         TESTS::
 
