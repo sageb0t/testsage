@@ -405,6 +405,11 @@ class KR_type_vertical(KirillovReshetikhinCrystalFromPromotion):
         sage: b.e(0).e(0)
         [[-2, -2], [-1, -1]]
 
+        sage: K = KirillovReshetikhinCrystal(['D',5,1], 3,1)
+        sage: b = K(rows=[[1]])
+        sage: b.e(0)
+        [[3], [-3], [-2]]
+
         sage: K = KirillovReshetikhinCrystal(['B',3,1], 1,1)
         sage: [[b,b.f(0)] for b in K]
         [[[[1]], None], [[[2]], None], [[[3]], None], [[[0]], None], [[[-3]], None], [[[-2]], [[1]]], [[[-1]], [[2]]]]
@@ -1416,7 +1421,7 @@ class PMDiagram(CombinatorialObject):
 
     def intermediate_shape(self):
         """
-        Returns the intermediate shape of the pm diagram (innner shape plus positions of plusses)
+        Returns the intermediate shape of the pm diagram (inner shape plus positions of plusses)
 
         EXAMPLES::
 
@@ -1432,9 +1437,12 @@ class PMDiagram(CombinatorialObject):
             sage: pm=sage.combinat.crystals.kirillov_reshetikhin.PMDiagram([[1,0],[0,1],[2,0],[0,0],[0]])
             sage: pm.intermediate_shape()
             [4, 2, 2]
+            sage: pm=sage.combinat.crystals.kirillov_reshetikhin.PMDiagram([[1, 0], [0, 0], [0, 0], [0, 0], [0]])
+            sage: pm.intermediate_shape()
+            [1]
         """
         p = self.inner_shape()
-        p = p + [0,0]
+        p = p + [0 for i in range(self.n)]
         ll = list(reversed(self._list))
         p = [ p[i]+ll[2*i+1] for i in range(self.n) ]
         return Partition(p)
