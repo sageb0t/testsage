@@ -1,9 +1,37 @@
 r"""
-Texture/material support for 3D Graphics objects and plotting.
-This is a very rough common interface for Tachyon, x3d, and obj (mtl).
+Texture Support
+
+This module provides texture/material support for 3D Graphics
+objects and plotting.  This is a very rough common interface for
+Tachyon, x3d, and obj (mtl).   See
+:meth:`Texture <sage.plot.plot3d.texture.Texture>` and
+:class:`Texture_class <sage.plot.plot3d.texture.Texture_class>`
+for full details about options and use.
+
+Initially, we have no textures set::
+
+    sage: sage.plot.plot3d.base.Graphics3d().texture_set()
+    set([])
+
+However, one can access these textures in the following manner::
+
+    sage: G = tetrahedron(color='red') + tetrahedron(color='yellow') + tetrahedron(color='red', opacity=0.5)
+    sage: [t for t in G.texture_set() if t.color == colors.red] # we should have two red textures
+    [Texture(texture..., red, ff0000), Texture(texture..., red, ff0000)]
+    sage: [t for t in G.texture_set() if t.color == colors.yellow] # ...and one yellow
+    [Texture(texture..., yellow, ffff00)]
+
+And the Texture objects keep track of all their data::
+
+    sage: T = tetrahedron(color='red', opacity=0.5)
+    sage: t = T.get_texture()
+    sage: t.opacity
+    0.500000000000000
+    sage: T # should be translucent
 
 AUTHOR:
-    -- Robert Bradshaw (2007-07-07) Initial version.
+
+- Robert Bradshaw (2007-07-07) Initial version.
 
 """
 from sage.structure.sage_object import SageObject
@@ -16,7 +44,7 @@ from sage.plot.colors import colors
 
 def is_Texture(x):
     r"""
-    Return whether x is an instance of ``Texture_class``.
+    Return whether ``x`` is an instance of ``Texture_class``.
 
     EXAMPLES::
 
@@ -38,7 +66,7 @@ def Texture(id=None, **kwds):
 
     INPUT:
 
-    - ``id`` - a texture (optional, default: None), a dict, a color, an
+    - ``id`` - a texture (optional, default: None), a dict, a color, a
       str, a tuple, None or any other type acting as an ID. If ``id`` is
       None, then it returns a unique texture object.
     - ``texture`` - a texture
@@ -53,22 +81,22 @@ def Texture(id=None, **kwds):
 
     OUTPUT:
 
-    a texture object
+    A texture object.
 
     EXAMPLES:
 
-    Texture from integer id::
+    Texture from integer ``id``::
 
         sage: from sage.plot.plot3d.texture import Texture
         sage: Texture(17)
         Texture(17, 6666ff)
 
-    Texture from rational id::
+    Texture from rational ``id``::
 
         sage: Texture(3/4)
         Texture(3/4, 6666ff)
 
-    Texture from dict::
+    Texture from a dict::
 
         sage: Texture({'color':'orange','opacity':0.5})
         Texture(texture..., orange, ffa500)
@@ -79,12 +107,12 @@ def Texture(id=None, **kwds):
         sage: Texture(c)
         Texture(texture..., ff0000)
 
-    Texture from a valid str color::
+    Texture from a valid string color::
 
         sage: Texture('red')
         Texture(texture..., red, ff0000)
 
-    Texture from a non valid str color::
+    Texture from a non valid string color::
 
         sage: Texture('redd')
         Texture(redd, 6666ff)
@@ -94,7 +122,7 @@ def Texture(id=None, **kwds):
         sage: Texture((.2,.3,.4))
         Texture(texture..., 334c66)
 
-    Texture using other keywords::
+    Textures using other keywords::
 
         sage: Texture(specular=0.4)
         Texture(texture..., 6666ff)
@@ -136,11 +164,11 @@ def Texture(id=None, **kwds):
 
 def parse_color(info, base=None):
     r"""
-    Parse the color.
+    Parses the color.
 
-    It transforms valid color str into color object and
-    color object into tuple of length 3. Otherwise, it multiplies the info
-    by the base color.
+    It transforms a valid color string into a color object and
+    a color object into an RBG tuple of length 3. Otherwise,
+    it multiplies the info by the base color.
 
     INPUT:
 
@@ -149,7 +177,7 @@ def parse_color(info, base=None):
 
     OUTPUT:
 
-    tuple or color
+    A tuple or color.
 
     EXAMPLES:
 
@@ -187,7 +215,7 @@ def parse_color(info, base=None):
             raise ValueError, "unknown color '%s'"%info
     else:
         r, g, b = base
-        # We don't want to loose the data when we split it into its respective components.
+        # We don't want to lose the data when we split it into its respective components.
         if not r: r = 1e-5
         if not g: g = 1e-5
         if not b: b = 1e-5
@@ -197,7 +225,7 @@ class Texture_class(SageObject):
     r"""
     Construction of a texture.
 
-    See documentation of ``Texture`` for more details and examples.
+    See documentation of :meth:`Texture <sage.plot.plot3d.texture.Texture>` for more details and examples.
 
     EXAMPLES:
 
@@ -212,7 +240,7 @@ class Texture_class(SageObject):
         sage: t.jmol_str('obj')
         'color obj translucent 0.4 [102,102,255]'
         sage: t.mtl_str()
-        'newmtl texture23\nKa 0.2 0.2 0.5\nKd 0.4 0.4 1.0\nKs 0.0 0.0 0.0\nillum 1\nNs 1\nd 0.600000000000000'
+        'newmtl texture44\nKa 0.2 0.2 0.5\nKd 0.4 0.4 1.0\nKs 0.0 0.0 0.0\nillum 1\nNs 1\nd 0.600000000000000'
         sage: t.x3d_str()
         "<Appearance><Material diffuseColor='0.4 0.4 1.0' shininess='1' specularColor='0.0 0.0 0.0'/></Appearance>"
     """
@@ -220,7 +248,7 @@ class Texture_class(SageObject):
         r"""
         Construction of a texture.
 
-        See documentation of ``Texture`` for more details and examples.
+        See documentation of :meth:`Texture <sage.plot.plot3d.texture.Texture>` for more details and examples.
 
         EXAMPLES::
 
@@ -258,6 +286,8 @@ class Texture_class(SageObject):
 
     def _repr_(self):
         """
+        Gives string representation of the Texture object.
+
         EXAMPLES::
 
             sage: from sage.plot.plot3d.texture import Texture
@@ -285,12 +315,14 @@ class Texture_class(SageObject):
 
     def tachyon_str(self):
         r"""
+        Converts Texture object to string suitable for Tachyon ray tracer.
+
         EXAMPLES::
 
             sage: from sage.plot.plot3d.texture import Texture
             sage: t = Texture(opacity=0.6)
             sage: t.tachyon_str()
-            'Texdef texture28\n  Ambient 0.333333333333 Diffuse 0.666666666667 Specular 0.0 Opacity 0.600000000000000\n   Color 0.4 0.4 1.0\n   TexFunc 0'
+            'Texdef texture49\n  Ambient 0.333333333333 Diffuse 0.666666666667 Specular 0.0 Opacity 0.600000000000000\n   Color 0.4 0.4 1.0\n   TexFunc 0'
         """
         total_color = float(sum(self.ambient) + sum(self.diffuse) + sum(self.specular))
         if total_color == 0:
@@ -306,6 +338,8 @@ class Texture_class(SageObject):
 
     def x3d_str(self):
         r"""
+        Converts Texture object to string suitable for x3d.
+
         EXAMPLES::
 
             sage: from sage.plot.plot3d.texture import Texture
@@ -318,12 +352,14 @@ class Texture_class(SageObject):
 
     def mtl_str(self):
         r"""
+        Converts Texture object to string suitable for mtl output.
+
         EXAMPLES::
 
             sage: from sage.plot.plot3d.texture import Texture
             sage: t = Texture(opacity=0.6)
             sage: t.mtl_str()
-            'newmtl texture2\nKa 0.2 0.2 0.5\nKd 0.4 0.4 1.0\nKs 0.0 0.0 0.0\nillum 1\nNs 1\nd 0.600000000000000'
+            'newmtl texture23\nKa 0.2 0.2 0.5\nKd 0.4 0.4 1.0\nKs 0.0 0.0 0.0\nillum 1\nNs 1\nd 0.600000000000000'
         """
         return "\n".join(["newmtl %s" % self.id,
                    "Ka %s %s %s" % self.ambient,
@@ -335,6 +371,8 @@ class Texture_class(SageObject):
 
     def jmol_str(self, obj):
         r"""
+        Converts Texture object to string suitable for Jmol applet.
+
         INPUT:
 
         - ``obj`` - str
