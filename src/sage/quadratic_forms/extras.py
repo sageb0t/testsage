@@ -141,7 +141,6 @@ def extend_to_primitive(A_input):
         return D
 
 def least_quadratic_nonresidue(p):
-    from sage.functions.all import floor
     """
     Returns the smallest positive integer quadratic non-residue in Z/pZ for primes p>2.
 
@@ -173,6 +172,7 @@ def least_quadratic_nonresidue(p):
         ...
         ValueError: Oops!  There are no quadratic non-residues in Z/2Z.
     """
+    from sage.functions.all import floor
     p1 = abs(p)
 
     ## Deal with the prime p = 2 and |p| <= 1.
