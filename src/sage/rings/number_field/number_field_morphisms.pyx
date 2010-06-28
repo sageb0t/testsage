@@ -1,3 +1,10 @@
+r"""
+Embeddings into ambient fields
+
+This module provides classes to handle embeddings of number fields into ambient
+fields (generally `\RR` or `\CC`).
+"""
+
 #*****************************************************************************
 #      Copyright (C) 2008 Robert Bradshaw <robertwb@math.washington.edu>
 #
@@ -29,7 +36,8 @@ cdef class NumberFieldEmbedding(Morphism):
         """
         If R is a lazy field, the closest root to gen_embedding will be chosen.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: x = polygen(QQ)
             sage: from sage.rings.number_field.number_field_morphisms import NumberFieldEmbedding
             sage: K.<a> = NumberField(x^3-2)
@@ -55,23 +63,25 @@ cdef class NumberFieldEmbedding(Morphism):
 
     cpdef Element _call_(self, x):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: x = polygen(QQ)
             sage: from sage.rings.number_field.number_field_morphisms import NumberFieldEmbedding
             sage: K.<a> = NumberField(x^2-2)
             sage: f = NumberFieldEmbedding(K, RLF, 1.4)
-            sage: f(a)
+            sage: f(a) # indirect doctest
             1.414213562373095?
         """
         return x.polynomial()(self._gen_image)
 
     def _repr_defn(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.rings.number_field.number_field_morphisms import NumberFieldEmbedding
             sage: K.<a> = NumberField(x^2-2)
             sage: f = NumberFieldEmbedding(K, RLF, 1.4)
-            sage: f
+            sage: f # indirect doctest
             Generic morphism:
               From: Number Field in a with defining polynomial x^2 - 2
               To:   Real Lazy Field
@@ -83,7 +93,8 @@ cdef class NumberFieldEmbedding(Morphism):
         """
         Returns the image of the generator under this embedding.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: f = QuadraticField(7, 'a', embedding=2).coerce_embedding()
             sage: f.gen_image()
             2.645751311064591?
@@ -94,13 +105,14 @@ cdef class EmbeddedNumberFieldMorphism(NumberFieldEmbedding):
     r"""
     This allows one to go from one number field in another consistently,
     assuming they both have specified embeddings into an ambient field
-    (by default it looks for an embedding into $\C$).
+    (by default it looks for an embedding into `\CC`).
     """
     cdef readonly ambient_field
 
     def __init__(self, K, L, ambient_field=None):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.rings.number_field.number_field_morphisms import EmbeddedNumberFieldMorphism
             sage: K.<a> = NumberField(x^2-17, embedding=4.1)
             sage: L.<b> = NumberField(x^4-17, embedding=2.0)
@@ -121,7 +133,8 @@ cdef class EmbeddedNumberFieldMorphism(NumberFieldEmbedding):
               To:   Cyclotomic Field of order 36 and degree 12
               Defn: zeta12 -> zeta36^3
 
-        The embeddings must be compatible:
+        The embeddings must be compatible::
+
             sage: F1 = NumberField(x^3 + 2, 'a', embedding=2)
             sage: F2 = NumberField(x^3 + 2, 'a', embedding=CC.0)
             sage: F1.gen() + F2.gen()
@@ -140,7 +153,8 @@ cdef class EmbeddedNumberFieldMorphism(NumberFieldEmbedding):
 
     def section(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.rings.number_field.number_field_morphisms import EmbeddedNumberFieldMorphism
             sage: K.<a> = NumberField(x^2-700, embedding=25)
             sage: L.<b> = NumberField(x^6-700, embedding=3)
@@ -157,7 +171,7 @@ cdef class EmbeddedNumberFieldConversion(Map):
     r"""
     This allows one to cast one number field in another consistently,
     assuming they both have specified embeddings into an ambient field
-    (by default it looks for an embedding into $\C$).
+    (by default it looks for an embedding into `\CC`).
 
     This is done by factoring the minimal polynomial of the input
     in the number field of the codomain. This may fail if the element is
@@ -168,7 +182,8 @@ cdef class EmbeddedNumberFieldConversion(Map):
 
     def __init__(self, K, L, ambient_field=None):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.rings.number_field.number_field_morphisms import EmbeddedNumberFieldConversion
             sage: K.<a> = NumberField(x^2-17, embedding=4.1)
             sage: L.<b> = NumberField(x^4-17, embedding=2.0)
@@ -186,12 +201,13 @@ cdef class EmbeddedNumberFieldConversion(Map):
 
     cpdef Element _call_(self, x):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.rings.number_field.number_field_morphisms import EmbeddedNumberFieldConversion
             sage: K.<zeta12> = CyclotomicField(12)
             sage: L.<zeta15> = CyclotomicField(15)
             sage: f = EmbeddedNumberFieldConversion(K, L)
-            sage: f(zeta12^4)
+            sage: f(zeta12^4) # indirect doctest
             zeta15^5
         """
         minpoly = x.minpoly()
@@ -210,7 +226,8 @@ cpdef matching_root(poly, target, ambient_field=None, margin=1, max_prec=None):
     ambient field to the target, and return the root of poly (if any) that
     approximates it best.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: from sage.rings.number_field.number_field_morphisms import matching_root
         sage: R.<x> = CC[]
         sage: matching_root(x^2-2, 1.5)
@@ -266,7 +283,8 @@ cpdef closest(target, values, margin=1):
     then only return x if x is margin times closer to target than y, i.e.
     margin * abs(target-x) < abs(target-y).
 
-    TESTS:
+    TESTS::
+
         sage: from sage.rings.number_field.number_field_morphisms import closest
         sage: closest(1.2, [0,1,2,3,4])
         1
@@ -303,7 +321,8 @@ def create_embedding_from_approx(K, gen_image):
     If gen_image is in a real or complex field, then
     it creates an image into a lazy field.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: from sage.rings.number_field.number_field_morphisms import create_embedding_from_approx
         sage: K.<a> = NumberField(x^3-x+1/10)
         sage: create_embedding_from_approx(K, 1)
@@ -322,7 +341,8 @@ def create_embedding_from_approx(K, gen_image):
           To:   Real Lazy Field
           Defn: a -> -1.046680531804603?
 
-    We can define embeddings from one number field to another:
+    We can define embeddings from one number field to another::
+
         sage: L.<b> = NumberField(x^6-x^2+1/10)
         sage: create_embedding_from_approx(K, b^2)
         Generic morphism:
@@ -330,7 +350,8 @@ def create_embedding_from_approx(K, gen_image):
           To:   Number Field in b with defining polynomial x^6 - x^2 + 1/10
           Defn: a -> b^2
 
-    The if the embedding is exact, it must be valid:
+    The if the embedding is exact, it must be valid::
+
         sage: create_embedding_from_approx(K, b)
         Traceback (most recent call last):
         ...
@@ -370,7 +391,8 @@ cdef class CyclotomicFieldEmbedding(NumberFieldEmbedding):
         """
         Check and cache the parameters.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.rings.number_field.number_field_morphisms import CyclotomicFieldEmbedding
             sage: CyclotomicFieldEmbedding(CyclotomicField(7), CyclotomicField(21))
             Generic morphism:
@@ -380,7 +402,7 @@ cdef class CyclotomicFieldEmbedding(NumberFieldEmbedding):
 
         Note that this only handles the easy case of cyclotomic fields where
         the order of the smaller dividing the order of the larger, regardless
-        of whether or not there is an actual coercion:
+        of whether or not there is an actual coercion::
 
             sage: CyclotomicFieldEmbedding(CyclotomicField(3), QuadraticField(-3, 'a'))
             Traceback (most recent call last):
@@ -402,14 +424,15 @@ cdef class CyclotomicFieldEmbedding(NumberFieldEmbedding):
 
     cpdef Element _call_(self, x):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.rings.number_field.number_field_morphisms import CyclotomicFieldEmbedding
             sage: K = CyclotomicField(7)
             sage: L = CyclotomicField(21)
             sage: f = CyclotomicFieldEmbedding(K, L)
-            sage: f(K.gen())
+            sage: f(K.gen()) # indirect doctest
             zeta21^3
-            sage: f(K.gen()^2 + 3)
+            sage: f(K.gen()^2 + 3) # indirect doctest
             zeta21^6 + 3
         """
         return x._lift_cyclotomic_element(self._codomain, False, self.ratio)
