@@ -278,6 +278,14 @@ cdef class NumberFieldElement_quadratic(NumberFieldElement_absolute):
         return x
 
     def __cinit__(self):
+        r"""
+        Initialisation function.
+
+        EXAMPLE::
+
+            sage: QuadraticField(-3, 'a').gen() # indirect doctest
+            a
+        """
         mpz_init(self.a)
         mpz_init(self.b)
         mpz_init(self.denom)
@@ -561,7 +569,8 @@ cdef class NumberFieldElement_quadratic(NumberFieldElement_absolute):
 
     cpdef ModuleElement _add_(self, ModuleElement other_m):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: K.<a> = NumberField(x^2-5)
             sage: K.discriminant()
             5
@@ -616,7 +625,8 @@ cdef class NumberFieldElement_quadratic(NumberFieldElement_absolute):
 
     cpdef ModuleElement _sub_(self, ModuleElement other_m):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: K.<a> = NumberField(x^2-13)
             sage: b = (a-3)/10; b # indirect doctest
             1/10*a - 3/10
@@ -871,6 +881,15 @@ cdef class NumberFieldElement_quadratic(NumberFieldElement_absolute):
         return hash(self.polynomial())
 
     def __richcmp__(left, right, int op):
+        r"""
+        EXAMPLE::
+
+            sage: K.<a> = NumberField(x^2+163)
+            sage: K(1/2) < K(2/3) # indirect doctest
+            False
+            sage: K(1/2) > K(1/3) # indirect doctest
+            True
+        """
         return (<Element>left)._richcmp(right, op)
 
     cdef int _cmp_c_impl(self, Element _right) except -2:
