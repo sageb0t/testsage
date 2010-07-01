@@ -1,9 +1,10 @@
 """
-Quadratic Forms
+Quadratic Forms Overview
 
 AUTHORS:
-    -- Jon Hanke (2007-06-19):
 
+- Jon Hanke (2007-06-19)
+- Anna Haensch (2010-07-01): Formatting and ReSTification
 """
 
 #*****************************************************************************
@@ -47,7 +48,8 @@ def QuadraticForm__constructor(R, n=None, entries=None):
     for internal use within the QuadraticForm class code only.  You
     should instead directly call QuadraticForm().
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: from sage.quadratic_forms.quadratic_form import QuadraticForm__constructor
         sage: QuadraticForm__constructor(ZZ, 3)   ## Makes a generic quadratic form over the integers
         Quadratic form in 3 variables over Integer Ring with coefficients:
@@ -62,23 +64,123 @@ def is_QuadraticForm(Q):
     """
     Determines if the object Q is an element of the QuadraticForm class.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: Q = QuadraticForm(ZZ, 2, [1,2,3])
         sage: is_QuadraticForm(Q)  ##random -- deprecated
         True
         sage: is_QuadraticForm(2)  ##random -- deprecated
         False
+
     """
     return isinstance(Q, QuadraticForm)
 
 class QuadraticForm():
-    """
-    QuadraticForm() -- a quadratic form in n variables with coefficients in the ring R.
+    r"""
+    The ``QuadraticForm`` class represents a quadratic form in n variables with
+    coefficients in the ring R.
 
-    EXAMPLES:
-        sage: s = QuadraticForm(ZZ, 4, range(10))
-        sage: s == loads(dumps(s))
-        True
+    INPUT:
+
+    The constructor may be called in any of the following ways.
+
+    #. ``QuadraticForm(R, n, entries)``, where
+
+       - `R` -- ring for which the quadratic form is defined
+       - `n` -- an integer >= 0
+       - ``entries`` -- a list of `n(n+1)/2` coefficients of the quadratic form
+         in `R` (given lexographically, or equivalently, by rows of the matrix)
+
+    #. ``QuadraticForm(R, n)``, where
+
+       - `R` -- a ring
+       - `n` -- a symmetric `n \times n` matrix with even diagonal (relative to
+         `R`)
+
+    #. ``QuadraticForm(R)``, where
+
+       - `R` -- a symmetric `n \times n` matrix with even diagonal (relative to
+         its base ring)
+
+    If the keyword argument ``unsafe_initialize`` is True, then the subsequent
+    fields may by used to force the external initialization of various fields
+    of the quadratic form. Currently the only fields which can be set are:
+
+    - ``number_of_automorphisms``
+    - ``determinant``
+
+    OUTPUT:
+
+    quadratic form
+
+    EXAMPLES::
+
+        sage: Q = QuadraticForm(ZZ, 3, [1,2,3,4,5,6])
+        sage: Q
+        Quadratic form in 3 variables over Integer Ring with coefficients:
+        [ 1 2 3 ]
+        [ * 4 5 ]
+        [ * * 6 ]
+
+    ::
+
+        sage: Q = QuadraticForm(QQ, 3, [1,2,3,4/3 ,5,6])
+        sage: Q
+        Quadratic form in 3 variables over Rational Field with coefficients:
+        [ 1 2 3 ]
+        [ * 4/3 5 ]
+        [ * * 6 ]
+        sage: Q[0,0]
+        1
+        sage: Q[0,0].parent()
+        Rational Field
+
+    ::
+
+        sage: Q = QuadraticForm(QQ, 7, range(28))
+        sage: Q
+        Quadratic form in 7 variables over Rational Field with coefficients:
+        [ 0 1 2 3 4 5 6 ]
+        [ * 7 8 9 10 11 12 ]
+        [ * * 13 14 15 16 17 ]
+        [ * * * 18 19 20 21 ]
+        [ * * * * 22 23 24 ]
+        [ * * * * * 25 26 ]
+        [ * * * * * * 27 ]
+
+    ::
+
+        sage: Q = QuadraticForm(QQ, 2, range(1,4))
+        sage: A = Matrix(ZZ,2,2,[-1,0,0,1])
+        sage: Q(A)
+        Quadratic form in 2 variables over Rational Field with coefficients:
+        [ 1 -2 ]
+        [ * 3 ]
+
+    ::
+
+        sage: m = matrix(2,2,[1,2,3,4])
+        sage: m + m.transpose()
+        [2 5]
+        [5 8]
+        sage: QuadraticForm(m + m.transpose())
+        Quadratic form in 2 variables over Integer Ring with coefficients:
+        [ 1 5 ]
+        [ * 4 ]
+
+    ::
+
+        sage: QuadraticForm(ZZ, m + m.transpose())
+        Quadratic form in 2 variables over Integer Ring with coefficients:
+        [ 1 5 ]
+        [ * 4 ]
+
+    ::
+
+        sage: QuadraticForm(QQ, m + m.transpose())
+        Quadratic form in 2 variables over Rational Field with coefficients:
+        [ 1 5 ]
+        [ * 4 ]
     """
 
     ## Import specialized methods:
@@ -197,7 +299,6 @@ class QuadraticForm():
             reduced_binary_form, \
             minkowski_reduction, \
             minkowski_reduction_for_4vars__SP
-
     ## Wrappers for Conway-Sloane genus routines (in ./genera/)
     from sage.quadratic_forms.quadratic_form__genus import \
             global_genus_symbol, \
@@ -266,88 +367,11 @@ class QuadraticForm():
 
     def __init__(self, R, n=None, entries=None, unsafe_initialization=False, number_of_automorphisms=None, determinant=None):
         """
-        INPUT:
-            R -- ring for which the quadratic form is defined
-            n -- an integer >= 0
-            entries -- a list of n(n+1)/2 coefficients of the quadratic form in R
-                (given lexographically, or equivalently, by rows of the matrix)
+        EXAMPLES::
 
-                ** OR **
-
-            R -- a ring
-            n -- a symmetric n x n matrix with even diagonal (relative to n)
-
-                ** OR **
-
-            R -- a symmetric n x n matrix with even diagonal (relative to its base_ring)
-
-            If unsafe_initialize is True, then the subsequent fields
-            may by used to force the external initialization of
-            various fields of the quadratic form.  Currently the only
-            fields which can be set are:
-
-                number_of_automorphisms
-                determinant
-
-        OUTPUT:
-            quadratic form
-
-        EXAMPLES:
-            sage: Q = QuadraticForm(ZZ, 3, [1,2,3,4,5,6])
-            sage: Q
-            Quadratic form in 3 variables over Integer Ring with coefficients:
-            [ 1 2 3 ]
-            [ * 4 5 ]
-            [ * * 6 ]
-
-            sage: Q = QuadraticForm(QQ, 3, [1,2,3,4/3 ,5,6])
-            sage: Q
-            Quadratic form in 3 variables over Rational Field with coefficients:
-            [ 1 2 3 ]
-            [ * 4/3 5 ]
-            [ * * 6 ]
-            sage: Q[0,0]
-            1
-            sage: Q[0,0].parent()
-            Rational Field
-
-            sage: Q = QuadraticForm(QQ, 7, range(28))
-            sage: Q
-            Quadratic form in 7 variables over Rational Field with coefficients:
-            [ 0 1 2 3 4 5 6 ]
-            [ * 7 8 9 10 11 12 ]
-            [ * * 13 14 15 16 17 ]
-            [ * * * 18 19 20 21 ]
-            [ * * * * 22 23 24 ]
-            [ * * * * * 25 26 ]
-            [ * * * * * * 27 ]
-
-            sage: Q = QuadraticForm(QQ, 2, range(1,4))
-            sage: A = Matrix(ZZ,2,2,[-1,0,0,1])
-            sage: Q(A)
-            Quadratic form in 2 variables over Rational Field with coefficients:
-            [ 1 -2 ]
-            [ * 3 ]
-
-            sage: m = matrix(2,2,[1,2,3,4])
-            sage: m + m.transpose()
-            [2 5]
-            [5 8]
-            sage: QuadraticForm(m + m.transpose())
-            Quadratic form in 2 variables over Integer Ring with coefficients:
-            [ 1 5 ]
-            [ * 4 ]
-
-            sage: QuadraticForm(ZZ, m + m.transpose())
-            Quadratic form in 2 variables over Integer Ring with coefficients:
-            [ 1 5 ]
-            [ * 4 ]
-
-            sage: QuadraticForm(QQ, m + m.transpose())
-            Quadratic form in 2 variables over Rational Field with coefficients:
-            [ 1 5 ]
-            [ * 4 ]
-
+            sage: s = QuadraticForm(ZZ, 4, range(10))
+            sage: s == loads(dumps(s))
+            True
         """
         ## Deal with:  QuadraticForm(ring, matrix)
         matrix_init_flag = False
@@ -437,7 +461,8 @@ class QuadraticForm():
         methods.  These fields are as good as the external process
         that made them, and are thus not guaranteed to be correct.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Q = QuadraticForm(ZZ, 2, [1,0,5])
             sage: Q.list_external_initializations()
             []
@@ -447,6 +472,8 @@ class QuadraticForm():
             sage: Q = QuadraticForm(ZZ, 2, [1,0,5], unsafe_initialization=False, number_of_automorphisms=3, determinant=0)
             sage: Q.list_external_initializations()
             []
+
+        ::
 
             sage: Q = QuadraticForm(ZZ, 2, [1,0,5], unsafe_initialization=False, number_of_automorphisms=3, determinant=0)
             sage: Q.list_external_initializations()
@@ -461,10 +488,12 @@ class QuadraticForm():
         """
         Return a pari-formatted Hessian matrix for Q.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Q = QuadraticForm(ZZ, 2, [1,0,5])
             sage: Q._pari_()
             [2, 0; 0, 10]
+
         """
         return self.matrix()._pari_()
 
@@ -472,11 +501,13 @@ class QuadraticForm():
         """
         Give a text representation for the quadratic form given as an upper-triangular matrix of coefficients.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: QuadraticForm(ZZ, 2, [1,3,5])
             Quadratic form in 2 variables over Integer Ring with coefficients:
             [ 1 3 ]
             [ * 5 ]
+
         """
         n = self.dim()
         out_str = "Quadratic form in " + str(n) + " variables over " + str(self.base_ring()) + " with coefficients: \n"
@@ -494,10 +525,12 @@ class QuadraticForm():
         """
         Give a LaTeX representation for the quadratic form given as an upper-triangular matrix of coefficients.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Q = QuadraticForm(ZZ, 2, [2,3,5])
             sage: Q._latex_()
             'Quadratic form in 2 variables over Integer Ring with coefficients: \\newline\\left[ \\begin{array}{cc}2 & 3 &  * & 5 & \\end{array} \\right]'
+
         """
         n = self.dim()
         out_str = ""
@@ -517,9 +550,10 @@ class QuadraticForm():
 
     def __getitem__(self, ij):
         """
-        Return the coefficient a_{ij} of x_i * x_j.
+        Return the coefficient `a_{ij}` of `x_i * x_j`.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Q = QuadraticForm(ZZ, 3, [1,2,3,4,5,6])
             sage: matrix(ZZ, 3, 3, [Q[i,j]  for i in range(3) for j in range(3)])
             [1 2 3]
@@ -542,9 +576,10 @@ class QuadraticForm():
 
     def __setitem__(self, ij, coeff):
         """
-        Set the coefficient a_{ij} in front of x_i * x_j.
+        Set the coefficient `a_{ij}` in front of `x_i * x_j`.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Q = QuadraticForm(ZZ, 3, [1,2,3,4,5,6])
             sage: Q
             Quadratic form in 3 variables over Integer Ring with coefficients:
@@ -586,7 +621,8 @@ class QuadraticForm():
         """
         Determines if two quadratic forms are equal.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Q = QuadraticForm(ZZ, 2, [1,4,10])
             sage: Q == Q
             True
@@ -612,7 +648,7 @@ class QuadraticForm():
           """
           Returns the direct sum of two quadratic forms.
 
-          EXAMPLES:
+          EXAMPLES::
               sage: Q = QuadraticForm(ZZ, 2, [1,4,10])
               sage: Q
               Quadratic form in 2 variables over Integer Ring with coefficients:
@@ -650,7 +686,8 @@ class QuadraticForm():
           """
           Returns the sum (on coefficients) of two quadratic forms of the same size.
 
-          EXAMPLES:
+          EXAMPLES::
+
               sage: Q = QuadraticForm(ZZ, 2, [1,4,10])
               sage: Q
               Quadratic form in 2 variables over Integer Ring with coefficients:
@@ -684,7 +721,7 @@ class QuadraticForm():
 #        """
 #        Multiply (on the right) the quadratic form Q by an element of the ring that Q is defined over.
 #
-#        EXAMPLES:
+#        EXAMPLES::
 #            sage: Q = QuadraticForm(ZZ, 2, [1,4,10])
 #            sage: Q*2
 #            Quadratic form in 2 variables over Integer Ring with coefficients:
@@ -707,13 +744,15 @@ class QuadraticForm():
         """
         Evaluate this quadratic form Q on a vector or matrix of elements
         coercible to the base ring of the quadratic form.  If a vector
-        is given then the output will be the ring element Q(v), but if a
+        is given then the output will be the ring element Q(`v`), but if a
         matrix is given then the output will be the quadratic form Q'
         which in matrix notation is given by:
 
+        .. math::
                 Q' = v^t * Q * v.
 
-        EXAMPLES:
+        EXAMPLES::
+
             ## Evaluate a quadratic form at a vector:
             ## --------------------------------------
             sage: Q = QuadraticForm(QQ, 3, range(6))
@@ -728,6 +767,8 @@ class QuadraticForm():
             0
             sage: Q([1,1,1])
             15
+
+    ::
 
             ## Evaluate a quadratic form using a column matrix:
             ## ------------------------------------------------
@@ -746,6 +787,8 @@ class QuadraticForm():
             Quadratic form in 1 variables over Rational Field with coefficients:
             [ 1 ]
 
+        ::
+
             ## Simple 2x2 change of variables:
             ## -------------------------------
             sage: Q = QuadraticForm(ZZ, 2, [1,0,1])
@@ -761,6 +804,8 @@ class QuadraticForm():
             Quadratic form in 2 variables over Integer Ring with coefficients:
             [ 1 2 ]
             [ * 2 ]
+
+        ::
 
             ## Some more tests:
             ## ----------------
@@ -819,9 +864,11 @@ class QuadraticForm():
 
         INPUT:
             A -- matrix
+
             R -- ring
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Q = QuadraticForm(ZZ, 2, [2,3,5])
             sage: A = Q.matrix()
             sage: A
@@ -832,6 +879,7 @@ class QuadraticForm():
             sage: A[0,0] = 1
             sage: Q._is_even_symmetric_matrix_(A)
             False
+
         """
         if not is_Matrix(A):
             raise TypeError, "A is not a matrix."
@@ -875,22 +923,25 @@ class QuadraticForm():
 
     def matrix(self):
         """
-        Returns the Hessian matrix A for which Q(X) = (1/2) * X^t * A * X.
+        Returns the Hessian matrix A for which Q(X) =  `(1/2) * X^t * A * X`.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Q = QuadraticForm(ZZ, 3, range(6))
             sage: Q.matrix()
             [ 0  1  2]
             [ 1  6  4]
             [ 2  4 10]
+
         """
         return self.Hessian_matrix()
 
     def Hessian_matrix(self):
         """
-        Returns the Hessian matrix A for which Q(X) = (1/2) * X^t * A * X.
+        Returns the Hessian matrix A for which Q(X) = `(1/2) * X^t * A * X`.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Q = QuadraticForm(QQ, 2, range(1,4))
             sage: Q
             Quadratic form in 2 variables over Rational Field with coefficients:
@@ -901,6 +952,7 @@ class QuadraticForm():
             [2 6]
             sage: Q.matrix().base_ring()
             Rational Field
+
         """
         mat_entries = []
         for i in range(self.dim()):
@@ -917,19 +969,23 @@ class QuadraticForm():
         Returns a (symmetric) Gram matrix A for the quadratic form Q,
         meaning that
 
+        .. math::
+
             Q(x) = x^t * A * x,
 
         defined over the fraction field of the base ring.
 
-        EXAMPLES:
-        sage: Q = DiagonalQuadraticForm(ZZ, [1,3,5,7])
-        sage: A = Q.Gram_matrix_rational(); A
-        [1 0 0 0]
-        [0 3 0 0]
-        [0 0 5 0]
-        [0 0 0 7]
-        sage: A.base_ring()
-        Rational Field
+        EXAMPLES::
+
+            sage: Q = DiagonalQuadraticForm(ZZ, [1,3,5,7])
+            sage: A = Q.Gram_matrix_rational(); A
+            [1 0 0 0]
+            [0 3 0 0]
+            [0 0 5 0]
+            [0 0 0 7]
+            sage: A.base_ring()
+            Rational Field
+
         """
         return (ZZ(1) / ZZ(2)) * self.matrix()
 
@@ -938,20 +994,24 @@ class QuadraticForm():
         Returns a (symmetric) Gram matrix A for the quadratic form Q,
         meaning that
 
+        .. math::
+
             Q(x) = x^t * A * x,
 
         defined over the base ring of Q.  If this is not possible,
         then a TypeError is raised.
 
-        EXAMPLES:
-        sage: Q = DiagonalQuadraticForm(ZZ, [1,3,5,7])
-        sage: A = Q.Gram_matrix(); A
-        [1 0 0 0]
-        [0 3 0 0]
-        [0 0 5 0]
-        [0 0 0 7]
-        sage: A.base_ring()
-        Integer Ring
+        EXAMPLES::
+
+            sage: Q = DiagonalQuadraticForm(ZZ, [1,3,5,7])
+            sage: A = Q.Gram_matrix(); A
+            [1 0 0 0]
+            [0 3 0 0]
+            [0 0 5 0]
+            [0 0 0 7]
+            sage: A.base_ring()
+            Integer Ring
+
         """
         A = (ZZ(1) / ZZ(2)) * self.matrix()
         n = self.dim()
@@ -974,14 +1034,18 @@ class QuadraticForm():
 
         A warning is issued if the form is defined over a field, since in that case the return is trivially true.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Q = QuadraticForm(ZZ, 2, [7,8,9])
             sage: Q.has_integral_Gram_matrix()
             True
 
+        ::
+
             sage: Q = QuadraticForm(ZZ, 2, [4,5,6])
             sage: Q.has_integral_Gram_matrix()
             False
+
         """
         ## Warning over fields
         if is_field(self.base_ring()):
@@ -1001,10 +1065,13 @@ class QuadraticForm():
         Returns the greatest common divisor of the coefficients of the
         quadratic form (as a polynomial).
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Q = QuadraticForm(ZZ, 4, range(1, 21, 2))
             sage: Q.gcd()
             1
+
+        ::
 
             sage: Q = QuadraticForm(ZZ, 4, range(0, 20, 2))
             sage: Q.gcd()
@@ -1021,21 +1088,24 @@ class QuadraticForm():
         (i.e. not an integer (>1) multiple of another integer-valued
         quadratic form).
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Q = QuadraticForm(ZZ, 2, [2,3,4])
             sage: Q.is_primitive()
             True
             sage: Q = QuadraticForm(ZZ, 2, [2,4,8])
             sage: Q.is_primitive()
             False
+
         """
         return (self.gcd() == 1)
 
     def primitive(self):
         """
-        Returns a primitive version of an integer-valued quadratic form, defined over ZZ.
+        Returns a primitive version of an integer-valued quadratic form, defined over `ZZ`.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Q = QuadraticForm(ZZ, 2, [2,3,4])
             sage: Q.primitive()
             Quadratic form in 2 variables over Integer Ring with coefficients:
@@ -1046,6 +1116,7 @@ class QuadraticForm():
             Quadratic form in 2 variables over Integer Ring with coefficients:
             [ 1 2 ]
             [ * 4 ]
+
         """
         if self.base_ring() != ZZ:
             raise TypeError, "Oops! The given quadratic form must be defined over ZZ."
@@ -1060,7 +1131,8 @@ class QuadraticForm():
         matrix is a scalar multiple of the inverse of the matrix of
         the given quadratic form.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Q = QuadraticForm(ZZ, 2, [1,2,3])
             sage: Q.adjoint_primitive()
             Quadratic form in 2 variables over Integer Ring with coefficients:
@@ -1074,10 +1146,12 @@ class QuadraticForm():
         """
         Gives the number of variables of the quadratic form.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Q = QuadraticForm(ZZ, 2, [1,2,3])
             sage: Q.dim()
             2
+
         """
         return self.__n
 
@@ -1085,10 +1159,12 @@ class QuadraticForm():
         """
         Gives the ring over which the quadratic form is defined.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Q = QuadraticForm(ZZ, 2, [1,2,3])
             sage: Q.base_ring()
             Integer Ring
+
         """
         return self.__base_ring
 
@@ -1097,10 +1173,12 @@ class QuadraticForm():
         Gives the matrix of upper triangular coefficients,
         by reading across the rows from the main diagonal.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Q = QuadraticForm(ZZ, 2, [1,2,3])
             sage: Q.coefficients()
             [1, 2, 3]
+
         """
         return self.__coeffs
 
@@ -1112,10 +1190,12 @@ class QuadraticForm():
         (Note: This is always defined over the same ring as the
         quadratic form.)
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Q = QuadraticForm(ZZ, 2, [1,2,3])
             sage: Q.det()
             8
+
         """
         try:
             return self.__det
@@ -1138,10 +1218,12 @@ class QuadraticForm():
         the quadratic form, but is often not defined over the same
         ring as the quadratic form.)
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Q = QuadraticForm(ZZ, 2, [1,2,3])
             sage: Q.Gram_det()
             2
+
         """
         return self.det() / ZZ(2**self.dim())
 
@@ -1163,11 +1245,14 @@ class QuadraticForm():
         OUTPUT:
             quadratic form
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Q = DiagonalQuadraticForm(ZZ,[1,1]); Q
             Quadratic form in 2 variables over Integer Ring with coefficients:
             [ 1 0 ]
             [ * 1 ]
+
+        ::
 
             sage: Q1 = Q.base_change_to(IntegerModRing(5)); Q1
             Quadratic form in 2 variables over Ring of integers modulo 5 with coefficients:
@@ -1188,16 +1273,17 @@ class QuadraticForm():
         return QuadraticForm(R, self.dim(), [R(x) for x in self.coefficients()])
 
     def level(self):
-        """
-        Determines the level of the quadratic form over a PID, which
-            is a generator for the smallest ideal N of R such that N *
-        (the matrix of 2*Q)^(-1) is in R with diagonal in 2*R.
+        r"""
+        Determines the level of the quadratic form over a PID, which is a
+        generator for the smallest ideal `N` of `R` such that N * (the matrix of
+        2*Q)^(-1) is in R with diagonal in 2*R.
 
-        Over ZZ this returns a non-negative number.
+        Over `\ZZ` this returns a non-negative number.
 
-        (Caveat: This always returns the principal ideal when working over a field!)
+        (Caveat: This always returns the unit ideal when working over a field!)
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Q = QuadraticForm(ZZ, 2, range(1,4))
             sage: Q.level()
             8
@@ -1266,14 +1352,19 @@ class QuadraticForm():
         WARNING:  THIS ONLY WORKS OVER A PID RING OF INTEGERS FOR NOW!
               (Waiting for Sage fractional ideal support.)
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: Q = QuadraticForm(ZZ, 2, range(1,4))
             sage: Q.level_ideal()
             Principal ideal (8) of Integer Ring
 
+        ::
+
             sage: Q1 = QuadraticForm(QQ, 2, range(1,4))
             sage: Q1.level_ideal()
             Principal ideal (1) of Rational Field
+
+        ::
 
             sage: Q = DiagonalQuadraticForm(ZZ, [1,3,5,7])
             sage: Q.level_ideal()
@@ -1292,23 +1383,26 @@ class QuadraticForm():
 
 def DiagonalQuadraticForm(R, diag):
     """
-    Returns a quadratic form over R which is a sum of squares.
+    Returns a quadratic form over `R` which is a sum of squares.
 
     INPUT:
-    R -- ring
-    diag -- list/tuple of elements coercible to R
 
-    OUPUT:
+    - `R` -- ring
+    - ``diag`` -- list/tuple of elements coercible to R
+
+    OUTPUT:
+
     quadratic form
 
-    EXAMPLES:
-    sage: Q = DiagonalQuadraticForm(ZZ, [1,3,5,7])
-    sage: Q
-    Quadratic form in 4 variables over Integer Ring with coefficients:
-    [ 1 0 0 0 ]
-    [ * 3 0 0 ]
-    [ * * 5 0 ]
-    [ * * * 7 ]
+    EXAMPLES::
+
+        sage: Q = DiagonalQuadraticForm(ZZ, [1,3,5,7])
+        sage: Q
+        Quadratic form in 4 variables over Integer Ring with coefficients:
+        [ 1 0 0 0 ]
+        [ * 3 0 0 ]
+        [ * * 5 0 ]
+        [ * * * 7 ]
 
     """
     Q = QuadraticForm(R, len(diag))

@@ -1,3 +1,6 @@
+"""
+Reduction Theory
+"""
 from copy import deepcopy
 from sage.matrix.constructor import matrix
 from sage.functions.all import floor
@@ -6,13 +9,12 @@ from sage.modules.free_module_element import vector
 from sage.rings.integer_ring import ZZ
 
 def reduced_binary_form1(self):
-    """
-    Reduce the form ax^2 + bxy+cy^2 to satisfy the reduced condition
-        |b| <= a <= c, with b >= 0 if a = c.
-    This reduction occurs within the proper class, so all
-    transformations are taken to have det = 1.
+    r"""
+    Reduce the form `ax^2 + bxy+cy^2` to satisfy the reduced condition `|b| \le
+    a \le c`, with `b \ge 0` if `a = c`. This reduction occurs within the
+    proper class, so all transformations are taken to have determinant 1.
 
-    EXAMPLES:
+    EXAMPLES::
 
         sage: QuadraticForm(ZZ,2,[5,5,2]).reduced_binary_form1()
         (Quadratic form in 2 variables over Integer Ring with coefficients:
@@ -21,6 +23,7 @@ def reduced_binary_form1(self):
         ,
         [ 0 -1]
         [ 1  1])
+
     """
     if self.dim() != 2:
         raise TypeError, "This must be a binary form for now..."
@@ -57,17 +60,14 @@ def reduced_ternary_form__Dickson(self):
     Find the unique reduced ternary form according to the conditions
     of Dickson's "Studies in the Theory of Numbers", pp164-171.
 
-        [a f e]
-        [. b d]
-        [. . c]
-
-    EXAMPLES:
+    EXAMPLES::
 
         sage: Q = DiagonalQuadraticForm(ZZ, [1, 1, 1])
         sage: Q.reduced_ternary_form__Dickson()
         Traceback (most recent call last):
         ...
         NotImplementedError: TO DO
+
     """
     raise NotImplementedError, "TO DO"
 
@@ -76,7 +76,7 @@ def reduced_binary_form(self):
     Find a form which is reduced in the sense that no further binary
     form reductions can be done to reduce the original form.
 
-    EXAMPLES:
+    EXAMPLES::
 
         sage: QuadraticForm(ZZ,2,[5,5,2]).reduced_binary_form()
         (Quadratic form in 2 variables over Integer Ring with coefficients:
@@ -85,6 +85,7 @@ def reduced_binary_form(self):
         ,
         [ 0 -1]
         [ 1  1])
+
     """
     R = self.base_ring()
     n = self.dim()
@@ -137,11 +138,13 @@ def minkowski_reduction(self):
     Find a Minkowski-reduced form equivalent to the given one.
     This means that
 
-        Q(v_k) <= Q(s_1 * v_1 + ... + s_n * v_n)
+    .. math::
 
-    for all s_i where GCD(s_k, ... s_n) = 1.
+            Q(v_k) <= Q(s_1 * v_1 + ... + s_n * v_n)
 
-    Note: When Q has dim <= 4 we can take all s_i in {1, 0, -1}.
+    for all `s_i` where GCD`(s_k, ... s_n) = 1`.
+
+    Note: When Q has dim <= 4 we can take all `s_i` in {1, 0, -1}.
 
     References:
         Schulze-Pillot's paper on "An algorithm for computing genera
@@ -149,7 +152,8 @@ def minkowski_reduction(self):
         Donaldson's 1979 paper "Minkowski Reduction of Integral
             Matrices", p203.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: Q = QuadraticForm(ZZ,4,[30,17,11,12,29,25,62,64,25,110])
         sage: Q
         Quadratic form in 4 variables over Integer Ring with coefficients:
@@ -230,11 +234,11 @@ def minkowski_reduction_for_4vars__SP(self):
     Find a Minkowski-reduced form equivalent to the given one.
     This means that
 
-        Q(v_k) <= Q(s_1 * v_1 + ... + s_n * v_n)
+        Q(`v_k`) <= Q(`s_1 * v_1 + ... + s_n * v_n`)
 
-    for all s_i where GCD(s_k, ... s_n) = 1.
+    for all `s_i` where GCD(`s_k, ... s_n`) = 1.
 
-    Note: When Q has dim <= 4 we can take all s_i in {1, 0, -1}.
+    Note: When Q has dim <= 4 we can take all `s_i` in {1, 0, -1}.
 
     References:
         Schulze-Pillot's paper on "An algorithm for computing genera
@@ -242,7 +246,8 @@ def minkowski_reduction_for_4vars__SP(self):
         Donaldson's 1979 paper "Minkowski Reduction of Integral
             Matrices", p203.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: Q = QuadraticForm(ZZ,4,[30,17,11,12,29,25,62,64,25,110])
         sage: Q
         Quadratic form in 4 variables over Integer Ring with coefficients:
