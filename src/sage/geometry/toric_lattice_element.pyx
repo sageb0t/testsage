@@ -197,8 +197,8 @@ cdef class ToricLatticeElement(Vector_integer_dense):
             0
             sage: n is n2
             False
-            sage: cmp(n, 1)
-            -1
+            sage: n == 1
+            False
         """
         c = cmp(type(self), type(right))
         if c:
