@@ -1168,7 +1168,7 @@ class DiGraph(GenericGraph):
            True
         """
 
-        from sage.numerical.mip import MixedIntegerLinearProgram
+        from sage.numerical.mip import MixedIntegerLinearProgram, Sum
 
         p=MixedIntegerLinearProgram(maximization=False)
 
@@ -1179,11 +1179,11 @@ class DiGraph(GenericGraph):
         N=range(n)
 
         # First and second constraints
-        [p.add_constraint(sum([x[v][i] for i in N]),min=1,max=1) for v in self]
-        [p.add_constraint(sum([x[v][i] for v in self]),min=1,max=1) for i in N]
+        [p.add_constraint(Sum([x[v][i] for i in N]),min=1,max=1) for v in self]
+        [p.add_constraint(Sum([x[v][i] for v in self]),min=1,max=1) for i in N]
 
         # Definition of d_v
-        [p.add_constraint(sum([i*x[v][i] for i in N])-d[v],max=0,min=0) for v in self]
+        [p.add_constraint(Sum([i*x[v][i] for i in N])-d[v],max=0,min=0) for v in self]
 
         # The removed vertices cover all the back arcs ( third condition )
         [p.add_constraint(d[u]-d[v]+n*(b[(u,v)]),min=0) for (u,v) in self.edges(labels=None)]
@@ -1191,7 +1191,7 @@ class DiGraph(GenericGraph):
         p.set_binary(b)
         p.set_binary(x)
 
-        p.set_objective(sum([b[(u,v)] for (u,v) in self.edges(labels=None)]))
+        p.set_objective(Sum([b[(u,v)] for (u,v) in self.edges(labels=None)]))
 
         if value_only:
             return p.solve(objective_only=True, solver=solver, log=verbose)
@@ -1290,7 +1290,7 @@ class DiGraph(GenericGraph):
             True
         """
 
-        from sage.numerical.mip import MixedIntegerLinearProgram
+        from sage.numerical.mip import MixedIntegerLinearProgram, Sum
 
         p=MixedIntegerLinearProgram(maximization=False)
 
@@ -1301,11 +1301,11 @@ class DiGraph(GenericGraph):
         N=range(n)
 
         # First and second constraints
-        [p.add_constraint(sum([x[v][i] for i in N]),min=1,max=1) for v in self]
-        [p.add_constraint(sum([x[v][i] for v in self]),min=1,max=1) for i in N]
+        [p.add_constraint(Sum([x[v][i] for i in N]),min=1,max=1) for v in self]
+        [p.add_constraint(Sum([x[v][i] for v in self]),min=1,max=1) for i in N]
 
         # Definition of d_v
-        [p.add_constraint(sum([i*x[v][i] for i in N])-d[v],max=0,min=0) for v in self]
+        [p.add_constraint(Sum([i*x[v][i] for i in N])-d[v],max=0,min=0) for v in self]
 
         # The removed vertices cover all the back arcs ( third condition )
         [p.add_constraint(d[u]-d[v]+n*(b[u]+b[v]),min=0) for (u,v) in self.edges(labels=None)]
@@ -1313,7 +1313,7 @@ class DiGraph(GenericGraph):
         p.set_binary(b)
         p.set_binary(x)
 
-        p.set_objective(sum([b[v] for v in self]))
+        p.set_objective(Sum([b[v] for v in self]))
 
         if value_only:
             return p.solve(objective_only=True, solver=solver, log=verbose)
