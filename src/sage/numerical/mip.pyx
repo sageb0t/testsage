@@ -63,7 +63,7 @@ class MixedIntegerLinearProgram:
             sage: p = MixedIntegerLinearProgram(maximization=True)
         """
 
-        self._default_solver = None
+        self._default_solver = "GLPK"
 
         try:
             if self._default_solver == None:
@@ -76,13 +76,6 @@ class MixedIntegerLinearProgram:
             if self._default_solver == None:
                 from sage.numerical.mip_coin import solve_coin
                 self._default_solver = "Coin"
-        except ImportError:
-            pass
-
-        try:
-            if self._default_solver == None:
-                from sage.numerical.mip_glpk import solve_glpk
-                self._default_solver = "GLPK"
         except ImportError:
             pass
 
@@ -485,11 +478,7 @@ class MixedIntegerLinearProgram:
         http://en.wikipedia.org/wiki/MPS_%28format%29
         """
 
-        try:
-            from sage.numerical.mip_glpk import write_mps
-        except ImportError:
-            from sage.misc.exceptions import OptionalPackageNotFoundError
-            raise OptionalPackageNotFoundError("You need GLPK installed to use this function. To install it, you can type in Sage: install_package('glpk')")
+        from sage.numerical.mip_glpk import write_mps
 
         self._update_variables_name()
         write_mps(self, filename, modern)
@@ -516,11 +505,7 @@ class MixedIntegerLinearProgram:
         For more information about the LP file format :
         http://lpsolve.sourceforge.net/5.5/lp-format.htm
         """
-        try:
-            from sage.numerical.mip_glpk import write_lp
-        except:
-            from sage.misc.exceptions import OptionalPackageNotFoundError
-            raise OptionalPackageNotFoundError("You need GLPK installed to use this function. To install it, you can type in Sage: install_package('glpk')")
+        from sage.numerical.mip_glpk import write_lp
 
         self._update_variables_name()
         write_lp(self, filename)
@@ -1041,8 +1026,11 @@ class MixedIntegerLinearProgram:
             sage: p.add_constraint(1.5*x[1] + 3*x[2], max=4)
             sage: round(p.solve(),6)
             6.666667
-            sage: p.get_values(x)
-            {0: 0.0, 1: 1.3333333333333333}
+            sage: x = p.get_values(x)
+            sage: round(x[1],6)
+            0.0
+            sage: round(x[2],6)
+            1.333333
 
          Computation of a maximum stable set in Petersen's graph::
 
@@ -1062,10 +1050,6 @@ class MixedIntegerLinearProgram:
 
         if solver == None:
             solver = self._default_solver
-
-        if solver == None:
-            from sage.misc.exceptions import OptionalPackageNotFoundError
-            raise OptionalPackageNotFoundError("There does not seem to be any (Mixed) Integer Linear Program solver installed. Please visit http://www.sagemath.org/doc/constructions/linear_programming.html to learn more about the solvers available.")
 
         try:
             if solver == "Coin":
