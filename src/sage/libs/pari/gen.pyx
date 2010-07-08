@@ -7632,7 +7632,7 @@ cdef class PariInstance(sage.structure.parent_base.ParentWithBase):
         if bot:
             return  # pari already initialized.
 
-        global initialized, num_primes, ZERO, ONE, TWO, avma, top, bot, \
+        global initialized, num_primes, PARI_ZERO, PARI_ONE, PARI_TWO, avma, top, bot, \
                initial_bot, initial_top, prec
 
         #print "Initializing PARI (size=%s, maxprime=%s)"%(size,maxprime)
@@ -7666,9 +7666,9 @@ cdef class PariInstance(sage.structure.parent_base.ParentWithBase):
         initialized = 1
         stack_avma = avma
         num_primes = maxprime
-        self.ZERO = self.new_gen(gen_0)
-        self.ONE = self.new_gen(gen_1)
-        self.TWO = self.new_gen(gen_2)
+        self.PARI_ZERO = self.new_gen(gen_0)
+        self.PARI_ONE = self.new_gen(gen_1)
+        self.PARI_TWO = self.new_gen(gen_2)
 
     def _unsafe_deallocate_pari_stack(self):
         if bot:
@@ -8074,8 +8074,8 @@ cdef class PariInstance(sage.structure.parent_base.ParentWithBase):
             return v
         elif PyObject_TypeCheck(s, bool):
             if s:
-                return self.ONE
-            return self.ZERO
+                return self.PARI_ONE
+            return self.PARI_ZERO
 
         cdef GEN g
         t = str(s)
@@ -8162,7 +8162,7 @@ cdef class PariInstance(sage.structure.parent_base.ParentWithBase):
         raise TypeError, "x must be a PARI object"
 
     cdef _an_element_c_impl(self):  # override this in Cython
-        return self.ZERO
+        return self.PARI_ZERO
 
 # Commented out by John Cremona 2008-09-06 -- never used and confusing.
 #
