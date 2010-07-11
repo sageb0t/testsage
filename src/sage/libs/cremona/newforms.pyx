@@ -23,7 +23,8 @@ cdef class ECModularSymbol:
     Modular symbol associated with an elliptic curve,
     using John Cremona's newforms class.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: from sage.libs.cremona.newforms import ECModularSymbol
         sage: E = EllipticCurve('11a')
         sage: M = ECModularSymbol(E); M
@@ -52,6 +53,7 @@ cdef class ECModularSymbol:
         when run on a 32-bit platform, but works fine on 64-bit in this
         case; see trac #8114).
 
+        ::
             sage: from sage.libs.cremona.newforms import ECModularSymbol
             sage: E = EllipticCurve('858k2')
             sage: ECModularSymbol(E)
@@ -86,7 +88,8 @@ cdef class ECModularSymbol:
 
     def __repr__(self):
         """
-        TESTS:
+        TESTS::
+
             sage: from sage.libs.cremona.newforms import ECModularSymbol
             sage: E = EllipticCurve('11a')
             sage: M = ECModularSymbol(E); M
@@ -104,7 +107,8 @@ cdef class ECModularSymbol:
         """
         Computes the (rational) value of self at a rational number r.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.libs.cremona.newforms import ECModularSymbol
             sage: E = EllipticCurve('11a')
             sage: M = ECModularSymbol(E)
