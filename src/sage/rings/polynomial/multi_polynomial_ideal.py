@@ -884,6 +884,13 @@ class MPolynomialIdeal_singular_repr:
              Ideal (x2, x1^2) of Multivariate Polynomial Ring in x1, x2 over Rational Field,
              Ideal (x2, x1^2) of Multivariate Polynomial Ring in x1, x2 over Rational Field,
              Ideal (x2^4 + 4*x2^3 - 6*x2^2 - 20*x2 + 5, 8*x1 - x2^3 + x2^2 + 13*x2 - 5) of Multivariate Polynomial Ring in x1, x2 over Rational Field]
+
+        TESTS::
+
+            sage: R.<x,y> = QQ[]
+            sage: J = Ideal(x^2+y^2-2, y^2-1)
+            sage: J.triangular_decomposition()
+            [Ideal (y^2 - 1, x^2 - 1) of Multivariate Polynomial Ring in x, y over Rational Field]
         """
         P = self.ring()
 
@@ -1739,7 +1746,7 @@ class MPolynomialIdeal_singular_repr:
         R = self.ring()
 
         if self.basis_is_groebner():
-            I = self
+            I = R.ideal(self.interreduced_basis())
         else:
             I = R.ideal(self.groebner_basis())
 
@@ -1757,6 +1764,7 @@ class MPolynomialIdeal_singular_repr:
                 nR = other_ring
             Rs = singular(R)
             Is = singular(I)
+            Is.attrib('isSB',1)
             singular(nR).set_ring()
             nIs = singular.fglm(Rs,Is)
 
