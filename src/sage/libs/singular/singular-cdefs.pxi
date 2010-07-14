@@ -355,6 +355,8 @@ cdef extern from "libsingular.h":
 
     cdef int errorreported
     cdef int verbose
+    cdef void * currentVoice
+    cdef int myynest
 
     #
     # FUNCTIONS
