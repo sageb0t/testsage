@@ -242,7 +242,52 @@ import sage.rings.polynomial.toy_buchberger as toy_buchberger
 import sage.rings.polynomial.toy_variety as toy_variety
 import sage.rings.polynomial.toy_d_basis as toy_d_basis
 
-class RedSBContext:
+class LibSingularDefaultContext:
+    def __init__(self, singular=singular_default):
+        from sage.libs.singular.option import opt_ctx
+        self.libsingular_option_context = opt_ctx
+    def __enter__(self):
+        """
+        EXAMPLE::
+
+            sage: from sage.rings.polynomial.multi_polynomial_ideal import SingularDefaultContext
+            sage: P.<a,b,c> = PolynomialRing(QQ,3, order='lex')
+            sage: I = sage.rings.ideal.Katsura(P,3)
+            sage: singular.option('noredTail')
+            sage: singular.option('noredThrough')
+            sage: Is = I._singular_()
+            sage: with SingularDefaultContext(): rgb = Is.groebner()
+            sage: rgb
+            84*c^4-40*c^3+c^2+c,
+            7*b+210*c^3-79*c^2+3*c,
+            7*a-420*c^3+158*c^2+8*c-7
+        """
+        self.libsingular_option_context.__enter__()
+        self.libsingular_option_context.opt.reset_default()
+        self.libsingular_option_context.opt['red_sb'] = True
+        self.libsingular_option_context.opt['red_tail'] = True
+        self.libsingular_option_context.opt['deg_bound'] = 0
+        self.libsingular_option_context.opt['mult_bound'] = 0
+
+    def __exit__(self, typ, value, tb):
+        """
+        EXAMPLE::
+
+            sage: from sage.rings.polynomial.multi_polynomial_ideal import SingularDefaultContext
+            sage: P.<a,b,c> = PolynomialRing(QQ,3, order='lex')
+            sage: I = sage.rings.ideal.Katsura(P,3)
+            sage: singular.option('noredTail')
+            sage: singular.option('noredThrough')
+            sage: Is = I._singular_()
+            sage: with SingularDefaultContext(): rgb = Is.groebner()
+            sage: rgb
+            84*c^4-40*c^3+c^2+c,
+            7*b+210*c^3-79*c^2+3*c,
+            7*a-420*c^3+158*c^2+8*c-7
+        """
+        self.libsingular_option_context.__exit__(typ,value,tb)
+
+class SingularDefaultContext:
     """
     Within this context all Singular Groebner basis calculations are
     reduced automatically.
@@ -250,6 +295,7 @@ class RedSBContext:
     AUTHORS:
 
     - Martin Albrecht
+    - Simon King
     """
     def __init__(self, singular=singular_default):
         """
@@ -262,7 +308,7 @@ class RedSBContext:
 
         EXAMPLE::
 
-            sage: from sage.rings.polynomial.multi_polynomial_ideal import RedSBContext
+            sage: from sage.rings.polynomial.multi_polynomial_ideal import SingularDefaultContext
             sage: P.<a,b,c> = PolynomialRing(QQ,3, order='lex')
             sage: I = sage.rings.ideal.Katsura(P,3)
             sage: singular.option('noredTail')
@@ -277,7 +323,7 @@ class RedSBContext:
         ::
 
             sage: from __future__ import with_statement
-            sage: with RedSBContext(): rgb = Is.groebner()
+            sage: with SingularDefaultContext(): rgb = Is.groebner()
             sage: rgb
             84*c^4-40*c^3+c^2+c,
             7*b+210*c^3-79*c^2+3*c,
@@ -297,52 +343,72 @@ class RedSBContext:
            Groebner basis is computed so the user does not need to use
            it manually.
         """
-        from sage.libs.singular.option import opt_ctx
         self.singular = singular
-        self.libsingular_option_context = opt_ctx
 
     def __enter__(self):
         """
         EXAMPLE::
 
-            sage: from sage.rings.polynomial.multi_polynomial_ideal import RedSBContext
+            sage: from sage.rings.polynomial.multi_polynomial_ideal import SingularDefaultContext
             sage: P.<a,b,c> = PolynomialRing(QQ,3, order='lex')
             sage: I = sage.rings.ideal.Katsura(P,3)
             sage: singular.option('noredTail')
             sage: singular.option('noredThrough')
             sage: Is = I._singular_()
-            sage: with RedSBContext(): rgb = Is.groebner()
+            sage: with SingularDefaultContext(): rgb = Is.groebner()
             sage: rgb
             84*c^4-40*c^3+c^2+c,
             7*b+210*c^3-79*c^2+3*c,
             7*a-420*c^3+158*c^2+8*c-7
         """
+        try:
+            self.bck_degBound = int(self.singular.eval('degBound'))
+        except RuntimeError:
+            self.bck_degBound = int(0)
+        try:
+            self.bck_multBound = int(self.singular.eval('multBound'))
+        except RuntimeError:
+            self.bck_multBound = int(0)
         self.o = self.singular.option("get")
+        self.singular.option('set',self.singular._saved_options)
         self.singular.option("redSB")
-        self.libsingular_option_context.__enter__()
-        self.libsingular_option_context.opt['redSB'] = True
-        self.libsingular_option_context.opt['redTail'] = True
+        self.singular.option("redTail")
+        try:
+            self.singular.eval('degBound=0')
+        except RuntimeError:
+            pass
+        try:
+            self.singular.eval('multBound=0')
+        except RuntimeError:
+            pass
 
     def __exit__(self, typ, value, tb):
         """
         EXAMPLE::
 
-            sage: from sage.rings.polynomial.multi_polynomial_ideal import RedSBContext
+            sage: from sage.rings.polynomial.multi_polynomial_ideal import SingularDefaultContext
             sage: P.<a,b,c> = PolynomialRing(QQ,3, order='lex')
             sage: I = sage.rings.ideal.Katsura(P,3)
             sage: singular.option('noredTail')
             sage: singular.option('noredThrough')
             sage: Is = I._singular_()
-            sage: with RedSBContext(): rgb = Is.groebner()
+            sage: with SingularDefaultContext(): rgb = Is.groebner()
             sage: rgb
             84*c^4-40*c^3+c^2+c,
             7*b+210*c^3-79*c^2+3*c,
             7*a-420*c^3+158*c^2+8*c-7
         """
         self.singular.option("set",self.o)
-        self.libsingular_option_context.__exit__(typ,value,tb)
+        try:
+            self.singular.eval('degBound=%d'%self.bck_degBound)
+        except RuntimeError:
+            pass
+        try:
+            self.singular.eval('multBound=%d'%self.bck_multBound)
+        except RuntimeError:
+            pass
 
-def redSB(func):
+def singular_standard_options(func):
     """
     Decorator to force a reduced Singular groebner basis.
 
@@ -361,9 +427,39 @@ def redSB(func):
     """
     def wrapper(*args, **kwds):
         """
-        Execute function in ``RedSBContext``.
+        Execute function in ``SingularDefaultContext``.
         """
-        with RedSBContext():
+        with SingularDefaultContext():
+            return func(*args, **kwds)
+
+    from sage.misc.sageinspect import sage_getsource
+    wrapper._sage_src_ = lambda: sage_getsource(func)
+    wrapper.__name__ = func.__name__
+    wrapper.__doc__ = func.__doc__
+    return wrapper
+
+def libsingular_standard_options(func):
+    """
+    Decorator to force a reduced Singular groebner basis.
+
+    TESTS::
+
+        sage: P.<a,b,c,d,e> = PolynomialRing(GF(127))
+        sage: J = sage.rings.ideal.Cyclic(P).homogenize()
+        sage: from sage.misc.sageinspect import sage_getsource
+        sage: "buchberger" in sage_getsource(J.interreduced_basis)
+        True
+
+    .. note::
+
+       This decorator is used automatically internally so the user
+       does not need to use it manually.
+    """
+    def wrapper(*args, **kwds):
+        """
+        Execute function in ``LibSingularDefaultContext``.
+        """
+        with LibSingularDefaultContext():
             return func(*args, **kwds)
 
     from sage.misc.sageinspect import sage_getsource
@@ -604,7 +700,7 @@ class MPolynomialIdeal_singular_repr:
         I.plot()
 
     @require_field
-    @redSB
+    @libsingular_standard_options
     def complete_primary_decomposition(self, algorithm="sy"):
         r"""
         Return a list of primary ideals and their associated primes such
@@ -764,7 +860,6 @@ class MPolynomialIdeal_singular_repr:
         return [I for I, _ in self.complete_primary_decomposition(algorithm)]
 
     @require_field
-    @redSB
     def associated_primes(self, algorithm='sy'):
         r"""
         Return a list of the associated primes of primary ideals of
@@ -826,6 +921,8 @@ class MPolynomialIdeal_singular_repr:
         return [P for _,P in self.complete_primary_decomposition(algorithm)]
 
     @require_field
+    @singular_standard_options
+    @libsingular_standard_options
     def triangular_decomposition(self, algorithm=None, singular=singular_default):
         """
         Decompose zero-dimensional ideal ``self`` into triangular
@@ -1072,7 +1169,7 @@ class MPolynomialIdeal_singular_repr:
         else:
             return vd
 
-    @redSB
+    @singular_standard_options
     def _groebner_basis_singular(self, algorithm="groebner", *args, **kwds):
         """
         Return the reduced Groebner basis of this ideal. If the
@@ -1134,6 +1231,7 @@ class MPolynomialIdeal_singular_repr:
         S =  Sequence([R(S[i+1]) for i in range(len(S))], R, check=False, immutable=True)
         return S
 
+    @cached_method
     def _groebner_basis_singular_raw(self, algorithm="groebner", singular=singular_default, *args, **kwds):
         r"""
         Return a Groebner basis in Singular format.
@@ -1147,17 +1245,27 @@ class MPolynomialIdeal_singular_repr:
             b*d^4 - b + d^5 - d, b*c - b*d + c^2*d^4 + c*d - 2*d^2,
             b^2 + 2*b*d + d^2, a + b + c + d]
         """
-        try:
-            return self.__gb_singular
-        except AttributeError:
-            pass
-        # singular options are preserved by @redSB so we don't
-        # need to do that here too
+        #try:
+        #    return self.__gb_singular
+        #except AttributeError:
+        #    pass
+        # singular options are preserved by @singular_standard_options,
+        # so we don't eed to do that here too
+        from sage.libs.singular.option import _options_py_to_singular
+        S = self._singular_()   # for degBound, we need to ensure
+                                # that a ring is defined
         for o,v in kwds.iteritems():
+            o = _options_py_to_singular.get(o,o)
             if v:
-                singular.option(o)
+                if o in ['degBound','multBound']:
+                    singular.eval(o+'=%d'%v)
+                else:
+                    singular.option(o)
             else:
-                singular.option("no"+o)
+                if o in ['degBound','multBound']:
+                    singular.eval(o+'=0')
+                else:
+                    singular.option("no"+o)
 
         if algorithm=="groebner":
             S = self._singular_().groebner()
@@ -1174,8 +1282,8 @@ class MPolynomialIdeal_singular_repr:
         self.__gb_singular = S
         return S
 
-    @redSB
-    def _groebner_basis_libsingular(self, algorithm="groebner", redsb=True, red_tail=True):
+    @libsingular_standard_options
+    def _groebner_basis_libsingular(self, algorithm="groebner", *args, **kwds):
         """
         Return the reduced Groebner basis of this ideal. If the
         Groebner basis for this ideal has been calculated before the
@@ -1231,9 +1339,13 @@ class MPolynomialIdeal_singular_repr:
 
         import sage.libs.singular
         groebner = sage.libs.singular.ff.groebner
+        from sage.all import get_verbose
 
-        opt['redSB'] = redsb
-        opt['redTail'] = red_tail
+        if get_verbose()>=2:
+            opt['prot'] = True
+        for name,value in kwds.iteritems():
+            if value is not None:
+                opt[name] = value
 
         T = self.ring().term_order()
 
@@ -1285,7 +1397,7 @@ class MPolynomialIdeal_singular_repr:
             self.__genus = Integer(genus(self))
             return self.__genus
 
-    @redSB
+    @libsingular_standard_options
     def intersection(self, other):
         """
         Return the intersection of the two ideals.
@@ -1321,7 +1433,7 @@ class MPolynomialIdeal_singular_repr:
         return R.ideal(K)
 
     @require_field
-    @redSB
+    @libsingular_standard_options
     def minimal_associated_primes(self):
         """
         OUTPUT:
@@ -1349,7 +1461,7 @@ class MPolynomialIdeal_singular_repr:
         return [R.ideal(J) for J in M]
 
     @require_field
-    @redSB
+    @libsingular_standard_options
     def radical(self):
         r"""
         The radical of this ideal.
@@ -1402,7 +1514,7 @@ class MPolynomialIdeal_singular_repr:
         return S.ideal(r)
 
     @require_field
-    @redSB
+    @libsingular_standard_options
     def integral_closure(self, p=0, r=True, singular=singular_default):
         """
         Let `I` = ``self``.
@@ -1429,7 +1541,7 @@ class MPolynomialIdeal_singular_repr:
             sage: I.integral_closure()
             [x^2, y^5, -x*y^3]
 
-        ALGORITHM: Use Singular
+        ALGORITHM: Use libSingular
         """
         R = self.ring()
         import sage.libs.singular
@@ -1467,7 +1579,6 @@ class MPolynomialIdeal_singular_repr:
         S = syz(self)
         return matrix(self.ring(), S)
 
-    @redSB
     def reduced_basis(self):
         r"""
         .. warning::
@@ -1511,7 +1622,8 @@ class MPolynomialIdeal_singular_repr:
         deprecation("This function is deprecated. It will be removed in a future release of Sage. Please use the interreduced_basis() function instead.")
         return self.interreduced_basis()
 
-    @redSB
+    @singular_standard_options
+    @libsingular_standard_options
     def interreduced_basis(self):
         r"""
         If this ideal is spanned by `(f_1, ..., f_n)` this method
@@ -1577,6 +1689,7 @@ class MPolynomialIdeal_singular_repr:
         return ret
 
     @cached_method
+    @singular_standard_options
     def basis_is_groebner(self, singular=singular_default):
         r"""
         Returns ``True`` if the generators of this ideal
@@ -1682,7 +1795,8 @@ class MPolynomialIdeal_singular_repr:
         return True
 
     @require_field
-    @redSB
+    @singular_standard_options
+    @libsingular_standard_options
     def transformed_basis(self, algorithm="gwalk", other_ring=None, singular=singular_default):
         """
         Returns a lex or ``other_ring`` Groebner Basis for this ideal.
@@ -1773,7 +1887,7 @@ class MPolynomialIdeal_singular_repr:
         else:
             raise TypeError, "Cannot convert basis with given algorithm"
 
-    @redSB
+    @libsingular_standard_options
     def elimination_ideal(self, variables):
         r"""
         Returns the elimination ideal this ideal with respect to the
@@ -1808,7 +1922,7 @@ class MPolynomialIdeal_singular_repr:
         Is = MPolynomialIdeal(R,self.groebner_basis())
         return MPolynomialIdeal(R, eliminate(Is, prod(variables)) )
 
-    @redSB
+    @libsingular_standard_options
     def quotient(self, J):
         r"""
         Given ideals `I` = ``self`` and `J` in the same polynomial
@@ -2387,18 +2501,21 @@ class MPolynomialIdeal( MPolynomialIdeal_singular_repr, \
                                         symmetry=symmetry, verbose=verbose)
 
     @cached_method
-    def groebner_basis(self, algorithm='', *args, **kwds):
+    def groebner_basis(self, algorithm='', deg_bound=None, mult_bound=None, *args, **kwds):
         """
-        Return the reduced Groebner basis of this ideal. A Groebner
-        basis `g_1,...,g_n` for an ideal `I` is a basis such that
-        `<LM(g_i)> = LM(I)`, i.e., the leading monomial ideal of
-        `I` is spanned by the leading terms of
-        `g_1,...,g_n`. Groebner bases are the key concept in
-        computational ideal theory in multivariate polynomial rings
-        which allows a variety of problems to be solved.
+        Return the reduced Groebner basis of this ideal.
+
+        A Groebner basis `g_1,...,g_n` for an ideal `I` is a
+        generating set such that `<LM(g_i)> = LM(I)`, i.e.,
+        the leading monomial ideal of `I` is spanned by the
+        leading terms of `g_1,...,g_n`. Groebner bases are
+        the key concept in computational ideal theory in
+        multivariate polynomial rings which allows a variety
+        of problems to be solved.
+
         Additionally, a *reduced* Groebner basis `G` is a unique
-        representation for the ideal `<G>` with respect to the chosen
-        monomial ordering.
+        representation for the ideal `<G>` with respect to the
+        chosen monomial ordering.
 
         INPUT:
 
@@ -2547,6 +2664,48 @@ class MPolynomialIdeal( MPolynomialIdeal_singular_repr, \
             sage: I.groebner_basis('magma:GroebnerBasis') # optional - magma
             [a - 60*c^3 + 158/7*c^2 + 8/7*c - 1, b + 30*c^3 - 79/7*c^2 + 3/7*c, c^4 - 10/21*c^3 + 1/84*c^2 + 1/84*c]
 
+        Singular and libSingular can compute Groebner basis with degree
+        restrictions::
+
+            sage: R.<x,y> = QQ[]
+            sage: I = R*[x^3+y^2,x^2*y+1]
+            sage: I.groebner_basis(algorithm='singular')
+            [x^3 + y^2, x^2*y + 1, y^3 - x]
+            sage: I.groebner_basis(algorithm='singular',deg_bound=2)
+            [x^3 + y^2, x^2*y + 1]
+            sage: I.groebner_basis()
+            [x^3 + y^2, x^2*y + 1, y^3 - x]
+            sage: I.groebner_basis(deg_bound=2)
+            [x^3 + y^2, x^2*y + 1]
+
+        In the case of libSingular, a protocol is printed, if the
+        verbosity level is at least 2, or if the argument ``prot``
+        is provided. For some reason, the protocol does not appear
+        during doctests, so, we skip the examples with protocol
+        output.
+        ::
+
+            sage: set_verbose(2)
+            sage: I = R*[x^3+y^2,x^2*y+1]
+            sage: I.groebner_basis()  # not tested
+            std in (0),(x,y),(dp(2),C)
+            [4294967295:2]3ss4s6
+            (S:2)--
+            product criterion:1 chain criterion:0
+            [x^3 + y^2, x^2*y + 1, y^3 - x]
+            sage: I.groebner_basis(prot=False)
+            [x^3 + y^2, x^2*y + 1, y^3 - x]
+            sage: set_verbose(0)
+            sage: I.groebner_basis(prot=True)  # not tested
+            std in (0),(x,y),(dp(2),C)
+            [4294967295:2]3ss4s6
+            (S:2)--
+            product criterion:1 chain criterion:0
+            [x^3 + y^2, x^2*y + 1, y^3 - x]
+
+        The list of available options is provided at
+        :class:`~sage.libs.singular.option.LibSingularOptions`.
+
         Groebner bases over `\ZZ` can be computed. ::
 
             sage: P.<a,b,c> = PolynomialRing(ZZ,3)
@@ -2629,10 +2788,10 @@ class MPolynomialIdeal( MPolynomialIdeal_singular_repr, \
 
         if algorithm is '':
             try:
-                gb = self._groebner_basis_libsingular("groebner", *args, **kwds)
+                gb = self._groebner_basis_libsingular("groebner", deg_bound=deg_bound, mult_bound=mult_bound, *args, **kwds)
             except (TypeError,NameError), msg: # conversion to Singular not supported
                 try:
-                    gb = self._groebner_basis_singular("groebner", *args, **kwds)
+                    gb = self._groebner_basis_singular("groebner", deg_bound=deg_bound, mult_bound=mult_bound, *args, **kwds)
                 except (TypeError,NameError), msg: # conversion to Singular not supported
                     if self.ring().term_order().is_global() and is_IntegerModRing(self.ring().base_ring()) and not self.ring().base_ring().is_field():
                         verbose("Warning: falling back to very slow toy implementation.", level=0)
@@ -2653,9 +2812,9 @@ class MPolynomialIdeal( MPolynomialIdeal_singular_repr, \
                             raise TypeError, "Local/unknown orderings not supported by 'toy_buchberger' implementation."
 
         elif algorithm.startswith('singular:'):
-            gb = self._groebner_basis_singular(algorithm[9:])
+            gb = self._groebner_basis_singular(algorithm[9:], deg_bound=deg_bound, mult_bound=mult_bound, *args, **kwds)
         elif algorithm.startswith('libsingular:'):
-            gb = self._groebner_basis_libsingular(algorithm[len('libsingular:'):], *args, **kwds)
+            gb = self._groebner_basis_libsingular(algorithm[len('libsingular:'):], deg_bound=deg_bound, mult_bound=mult_bound, *args, **kwds)
         elif algorithm == 'macaulay2:gb':
             gb = self._groebner_basis_macaulay2(*args, **kwds)
         elif algorithm == 'magma:GroebnerBasis':
