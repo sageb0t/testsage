@@ -201,11 +201,14 @@ cdef class ToricLatticeElement(Vector_integer_dense):
             False
         """
         c = cmp(type(self), type(right))
-        if c:
-            return c
-        c = cmp(self.parent(), right.parent())
-        if c:
-            return c
+        PL = self.parent()
+        PR = right.parent()
+        try:
+            c = cmp(PL.ambient_module(), PR.ambient_module())
+            if c:
+                return c
+        except AttributeError:
+            return cmp(PL, PR)
         # Now use the real comparison of vectors
         return self._cmp_c_impl(right)
 
@@ -281,7 +284,8 @@ cdef class ToricLatticeElement(Vector_integer_dense):
         """
         # We try to deal only with the case of two lattice elements...
         if is_ToricLatticeElement(other):
-            if other.parent() is self.parent().dual():
+            if (other.parent().ambient_module()
+                is self.parent().ambient_module().dual()):
                 # Our own _dot_product_ is disabled
                 return Vector_integer_dense._dot_product_(self, other)
             raise CoercionException("only elements of dual toric lattices "
@@ -343,7 +347,7 @@ cdef class ToricLatticeElement(Vector_integer_dense):
             '\\left(1,2,3\\right)_{L^*}'
         """
         return "%s_{%s}" % (super(ToricLatticeElement, self)._latex_(),
-                            self.parent()._latex_name)
+                            self.parent().ambient_module()._latex_name)
 
     def _repr_(self):
         r"""
@@ -360,4 +364,5 @@ cdef class ToricLatticeElement(Vector_integer_dense):
             sage: e._repr_()
             'L*(1, 2, 3)'
         """
-        return self.parent()._name + super(ToricLatticeElement, self)._repr_()
+        return (self.parent().ambient_module()._name
+                + super(ToricLatticeElement, self)._repr_())
