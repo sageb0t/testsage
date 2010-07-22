@@ -63,8 +63,6 @@ class MixedIntegerLinearProgram:
             sage: p = MixedIntegerLinearProgram(maximization=True)
         """
 
-        self._default_solver = "GLPK"
-
         try:
             if self._default_solver == None:
                 from sage.numerical.mip_cplex import solve_cplex
@@ -78,6 +76,9 @@ class MixedIntegerLinearProgram:
                 self._default_solver = "Coin"
         except ImportError:
             pass
+
+        if self._default_solver == None:
+            self._default_solver = "GLPK"
 
         # List of all the MIPVariables linked to this instance of
         # MixedIntegerLinearProgram
