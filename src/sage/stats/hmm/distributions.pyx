@@ -80,7 +80,7 @@ cdef class Distribution:
 
            - a single sample if n is 1; otherwise many samples
 
-        EXAMPLES::
+        EXAMPLES:
 
         This method must be defined in a derived class::
 
@@ -103,7 +103,7 @@ cdef class Distribution:
 
            - float
 
-        EXAMPLES::
+        EXAMPLES:
 
         This method must be defined in a derived class::
 

@@ -86,7 +86,7 @@ cdef class GaussianHiddenMarkovModel(HiddenMarkovModel):
         - ``pi`` -- initial state probabilities
         - ``normalize`` --bool (default: True)
 
-    EXAMPLES::
+    EXAMPLES:
 
     We illustrate the primary functions with an example 2-state Gaussian HMM::
 
@@ -559,7 +559,7 @@ cdef class GaussianHiddenMarkovModel(HiddenMarkovModel):
             - float -- log of probability that the observed sequence
               was produced by the Viterbi sequence of states.
 
-        EXAMPLES::
+        EXAMPLES:
 
         We find the optimal state sequence for a given model::
 
