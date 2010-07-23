@@ -23,7 +23,7 @@
 #   executables are not needed, but some files generated in the
 #   process (using bison for example) are needed.
 # * The necessary files are copied from parisvn/ to src/ using a
-#   mechanism very similar to "make release" from PARI.
+#   mechanism very similar to "make svnsnapshot" from PARI.
 # * The files parisvn/galdata.tgz and parisvn/seadata-small.tgz are
 #   extracted to src/src.
 # * The patches in patches/*.patch are applied and the complete patched
@@ -52,7 +52,7 @@ fi
 [ -f parisvn/seadata-small.tgz ] || wget -O parisvn/seadata-small.tgz \
 	http://pari.math.u-bordeaux.fr/pub/pari/packages/seadata-small.tgz
 
-	# make pari (must run bison, etc...)
+# make pari (must run bison, etc...)
 cd parisvn
 ./Configure || exit
 make gp doc || exit
@@ -60,6 +60,9 @@ make gp doc || exit
 # Copy the needed files to src using a tar pipe.  This is based on code
 # from config/settar.
 tar c `config/get_MANIFEST` | ( cd ../src && tar xv )
+
+# Save svn version (see config/settar)
+svnversion >config/svnversion
 
 # Extract the tgz files
 for tgzfile in galdata.tgz seadata-small.tgz; do
@@ -83,12 +86,8 @@ for patch in ../patches/*.patch; do
 	chmod "--reference=$srcfile" "$outfile"
 done
 
-cd ..
-
-# Get status from svn and store in patches/status (for lack of a better place)
-( cd parisvn; TOP=.; . config/version; echo "$status" ) >patches/status
-
 # We're done!
+cd ..
 echo "======================================================"
 echo "Done downloading PARI and creating the src/ directory."
 echo "If everything looks okay, proceed as follows:"
