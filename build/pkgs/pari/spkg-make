@@ -52,8 +52,11 @@ fi
 [ -f parisvn/seadata-small.tgz ] || wget -O parisvn/seadata-small.tgz \
 	http://pari.math.u-bordeaux.fr/pub/pari/packages/seadata-small.tgz
 
-# make pari (must run bison, etc...)
+# Use the specified SVN version
 cd parisvn
+svn update -r 12546
+
+# make pari (must run bison, etc...)
 ./Configure || exit
 make gp doc || exit
 
