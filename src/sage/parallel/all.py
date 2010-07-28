@@ -1,1 +1,1 @@
-from decorate import parallel, fork
+from decorate import parallel
