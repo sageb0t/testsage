@@ -2392,7 +2392,7 @@ def is_square(n, root=False):
                 else:
                     return False, None
         return n.is_square()
-    except AttributeError:
+    except (AttributeError, NotImplementedError):
         pass
     t, x = pari(n).issquare(find_root=True)
     if root:
