@@ -203,6 +203,9 @@ ext_modules = [
     Extension('sage.combinat.dict_addition',
               sources=['sage/combinat/dict_addition.pyx']),
 
+    Extension('sage.combinat.combinat_cython',
+              sources=['sage/combinat/combinat_cython.pyx']),
+
     ################################
     ##
     ## sage.crypto
