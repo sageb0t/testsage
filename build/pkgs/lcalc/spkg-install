@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ###########################################
-## lcalc-20080205
+## lcalc-20100428-1.23.p2
 ###########################################
 
 if [ -z "$SAGE_LOCAL" ] ; then
@@ -182,13 +182,6 @@ fi
 export LCALC_LIBS
 echo "Using LCALC_LIBS=$LCALC_LIBS"
 
-# disable Cygwin build for now
-if [ "$UNAME" = "CYGWIN" ]; then
-#    cp patches/Lcommandline_elliptic.cc src/src/
-    echo "Sorry, the lcalc build is currently broken"
-    echo 1
-fi
-
 success() {
     set +e
     if [ $? -ne 0 ]; then
@@ -197,6 +190,15 @@ success() {
     fi
     set -e
 }
+
+cp ../../patches/Lcommandline_elliptic.cc .
+
+# disable Cygwin build for now
+if [ "$UNAME" = "CYGWIN" ]; then
+#    cp ../../patches/Lcommandline_elliptic.cc .
+    echo "Sorry, the lcalc build is currently broken"
+    echo 1
+fi
 
 export DEFINES=""
 cp ../../patches/Makefile.sage Makefile
