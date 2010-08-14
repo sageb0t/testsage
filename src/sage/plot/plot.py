@@ -1172,7 +1172,8 @@ class Graphics(SageObject):
                         fontsize=None, aspect_ratio=None,
                         gridlines=None, gridlinesstyle=None,
                         vgridlinesstyle=None, hgridlinesstyle=None,transparent=False,
-                        axes_pad=.02, ticks=None, tick_formatter=None)
+                        axes_pad=.02, axes_integer=False,
+                        ticks=None, tick_formatter=None)
 
     def show(self, **kwds):
         """
@@ -1648,13 +1649,14 @@ class Graphics(SageObject):
         return {'xmin':xmin, 'xmax':xmax, 'ymin':ymin, 'ymax':ymax}
 
     def matplotlib(self, filename=None,
-             xmin=None, xmax=None, ymin=None, ymax=None,
-             figsize=None, figure=None, sub=None,
-              axes=None, axes_labels=None, fontsize=None,
-             frame=False, verify=True, aspect_ratio = None,
-             gridlines=None, gridlinesstyle=None,
-             vgridlinesstyle=None, hgridlinesstyle=None,axes_pad=0.02,
-             tick_formatter=None, ticks=None):
+                   xmin=None, xmax=None, ymin=None, ymax=None,
+                   figsize=None, figure=None, sub=None,
+                   axes=None, axes_labels=None, fontsize=None,
+                   frame=False, verify=True, aspect_ratio = None,
+                   gridlines=None, gridlinesstyle=None,
+                   vgridlinesstyle=None, hgridlinesstyle=None,
+                   axes_pad=0.02, axes_integer=None,
+                   tick_formatter=None, ticks=None):
         r"""
         Return a matplotlib figure object representing the graphic
 
@@ -1745,6 +1747,8 @@ class Graphics(SageObject):
         subplot.set_xlim([xmin, xmax])
         subplot.set_ylim([ymin,ymax])
 
+        locator_options=dict(nbins=9,steps=[1,2,5,10],integer=axes_integer)
+
         if axes is None:
             axes = self.__show_axes
 
@@ -1760,7 +1764,7 @@ class Graphics(SageObject):
             from matplotlib.ticker import OldScalarFormatter, MaxNLocator, MultipleLocator, FixedLocator, NullLocator, Locator
             x_locator, y_locator = ticks
             if x_locator is None:
-                x_locator = MaxNLocator(nbins=9)
+                x_locator = MaxNLocator(**locator_options)
             elif isinstance(x_locator,Locator):
                 pass
             elif x_locator == []:
@@ -1774,7 +1778,7 @@ class Graphics(SageObject):
                 else: # not enough room for two major ticks
                     raise ValueError('Expand the range of the independent variable to allow two multiples of your tick locator (option `ticks`).')
             if y_locator is None:
-                y_locator = MaxNLocator(nbins=9)
+                y_locator = MaxNLocator(**locator_options)
             elif isinstance(y_locator,Locator):
                 pass
             elif y_locator == []:
@@ -1872,7 +1876,7 @@ class Graphics(SageObject):
             from matplotlib.ticker import OldScalarFormatter, MaxNLocator, MultipleLocator, FixedLocator, NullLocator, Locator
             x_locator, y_locator = ticks
             if x_locator is None:
-                x_locator = MaxNLocator(nbins=9, steps=[1,2,5,10])
+                x_locator = MaxNLocator(**locator_options)
             elif isinstance(x_locator,Locator):
                 pass
             elif x_locator == []:
@@ -1886,7 +1890,7 @@ class Graphics(SageObject):
                 else: # not enough room for two major ticks
                     raise ValueError('Expand the range of the independent variable to allow two multiples of your tick locator (option `ticks`).')
             if y_locator is None:
-                y_locator = MaxNLocator(nbins=9, steps=[1,2,5,10])
+                y_locator = MaxNLocator(**locator_options)
             elif isinstance(y_locator,Locator):
                 pass
             elif y_locator == []:
