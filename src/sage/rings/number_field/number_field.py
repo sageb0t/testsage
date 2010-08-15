@@ -2624,7 +2624,7 @@ class NumberField_generic(number_field_base.NumberField):
 
         - ``S`` - a set of primes of the base field
 
-        - ``proof`` - if False, assume Pari's GRH++ in computing the class group
+        - ``proof`` - if False, assume the GRH in computing the class group
 
         OUTPUT:
 
@@ -2655,7 +2655,7 @@ class NumberField_generic(number_field_base.NumberField):
 
         - ``S`` - a set of primes of the base field
 
-        - ``proof`` - if False, assume Pari's GRH++ in computing the class group
+        - ``proof`` - if False, assume the GRH in computing the class group
 
         OUTPUT:
 
@@ -2689,7 +2689,7 @@ class NumberField_generic(number_field_base.NumberField):
 
         - ``S`` - a tuple of primes of the base field
 
-        - ``proof`` - if False, assume Pari's GRH++ in computing the class group
+        - ``proof`` - if False, assume the GRH in computing the class group
 
         OUTPUT:
 
@@ -2718,8 +2718,8 @@ class NumberField_generic(number_field_base.NumberField):
         deg = self.absolute_degree()
         ###############################################################
         # The following line computes S-class gp and S-units in Pari, #
-        # assuming the Generalized Riemann Hypothesis + other         #
-        # "heuristic" assumptions (GRH++), or nothing if certify.     #
+        # assuming the Generalized Riemann Hypothesis if certify is   #
+        # False.  When certify=True, the result is unconditional.     #
         ###############################################################
         D_gp = gp(self.pari_bnf(certify=proof))
 
@@ -2771,7 +2771,7 @@ class NumberField_generic(number_field_base.NumberField):
 
         - ``m`` - A positive integer.
 
-        - ``proof`` - If False, assume Pari's GRH++ in computing the class group.
+        - ``proof`` - If False, assume the GRH in computing the class group.
 
         OUTPUT:
 

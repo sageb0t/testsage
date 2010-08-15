@@ -622,7 +622,7 @@ class PolynomialQuotientRing_generic(sage.rings.commutative_ring.CommutativeRing
 
         - ``S`` - a set of primes of the coefficient ring
 
-        - ``proof`` - if False, assume Pari's GRH++ in computing the class group
+        - ``proof`` - if False, assume the GRH in computing the class group
 
         OUTPUT:
 
@@ -711,7 +711,7 @@ class PolynomialQuotientRing_generic(sage.rings.commutative_ring.CommutativeRing
 
         INPUT::
 
-        - ``proof`` - if False, assume Pari's GRH++ in computing the class group
+        - ``proof`` - if False, assume the GRH in computing the class group
 
         OUTPUT:
 
@@ -788,7 +788,7 @@ class PolynomialQuotientRing_generic(sage.rings.commutative_ring.CommutativeRing
 
         - ``S`` - a set of primes of the coefficient ring
 
-        - ``proof`` - if False, assume Pari's GRH++ in computing the class group
+        - ``proof`` - if False, assume the GRH in computing the class group
 
         OUTPUT:
 
@@ -843,7 +843,7 @@ class PolynomialQuotientRing_generic(sage.rings.commutative_ring.CommutativeRing
 
         INPUT::
 
-        - ``proof`` - if False, assume Pari's GRH++ in computing the class group
+        - ``proof`` - if False, assume the GRH in computing the class group
 
         OUTPUT:
 
@@ -901,7 +901,7 @@ class PolynomialQuotientRing_generic(sage.rings.commutative_ring.CommutativeRing
 
         - ``S`` - a tuple of primes of the coefficient ring
 
-        - ``proof`` - if False, assume Pari's GRH++ in computing the class group
+        - ``proof`` - if False, assume the GRH in computing the class group
 
         OUTPUT:
 
@@ -1034,7 +1034,7 @@ class PolynomialQuotientRing_generic(sage.rings.commutative_ring.CommutativeRing
 
         - ``m`` - a positive integer
 
-        - ``proof`` - if False, assume Pari's GRH++ in computing the class group
+        - ``proof`` - if False, assume the GRH in computing the class group
 
         OUTPUT:
 
