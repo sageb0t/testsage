@@ -1203,7 +1203,7 @@ class Line(Vrepresentation):
 #############################################################
 def render_2d(projection, **kwds):
     """
-    Returns 2d rendering of the projection of a polyhedron into
+    Return 2d rendering of the projection of a polyhedron into
     2-dimensional ambient space.
 
     EXAMPLES::
@@ -1230,7 +1230,7 @@ def render_2d(projection, **kwds):
 
 def render_3d(projection, **kwds):
     """
-    Returns 3d rendering of a polyhedron projected into
+    Return 3d rendering of a polyhedron projected into
     3-dimensional ambient space.
 
     NOTE:
@@ -1264,7 +1264,7 @@ def render_3d(projection, **kwds):
 
 def render_4d(polyhedron, **kwds):
     """
-    Returns a 3d rendering of the Schlegel projection of a 4d
+    Return a 3d rendering of the Schlegel projection of a 4d
     polyhedron projected into 3-dimensional space.
 
     NOTES:
@@ -1402,9 +1402,47 @@ class Polyhedron(SageObject):
     def __init__(self,
                  vertices = None, rays = None, lines = None,
                  ieqs = None, eqns = None,
-                 field = QQ, verbose = False):
+                 field = QQ, compute_adjacency=False, verbose = False):
         """
         Initializes the polyhedron.
+
+        INPUT:
+
+        - ``vertices`` -- list of points. Each point can be specified
+          as any iterable container of ``field`` elements.
+
+        - ``rays`` -- list of rays. Each ray can be specified as any
+          iterable container of ``field`` elements.
+
+        - ``lines`` -- list of lines. Each line can be specified as
+          any iterable container of ``field`` elements.
+
+        - ``ieqs`` -- list of inequalities. Each line can be specified as
+          any iterable container of ``field`` elements.
+
+        - ``eqns`` -- list of equalities. Each line can be specified
+          as any iterable container of ``field`` elements.
+
+        - ``field`` -- either ``QQ`` or ``RDF``. The field over which
+          the polyhedron will be defined. For ``QQ``, exact arithmetic
+          will be used. For ``RDF``, floating point numbers will be
+          used. Floating point arithmetic is faster but might give the
+          wrong result for degenerate input.
+
+        - ``compute_adjacency`` -- boolean. Whether to compute the
+          adjacency data of vertices and facets during
+          initialization. This might take considerably longer than
+          just computing a minimal H/V-representation pair. If
+          adjacency data is not computed during initialization it will
+          be computed as needed, but this then requires another call
+          do cdd.
+
+        .. NOTE::
+
+            You can either specify a subset of (``vertices``,
+            ``rays``, ``lines``) or a subset of (``ieqs``,
+            ``eqns``). But you must not combine V-representation and
+            H-representation objects.
 
         TESTS::
 
@@ -1417,8 +1455,28 @@ class Polyhedron(SageObject):
             sage: p.__init__(vertices = [[1,1]])
             sage: p
             A 0-dimensional polyhedron in QQ^2 defined as the convex hull of 1 vertex.
-        """
 
+        Degenerate input::
+
+            sage: p = Polyhedron(ieqs=[(-1,0),(1,0)]); p  # incompatible inequalities
+            The empty polyhedron in QQ^1.
+            sage: p.Hrepresentation()
+            [An equation (0) x + -1 == 0]
+            sage: p.Vrepresentation()
+            []
+            sage: p = Polyhedron(eqns=[(0,1,0),(0,0,1)]); p  # equations cutting out a point
+            A 0-dimensional polyhedron in QQ^2 defined as the convex hull of 1 vertex.
+            sage: p.Hrepresentation()
+            [An equation (1, 0) x + 0 == 0, An equation (0, 1) x + 0 == 0]
+            sage: p.Vrepresentation()
+            [A vertex at (0, 0)]
+            sage: p = Polyhedron(ieqs=[(0,1,0)]); p  # half plane
+            A 2-dimensional polyhedron in QQ^2 defined as the convex hull of 1 vertex, 1 ray, 1 line.
+            sage: p.Hrepresentation()
+            [An inequality (1, 0) x + 0 >= 0]
+            sage: p.Vrepresentation()
+            [A line in the direction (0, 1), A ray in the direction (1, 0), A vertex at (0, 0)]
+        """
         self._init_field(field)
 
         # Clean up the arguments
@@ -1440,8 +1498,13 @@ class Polyhedron(SageObject):
         else:
             self._init_empty_polyhedron()
             return
+
         # Compute complementary representation via cdd
-        self._init_from_cdd_input(s, verbose=verbose)
+        if compute_adjacency:
+            cmdline_arg = '--all'
+        else:
+            cmdline_arg = '--reps'
+        self._init_from_cdd_input(s, cmdline_arg, verbose)
 
         # Only add a show() method if we have one
         if self.ambient_dim() < len(Polyhedron._render_method):
@@ -1510,7 +1573,8 @@ class Polyhedron(SageObject):
         self._H_adjacency_matrix = matrix(ZZ, 0, 0, 0)
         self._H_adjacency_matrix.set_immutable()
 
-    def _init_from_cdd_input(self, cdd_input_string, verbose=False):
+    def _init_from_cdd_input(self, cdd_input_string,
+                             cmdline_argument='--all', verbose=False):
         """
         Internal method: run cdd on a cdd H- or V-representation
         and initialize ourselves with the output.
@@ -1526,7 +1590,7 @@ class Polyhedron(SageObject):
         """
         if verbose: print cdd_input_string
 
-        cdd_proc = Popen(self._cdd_executable,
+        cdd_proc = Popen([self._cdd_executable, cmdline_argument],
                          stdin=PIPE, stdout=PIPE, stderr=PIPE)
         ans, err = cdd_proc.communicate(input=cdd_input_string)
 
@@ -1537,33 +1601,30 @@ class Polyhedron(SageObject):
 
     def _init_from_cdd_output(self, cdd_output_string):
         """
-        Internal method: initialize ourselves with the output from cdd.
+        Initialize ourselves with the output from cdd.
 
         TESTS::
 
             sage: from sage.geometry.polyhedra import cdd_Vrepresentation
             sage: s = cdd_Vrepresentation('rational',[[0,0],[1,0],[0,1],[1,1]], [], [])
             sage: from subprocess import Popen, PIPE
-            sage: cdd_proc = Popen('cdd_both_reps_gmp', stdin=PIPE, stdout=PIPE, stderr=PIPE)
+            sage: cdd_proc = Popen(['cdd_both_reps_gmp', '--all'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
             sage: ans, err = cdd_proc.communicate(input=s)
             sage: p = Polyhedron(vertices = [[0,0],[1,0],[0,1],[1,1]])
             sage: p._init_from_cdd_output(ans)
             sage: p.vertices()
             [[0, 0], [1, 0], [0, 1], [1, 1]]
         """
-        cddout = cdd_output_string.splitlines()
+        cddout=cdd_output_string.splitlines()
+        suppressed_vertex = False   # whether cdd suppressed the vertex in output
 
-        def skip_to(expected_string):
-            """
-            Finds the expected string in a list of strings.
-            """
-            while True:
-                if len(cddout)==0:
-                    raise ValueError, "Did not find expected string."
-                l = cddout.pop(0)
-                l.strip();
-                if l==expected_string: return
-
+        # nested function
+        def expect_in_cddout(expected_string):
+            l = cddout.pop(0).strip()
+            if l!=expected_string:
+                raise ValueError, ('Error while parsing cdd output: expected "'
+                                   +expected_string+'" but got "'+l+'".\n' )
+        # nested function
         def cdd_linearities():
             l = cddout[0].split()
             if l[0] != "linearity":
@@ -1572,97 +1633,154 @@ class Polyhedron(SageObject):
             assert len(l) == int(l[1])+2, "Not enough linearities given"
             return [int(i)-1 for i in l[2:]]  # make indices pythonic
 
+        # nested function
         def cdd_convert(string, field=self.field()):
             """
             Converts the cdd output string to a numerical value.
             """
             return [field(x) for x in string.split()]
 
-        skip_to('V-representation')
-        self._Vrepresentation = Sequence([])
-        lines = cdd_linearities()
-        skip_to('begin')
-        l = cddout.pop(0).split()
-        self._ambient_dim = int(l[1])-1
-        no_vertex = True
-        for i in range(int(l[0])):
-            l = cddout.pop(0).strip()
-            l_type = l[0]
-            l = l[1:]
-            if i in lines:
-                Line(self, cdd_convert(l));
-            elif l_type == '0':
-                Ray(self, cdd_convert(l));
-            else:
-                Vertex(self, cdd_convert(l));
-                no_vertex = False
-        if no_vertex:
-            Vertex(self, [0] * self._ambient_dim)
-        self._Vrepresentation.set_immutable()
-        skip_to('end')
+        # nested function
+        def find_in_cddout(expected_string):
+            """
+            Find the expected string in a list of strings, and
+            truncates ``cddout`` to start at that point. Returns
+            ``False`` if search fails.
+            """
+            for pos in range(0,len(cddout)):
+                l = cddout[pos].strip();
+                if l==expected_string:
+                    # must not assign to cddout in nested function
+                    for i in range(0,pos+1):
+                        cddout.pop(0)
+                    return True
+            return False
 
-        skip_to('H-representation')
-        self._Hrepresentation = Sequence([])
-        equations = cdd_linearities()
-        skip_to('begin')
-        l = cddout.pop(0).split()
-        assert self._ambient_dim == int(l[1])-1, "Different ambient dimension?"
-        for i in range(int(l[0])):
-            l = cddout.pop(0)
-            if i in equations:
-                Equation(self, cdd_convert(l));
-            else:
-                Inequality(self, cdd_convert(l));
-        self._Hrepresentation.set_immutable()
-        skip_to('end')
+        if find_in_cddout('V-representation'):
+            self._Vrepresentation = Sequence([])
+            lines = cdd_linearities()
+            expect_in_cddout('begin')
+            l = cddout.pop(0).split()
+            self._ambient_dim = int(l[1])-1
+            suppressed_vertex = True
+            for i in range(int(l[0])):
+                l = cddout.pop(0).strip()
+                l_type = l[0]
+                l = l[1:]
+                if i in lines:
+                    Line(self, cdd_convert(l));
+                elif l_type == '0':
+                    Ray(self, cdd_convert(l));
+                else:
+                    Vertex(self, cdd_convert(l));
+                    suppressed_vertex = False
+            if suppressed_vertex and self.n_Vrepresentation()>0:
+                # cdd does not output the vertex if it is only the origin
+                Vertex(self, [0] * self._ambient_dim)
+            self._Vrepresentation.set_immutable()
+            expect_in_cddout('end')
 
+        if find_in_cddout('H-representation'):
+            self._Hrepresentation = Sequence([])
+            equations = cdd_linearities()
+            expect_in_cddout('begin')
+            l = cddout.pop(0).split()
+            assert self._ambient_dim == int(l[1])-1, "Different ambient dimension?"
+            for i in range(int(l[0])):
+                l = cddout.pop(0)
+                if i in equations:
+                    Equation(self, cdd_convert(l));
+                else:
+                    Inequality(self, cdd_convert(l));
+            self._Hrepresentation.set_immutable()
+            expect_in_cddout('end')
+
+        # nested function
         def cdd_adjacencies():
             l = cddout.pop(0).split()
             assert l[2] == ':', "Not a line of the adjacency data?"
             return [int(i)-1 for i in l[3:]]
 
-        skip_to('Vertex graph')
-        n = len(self._Vrepresentation);
-        if no_vertex:
-            n_cdd=n-1;
-        else:
-            n_cdd=n;
-        self._V_adjacency_matrix = matrix(ZZ, n, n, 0)
-        skip_to('begin')
-        l = cddout.pop(0).split()
-        assert int(l[0]) == n_cdd, "Not enough V-adjacencies in cdd output?"
-        for i in range(n_cdd):
-            for a in cdd_adjacencies():
-                self._V_adjacency_matrix[i,a] = 1
-            # cdd reports that lines are never adjacent to anything.
-            # I disagree, they are adjacent to everything!
-            if self._Vrepresentation[i].is_line():
-                for j in range(n):
-                    self._V_adjacency_matrix[i,j] = 1
-                    self._V_adjacency_matrix[j,i] = 1
-                self._V_adjacency_matrix[i,i] = 0
-        if no_vertex: # cdd implied that there is only one vertex
-            for i in range(n-1):
-                self._V_adjacency_matrix[i,n-1] = 1
-                self._V_adjacency_matrix[n-1,i] = 1
-        self._V_adjacency_matrix.set_immutable()
-        skip_to('end')
+        if find_in_cddout('Vertex graph'):
+            n = len(self._Vrepresentation);
+            if suppressed_vertex:
+                n_cdd=n-1;
+            else:
+                n_cdd=n;
+            self._V_adjacency_matrix = matrix(ZZ, n, n, 0)
+            expect_in_cddout('begin')
+            l = cddout.pop(0).split()
+            assert int(l[0]) == n_cdd, "Not enough V-adjacencies in cdd output?"
+            for i in range(n_cdd):
+                for a in cdd_adjacencies():
+                    self._V_adjacency_matrix[i,a] = 1
+                # cdd reports that lines are never adjacent to anything.
+                # I disagree, they are adjacent to everything!
+                if self._Vrepresentation[i].is_line():
+                    for j in range(n):
+                        self._V_adjacency_matrix[i,j] = 1
+                        self._V_adjacency_matrix[j,i] = 1
+                    self._V_adjacency_matrix[i,i] = 0
+            if suppressed_vertex: # cdd implied that there is only one vertex
+                for i in range(n-1):
+                    self._V_adjacency_matrix[i,n-1] = 1
+                    self._V_adjacency_matrix[n-1,i] = 1
+            self._V_adjacency_matrix.set_immutable()
+            expect_in_cddout('end')
 
-        skip_to('Facet graph')
-        n = len(self._Hrepresentation);
-        self._H_adjacency_matrix = matrix(ZZ, n, n, 0)
-        skip_to('begin')
-        l = cddout.pop(0).split()
-        assert int(l[0]) == n, "Not enough H-adjacencies in cdd output?"
-        for i in range(n):
-            for a in cdd_adjacencies():
-                self._H_adjacency_matrix[i,a] = 1
-        self._H_adjacency_matrix.set_immutable()
-        skip_to('end')
+        if find_in_cddout('Facet graph'):
+            n = len(self._Hrepresentation);
+            self._H_adjacency_matrix = matrix(ZZ, n, n, 0)
+            expect_in_cddout('begin')
+            l = cddout.pop(0).split()
+            assert int(l[0]) == n, "Not enough H-adjacencies in cdd output?"
+            for i in range(n):
+                for a in cdd_adjacencies():
+                    self._H_adjacency_matrix[i,a] = 1
+            self._H_adjacency_matrix.set_immutable()
+            expect_in_cddout('end')
+
+    def _init_facet_adjacency_matrix(self, verbose=False):
+        """
+        Compute the facet adjacency matrix in case it has not been
+        computed during initialization.
+
+        EXAMPLES::
+
+            sage: p = Polyhedron(vertices=[(0,0),(1,0),(0,1)], compute_adjacency=False)
+            sage: '_H_adjacency_matrix' in p.__dict__
+            False
+            sage: p._init_facet_adjacency_matrix()
+            sage: p._H_adjacency_matrix
+            [0 1 1]
+            [1 0 1]
+            [1 1 0]
+        """
+        self._init_from_cdd_input(self.cdd_Hrepresentation(),
+                                  '--adjacency', verbose)
+
+    def _init_vertex_adjacency_matrix(self, verbose=False):
+        """
+        Compute the vertex adjacency matrix in case it has not been
+        computed during initialization.
+
+        EXAMPLES::
+
+            sage: p = Polyhedron(vertices=[(0,0),(1,0),(0,1)], compute_adjacency=False)
+            sage: '_V_adjacency_matrix' in p.__dict__
+            False
+            sage: p._init_vertex_adjacency_matrix()
+            sage: p._V_adjacency_matrix
+            [0 1 1]
+            [1 0 1]
+            [1 1 0]
+        """
+        self._init_from_cdd_input(self.cdd_Vrepresentation(),
+                                  '--adjacency', verbose)
 
     def _repr_(self):
         """
-        Returns a description of the polyhedron.
+        Return a description of the polyhedron.
 
         EXAMPLES::
 
@@ -1707,7 +1825,7 @@ class Polyhedron(SageObject):
 
     def cdd_Hrepresentation(self):
         """
-        Writes the inequalities/equations data of the polyhedron in
+        Write the inequalities/equations data of the polyhedron in
         cdd's H-representation format.
 
         OUTPUT:
@@ -1734,7 +1852,7 @@ class Polyhedron(SageObject):
 
     def cdd_Vrepresentation(self):
         """
-        Writes the vertices/rays/lines data of the polyhedron in cdd's
+        Write the vertices/rays/lines data of the polyhedron in cdd's
         V-representation format.
 
         OUTPUT:
@@ -1762,7 +1880,7 @@ class Polyhedron(SageObject):
 
     def n_equations(self):
         """
-        Returns the number of equations. The representation will
+        Return the number of equations. The representation will
         always be minimal, so the number of equations is the
         codimension of the polyhedron in the ambient space.
 
@@ -1780,7 +1898,7 @@ class Polyhedron(SageObject):
 
     def n_inequalities(self):
         """
-        Returns the number of inequalities. The representation will
+        Return the number of inequalities. The representation will
         always be minimal, so the number of inequalities is the
         number of facets of the polyhedron in the ambient space.
 
@@ -1799,7 +1917,7 @@ class Polyhedron(SageObject):
 
     def n_facets(self):
         """
-        Returns the number of facets in the polyhedron.  This is the
+        Return the number of facets in the polyhedron.  This is the
         same as the n_inequalities function.
 
         EXAMPLES::
@@ -1812,7 +1930,7 @@ class Polyhedron(SageObject):
 
     def n_vertices(self):
         """
-        Returns the number of vertices. The representation will
+        Return the number of vertices. The representation will
         always be minimal.
 
         EXAMPLES::
@@ -1830,7 +1948,7 @@ class Polyhedron(SageObject):
 
     def n_rays(self):
         """
-        Returns the number of rays. The representation will
+        Return the number of rays. The representation will
         always be minimal.
 
         EXAMPLES::
@@ -1848,7 +1966,7 @@ class Polyhedron(SageObject):
 
     def n_lines(self):
         """
-        Returns the number of lines. The representation will
+        Return the number of lines. The representation will
         always be minimal.
 
         EXAMPLES::
@@ -1863,16 +1981,21 @@ class Polyhedron(SageObject):
             self._n_lines = len(self.lines())
             return self._n_lines
 
-    def Hrepresentation(self, *args):
+    def Hrepresentation(self, index=None):
         """
-        Returns the objects of the H-representaton. Each entry is
+        Return the objects of the H-representaton. Each entry is
         either an inequality or a equation.
 
         INPUT:
 
+        - ``index`` -- either an integer or ``None``.
+
+        OUTPUT:
+
         The optional argument is an index in
-        0...n_Hrepresentations(). Without an argument, returns the
-        list of all H-representation objects.
+        `0...n_Hrepresentations()`. If present, the H-representation
+        object at the given index will be returned. Without an
+        argument, returns the list of all H-representation objects.
 
         EXAMPLES::
 
@@ -1882,16 +2005,14 @@ class Polyhedron(SageObject):
             sage: p.Hrepresentation(0) == p.Hrepresentation() [0]
             True
         """
-        nargs=len(args)
-        if nargs==0:
+        if index==None:
             return self._Hrepresentation
-        elif nargs==1:
-            return self._Hrepresentation[args[0]]
-        raise ValueError, "Hrepresentation() requires 0 or 1 argument."
+        else:
+            return self._Hrepresentation[index]
 
     def Hrep_generator(self):
         """
-        Returns an iterator over the objects of the H-representation
+        Return an iterator over the objects of the H-representation
         (inequalities or equations).
 
         EXAMPLES::
@@ -1905,7 +2026,7 @@ class Polyhedron(SageObject):
 
     def n_Hrepresentation(self):
         """
-        Returns the number of objects that make up the
+        Return the number of objects that make up the
         H-representation of the polyhedron.
 
         EXAMPLES::
@@ -1918,16 +2039,21 @@ class Polyhedron(SageObject):
         """
         return len(self.Hrepresentation())
 
-    def Vrepresentation(self, *args):
+    def Vrepresentation(self, index=None):
         """
-        Returns the objects of the V-representation. Each entry is
+        Return the objects of the V-representation. Each entry is
         either a vertex, a ray, or a line.
 
         INPUT:
 
+        - ``index`` -- either an integer or ``None``.
+
+        OUTPUT:
+
         The optional argument is an index in
-        0...n_Hrepresentations(). Without an argument, returns the
-        list of all H-representation objects.
+        `0...n_Vrepresentation()`. If present, the V-representation
+        object at the given index will be returned. Without an
+        argument, returns the list of all V-representation objects.
 
         EXAMPLES::
 
@@ -1937,16 +2063,14 @@ class Polyhedron(SageObject):
             sage: p.Vrepresentation(0) == p.Vrepresentation() [0]
             True
         """
-        nargs=len(args)
-        if nargs==0:
+        if index==None:
             return self._Vrepresentation
-        elif nargs==1:
-            return self._Vrepresentation[args[0]]
-        raise ValueError, "Vrepresentation() requires 0 or 1 argument."
+        else:
+            return self._Vrepresentation[index]
 
     def n_Vrepresentation(self):
         """
-        Returns the number of objects that make up the
+        Return the number of objects that make up the
         V-representation of the polyhedron.
 
         EXAMPLES::
@@ -1978,14 +2102,14 @@ class Polyhedron(SageObject):
 
     def facial_adjacencies(self):
         """
-        Returns a list of face indices (i.e. indices of
+        Return the list of face indices (i.e. indices of
         H-representation objects) and the indices of faces adjacent to
         them.
 
-        NOTES:
+        .. NOTE::
 
-        Instead of working with face indices, you can use the
-        H-representation objects directly (see example).
+            Instead of working with face indices, you can use the
+            H-representation objects directly (see example).
 
         EXAMPLES::
 
@@ -2010,13 +2134,13 @@ class Polyhedron(SageObject):
 
     def facial_incidences(self):
         """
-        Returns the face-vertex incidences in the form `[f_i, [v_{i_0}, v_{i_1},\dots ,v_{i_2}]]`.
+        Return the face-vertex incidences in the form `[f_i, [v_{i_0}, v_{i_1},\dots ,v_{i_2}]]`.
 
-        NOTES:
+        .. NOTE::
 
-        Instead of working with face/vertex indices, you can use the
-        H-representation/V-representation objects directly (see
-        examples).
+            Instead of working with face/vertex indices, you can use
+            the H-representation/V-representation objects directly
+            (see examples).
 
         OUTPUT:
 
@@ -2051,12 +2175,12 @@ class Polyhedron(SageObject):
 
     def vertex_adjacencies(self):
         """
-        Returns a list of vertex indices and their adjacent vertices.
+        Return a list of vertex indices and their adjacent vertices.
 
-        NOTES:
+        .. NOTE::
 
-        Instead of working with vertex indices, you can use the
-        V-representation objects directly (see examples).
+            Instead of working with vertex indices, you can use the
+            V-representation objects directly (see examples).
 
         OUTPUT:
 
@@ -2088,13 +2212,13 @@ class Polyhedron(SageObject):
 
     def vertex_incidences(self):
         """
-        Returns the vertex-face incidences in the form `[v_i, [f_{i_0}, f_{i_1},\dots ,f_{i_2}]]`.
+        Return the vertex-face incidences in the form `[v_i, [f_{i_0}, f_{i_1},\dots ,f_{i_2}]]`.
 
-        NOTES:
+        .. NOTE::
 
-        Instead of working with face/vertex indices, you can use the
-        H-representation/V-representation objects directly (see
-        examples).
+            Instead of working with face/vertex indices, you can use
+            the H-representation/V-representation objects directly
+            (see examples).
 
         EXAMPLES::
 
@@ -2119,12 +2243,12 @@ class Polyhedron(SageObject):
 
     def graph(self):
         """
-        Returns a graph in which the vertices correspond to vertices of the polyhedron,
+        Return a graph in which the vertices correspond to vertices of the polyhedron,
         and edges to edges.
 
         OUTPUT:
 
-        A graph
+        A graph.
 
         EXAMPLES::
 
@@ -2139,7 +2263,7 @@ class Polyhedron(SageObject):
 
     def inequality_generator(self):
         """
-        Returns  a generator for the defining inequalities of the
+        Return  a generator for the defining inequalities of the
         polyhedron.
 
         OUTPUT:
@@ -2166,12 +2290,13 @@ class Polyhedron(SageObject):
 
     def inequalities(self):
         """
-        Returns a list of inequalities as coefficient lists.
+        Return a list of inequalities as coefficient lists.
 
-        NOTES:
+        .. NOTE::
 
-        It is recommended to use ``inequality_generator()`` instead to
-        iterate over the list of ``Inequality`` objects.
+            It is recommended to use :meth:`inequality_generator`
+            instead to iterate over the list of :class:`Inequality`
+            objects.
 
         EXAMPLES::
 
@@ -2207,7 +2332,7 @@ class Polyhedron(SageObject):
 
     def equation_generator(self):
         """
-        Returns a generator for the linear equations satisfied by the
+        Return a generator for the linear equations satisfied by the
         polyhedron.
 
         EXAMPLES::
@@ -2223,15 +2348,15 @@ class Polyhedron(SageObject):
 
     def equations(self):
         """
-        Returns the linear constraints of the polyhedron. As with
+        Return the linear constraints of the polyhedron. As with
         inequalities, each constraint is given as [b -a1 -a2 ... an]
         where for variables x1, x2,..., xn, the polyhedron satisfies
         the equation b = a1*x1 + a2*x2 + ... + an*xn.
 
-        NOTES:
+        .. NOTE::
 
-        It is recommended to use ``equation_generator()`` instead to
-        iterate over the list of ``Equation`` objects.
+            It is recommended to use :meth:`equation_generator()` instead
+            to iterate over the list of :class:`Equation` objects.
 
         EXAMPLES::
 
@@ -2265,12 +2390,12 @@ class Polyhedron(SageObject):
 
     def vertices(self):
         """
-        Returns a list of vertices of the polyhedron.
+        Return a list of vertices of the polyhedron.
 
-        NOTES:
+        .. NOTE::
 
-        It is recommended to use ``vertex_generator()`` instead to
-        iterate over the list of ``Vertex`` objects.
+            It is recommended to use :meth:`vertex_generator` instead to
+            iterate over the list of :class:`Vertex` objects.
 
         EXAMPLES::
 
@@ -2291,7 +2416,7 @@ class Polyhedron(SageObject):
 
     def vertex_generator(self):
         """
-        Returns a generator for the vertices of the polyhedron.
+        Return a generator for the vertices of the polyhedron.
 
         EXAMPLES::
 
@@ -2322,7 +2447,7 @@ class Polyhedron(SageObject):
 
     def ray_generator(self):
         """
-        Returns a generator for the rays of the polyhedron.
+        Return a generator for the rays of the polyhedron.
 
         EXAMPLES::
 
@@ -2337,12 +2462,12 @@ class Polyhedron(SageObject):
 
     def rays(self):
         """
-        Returns a list of rays as coefficient lists.
+        Return a list of rays as coefficient lists.
 
-        NOTES:
+        .. NOTE::
 
-        It is recommended to use ``ray_generator()`` instead to
-        iterate over the list of ``Ray`` objects.
+            It is recommended to use :meth:`ray_generator` instead to
+            iterate over the list of :class:`Ray` objects.
 
         OUTPUT:
 
@@ -2364,7 +2489,7 @@ class Polyhedron(SageObject):
 
     def line_generator(self):
         """
-        Returns a generator for the lines of the polyhedron.
+        Return a generator for the lines of the polyhedron.
 
         EXAMPLES::
 
@@ -2378,13 +2503,13 @@ class Polyhedron(SageObject):
 
     def lines(self):
         """
-        Returns a list of lines of the polyhedron.  The line data is given
+        Return a list of lines of the polyhedron.  The line data is given
         as a list of coordinates rather than as a Hrepresentation object.
 
-        NOTES:
+        .. NOTE::
 
-        It is recommended to use ``line_generator()`` instead to
-        iterate over the list of ``Line`` objects.
+            It is recommended to use :meth:`line_generator` instead to
+            iterate over the list of :class:`Line` objects.
 
         EXAMPLES::
 
@@ -2402,19 +2527,19 @@ class Polyhedron(SageObject):
 
     def bounded_edges(self):
         """
-        Returns the bounded edges (excluding rays and lines).
+        Return the bounded edges (excluding rays and lines).
 
         OUTPUT:
 
-            A generator for pairs of vertices, one pair per edge.
+        A generator for pairs of vertices, one pair per edge.
 
         EXAMPLES::
 
             sage: p = Polyhedron(vertices=[[1,0],[0,1]], rays=[[1,0],[0,1]])
             sage: [ e for e in p.bounded_edges() ]
-            [[A vertex at (1, 0), A vertex at (0, 1)]]
+            [(A vertex at (1, 0), A vertex at (0, 1))]
             sage: for e in p.bounded_edges(): print e
-            [A vertex at (1, 0), A vertex at (0, 1)]
+            (A vertex at (1, 0), A vertex at (0, 1))
         """
         obj = self.Vrepresentation()
         edges = []
@@ -2423,11 +2548,11 @@ class Polyhedron(SageObject):
             for j in range(i+1,len(obj)):
                 if not obj[j].is_vertex(): continue
                 if self.vertex_adjacency_matrix()[i,j] == 0: continue
-                yield [obj[i], obj[j]]
+                yield (obj[i], obj[j])
 
     def ambient_dim(self):
         r"""
-        Returns the dimension of the ambient space.
+        Return the dimension of the ambient space.
 
         EXAMPLES::
 
@@ -2439,7 +2564,7 @@ class Polyhedron(SageObject):
 
     def dim(self):
         """
-        Returns the dimension of the polyhedron.
+        Return the dimension of the polyhedron.
 
         EXAMPLES::
 
@@ -2453,7 +2578,7 @@ class Polyhedron(SageObject):
 
     def adjacency_matrix(self):
         """
-        This is an alias for ``vertex_adjacency_matrix()``
+        This is an alias for :meth:`vertex_adjacency_matrix`
 
         EXAMPLES::
 
@@ -2471,7 +2596,7 @@ class Polyhedron(SageObject):
 
     def vertex_adjacency_matrix(self):
         """
-        Returns the binary matrix of vertex adjacencies.
+        Return the binary matrix of vertex adjacencies.
 
         EXAMPLES::
 
@@ -2482,11 +2607,13 @@ class Polyhedron(SageObject):
             [1 1 1 0 1]
             [1 1 1 1 0]
         """
+        if '_V_adjacency_matrix' not in self.__dict__:
+            self._init_vertex_adjacency_matrix()
         return self._V_adjacency_matrix;
 
     def facet_adjacency_matrix(self):
         """
-        Returns the adjacency matrix for the facets and hyperplanes.
+        Return the adjacency matrix for the facets and hyperplanes.
 
         EXAMPLES::
 
@@ -2497,17 +2624,20 @@ class Polyhedron(SageObject):
             [1 1 1 0 1]
             [1 1 1 1 0]
         """
+        if '_H_adjacency_matrix' not in self.__dict__:
+            self._init_facet_adjacency_matrix()
         return self._H_adjacency_matrix;
 
     def incidence_matrix(self):
         """
-        Returns the incidence matrix.
+        Return the incidence matrix.
 
-        NOTES:
+        .. NOTE::
 
-        The columns correspond to inequalities/equations in the order
-        ``self.Hrepresentation()``, the rowns correspond to
-        vertices/rays/lines in the order ``self.Vrepresentation()``
+            The columns correspond to inequalities/equations in the
+            order :meth:`Hrepresentation`, the rows correspond to
+            vertices/rays/lines in the order
+            :meth:`Vrepresentation`
 
         EXAMPLES::
 
@@ -2574,13 +2704,13 @@ class Polyhedron(SageObject):
 
         INPUT:
 
-        The argument ``other`` must be either:
+        - ``other`` -- must be either:
 
-        * another ``Polyhedron`` object
+            * another ``Polyhedron`` object
 
-        * `\QQ` or `RDF`
+            * `\QQ` or `RDF`
 
-        * a constant that can be coerced to `\QQ` or `RDF`
+            * a constant that can be coerced to `\QQ` or `RDF`
 
         OUTPUT:
 
@@ -2639,7 +2769,7 @@ class Polyhedron(SageObject):
 
     def center(self):
         """
-        Returns the average of the vertices. Returns the origin for
+        Return the average of the vertices. Returns the origin for
         the empty polytope. All rays and lines are ignored.
 
         EXAMPLES::
@@ -2659,8 +2789,12 @@ class Polyhedron(SageObject):
 
     def radius_square(self):
         """
-        Returns the square of the maximal distance from the center to
+        Return the square of the maximal distance from the center to
         a vertex. All rays and lines are ignored.
+
+        OUTPUT:
+
+        The square of the radius, which is in :meth:`field`.
 
         EXAMPLES::
 
@@ -2678,14 +2812,14 @@ class Polyhedron(SageObject):
 
     def radius(self):
         """
-        Returns the maximal distance from the center to a vertex. All
+        Return the maximal distance from the center to a vertex. All
         rays and lines are ignored.
 
-        NOTES:
+        OUTPUT:
 
-        The radius for a rational vector is, in general, not rational.
-        use ``radius_square()`` if you need a rational distance
-        measure.
+        The radius for a rational polyhedron is, in general, not
+        rational.  use :meth:`radius_square` if you need a rational
+        distance measure.
 
         EXAMPLES::
 
@@ -2697,7 +2831,7 @@ class Polyhedron(SageObject):
 
     def is_compact(self):
         """
-        Tests for boundedness of the polytope.
+        Test for boundedness of the polytope.
 
         EXAMPLES::
 
@@ -2712,7 +2846,7 @@ class Polyhedron(SageObject):
 
     def is_simple(self):
         """
-        Tests for simplicity of a polytope.
+        Test for simplicity of a polytope.
 
         EXAMPLES::
 
@@ -2738,7 +2872,7 @@ class Polyhedron(SageObject):
 
     def gale_transform(self):
         """
-        Returns the Gale transform of a polytope as described in the
+        Return the Gale transform of a polytope as described in the
         reference below.
 
         OUTPUT:
@@ -2770,7 +2904,7 @@ class Polyhedron(SageObject):
 
     def triangulated_facial_incidences(self):
         """
-        Returns a list of the form [face_index, [v_i_0,
+        Return a list of the form [face_index, [v_i_0,
         v_i_1,...,v_i_{n-1}]] where the face_index refers to the
         original defining inequality.  For a given face, the
         collection of triangles formed by each list of v_i should
@@ -2845,7 +2979,7 @@ class Polyhedron(SageObject):
 
     def simplicial_complex(self):
         """
-        Returns a simplicial complex from a triangulation of the polytope.
+        Return a simplicial complex from a triangulation of the polytope.
 
         Warning: This first triangulates the polytope using
         ``triangulated_facial_incidences``, and this function may fail
@@ -2853,7 +2987,7 @@ class Polyhedron(SageObject):
 
         OUTPUT:
 
-            A simplicial complex.
+        A simplicial complex.
 
         EXAMPLES::
 
@@ -2868,7 +3002,11 @@ class Polyhedron(SageObject):
 
     def __add__(self, other):
         """
-        Addition of two polyhedra is defined as their Minkowski sum.
+        The Minkowski sum of ``self`` and ``other``.
+
+        INPUT:
+
+        - ``other`` -- a :class:`Polyhedron`.
 
         EXAMPLES::
 
@@ -2905,9 +3043,18 @@ class Polyhedron(SageObject):
 
     def __mul__(self, other):
         """
+        Multiplication by ``other``.
+
+        INPUT:
+
+        - ``other`` -- A scalar, not necessarily in :meth:`field`, or
+          a :class:`Polyhedron`.
+
+        OUTPUT:
+
         Multiplication by another polyhedron returns the product
-        polytope.  Multiplication by a scalar returns the polytope
-        dilated by that scalar.
+        polytope. Multiplication by a scalar returns the polytope
+        dilated by that scalar, possibly coerced to the bigger field.
 
         EXAMPLES::
 
@@ -2942,9 +3089,9 @@ class Polyhedron(SageObject):
 
     def __rmul__(self,other):
         """
-        Multiplication by another polyhedron returns the product
-        polytope.  Multiplication by a scalar returns the polytope
-        dilated by that scalar.
+        Right multiplication.
+
+        See :meth:`__mul__` for details.
 
         EXAMPLES::
 
@@ -2971,8 +3118,16 @@ class Polyhedron(SageObject):
 
     def convex_hull(self, other):
         """
-        Returns the convex hull of the set-theoretic union of the two
+        Return the convex hull of the set-theoretic union of the two
         polyhedra.
+
+        INPUT:
+
+        - ``other`` -- a :class:`Polyhedron`.
+
+        OUTPUT:
+
+        The convex hull.
 
         EXAMPLES::
 
@@ -2994,7 +3149,15 @@ class Polyhedron(SageObject):
 
     def intersection(self, other):
         """
-        Returns the intersection of one polyhedron with another.
+        Return the intersection of one polyhedron with another.
+
+        INPUT:
+
+        - ``other`` -- a :class:`Polyhedron`.
+
+        OUTPUT:
+
+        The intersection.
 
         EXAMPLES::
 
@@ -3019,21 +3182,19 @@ class Polyhedron(SageObject):
 
     def edge_truncation(self, cut_frac = Integer(1)/3):
         r"""
-        Returns a new polyhedron formed from two points on each edge
+        Return a new polyhedron formed from two points on each edge
         between two vertices.
 
         INPUT:
 
-          - ``cut_frac`` - how deeply to cut into the edge.  Default is
-            `\frac{1}{3}`.
+        - ``cut_frac`` -- integer. how deeply to cut into the edge.
+            Default is `\frac{1}{3}`.
 
         OUTPUT:
 
         A Polyhedron object, truncated as described above.
 
-        EXAMPLES:
-
-        Truncating a cube::
+        EXAMPLES::
 
             sage: cube = polytopes.n_cube(3)
             sage: trunc_cube = cube.edge_truncation()
@@ -3057,7 +3218,7 @@ class Polyhedron(SageObject):
 
     def _v_closure(self, vertex_indices):
         """
-        Returns the list of vertex indices for the vertices in the smallest
+        Return the list of vertex indices for the vertices in the smallest
         face containing the input vertices.
 
         EXAMPLES::
@@ -3070,7 +3231,7 @@ class Polyhedron(SageObject):
 
     def _vertex_face_indexset(self, Vrep_indices):
         """
-        Returns the maximal list of facet indices whose intersection contains
+        Return the maximal list of facet indices whose intersection contains
         the given vertices, i.e. a list of all the facets which contain all of
         the given vertices.
 
@@ -3107,7 +3268,7 @@ class Polyhedron(SageObject):
 
     def _face_vertex_indexset(self, Hrep_indices):
         """
-        Returns the maximal list of vertex indices who lie on the given facets.
+        Return the maximal list of vertex indices who lie on the given facets.
 
         EXAMPLES::
 
@@ -3126,9 +3287,13 @@ class Polyhedron(SageObject):
 
     def face_lattice(self):
         """
-        Computes the face-lattice poset. Elements are tuples of
-        (vertices, facets) - i.e. this keeps track of both the
-        vertices in each face, and all the facets containing them.
+        Return the face-lattice poset.
+
+        OUTPUT:
+
+        A :class:`sage.combinat.posets.posets.FinitePoset`. Elements
+        are tuples of (vertices, facets). This keeps track of both the
+        vertices in each face and all the facets containing them.
 
         EXAMPLES::
 
@@ -3192,24 +3357,28 @@ class Polyhedron(SageObject):
 
     def f_vector(self):
         r"""
-        Returns the f-vector (number of faces in each dimension) of
-        the polytope as a list.
+        Return the f-vector.
+
+        OUTPUT:
+
+        Returns a vector whose ``i``-th entry is the number of
+        ``i``-dimensional faces of the polytope.
 
         EXAMPLES::
 
             sage: p = Polyhedron(vertices = [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1], [0, 0, 0]])
             sage: p.f_vector()
-            [1, 7, 12, 7, 1]
+            (1, 7, 12, 7, 1)
         """
         try:
             return self._f_vector
         except AttributeError:
-            self._f_vector = [len(x) for x in self.face_lattice().level_sets()]
+            self._f_vector = vector(ZZ,[len(x) for x in self.face_lattice().level_sets()])
             return self._f_vector
 
     def vertex_graph(self):
         """
-        Returns a graph in which the vertices correspond to vertices
+        Return a graph in which the vertices correspond to vertices
         of the polyhedron, and edges to edges.
 
         EXAMPLES::
@@ -3229,7 +3398,7 @@ class Polyhedron(SageObject):
 
     def polar(self):
         """
-        Returns the polar (dual) polytope.  The original vertices are
+        Return the polar (dual) polytope.  The original vertices are
         translated so that their barycenter is at the origin, and then
         the vertices are used as the coefficients in the polar inequalities.
 
@@ -3272,7 +3441,7 @@ class Polyhedron(SageObject):
 
     def bipyramid(self):
         """
-        Returns a polyhedron that is a bipyramid over the original.
+        Return a polyhedron that is a bipyramid over the original.
 
         EXAMPLES::
 
@@ -3308,7 +3477,7 @@ class Polyhedron(SageObject):
 
     def prism(self):
         """
-        Returns a prism of the original polyhedron.
+        Return a prism of the original polyhedron.
 
         EXAMPLES::
 
@@ -3330,7 +3499,7 @@ class Polyhedron(SageObject):
 
     def projection(self):
         """
-        Returns a projection object.
+        Return a projection object.
 
         EXAMPLES::
 
@@ -3344,7 +3513,7 @@ class Polyhedron(SageObject):
 
     def render_solid(self, **kwds):
         """
-        Returns solid rendering of a 2- or 3-d polytope.
+        Return a solid rendering of a 2- or 3-d polytope.
 
         EXAMPLES::
 
@@ -3362,7 +3531,7 @@ class Polyhedron(SageObject):
 
     def render_wireframe(self, **kwds):
         """
-        For polytopes in 2 or 3 dimensions, returns the edges
+        For polytopes in 2 or 3 dimensions, return the edges
         as a list of lines.
 
         EXAMPLES::
@@ -3426,7 +3595,7 @@ class Polyhedron(SageObject):
         if is_package_installed('lrs') != True:
             print 'You must install the optional lrs package ' \
                   'for this function to work'
-            raise NotImplemented
+            raise NotImplementedError
 
         in_str = self.cdd_Vrepresentation()
         in_str += 'volume'
@@ -3473,8 +3642,16 @@ class Polyhedron(SageObject):
 
     def interior_contains(self, point):
         """
-        Returns whether the interior of the polyhedron contains the
+        Test whether the interior of the polyhedron contains the
         given ``point``.
+
+        INPUT:
+
+        - ``point`` -- coordinates of a point.
+
+        OUTPUT:
+
+        ``True`` or ``False``.
 
         EXAMPLES::
 
@@ -3502,8 +3679,16 @@ class Polyhedron(SageObject):
 
     def relative_interior_contains(self, point):
         """
-        Returns whether the relative interior of the polyhedron
+        Test whether the relative interior of the polyhedron
         contains the given ``point``.
+
+        INPUT:
+
+        - ``point`` -- coordinates of a point.
+
+        OUTPUT:
+
+        ``True`` or ``False``.
 
         EXAMPLES::
 
@@ -3695,7 +3880,7 @@ class Polyhedron(SageObject):
 #############################################################
 def cyclic_sort_vertices_2d(Vlist):
     """
-    Returns the vertices/rays in cyclic order if possible.
+    Return the vertices/rays in cyclic order if possible.
 
     NOTES:
 
@@ -3760,9 +3945,12 @@ class ProjectionFuncStereographic():
     """
     def __init__(self, projection_point):
         """
-        Creates a stereographic projection function.  Input is a list
-        of coordinates in the appropriate dimension, which is the point
-        projected from.
+        Create a stereographic projection function.
+
+        INPUT:
+
+        - ``projection_point`` -- a list of coordinates in the
+          appropriate dimension, which is the point projected from.
 
         EXAMPLES::
 
@@ -3791,11 +3979,19 @@ class ProjectionFuncStereographic():
 
     def __call__(self, x):
         """
-        First reflects x with a Householder reflection which takes
-        the projection point to (0,...0,self.psize) where psize is
-        the length of the projection point, and then dilates by
-        1/(zdiff) where zdiff is the difference between the last
-        coordinate of x and psize.
+        Action of the stereographic projection.
+
+        INPUT:
+
+        - ``x`` -- a vector or anything convertible to a vector.
+
+        OUTPUT:
+
+        First reflects ``x`` with a Householder reflection which takes
+        the projection point to ``(0,...,0,self.psize)`` where
+        ``psize`` is the length of the projection point, and then
+        dilates by ``1/(zdiff)`` where ``zdiff`` is the difference
+        between the last coordinate of ``x`` and ``psize``.
 
         EXAMPLES::
 
@@ -3859,7 +4055,9 @@ class ProjectionFuncSchlegel():
 
     def __call__(self, x):
         """
-        Applies the projection to a vector (can be input as a list).
+        Apply the projection to a vector.
+
+        - ``x`` -- a vector or anything convertible to a vector.
 
         EXAMPLES::
 
@@ -3881,6 +4079,12 @@ class ProjectionFuncSchlegel():
 
 #########################################################################
 class Projection(SageObject):
+    """
+    The projection of a :class:`Polyhedron`.
+
+    This class keeps track of the necessary data to plot the input
+    polyhedron.
+    """
 
     def __init__(self, polyhedron, proj=projection_func_identity):
         """
@@ -3938,7 +4142,7 @@ class Projection(SageObject):
 
     def _repr_(self):
         """
-        Returns a string describing the projection.
+        Return a string describing the projection.
 
         EXAMPLES::
 
@@ -3973,7 +4177,7 @@ class Projection(SageObject):
 
     def identity(self):
         """
-        Returns the identity projection of the polyhedron.
+        Return the identity projection of the polyhedron.
 
         EXAMPLES::
 
@@ -3988,7 +4192,7 @@ class Projection(SageObject):
 
     def stereographic(self, projection_point=None):
         r"""
-        The stereographic projection.
+        Rteurn the stereographic projection.
 
         INPUT:
 
@@ -4012,7 +4216,7 @@ class Projection(SageObject):
 
     def schlegel(self, projection_direction=None, height = 1.1):
         """
-        The Schlegel projection.
+        Return the Schlegel projection.
 
         The vertices are normalized to the unit sphere, and
         stereographically projected from a point slightly outside of
@@ -4045,7 +4249,7 @@ class Projection(SageObject):
 
     def coord_index_of(self, v):
         """
-        Converts a coordinate vector to its internal index.
+        Convert a coordinate vector to its internal index.
 
         EXAMPLES::
 
@@ -4062,7 +4266,7 @@ class Projection(SageObject):
 
     def coord_indices_of(self, v_list):
         """
-        Converts list of coordinate vectors to the corresponding list
+        Convert list of coordinate vectors to the corresponding list
         of internal indices.
 
         EXAMPLES::
@@ -4076,7 +4280,7 @@ class Projection(SageObject):
 
     def coordinates_of(self, coord_index_list):
         """
-        Given a list of indices, returns the projected coordinates.
+        Given a list of indices, return the projected coordinates.
 
         EXAMPLES::
 
@@ -4338,7 +4542,7 @@ class Projection(SageObject):
 
     def render_points_2d(self, **kwds):
         """
-        Returns the points of a polyhedron in 2d.
+        Return the points of a polyhedron in 2d.
 
         EXAMPLES::
 
@@ -4352,7 +4556,7 @@ class Projection(SageObject):
 
     def render_outline_2d(self, **kwds):
         """
-        Returns the outline (edges) of a polyhedron in 2d.
+        Return the outline (edges) of a polyhedron in 2d.
 
         EXAMPLES::
 
@@ -4372,7 +4576,7 @@ class Projection(SageObject):
 
     def render_fill_2d(self, **kwds):
         """
-        Returns the filled interior (a polygon) of a polyhedron in 2d.
+        Return the filled interior (a polygon) of a polyhedron in 2d.
 
         EXAMPLES::
 
@@ -4389,7 +4593,7 @@ class Projection(SageObject):
 
     def render_vertices_3d(self, **kwds):
         """
-        Returns the 3d rendering of the vertices.
+        Return the 3d rendering of the vertices.
 
         EXAMPLES::
 
@@ -4403,7 +4607,7 @@ class Projection(SageObject):
 
     def render_wireframe_3d(self, **kwds):
         r"""
-        Returns the 3d wireframe rendering.
+        Return the 3d wireframe rendering.
 
         EXAMPLES::
 
@@ -4424,7 +4628,7 @@ class Projection(SageObject):
 
     def render_solid_3d(self, **kwds):
         """
-        Returns solid 3d rendering of a 3d polytope.
+        Return solid 3d rendering of a 3d polytope.
 
         EXAMPLES::
 
@@ -4480,7 +4684,7 @@ class Polytopes():
     @staticmethod
     def project_1(fpoint):
         """
-        Takes a ndim-dimensional point and projects it onto the plane
+        Take a ndim-dimensional point and projects it onto the plane
         perpendicular to (1,1,...,1).
 
         INPUT:
@@ -4518,12 +4722,14 @@ class Polytopes():
 
     def regular_polygon(self, n, field = QQ):
         """
-        Returns a regular polygon with n vertices.  Over the rational
+        Return a regular polygon with n vertices.  Over the rational
         field the vertices may not be exact.
 
         INPUT:
 
-          - ``n`` - a positive integer, the number of vertices.
+        - ``n`` -- a positive integer, the number of vertices.
+
+        - ``field`` -- either ``QQ`` or ``RDF``.
 
         EXAMPLES::
 
@@ -4541,12 +4747,12 @@ class Polytopes():
 
     def Birkhoff_polytope(self, n):
         """
-        Returns the Birkhoff polytope with n! vertices.  Each vertex
+        Return the Birkhoff polytope with n! vertices.  Each vertex
         is a (flattened) n by n permutation matrix.
 
         INPUT:
 
-          - ``n`` - a positive integer giving the size of the permutation matrices.
+        - ``n`` -- a positive integer giving the size of the permutation matrices.
 
         EXAMPLES::
 
@@ -4563,15 +4769,16 @@ class Polytopes():
 
     def n_simplex(self, dim_n=3, project = True):
         """
-        Returns a rational approximation to a regular simplex in
+        Return a rational approximation to a regular simplex in
         dimension ``dim_n``.
 
         INPUT:
 
-          - ``dim_n`` - The dimension of the cross-polytope, a positive
-                        integer.
-          - ``project`` - Optional argument, whether to project
-                          orthogonally.  Default is True.
+        - ``dim_n`` -- The dimension of the cross-polytope, a positive
+          integer.
+
+        - ``project`` -- Optional argument, whether to project
+          orthogonally.  Default is True.
 
         OUTPUT:
 
@@ -4589,20 +4796,21 @@ class Polytopes():
 
     def icosahedron(self, field = QQ):
         """
-        Returns an icosahedron with edge length 1.  The vertices are
-        rational, so a rational approximation of the golden ratio
-        is used.
+        Return an icosahedron with edge length 1.
 
         INPUT:
 
-          - ``field`` - Either ``QQ`` or ``RDF``. The icosahedron's
-            coordinates contain the golden ratio, so there is no exact
-            representation possible.
+        - ``field`` -- Either ``QQ`` or ``RDF``.
 
         OUTPUT:
 
         A Polyhedron object of a floating point or rational
         approximation to the regular 3d icosahedron.
+
+        If ``field=QQ``, a rational approximation is used and the
+        points are not exactly the vertices of the icosahedron. The
+        icosahedron's coordinates contain the golden ratio, so there
+        is no exact representation possible.
 
         EXAMPLES::
 
@@ -4626,12 +4834,12 @@ class Polytopes():
 
     def dodecahedron(self, field=QQ):
         """
-        Returns a dodecahedron.
+        Return a dodecahedron.
 
         INPUT:
 
-          - ``field`` - Either ``QQ`` (in which case a rational
-            approximation to the golden ratio is used) or ``RDF``.
+        - ``field`` -- Either ``QQ`` (in which case a rational
+          approximation to the golden ratio is used) or ``RDF``.
 
         EXAMPLES::
 
@@ -4643,7 +4851,7 @@ class Polytopes():
 
     def small_rhombicuboctahedron(self):
         """
-        An Archimedean solid with 24 vertices and 26 faces.
+        Return an Archimedean solid with 24 vertices and 26 faces.
 
         EXAMPLES::
 
@@ -4665,7 +4873,7 @@ class Polytopes():
 
     def great_rhombicuboctahedron(self, field=QQ):
         """
-        An Archimedean solid with 48 vertices and 26 faces.
+        Return an Archimedean solid with 48 vertices and 26 faces.
 
         EXAMPLES::
 
@@ -4769,7 +4977,7 @@ class Polytopes():
 
     def twenty_four_cell(self):
         """
-        Returns the standard 24-cell polytope.
+        Return the standard 24-cell polytope.
 
         OUTPUT:
 
@@ -4808,7 +5016,7 @@ class Polytopes():
 
     def six_hundred_cell(self):
         """
-        Returns the standard 600-cell polytope.
+        Return the standard 600-cell polytope.
 
         OUTPUT:
 
@@ -4853,13 +5061,15 @@ class Polytopes():
 
     def cyclic_polytope(self, dim_n, points_n, field=QQ):
         """
-        Returns a cyclic polytope in dimension=dim_n and with points_n
-        number of points.
+        Return a cyclic polytope.
 
         INPUT:
 
-          - ``dim_n`` - a positive integer, the dimension of the polytope.
-          - ``points_n`` - the number of vertices.
+        - ``dim_n`` -- positive integer. the dimension of the polytope.
+
+        - ``points_n`` -- positive integer. the number of vertices.
+
+        - ``field`` -- either ``QQ`` (default) or ``RDF``.
 
         OUTPUT:
 
@@ -4882,8 +5092,10 @@ class Polytopes():
 
         INPUT:
 
-          - ``n`` - the numbers (1,...,n) are permuted
-          - ``project`` - If False the polyhedron is left in dimension ``n``.
+        - ``n`` -- the numbers ``(1,...,n)`` are permuted
+
+        - ``project`` -- If ``False``, the polyhedron is left in
+          dimension ``n``.
 
         OUTPUT:
 
@@ -4910,8 +5122,9 @@ class Polytopes():
 
         INPUT:
 
-          - ``n`` - the numbers (1,...,n) are permuted
-          - ``project`` - If False the polyhedron is left in dimension ``n``.
+        - ``n`` -- the numbers ``(1,...,n)`` are permuted
+
+        - ``project`` -- If ``False`` the polyhedron is left in dimension ``n``.
 
         OUTPUT:
 
@@ -4933,11 +5146,11 @@ class Polytopes():
 
     def n_cube(self, dim_n):
         """
-        Returns a cube in the given dimension
+        Return a cube in the given dimension
 
         INPUT:
 
-          - ``dim_n`` - The dimension of the cube, a positive integer.
+        - ``dim_n`` -- integer. The dimension of the cube.
 
         OUTPUT:
 
@@ -4962,12 +5175,12 @@ class Polytopes():
 
     def cross_polytope(self, dim_n):
         """
-        Returns a cross-polytope in dimension ``dim_n``. These are
+        Return a cross-polytope in dimension ``dim_n``. These are
         the generalization of the octahedron.
 
         INPUT:
 
-          - ``dim_n`` - The dimension of the cross-polytope, a positive integer.
+        - ``dim_n`` -- integer. The dimension of the cross-polytope.
 
         OUTPUT:
 
