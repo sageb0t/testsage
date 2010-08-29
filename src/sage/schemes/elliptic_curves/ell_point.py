@@ -1345,7 +1345,7 @@ class EllipticCurvePoint_number_field(EllipticCurvePoint_field):
         Return the order of this point on the elliptic curve.
 
         If the point has infinite order, returns +Infinity.  For
-        curves defined over `\QQ`, we call pari; over other
+        curves defined over `\QQ`, we call PARI; over other
         number fields we implement the function here.
 
         .. note::
@@ -1381,7 +1381,7 @@ class EllipticCurvePoint_number_field(EllipticCurvePoint_field):
 
         E = self.curve()
 
-        # Special code for curves over Q, calling pari
+        # Special code for curves over Q, calling PARI
         try:
             n = int(E.pari_curve().ellorder(self))
             if n == 0: n = oo
@@ -2112,7 +2112,7 @@ class EllipticCurvePoint_number_field(EllipticCurvePoint_field):
           number of bits of precision for the computation
 
         - ``algorithm``: either 'pari' (default for real embeddings)
-          to use Pari's ``ellpointtoz{}``, or 'sage' for a native
+          to use PARI's ``ellpointtoz{}``, or 'sage' for a native
           implementation.  Ignored for complex embeddings.
 
         ALGORITHM:
@@ -2156,7 +2156,7 @@ class EllipticCurvePoint_number_field(EllipticCurvePoint_field):
             sage: E.period_lattice().real_period(prec=70) / P.elliptic_logarithm(precision=70)
             5.0000000000000000000
 
-        A larger example.  The default algorithm uses Pari and makes
+        A larger example.  The default algorithm uses PARI and makes
         sure the result has the requested precision::
 
             sage: E = EllipticCurve([1, 0, 1, -85357462, 303528987048]) #18074g1
@@ -2256,7 +2256,7 @@ class EllipticCurvePoint_number_field(EllipticCurvePoint_field):
             raise ValueError, "algorithm must be either 'pari' or 'sage'"
 
         # From now on emb() is a real embedding of K into
-        # RealField(precision).  We interface with the pari library.
+        # RealField(precision).  We interface with the PARI library.
 
         x, y = self.xy()
         if rational:        # work with exact coordinates

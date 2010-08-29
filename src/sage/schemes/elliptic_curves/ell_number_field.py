@@ -710,7 +710,7 @@ class EllipticCurve_number_field(EllipticCurve_field):
         """
         if proof is None:
             import sage.structure.proof.proof
-            # We use the "number_field" flag because the actual proof dependence is in Pari's number field functions.
+            # We use the "number_field" flag because the actual proof dependence is in PARI's number field functions.
             proof = sage.structure.proof.proof.get_flag(None, "number_field")
 
         if P is None:
@@ -820,7 +820,7 @@ class EllipticCurve_number_field(EllipticCurve_field):
         """
         if proof is None:
             import sage.structure.proof.proof
-            # We use the "number_field" flag because the actual proof dependence is in Pari's number field functions.
+            # We use the "number_field" flag because the actual proof dependence is in PARI's number field functions.
             proof = sage.structure.proof.proof.get_flag(None, "number_field")
 
         return self.local_data(P, proof, algorithm).minimal_model()
@@ -1040,7 +1040,7 @@ class EllipticCurve_number_field(EllipticCurve_field):
         """
         if proof is None:
             import sage.structure.proof.proof
-            # We use the "number_field" flag because the actual proof dependence is in Pari's number field functions.
+            # We use the "number_field" flag because the actual proof dependence is in PARI's number field functions.
             proof = sage.structure.proof.proof.get_flag(None, "number_field")
 
         return self.local_data(P, proof).tamagawa_number()
@@ -1094,7 +1094,7 @@ class EllipticCurve_number_field(EllipticCurve_field):
         """
         if proof is None:
             import sage.structure.proof.proof
-            # We use the "number_field" flag because the actual proof dependence is in Pari's number field functions.
+            # We use the "number_field" flag because the actual proof dependence is in PARI's number field functions.
             proof = sage.structure.proof.proof.get_flag(None, "number_field")
 
         return self.local_data(P, proof).tamagawa_exponent()
@@ -1205,7 +1205,7 @@ class EllipticCurve_number_field(EllipticCurve_field):
         """
         if proof is None:
             import sage.structure.proof.proof
-            # We use the "number_field" flag because the actual proof dependence is in Pari's number field functions.
+            # We use the "number_field" flag because the actual proof dependence is in PARI's number field functions.
             proof = sage.structure.proof.proof.get_flag(None, "number_field")
 
         return self.local_data(P, proof).kodaira_symbol()
@@ -1290,7 +1290,7 @@ class EllipticCurve_number_field(EllipticCurve_field):
         """
         if proof is None:
             import sage.structure.proof.proof
-            # We use the "number_field" flag because the actual proof dependence is in Pari's number field functions.
+            # We use the "number_field" flag because the actual proof dependence is in PARI's number field functions.
             proof = sage.structure.proof.proof.get_flag(None, "number_field")
         K = self.base_ring()
         if K.class_number() != 1:
