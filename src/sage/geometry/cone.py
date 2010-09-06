@@ -1046,7 +1046,7 @@ class ConvexRationalPolyhedralCone(IntegralRayCollection,
         state.pop("_lattice_polytope", None) # Just to save time and space.
         return state
 
-    def _contains(self, point, test='whole_cone'):
+    def _contains(self, point, region='whole cone'):
         r"""
         Check if ``point`` is contained in ``self``.
 
@@ -1057,10 +1057,10 @@ class ConvexRationalPolyhedralCone(IntegralRayCollection,
 
         - ``point`` -- anything. An attempt will be made to convert it into a
           single element of the ambient space of ``self``. If it fails,
-          ``False`` is returned.
+          ``False`` is returned;
 
-        - ``test`` -- string. Can be either 'whole_cone' (default),
-          'interior', or 'relative_interior'. By default, a point on
+        - ``region`` -- string. Can be either 'whole cone' (default),
+          'interior', or 'relative interior'. By default, a point on
           the boundary of the cone is considered part of the cone. If
           you want to test whether the **interior** of the cone
           contains the point, you need to pass the optional argument
@@ -1070,7 +1070,8 @@ class ConvexRationalPolyhedralCone(IntegralRayCollection,
 
         OUTPUT:
 
-        - ``True`` if ``point`` is contained in ``self``, ``False`` otherwise.
+        - ``True`` if ``point`` is contained in the specified ``region`` of
+          ``self``, ``False`` otherwise.
 
         TESTS::
 
@@ -1088,21 +1089,21 @@ class ConvexRationalPolyhedralCone(IntegralRayCollection,
             return False
         # return all(n * point >= 0 for n in self.facet_normals())
         # The above line does not work for non-full dimensional cones!
-        if test=='whole_cone':
+        if region == 'whole cone':
             return self.polyhedron().contains(point)
-        elif test=='interior':
+        elif region == 'interior':
             return self.polyhedron().interior_contains(point)
-        elif test=='relative_interior':
+        elif region == 'relative interior':
             return self.polyhedron().relative_interior_contains(point)
         else:
-            raise ValueError, 'Unknown value test='+str(test)+'.'
+            raise ValueError("%s is an unknown region of the cone!" % region)
 
     def interior_contains(self, *args):
         r"""
         Check if a given point is contained in the interior of ``self``.
 
         For a cone of strictly lower-dimension than the ambient space,
-        the interior is always empty. You probably want to use see
+        the interior is always empty. You probably want to use
         :meth:`relative_interior_contains` in this case.
 
         INPUT:
@@ -1131,16 +1132,16 @@ class ConvexRationalPolyhedralCone(IntegralRayCollection,
         point = flatten(args)
         if len(point) == 1:
            point = point[0]
-        return self._contains(point, test='interior')
+        return self._contains(point, 'interior')
 
     def relative_interior_contains(self, *args):
         r"""
         Check if a given point is contained in the relative interior of ``self``.
 
         For a full-dimensional cone the relative interior is simply
-        the interior, see :meth:`contains`. For a strictly
-        lower-dimensional cone, the relative interior is the cone
-        without its facets.
+        the interior, so this method will do the same check as
+        :meth:`interior_contains`. For a strictly lower-dimensional cone, the
+        relative interior is the cone without its facets.
 
         INPUT:
 
@@ -1160,15 +1161,19 @@ class ConvexRationalPolyhedralCone(IntegralRayCollection,
             True
             sage: c.relative_interior_contains((1,1,0))
             True
+            sage: c.interior_contains((1,1,0))
+            False
             sage: c.contains((1,0,0))
             True
             sage: c.relative_interior_contains((1,0,0))
+            False
+            sage: c.interior_contains((1,0,0))
             False
         """
         point = flatten(args)
         if len(point) == 1:
            point = point[0]
-        return self._contains(point, test='relative_interior')
+        return self._contains(point, 'relative interior')
 
     def __cmp__(self, right):
         r"""
@@ -1823,7 +1828,8 @@ class ConvexRationalPolyhedralCone(IntegralRayCollection,
 
         - :class:`tuple` of vectors.
 
-        If the ambient :meth:`lattice` of ``self`` is a :class:`toric lattice
+        If the ambient :meth:`~IntegralRayCollection.lattice` of ``self`` is a
+        :class:`toric lattice
         <sage.geometry.toric_lattice.ToricLatticeFactory>`, the facet nomals
         will be elements of the dual lattice. If it is a general lattice (like
         ``ZZ^n``) that does not have a ``dual()`` method, the facet normals
