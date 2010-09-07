@@ -32,7 +32,7 @@ Low-level implementation
    sage/graphs/base/dense_graph
 
 Libraries of algorithms
---------------------
+-----------------------
 
 .. toctree::
    :maxdepth: 1
