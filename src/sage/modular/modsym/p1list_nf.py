@@ -218,7 +218,7 @@ class MSymbol(SageObject):
             sage: k.<a> = NumberField(x^2 + 23)
             sage: N = k.ideal(3, a - 1)
             sage: MSymbol(N, 3, a)
-            M-symbol (3: a) of level Fractional ideal (3, -1/2*a + 1/2)
+            M-symbol (3: a) of level Fractional ideal (3, 1/2*a - 1/2)
         """
         return "M-symbol (%s: %s) of level %s"%(self.__c, self.__d, self.__N)
 
@@ -269,7 +269,7 @@ class MSymbol(SageObject):
             sage: N = k.ideal(3, a - 1)
             sage: alpha = MSymbol(N, 3, a)
             sage: alpha.N()
-            Fractional ideal (3, -1/2*a + 1/2)
+            Fractional ideal (3, 1/2*a - 1/2)
         """
         return self.__N
 
@@ -282,7 +282,7 @@ class MSymbol(SageObject):
             sage: k.<a> = NumberField(x^2 + 23)
             sage: N = k.ideal(3, a - 1)
             sage: alpha = MSymbol(N, 3, a); alpha
-            M-symbol (3: a) of level Fractional ideal (3, -1/2*a + 1/2)
+            M-symbol (3: a) of level Fractional ideal (3, 1/2*a - 1/2)
             sage: alpha.tuple()
             (3, a)
         """
@@ -302,7 +302,7 @@ class MSymbol(SageObject):
             sage: k.<a> = NumberField(x^2 + 23)
             sage: N = k.ideal(3, a - 1)
             sage: alpha = MSymbol(N, 3, a); alpha
-            M-symbol (3: a) of level Fractional ideal (3, -1/2*a + 1/2)
+            M-symbol (3: a) of level Fractional ideal (3, 1/2*a - 1/2)
             sage: alpha[0]
             3
             sage: alpha[1]
@@ -383,19 +383,19 @@ class MSymbol(SageObject):
             sage: k.<a> = NumberField(x^2 + 23)
             sage: N = k.ideal(3, a - 1)
             sage: alpha1 = MSymbol(N, 3, a); alpha1
-            M-symbol (3: a) of level Fractional ideal (3, -1/2*a + 1/2)
+            M-symbol (3: a) of level Fractional ideal (3, 1/2*a - 1/2)
             sage: alpha1.normalize()
-            M-symbol (0: 1) of level Fractional ideal (3, -1/2*a + 1/2)
+            M-symbol (0: 1) of level Fractional ideal (3, 1/2*a - 1/2)
             sage: alpha2 = MSymbol(N, 4, a + 1)
             sage: alpha2.normalize()
-            M-symbol (1: -a) of level Fractional ideal (3, -1/2*a + 1/2)
+            M-symbol (1: -a) of level Fractional ideal (3, 1/2*a - 1/2)
 
         We get the scaling factor by setting ``with_scalar=True``:
 
         ::
 
             sage: alpha1.normalize(with_scalar=True)
-            (a, M-symbol (0: 1) of level Fractional ideal (3, -1/2*a + 1/2))
+            (a, M-symbol (0: 1) of level Fractional ideal (3, 1/2*a - 1/2))
             sage: r, beta1 = alpha1.normalize(with_scalar=True)
             sage: r*beta1.c - alpha1.c in N
             True
@@ -493,7 +493,7 @@ class P1NFList(SageObject):
             sage: k.<a> = NumberField(x^2 + 5)
             sage: N = k.ideal(3, a - 1)
             sage: P = P1NFList(N); P
-            The projective line over the ring of integers modulo the Fractional ideal (3, a - 1)
+            The projective line over the ring of integers modulo the Fractional ideal (3, a + 2)
         """
         self.__N = N
         self.__list = p1NFlist(N)
@@ -611,7 +611,7 @@ class P1NFList(SageObject):
             sage: N = k.ideal(5, a + 3)
             sage: P = P1NFList(N)
             sage: P.normalize(3, a)
-            M-symbol (1: 2*a) of level Fractional ideal (5, a - 2)
+            M-symbol (1: 2*a) of level Fractional ideal (5, 1/2*a + 3/2)
 
         We can use an MSymbol as input:
 
@@ -619,14 +619,14 @@ class P1NFList(SageObject):
 
             sage: alpha = MSymbol(N, 3, a)
             sage: P.normalize(alpha)
-            M-symbol (1: 2*a) of level Fractional ideal (5, a - 2)
+            M-symbol (1: 2*a) of level Fractional ideal (5, 1/2*a + 3/2)
 
         If we are interested in the normalizing scalar:
 
         ::
 
             sage: P.normalize(alpha, with_scalar=True)
-            (-a, M-symbol (1: 2*a) of level Fractional ideal (5, a - 2))
+            (-a, M-symbol (1: 2*a) of level Fractional ideal (5, 1/2*a + 3/2))
             sage: r, beta = P.normalize(alpha, with_scalar=True)
             sage: (r*beta.c - alpha.c in N) and (r*beta.d - alpha.d in N)
             True
@@ -649,7 +649,7 @@ class P1NFList(SageObject):
             sage: N = k.ideal(5, a + 3)
             sage: P = P1NFList(N)
             sage: P.N()
-            Fractional ideal (5, a - 2)
+            Fractional ideal (5, 1/2*a + 3/2)
         """
         return self.__N
 
