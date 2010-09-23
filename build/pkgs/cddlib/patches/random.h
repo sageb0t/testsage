@@ -5,7 +5,7 @@
 
    ----------------------------------------------------------
    Random numbers that return the same sequence on all platforms.
-   implementation taken from the GNU C Library. The same copyright
+   Implementation taken from the GNU C Library. The same copyright
    applies.
    ----------------------------------------------------------
 
