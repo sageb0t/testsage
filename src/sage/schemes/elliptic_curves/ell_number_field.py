@@ -202,7 +202,7 @@ class EllipticCurve_number_field(EllipticCurve_field):
 
         IMPLEMENTATION:
 
-        Uses Denis Simon's GP/PARI scripts from
+        Uses Denis Simon's PARI/GP scripts from
         http://www.math.unicaen.fr/~simon/.
 
         EXAMPLES::
@@ -1630,7 +1630,7 @@ class EllipticCurve_number_field(EllipticCurve_field):
 
         IMPLEMENTATION:
 
-        Uses Denis Simon's GP/PARI scripts from
+        Uses Denis Simon's PARI/GP scripts from
         http://www.math.unicaen.fr/~simon/.
 
         """
@@ -1698,7 +1698,7 @@ class EllipticCurve_number_field(EllipticCurve_field):
 
         IMPLEMENTATION:
 
-        Uses Denis Simon's GP/PARI scripts from
+        Uses Denis Simon's PARI/GP scripts from
         http://www.math.unicaen.fr/~simon/.
 
         """
@@ -1764,7 +1764,7 @@ class EllipticCurve_number_field(EllipticCurve_field):
 
         IMPLEMENTATION:
 
-        Uses Denis Simon's GP/PARI scripts from
+        Uses Denis Simon's PARI/GP scripts from
         http://www.math.unicaen.fr/~simon/.
         """
 
