@@ -4704,7 +4704,8 @@ cdef class Expression(CommutativeRingElement):
         symbolic expression.
 
         If self is not real, return the complex half-plane (left or right)
-        in which the number lies.
+        in which the number lies.  If self is pure imaginary, return the sign
+        of the imaginary part of self.
 
         EXAMPLES::
 
@@ -4721,6 +4722,16 @@ cdef class Expression(CommutativeRingElement):
             1
             sage: SR(I).csgn()
             1
+            sage: SR(-I).csgn()
+            -1
+            sage: SR(1+I).csgn()
+            1
+            sage: SR(1-I).csgn()
+            1
+            sage: SR(-1+I).csgn()
+            -1
+            sage: SR(-1-I).csgn()
+            -1
 
         Using the ``hold`` parameter it is possible to prevent automatic
         evaluation::
@@ -5985,16 +5996,6 @@ cdef class Expression(CommutativeRingElement):
             1
             sage: SR(0).binomial(0)
             1
-            sage: SR(-I).csgn()
-            -1
-            sage: SR(1+I).csgn()
-            1
-            sage: SR(1-I).csgn()
-            1
-            sage: SR(-1+I).csgn()
-            -1
-            sage: SR(-1-I).csgn()
-            -1
         """
         cdef Expression nexp = self.coerce_in(k)
         _sig_on
