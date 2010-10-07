@@ -6142,8 +6142,7 @@ cdef class GroebnerStrategy:
         elif name is 'extended_product_criterions':
             return self._strat.extendedProductCriterions
         elif name is 'matrix_prefix':
-            _tmp =  <char *>self._strat.matrixPrefix.c_str()
-            return _tmp
+            return self._strat.matrixPrefix.c_str()
 
         raise AttributeError, name
 

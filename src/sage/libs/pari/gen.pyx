@@ -1386,7 +1386,7 @@ cdef class gen(sage.structure.element.RingElement):
         if signe(x) < 0:
             sp = sp-1
             sp[0] = c'-'
-        k = sp
+        k = <object>sp
         sage_free(s)
         return k
 
@@ -8751,7 +8751,7 @@ cdef class PariInstance(sage.structure.parent_base.ParentWithBase):
         if PyObject_TypeCheck(s, gen):
             return s
         elif PyObject_TypeCheck(s, Integer):
-            return self.new_gen_from_mpz_t(<mpz_t>(<void *>s + mpz_t_offset))
+            return self.new_gen_from_mpz_t(<void *>s + mpz_t_offset)
         elif PyObject_HasAttrString(s, "_pari_"):
             return s._pari_()
         elif isinstance(s, (types.ListType, types.XRangeType,

@@ -677,7 +677,7 @@ cdef class SubgraphSearch:
         _sig_on
         cdef int *tmp_array_out
         cdef int *tmp_array_in
-        cdef bool is_admissible
+        cdef bint is_admissible
 
         # as long as there is a non-void partial copy of H in G
         while self.active >= 0:

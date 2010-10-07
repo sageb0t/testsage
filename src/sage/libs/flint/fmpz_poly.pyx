@@ -113,7 +113,7 @@ cdef class Fmpz_poly(SageObject):
             8  0 0 0 0 0 0 0 1
         """
         cdef char* ss = fmpz_poly_to_string(self.poly)
-        s = ss
+        cdef object s = ss
         free(ss)
         return s
 

@@ -990,7 +990,7 @@ cdef class RealIntervalFieldElement(sage.structure.element.RingElement):
             mpfi_set(self.value, _x.value)
         elif PY_TYPE_CHECK(x, RealNumber):
             rn = x
-            mpfi_set_fr(self.value, <mpfr_t> rn.value)
+            mpfi_set_fr(self.value, rn.value)
         elif PY_TYPE_CHECK(x, Rational):
             rat = x
             mpfi_set_q(self.value, <mpq_t> rat.value)
@@ -1008,7 +1008,7 @@ cdef class RealIntervalFieldElement(sage.structure.element.RingElement):
             if PY_TYPE_CHECK(a, RealNumber) and PY_TYPE_CHECK(b, RealNumber):
                 rn = a
                 rn1 = b
-                mpfi_interv_fr(self.value, <mpfr_t> rn.value, <mpfr_t> rn1.value)
+                mpfi_interv_fr(self.value, rn.value, rn1.value)
             elif PY_TYPE_CHECK(a, RealDoubleElement) and PY_TYPE_CHECK(b, RealDoubleElement):
                 dx = a
                 dx1 = b
@@ -1029,7 +1029,7 @@ cdef class RealIntervalFieldElement(sage.structure.element.RingElement):
             else:  # generic fallback
                 rn  = self._parent(a).lower()
                 rn1 = self._parent(b).upper()
-                mpfi_interv_fr(self.value, <mpfr_t> rn.value, <mpfr_t> rn1.value)
+                mpfi_interv_fr(self.value, rn.value, rn1.value)
 
         elif isinstance(x, sage.rings.qqbar.AlgebraicReal):
             d = x.interval(self._parent)
@@ -1054,7 +1054,7 @@ cdef class RealIntervalFieldElement(sage.structure.element.RingElement):
                     rn1 = self._parent._upper_field()(x)
                 except TypeError:
                     raise TypeError, "Unable to convert number to real interval."
-                mpfi_interv_fr(self.value, <mpfr_t> rn.value, <mpfr_t> rn1.value)
+                mpfi_interv_fr(self.value, rn.value, rn1.value)
 
     def __reduce__(self):
         """
@@ -1944,7 +1944,7 @@ cdef class RealIntervalFieldElement(sage.structure.element.RingElement):
             x = (<RealIntervalField_class>self._parent).__lower_field._new()
         else:
             x = (<RealField_class>(self._parent._real_field(rnd)))._new()
-        mpfi_get_left(<mpfr_t> x.value, self.value)
+        mpfi_get_left(x.value, self.value)
         return x
 
     def upper(self, rnd =None):
@@ -1994,7 +1994,7 @@ cdef class RealIntervalFieldElement(sage.structure.element.RingElement):
             x = (<RealIntervalField_class>self._parent).__upper_field._new()
         else:
             x = ((<RealField_class>self._parent._real_field(rnd)))._new()
-        mpfi_get_right(<mpfr_t> x.value, self.value)
+        mpfi_get_right(x.value, self.value)
         return x
 
     def endpoints(self, rnd=None):
@@ -2030,7 +2030,7 @@ cdef class RealIntervalFieldElement(sage.structure.element.RingElement):
         """
         cdef RealNumber x
         x = (<RealIntervalField_class>self._parent).__middle_field._new()
-        mpfi_diam_abs(<mpfr_t> x.value, self.value)
+        mpfi_diam_abs(x.value, self.value)
         return x
 
     def relative_diameter(self):
@@ -2045,7 +2045,7 @@ cdef class RealIntervalFieldElement(sage.structure.element.RingElement):
         """
         cdef RealNumber x
         x = (<RealIntervalField_class>self._parent).__middle_field._new()
-        mpfi_diam_rel(<mpfr_t> x.value, self.value)
+        mpfi_diam_rel(x.value, self.value)
         return x
 
     def diameter(self):
@@ -2076,7 +2076,7 @@ cdef class RealIntervalFieldElement(sage.structure.element.RingElement):
         """
         cdef RealNumber x
         x = (<RealIntervalField_class>self._parent).__middle_field._new()
-        mpfi_diam(<mpfr_t> x.value, self.value)
+        mpfi_diam(x.value, self.value)
         return x
 
     def fp_rank_diameter(self):
@@ -2135,7 +2135,7 @@ cdef class RealIntervalFieldElement(sage.structure.element.RingElement):
         """
         cdef RealNumber x
         x = (<RealIntervalField_class>self._parent).__middle_field._new()
-        mpfi_mag(<mpfr_t> x.value, self.value)
+        mpfi_mag(x.value, self.value)
         return x
 
     def mignitude(self):
@@ -2153,7 +2153,7 @@ cdef class RealIntervalFieldElement(sage.structure.element.RingElement):
         """
         cdef RealNumber x
         x = (<RealIntervalField_class>self._parent).__middle_field._new()
-        mpfi_mig(<mpfr_t> x.value, self.value)
+        mpfi_mig(x.value, self.value)
         return x
 
     def center(self):
@@ -2167,7 +2167,7 @@ cdef class RealIntervalFieldElement(sage.structure.element.RingElement):
         """
         cdef RealNumber x
         x = (<RealIntervalField_class>self._parent).__middle_field._new()
-        mpfi_mid(<mpfr_t> x.value, self.value)
+        mpfi_mid(x.value, self.value)
         return x
 
     def bisection(self):
@@ -2192,9 +2192,9 @@ cdef class RealIntervalFieldElement(sage.structure.element.RingElement):
         """
         cdef RealIntervalFieldElement left = self._new()
         cdef RealIntervalFieldElement right = self._new()
-        mpfr_set(<mpfr_t> &left.value.left, <mpfr_t> &self.value.left, GMP_RNDN)
-        mpfi_mid(<mpfr_t> &left.value.right, self.value)
-        mpfi_interv_fr(right.value, <mpfr_t> &left.value.right, <mpfr_t> &self.value.right)
+        mpfr_set(&left.value.left, &self.value.left, GMP_RNDN)
+        mpfi_mid(&left.value.right, self.value)
+        mpfi_interv_fr(right.value, &left.value.right, &self.value.right)
         return left, right
 
     def alea(self):
@@ -2209,7 +2209,7 @@ cdef class RealIntervalFieldElement(sage.structure.element.RingElement):
         """
         cdef RealNumber x
         x = (<RealIntervalField_class>self._parent).__middle_field._new()
-        mpfi_alea(<mpfr_t> x.value, self.value)
+        mpfi_alea(x.value, self.value)
         return x
 
 #     def integer_part(self):
@@ -3085,7 +3085,7 @@ cdef class RealIntervalFieldElement(sage.structure.element.RingElement):
             return mpfi_is_inside(other_intv.value, self.value)
         elif PY_TYPE_CHECK(other, RealNumber):
             other_rn = other
-            return mpfi_is_inside_fr(<mpfr_t> other_rn.value, self.value)
+            return mpfi_is_inside_fr(other_rn.value, self.value)
         try:
             other_intv = self._parent(other)
             return mpfi_is_inside(other_intv.value, self.value)
@@ -3190,7 +3190,7 @@ cdef class RealIntervalFieldElement(sage.structure.element.RingElement):
         elif PY_TYPE_CHECK(other, RealNumber):
             other_rn = other
             mpfi_set(x.value, self.value)
-            mpfi_put_fr(x.value, <mpfr_t> other_rn.value)
+            mpfi_put_fr(x.value, other_rn.value)
         else:
             # Let type errors from _coerce_ propagate...
             other_intv = self._parent(other)
