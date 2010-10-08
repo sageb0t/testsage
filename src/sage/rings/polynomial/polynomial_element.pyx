@@ -463,7 +463,7 @@ cdef class Polynomial(CommutativeAlgebraElement):
 
         ::
 
-            sage: R.<x> = QQ[]
+            sage: R.<x> = PolynomialRing(QQ, sparse=True)
             sage: f = x^3-2*x
             sage: f(x) is f
             True
@@ -1470,13 +1470,14 @@ cdef class Polynomial(CommutativeAlgebraElement):
 
         EXAMPLES::
 
-            sage: x = polygen(QQ)
+            sage: R.<x> = PolynomialRing(QQ, implementation="FLINT")
             sage: f = x^3+2/3*x^2 - 5/3
             sage: f._repr_()
             'x^3 + 2/3*x^2 - 5/3'
             sage: f.rename('vaughn')
-            sage: f
-            vaughn
+            Traceback (most recent call last):
+            ...
+            NotImplementedError: object does not support renaming: x^3 + 2/3*x^2 - 5/3
         """
         return self._repr()
 
@@ -2035,7 +2036,7 @@ cdef class Polynomial(CommutativeAlgebraElement):
 
         Note that some subclasses may implement their own
         denominator function. For example, see
-        :class:`sage.rings.polynomial.polynomial_element_generic.Polynomial_rational_dense`
+        :class:`sage.rings.polynomial.polynomial_rational_flint.Polynomial_rational_flint`
 
         .. warning::
 
@@ -2099,7 +2100,7 @@ cdef class Polynomial(CommutativeAlgebraElement):
 
         Note that some subclases may implement its own numerator
         function. For example, see
-        :class:`sage.rings.polynomial.polynomial_element_generic.Polynomial_rational_dense`
+        :class:`sage.rings.polynomial.polynomial_rational_flint.Polynomial_rational_flint`
 
         .. warning::
 
@@ -4936,12 +4937,10 @@ cdef class Polynomial(CommutativeAlgebraElement):
     def is_irreducible(self):
         """
         Return True precisely if this polynomial is irreducible over its
-        base ring. Testing irreducibility over
-        `\ZZ/n\ZZ` for composite `n` is not
-        implemented.
+        base ring.
 
-        The function returns False for polynomials which are units,
-        and raises an exception for the zero polynomial.
+        Testing irreducibility over `\ZZ/n\ZZ` for composite `n` is not
+        implemented.
 
         EXAMPLES::
 
@@ -4953,11 +4952,12 @@ cdef class Polynomial(CommutativeAlgebraElement):
             sage: (x^3 + 2).is_irreducible()
             True
             sage: R(0).is_irreducible()
-            Traceback (most recent call last):
-            ...
-            ValueError: self must be nonzero
+            False
 
-        See \#5140:
+        See \#5140,
+
+        ::
+
             sage: R(1).is_irreducible()
             False
             sage: R(4).is_irreducible()
@@ -4965,8 +4965,10 @@ cdef class Polynomial(CommutativeAlgebraElement):
             sage: R(5).is_irreducible()
             True
 
-        The base ring does matter: for example, 2x is irreducible as a
-        polynomial in QQ[x], but not in ZZ[x]:
+        The base ring does matter:  for example, 2x is irreducible as a
+        polynomial in QQ[x], but not in ZZ[x],
+
+        ::
 
             sage: R.<x> = ZZ[]
             sage: R(2*x).is_irreducible()
@@ -4987,7 +4989,7 @@ cdef class Polynomial(CommutativeAlgebraElement):
             True
         """
         if self.is_zero():
-            raise ValueError, "self must be nonzero"
+            return False
         if self.is_unit():
             return False
         if self.degree() == 0:
