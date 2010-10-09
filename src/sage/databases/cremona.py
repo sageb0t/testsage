@@ -95,6 +95,7 @@ def is_optimal_id(id):
 
     EXAMPLES::
 
+        sage: from sage.databases.cremona import is_optimal_id
         sage: is_optimal_id('b1')
         True
         sage: is_optimal_id('bb1')
@@ -126,6 +127,7 @@ def cremona_letter_code(n):
 
     EXAMPLES::
 
+        sage: from sage.databases.cremona import cremona_letter_code
         sage: cremona_letter_code(0)
         'a'
         sage: cremona_letter_code(26)
@@ -205,6 +207,7 @@ def old_cremona_letter_code(n):
 
     EXAMPLES::
 
+        sage: from sage.databases.cremona import old_cremona_letter_code
         sage: old_cremona_letter_code(1)
         'A'
         sage: old_cremona_letter_code(26)
@@ -271,6 +274,7 @@ def parse_cremona_label(label):
 
     EXAMPLES::
 
+        sage: from sage.databases.cremona import parse_cremona_label
         sage: parse_cremona_label('37a2')
         (37, 'a', 2)
         sage: parse_cremona_label('37b1')
@@ -320,7 +324,7 @@ def class_to_int(k):
         26
         sage: cremona.class_to_int('cremona')
         821863562
-        sage: cremona_letter_code(821863562)
+        sage: cremona.cremona_letter_code(821863562)
         'cremona'
     """
     kk = [string.ascii_lowercase.index(ch) for ch in list(k)]
