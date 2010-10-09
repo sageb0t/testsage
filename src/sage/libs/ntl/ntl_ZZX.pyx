@@ -28,22 +28,32 @@ from sage.rings.integer_ring cimport IntegerRing_class
 
 ZZ = IntegerRing()
 
-cdef make_ZZ(ZZ_c* x):
+cdef inline ntl_ZZ make_ZZ(ZZ_c* x):
     """ These make_XXXX functions are deprecated and should be phased out."""
     cdef ntl_ZZ y
     y = ntl_ZZ()
     y.x = x[0]
     ZZ_delete(x)
+    return y
+
+# You must do sig_on() before calling this function
+cdef inline ntl_ZZ make_ZZ_sig_off(ZZ_c* x):
+    cdef ntl_ZZ y = make_ZZ(x)
     sig_off()
     return y
 
-cdef make_ZZX(ZZX_c* x):
+cdef inline ntl_ZZX make_ZZX(ZZX_c* x):
     """ These make_XXXX functions are deprecated and should be phased out."""
     cdef ntl_ZZX y
-    sig_off()
     y = ntl_ZZX()
     y.x = x[0]
     ZZX_delete(x)
+    return y
+
+# You must do sig_on() before calling this function
+cdef inline ntl_ZZX make_ZZX_sig_off(ZZX_c* x):
+    cdef ntl_ZZX y = make_ZZX(x)
+    sig_off()
     return y
 
 from sage.structure.proof.proof import get_flag
@@ -335,8 +345,9 @@ cdef class ntl_ZZX:
         q = ZZX_div(&self.x, &other.x, &divisible)
         if not divisible:
             ZZX_delete(q)
+            sig_off()
             raise ArithmeticError, "self (=%s) is not divisible by other (=%s)"%(self, other)
-        result = make_ZZX(q)
+        result = make_ZZX_sig_off(q)
         return result
 
     def __mod__(ntl_ZZX self, ntl_ZZX other):
@@ -380,9 +391,12 @@ cdef class ntl_ZZX:
            True
         """
         cdef ZZX_c *r, *q
-        sig_on()
-        ZZX_quo_rem(&self.x, &other.x, &r, &q)
-        return (make_ZZX(q), make_ZZX(r))
+        try:
+            sig_on()
+            ZZX_quo_rem(&self.x, &other.x, &r, &q)
+            return (make_ZZX(q), make_ZZX(r))
+        finally:
+            sig_off()
 
     def square(self):
         """
@@ -394,7 +408,7 @@ cdef class ntl_ZZX:
             [1 0 -2 0 1]
         """
         sig_on()
-        return make_ZZX(ZZX_square(&self.x))
+        return make_ZZX_sig_off(ZZX_square(&self.x))
 
     def __pow__(ntl_ZZX self, long n, ignored):
         """
@@ -591,9 +605,12 @@ cdef class ntl_ZZX:
             ([-1 3], [2])
         """
         cdef ZZX_c *r, *q
-        sig_on()
-        ZZX_pseudo_quo_rem(&self.x, &other.x, &r, &q)
-        return (make_ZZX(q), make_ZZX(r))
+        try:
+            sig_on()
+            ZZX_pseudo_quo_rem(&self.x, &other.x, &r, &q)
+            return (make_ZZX(q), make_ZZX(r))
+        finally:
+            sig_off()
 
     def gcd(self, ntl_ZZX other):
         """
@@ -609,7 +626,7 @@ cdef class ntl_ZZX:
             [1 2 3]
         """
         sig_on()
-        return make_ZZX(ZZX_gcd(&self.x, &other.x))
+        return make_ZZX_sig_off(ZZX_gcd(&self.x, &other.x))
 
     def lcm(self, ntl_ZZX other):
         """
@@ -658,9 +675,12 @@ cdef class ntl_ZZX:
 
         cdef ZZX_c *s, *t
         cdef ZZ_c *r
-        sig_on()
-        ZZX_xgcd(&self.x, &other.x, &r, &s, &t, proof)
-        return (make_ZZ(r), make_ZZX(s), make_ZZX(t))
+        try:
+            sig_on()
+            ZZX_xgcd(&self.x, &other.x, &r, &s, &t, proof)
+            return (make_ZZ(r), make_ZZX(s), make_ZZX(t))
+        finally:
+            sig_off()
 
     def degree(self):
         """
@@ -809,7 +829,7 @@ cdef class ntl_ZZX:
             from copy import copy
             return copy(zero_ZZX)
         sig_on()
-        return make_ZZX(ZZX_truncate(&self.x, m))
+        return make_ZZX_sig_off(ZZX_truncate(&self.x, m))
 
     def multiply_and_truncate(self, ntl_ZZX other, long m):
         """
@@ -864,7 +884,7 @@ cdef class ntl_ZZX:
             raise ArithmeticError, \
                   "The constant term of self must be 1 or -1."
         sig_on()
-        return make_ZZX(ZZX_invert_and_truncate(&self.x, m))
+        return make_ZZX_sig_off(ZZX_invert_and_truncate(&self.x, m))
 
     def multiply_mod(self, ntl_ZZX other, ntl_ZZX modulus):
         """
@@ -879,7 +899,7 @@ cdef class ntl_ZZX:
             [-10 -34 -36]
         """
         sig_on()
-        return make_ZZX(ZZX_multiply_mod(&self.x, &other.x, &modulus.x))
+        return make_ZZX_sig_off(ZZX_multiply_mod(&self.x, &other.x, &modulus.x))
 
     def trace_mod(self, ntl_ZZX modulus):
         """
@@ -894,7 +914,7 @@ cdef class ntl_ZZX:
             -37
         """
         sig_on()
-        return make_ZZ(ZZX_trace_mod(&self.x, &modulus.x))
+        return make_ZZ_sig_off(ZZX_trace_mod(&self.x, &modulus.x))
 
     def trace_list(self):
         """
@@ -940,7 +960,7 @@ cdef class ntl_ZZX:
         proof = proof_flag(proof)
         # NOTES: Within a factor of 2 in speed compared to MAGMA.
         sig_on()
-        return make_ZZ(ZZX_resultant(&self.x, &other.x, proof))
+        return make_ZZ_sig_off(ZZX_resultant(&self.x, &other.x, proof))
 
     def norm_mod(self, ntl_ZZX modulus, proof=None):
         """
@@ -963,7 +983,7 @@ cdef class ntl_ZZX:
         """
         proof = proof_flag(proof)
         sig_on()
-        return make_ZZ(ZZX_norm_mod(&self.x, &modulus.x, proof))
+        return make_ZZ_sig_off(ZZX_norm_mod(&self.x, &modulus.x, proof))
 
     def discriminant(self, proof=None):
         r"""
@@ -987,11 +1007,11 @@ cdef class ntl_ZZX:
         """
         proof = proof_flag(proof)
         sig_on()
-        return make_ZZ(ZZX_discriminant(&self.x, proof))
+        return make_ZZ_sig_off(ZZX_discriminant(&self.x, proof))
 
     #def __call__(self, ntl_ZZ a):
     #    sig_on()
-    #    return make_ZZ(ZZX_polyeval(&self.x, a.x))
+    #    return make_ZZ_sig_off(ZZX_polyeval(&self.x, a.x))
 
     def charpoly_mod(self, ntl_ZZX modulus, proof=None):
         """
@@ -1012,7 +1032,7 @@ cdef class ntl_ZZX:
         """
         proof = proof_flag(proof)
         sig_on()
-        return make_ZZX(ZZX_charpoly_mod(&self.x, &modulus.x, proof))
+        return make_ZZX_sig_off(ZZX_charpoly_mod(&self.x, &modulus.x, proof))
 
     def minpoly_mod_noproof(self, ntl_ZZX modulus):
         """
@@ -1033,7 +1053,7 @@ cdef class ntl_ZZX:
             [0 0 1]
         """
         sig_on()
-        return make_ZZX(ZZX_minpoly_mod(&self.x, &modulus.x))
+        return make_ZZX_sig_off(ZZX_minpoly_mod(&self.x, &modulus.x))
 
     def clear(self):
         """

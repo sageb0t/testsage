@@ -2614,9 +2614,12 @@ cdef class Expression(CommutativeRingElement):
         cdef Expression symbol = self.coerce_in(symb)
         if not is_a_symbol(symbol._gobj):
             raise TypeError, "argument symb must be a symbol"
-        sig_on()
-        cdef GEx x = self._gobj.diff(ex_to_symbol(symbol._gobj), deg)
-        sig_off()
+        cdef GEx x
+        try:
+            sig_on()
+            x = self._gobj.diff(ex_to_symbol(symbol._gobj), deg)
+        finally:
+            sig_off()
         return new_Expression_from_GEx(self._parent, x)
 
     def gradient(self, variables=None):
@@ -2732,9 +2735,12 @@ cdef class Expression(CommutativeRingElement):
             3.1415926824043994
         """
         cdef Expression symbol0 = self.coerce_in(symbol)
-        sig_on()
-        cdef GEx x = self._gobj.series(symbol0._gobj, order, 0)
-        sig_off()
+        cdef GEx x
+        try:
+            sig_on()
+            x = self._gobj.series(symbol0._gobj, order, 0)
+        finally:
+            sig_off()
         return new_Expression_from_GEx(self._parent, x)
 
     def taylor(self, *args):
@@ -2902,9 +2908,12 @@ cdef class Expression(CommutativeRingElement):
             else:
                 raise ValueError, "side must be 'left', 'right', or None"
 
-        sig_on()
-        cdef GEx x = self._gobj.expand(0)
-        sig_off()
+        cdef GEx x
+        try:
+            sig_on()
+            x = self._gobj.expand(0)
+        finally:
+            sig_off()
         return new_Expression_from_GEx(self._parent, x)
 
     expand_rational = rational_expand = expand
@@ -4574,9 +4583,12 @@ cdef class Expression(CommutativeRingElement):
             1/7*x^5 - 17/7*y + 2/21
         """
         cdef Expression r = self.coerce_in(b)
-        sig_on()
-        cdef GEx x = g_gcd(self._gobj, r._gobj)
-        sig_off()
+        cdef GEx x
+        try:
+            sig_on()
+            x = g_gcd(self._gobj, r._gobj)
+        finally:
+            sig_off()
         return new_Expression_from_GEx(self._parent, x)
 
     def collect(Expression self, s):
@@ -4602,9 +4614,12 @@ cdef class Expression(CommutativeRingElement):
             (x^2*y^2 + 4)*z^2 + (x + 21*y)*z + 4*x*y + 20*y^2
         """
         cdef Expression s0 = self.coerce_in(s)
-        sig_on()
-        cdef GEx x = self._gobj.collect(s0._gobj, False)
-        sig_off()
+        cdef GEx x
+        try:
+            sig_on()
+            x = self._gobj.collect(s0._gobj, False)
+        finally:
+            sig_off()
         return new_Expression_from_GEx(self._parent, x)
 
     def collect_common_factors(self):
@@ -4616,9 +4631,12 @@ cdef class Expression(CommutativeRingElement):
             sage: (x/(x^2 + x)).collect_common_factors()
             1/(x + 1)
         """
-        sig_on()
-        cdef GEx x = g_collect_common_factors(self._gobj)
-        sig_off()
+        cdef GEx x
+        try:
+            sig_on()
+            x = g_collect_common_factors(self._gobj)
+        finally:
+            sig_off()
         return new_Expression_from_GEx(self._parent, x)
 
     def __abs__(self):
@@ -5921,9 +5939,12 @@ cdef class Expression(CommutativeRingElement):
             sage: t = SR(1).zeta(); t
             Infinity
         """
-        sig_on()
-        cdef GEx x = g_hold_wrapper(g_zeta, self._gobj, hold)
-        sig_off()
+        cdef GEx x
+        try:
+            sig_on()
+            x = g_hold_wrapper(g_zeta, self._gobj, hold)
+        finally:
+            sig_off()
         return new_Expression_from_GEx(self._parent, x)
 
     def factorial(self, hold=False):
@@ -5962,9 +5983,12 @@ cdef class Expression(CommutativeRingElement):
             120
 
         """
-        sig_on()
-        cdef GEx x = g_hold_wrapper(g_factorial, self._gobj, hold)
-        sig_off()
+        cdef GEx x
+        try:
+            sig_on()
+            x = g_hold_wrapper(g_factorial, self._gobj, hold)
+        finally:
+            sig_off()
         return new_Expression_from_GEx(self._parent, x)
 
     def binomial(self, k, hold=False):
@@ -6014,9 +6038,12 @@ cdef class Expression(CommutativeRingElement):
             1
         """
         cdef Expression nexp = self.coerce_in(k)
-        sig_on()
-        cdef GEx x = g_hold2_wrapper(g_binomial, self._gobj, nexp._gobj, hold)
-        sig_off()
+        cdef GEx x
+        try:
+            sig_on()
+            x = g_hold2_wrapper(g_binomial, self._gobj, nexp._gobj, hold)
+        finally:
+            sig_off()
         return new_Expression_from_GEx(self._parent, x)
 
     def Order(self, hold=False):
@@ -6093,9 +6120,12 @@ cdef class Expression(CommutativeRingElement):
             sage: a = SR(1/2).gamma(hold=True); a.simplify()
             sqrt(pi)
         """
-        sig_on()
-        cdef GEx x = g_hold_wrapper(g_tgamma, self._gobj, hold)
-        sig_off()
+        cdef GEx x
+        try:
+            sig_on()
+            x = g_hold_wrapper(g_tgamma, self._gobj, hold)
+        finally:
+            sig_off()
         return new_Expression_from_GEx(self._parent, x)
 
     def lgamma(self, hold=False):
@@ -6157,9 +6187,12 @@ cdef class Expression(CommutativeRingElement):
             TypeError: log_gamma() got an unexpected keyword argument 'hold'
 
         """
-        sig_on()
-        cdef GEx x = g_hold_wrapper(g_lgamma, self._gobj, hold)
-        sig_off()
+        cdef GEx x
+        try:
+            sig_on()
+            x = g_hold_wrapper(g_lgamma, self._gobj, hold)
+        finally:
+            sig_off()
         return new_Expression_from_GEx(self._parent, x)
 
     def default_variable(self):
