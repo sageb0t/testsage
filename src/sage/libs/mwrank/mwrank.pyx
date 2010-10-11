@@ -90,7 +90,7 @@ cdef extern from "wrap.h":
     void two_descent_saturate(two_descent* t, long sat_bd)
 
 cdef object string_sigoff(char* s):
-    _sig_off
+    sig_off()
     # Makes a python string and deletes what is pointed to by s.
     t = str(s)
     free(s)
@@ -222,12 +222,12 @@ cdef class _bigint:
             sage: a.__repr__()
             '-456'
         """
-        _sig_on
+        sig_on()
         return string_sigoff(bigint_to_str(self.x))
 
 cdef make_bigint(bigint* x):
     cdef _bigint y
-    _sig_off
+    sig_off()
     y = _bigint(_INIT)
     y.x = x
     return y
@@ -315,7 +315,7 @@ cdef class _Curvedata:   # cython class wrapping eclib's Curvedata class
             disc = -10351	(# real components = 1)
             #torsion not yet computed
             """
-        _sig_on
+        sig_on()
         return string_sigoff(Curvedata_repr(self.x))[:-1]
 
     def silverman_bound(self):
@@ -375,10 +375,10 @@ cdef class _Curvedata:   # cython class wrapping eclib's Curvedata class
         """
         cdef double x
         # We declare x so there are *no* Python library
-        # calls within the _sig_on/_sig_off.
-        _sig_on
+        # calls within the sig_on()/sig_off().
+        sig_on()
         x = Curvedata_cps_bound(self.x)
-        _sig_off
+        sig_off()
         return x
 
     def height_constant(self):
@@ -427,7 +427,7 @@ cdef class _Curvedata:   # cython class wrapping eclib's Curvedata class
             sage: ZZ(E.discriminant())
             -1269581104000000
         """
-        _sig_on
+        sig_on()
         from sage.rings.all import Integer
         return Integer(string_sigoff(Curvedata_getdiscr(self.x)))
 
@@ -449,7 +449,7 @@ cdef class _Curvedata:   # cython class wrapping eclib's Curvedata class
             sage: E.conductor()
             126958110400
         """
-        _sig_on
+        sig_on()
         from sage.rings.all import Integer
         return Integer(string_sigoff(Curvedata_conductor(self.x)))
 
@@ -479,12 +479,12 @@ cdef class _Curvedata:   # cython class wrapping eclib's Curvedata class
             ([[1, 0, 1, 4, -6], [1, 0, 1, -36, -70], [1, 0, 1, -1, 0], [1, 0, 1, -171, -874], [1, 0, 1, -11, 12], [1, 0, 1, -2731, -55146]], [[0, 2, 3, 3, 0, 0], [2, 0, 0, 0, 3, 3], [3, 0, 0, 0, 2, 0], [3, 0, 0, 0, 0, 2], [0, 3, 2, 0, 0, 0], [0, 3, 0, 2, 0, 0]])
 
         """
-        _sig_on
+        sig_on()
         s = string_sigoff(Curvedata_isogeny_class(self.x, verbose))
         if verbose:
             sys.stdout.flush()
             sys.stderr.flush()
-        _sig_off
+        sig_off()
         from sage.misc.all import preparse
         from sage.rings.all import Integer
         return eval(s)
@@ -668,7 +668,7 @@ cdef class _mw:
             sage: EQ
             [[1:-1:1], [-2:3:1], [-14:25:8]]
             """
-        _sig_on
+        sig_on()
         return string_sigoff(mw_getbasis(self.x))
 
     def process(self, point, sat=0):
@@ -728,10 +728,10 @@ cdef class _mw:
         if not isinstance(point, (tuple, list)) and len(point) == 3:
             raise TypeError, "point must be a list or tuple of length 3."
         cdef _bigint x,y,z
-        _sig_on
+        sig_on()
         x,y,z = _bigint(point[0]), _bigint(point[1]), _bigint(point[2])
         r = mw_process(self.curve, self.x, x.x, y.x, z.x, sat)
-        _sig_off
+        sig_off()
         if r != 0:
             raise ArithmeticError, "point (=%s) not on curve."%point
 
@@ -756,9 +756,9 @@ cdef class _mw:
             sage: EQ.rank()
             2
         """
-        _sig_on
+        sig_on()
         s = string_sigoff(mw_getbasis(self.x))
-        _sig_off
+        sig_off()
         return s
 
     def regulator(self):
@@ -789,9 +789,9 @@ cdef class _mw:
             0.15246017277240753
         """
         cdef float f
-        _sig_on
+        sig_on()
         f = float(string_sigoff(mw_regulator(self.x)))
-        _sig_off
+        sig_off()
         return f
 
     def rank(self):
@@ -814,9 +814,9 @@ cdef class _mw:
             sage: EQ.rank()
             2
         """
-        _sig_on
+        sig_on()
         r = mw_rank(self.x)
-        _sig_off
+        sig_off()
         from sage.rings.all import Integer
         return Integer(r)
 
@@ -878,10 +878,10 @@ cdef class _mw:
         cdef _bigint index
         cdef char* s
         cdef int ok
-        _sig_on
+        sig_on()
         index = _bigint()
         ok = mw_saturate(self.x, index.x, &s, sat_bd, odd_primes_only)
-        unsat = string_sigoff(s)   # includes _sig_off
+        unsat = string_sigoff(s)   # includes sig_off()
         return ok, index, unsat
 
     def search(self, h_lim, int moduli_option=0, int verb=0):
@@ -940,12 +940,12 @@ cdef class _mw:
         h_lim = str(h_lim)
         _h_lim = h_lim
 
-        _sig_on
+        sig_on()
         mw_search(self.x, _h_lim, moduli_option, verb)
         if verb:
             sys.stdout.flush()
             sys.stderr.flush()
-        _sig_off
+        sig_off()
 
 ############# two_descent #################
 cdef class _two_descent:
@@ -1035,12 +1035,12 @@ cdef class _two_descent:
             sage: D2.ok()
             1
         """
-        _sig_on
+        sig_on()
         self.x = two_descent_new(curve.x, verb, sel, firstlim, secondlim, n_aux, second_descent)
         if verb:
             sys.stdout.flush()
             sys.stderr.flush()
-        _sig_off
+        sig_off()
 
     def getrank(self):
         """
@@ -1061,9 +1061,9 @@ cdef class _two_descent:
             3
         """
         cdef int r
-        _sig_on
+        sig_on()
         r = two_descent_get_rank(self.x)
-        _sig_off
+        sig_off()
         from sage.rings.all import Integer
         return Integer(r)
 
@@ -1086,9 +1086,9 @@ cdef class _two_descent:
             3
         """
         cdef int r
-        _sig_on
+        sig_on()
         r = two_descent_get_rank_bound(self.x)
-        _sig_off
+        sig_off()
         from sage.rings.all import Integer
         return Integer(r)
 
@@ -1110,9 +1110,9 @@ cdef class _two_descent:
             sage: D2.getselmer()
             3
         """
-        _sig_on
+        sig_on()
         r = two_descent_get_selmer_rank(self.x)
-        _sig_off
+        sig_off()
         from sage.rings.all import Integer
         return Integer(r)
 
@@ -1175,9 +1175,9 @@ cdef class _two_descent:
             sage: D2.getbasis()
             '[[1:-1:1], [-2:3:1], [-14:25:8]]'
         """
-        _sig_on
+        sig_on()
         two_descent_saturate(self.x, saturation_bound)
-        _sig_off
+        sig_off()
 
     def getbasis(self):
         """
@@ -1207,7 +1207,7 @@ cdef class _two_descent:
             sage: D2.getbasis()
             '[[1:-1:1], [-2:3:1], [-14:25:8]]'
         """
-        _sig_on
+        sig_on()
         return string_sigoff(two_descent_get_basis(self.x))
 
     def regulator(self):
@@ -1242,5 +1242,5 @@ cdef class _two_descent:
             sage: D2.regulator()
             0.41714355875838399
         """
-        _sig_on
+        sig_on()
         return float(string_sigoff(two_descent_regulator(self.x)))

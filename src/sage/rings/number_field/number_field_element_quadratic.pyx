@@ -725,7 +725,7 @@ cdef class NumberFieldElement_quadratic(NumberFieldElement_absolute):
 
         else:
             # Karatsuba
-            _sig_on
+            sig_on()
             mpz_init(tmp)
             mpz_add(res.a, self.a, self.b) # using res.a as tmp
             mpz_add(tmp, other.a, other.b)
@@ -738,7 +738,7 @@ cdef class NumberFieldElement_quadratic(NumberFieldElement_absolute):
             mpz_mul(tmp, tmp, self.D.value)
             mpz_add(res.a, res.a, tmp)
             mpz_clear(tmp)
-            _sig_off
+            sig_off()
 
         mpz_mul(res.denom, self.denom, other.denom)
         res._reduce_c_()

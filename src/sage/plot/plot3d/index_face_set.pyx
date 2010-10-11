@@ -331,7 +331,7 @@ cdef class IndexFaceSet(PrimitiveObject):
         if point_faces == NULL:
             sage_free(point_counts)
             raise MemoryError, "Out of memory in _seperate_creases for %s" % type(self)
-        _sig_on
+        sig_on()
         memset(point_counts, 0, sizeof(int) * self.vcount)
         for i from 0 <= i < self.fcount:
             face = &self._faces[i]
@@ -370,7 +370,7 @@ cdef class IndexFaceSet(PrimitiveObject):
                     sage_free(point_counts)
                     sage_free(point_faces)
                     self.vcount = self.fcount = self.icount = 0 # so we don't get segfaults on bad points
-                    _sig_off
+                    sig_off()
                     raise MemoryError, "Out of memory in _seperate_creases for %s, CORRUPTED" % type(self)
                 ix = self.vcount
                 running = 0
@@ -397,7 +397,7 @@ cdef class IndexFaceSet(PrimitiveObject):
 
         sage_free(point_counts)
         sage_free(point_faces)
-        _sig_off
+        sig_off()
 
     def _mem_stats(self):
         return self.vcount, self.fcount, self.icount
@@ -581,7 +581,7 @@ cdef class IndexFaceSet(PrimitiveObject):
         cdef point_c P, Q, R
         cdef face_c face
         cdef Py_ssize_t i, k
-        _sig_on
+        sig_on()
         for i from 0 <= i < self.fcount:
             face = self._faces[i]
             if transform is not None:
@@ -603,7 +603,7 @@ cdef class IndexFaceSet(PrimitiveObject):
                         R = self.vs[face.vertices[k]]
                     PyList_Append(lines, format_tachyon_triangle(P, Q, R))
                     PyList_Append(lines, self.texture.id)
-        _sig_off
+        sig_off()
 
         return lines
 
@@ -648,7 +648,7 @@ cdef class IndexFaceSet(PrimitiveObject):
         cdef Py_ssize_t i
         cdef point_c res
 
-        _sig_on
+        sig_on()
         if transform is None:
             points = [format_obj_vertex(self.vs[i]) for i from 0 <= i < self.vcount]
         else:
@@ -664,7 +664,7 @@ cdef class IndexFaceSet(PrimitiveObject):
             back_faces = []
 
         render_params.obj_vertex_offset += self.vcount
-        _sig_off
+        sig_off()
 
         return ["g " + render_params.unique_name('obj'),
                 "usemtl " + self.texture.id,
@@ -685,7 +685,7 @@ cdef class IndexFaceSet(PrimitiveObject):
 
         self._seperate_creases(render_params.crease_threshold)
 
-        _sig_on
+        sig_on()
         if transform is None:
             points = [format_pmesh_vertex(self.vs[i]) for i from 0 <= i < self.vcount]
         else:
@@ -702,7 +702,7 @@ cdef class IndexFaceSet(PrimitiveObject):
             if self._faces[i].n >= 5:
                 extra_faces += self._faces[i].n-3
 
-        _sig_off
+        sig_off()
 
         all = [str(self.vcount),
                points,
@@ -742,7 +742,7 @@ cdef class IndexFaceSet(PrimitiveObject):
 
         dual.realloc(self.fcount, self.vcount, self.icount)
 
-        _sig_on
+        sig_on()
         # is using dicts overly-heavy?
         dual_faces = [{} for i from 0 <= i < self.vcount]
 
@@ -786,7 +786,7 @@ cdef class IndexFaceSet(PrimitiveObject):
         dual.vcount = self.fcount
         dual.fcount = i
         dual.icount = ix
-        _sig_off
+        sig_off()
 
         return dual
 

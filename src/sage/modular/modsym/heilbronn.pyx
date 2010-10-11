@@ -184,7 +184,7 @@ cdef class Heilbronn:
             [(3, 0, 1, 0, -1, 1), (3, 0, 1, 0, -1, 1)]
         """
         cdef int i
-        _sig_on
+        sig_on()
         if N < 32768:   # use ints with no reduction modulo N
             for i from 0 <= i < self.length:
                 a[i] = u*self.list.v[4*i] + v*self.list.v[4*i+2]
@@ -197,7 +197,7 @@ cdef class Heilbronn:
             for i from 0 <= i < self.length:
                 a[i] = llong_prod_mod(u,self.list.v[4*i],N) + llong_prod_mod(v,self.list.v[4*i+2], N)
                 b[i] = llong_prod_mod(u,self.list.v[4*i+1],N) + llong_prod_mod(v,self.list.v[4*i+3], N)
-        _sig_off
+        sig_off()
 
     cdef apply_to_polypart(self, fmpz_poly_t* ans, int i, int k):
         """
@@ -245,7 +245,7 @@ cdef class Heilbronn:
         cdef object X
         M = {}
         t = sage.misc.misc.verbose("start making list M.",level=5)
-        _sig_on
+        sig_on()
         if N < 32768:   # use ints with no reduction modulo N
             for i from 0 <= i < self.length:
                 a = u*self.list.v[4*i] + v*self.list.v[4*i+2]
@@ -281,7 +281,7 @@ cdef class Heilbronn:
         for x,y in M.items():
             mul.append((x,y))
         t = sage.misc.misc.verbose("finished making mul list.",t, level=5)
-        _sig_off
+        sig_off()
         return mul
 
 cdef class HeilbronnCremona(Heilbronn):
@@ -367,7 +367,7 @@ cdef class HeilbronnCremona(Heilbronn):
 
         # NOTE: In C, -p/2 means "round toward 0", but in Python it
         # means "round down."
-        _sig_on
+        sig_on()
         for r from -p/2 <= r < p/2+1:
             x1=p; x2=-r; y1=0; y2=1; a=-p; b=r; c=0; x3=0; y3=0; q=0
             list_append4(L, x1,x2,y1,y2)
@@ -380,7 +380,7 @@ cdef class HeilbronnCremona(Heilbronn):
                 x1 = x2; x2 = x3; y3 = q*y2 - y1; y1 = y2; y2 = y3
                 list_append4(L, x1,x2, y1,y2)
         self.length = L.i/4
-        _sig_off
+        sig_off()
 
 cdef class HeilbronnMerel(Heilbronn):
     cdef public int n
@@ -456,7 +456,7 @@ cdef class HeilbronnMerel(Heilbronn):
         L = &self.list
         n = self.n
 
-        _sig_on
+        sig_on()
         for a from 1 <= a <= n:
             ## We have ad-bc=n so c=0 and ad=n, or b=(ad-n)/c
             ## Must have ad - n >= 0, so d must be >= Ceiling(n/a).
@@ -476,7 +476,7 @@ cdef class HeilbronnMerel(Heilbronn):
                     if bc % c == 0:
                         list_append4(L,a,bc/c,c,d)
         self.length = L.i/4
-        _sig_off
+        sig_off()
 
 ############################################################################
 # Fast application of Heilbronn operators to computation of

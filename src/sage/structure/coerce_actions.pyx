@@ -464,7 +464,7 @@ cdef class IntegerMulAction(Action):
         return "Integer Multiplication"
 
 cdef inline fast_mul(a, n):
-    _sig_on
+    sig_on()
     if n < 0:
         n = -n
         a = -a
@@ -479,7 +479,7 @@ cdef inline fast_mul(a, n):
         if n & 1:
             sum += pow2a
         n = n >> 1
-    _sig_off
+    sig_off()
     return sum
 
 cdef inline fast_mul_long(a, long n):
@@ -491,7 +491,7 @@ cdef inline fast_mul_long(a, long n):
         elif n == 1: return a
         elif n == 2: return a+a
         elif n == 3: return a+a+a
-    _sig_on
+    sig_on()
     pow2a = a
     while n & 1 == 0:
         pow2a += pow2a
@@ -503,5 +503,5 @@ cdef inline fast_mul_long(a, long n):
         if n & 1:
             sum += pow2a
         n = n >> 1
-    _sig_off
+    sig_off()
     return sum

@@ -707,10 +707,10 @@ cdef class Polynomial_dense_modn_ntl_zz(Polynomial_dense_mod_n):
         cdef Polynomial_dense_modn_ntl_zz right = <Polynomial_dense_modn_ntl_zz>_right
         cdef Polynomial_dense_modn_ntl_zz r = self._new()
         cdef bint do_sig = zz_pX_deg(self.x) + zz_pX_deg(right.x) > 1000000
-        if do_sig: _sig_on
+        if do_sig: sig_on()
         self.c.restore_c()
         zz_pX_add(r.x, self.x, right.x)
-        if do_sig: _sig_off
+        if do_sig: sig_off()
         return r
 
     cpdef ModuleElement _sub_(self, ModuleElement _right):
@@ -724,10 +724,10 @@ cdef class Polynomial_dense_modn_ntl_zz(Polynomial_dense_mod_n):
         cdef Polynomial_dense_modn_ntl_zz right = <Polynomial_dense_modn_ntl_zz>_right
         cdef Polynomial_dense_modn_ntl_zz r = self._new()
         cdef bint do_sig = zz_pX_deg(self.x) + zz_pX_deg(right.x) > 1000000
-        if do_sig: _sig_on
+        if do_sig: sig_on()
         self.c.restore_c()
         zz_pX_sub(r.x, self.x, right.x)
-        if do_sig: _sig_off
+        if do_sig: sig_off()
         return r
 
     cpdef RingElement _mul_(self, RingElement _right):
@@ -741,13 +741,13 @@ cdef class Polynomial_dense_modn_ntl_zz(Polynomial_dense_mod_n):
         cdef Polynomial_dense_modn_ntl_zz right = <Polynomial_dense_modn_ntl_zz>_right
         cdef Polynomial_dense_modn_ntl_zz r = self._new()
         cdef bint do_sig = zz_pX_deg(self.x) + zz_pX_deg(right.x) > 10000
-        if do_sig: _sig_on
+        if do_sig: sig_on()
         self.c.restore_c()
         if self is right:
             zz_pX_sqr(r.x, self.x)
         else:
             zz_pX_mul(r.x, self.x, right.x)
-        if do_sig: _sig_off
+        if do_sig: sig_off()
         return r
 
     cpdef ModuleElement _rmul_(self, RingElement c):
@@ -760,10 +760,10 @@ cdef class Polynomial_dense_modn_ntl_zz(Polynomial_dense_mod_n):
         """
         cdef Polynomial_dense_modn_ntl_zz r = self._new()
         cdef bint do_sig = zz_pX_deg(self.x) > 100000
-        if do_sig: _sig_on
+        if do_sig: sig_on()
         self.c.restore_c()
         zz_pX_rmul(r.x, self.x, c)
-        if do_sig: _sig_off
+        if do_sig: sig_off()
         return r
 
     cpdef ModuleElement _lmul_(self, RingElement c):
@@ -776,10 +776,10 @@ cdef class Polynomial_dense_modn_ntl_zz(Polynomial_dense_mod_n):
         """
         cdef Polynomial_dense_modn_ntl_zz r = self._new()
         cdef bint do_sig = zz_pX_deg(self.x) > 100000
-        if do_sig: _sig_on
+        if do_sig: sig_on()
         self.c.restore_c()
         zz_pX_lmul(r.x, c, self.x)
-        if do_sig: _sig_off
+        if do_sig: sig_off()
         return r
 
     def __pow__(Polynomial_dense_modn_ntl_zz self, ee, modulus):
@@ -814,9 +814,9 @@ cdef class Polynomial_dense_modn_ntl_zz(Polynomial_dense_mod_n):
                 zz_pX_LeftShift(r.x, self.x, e-1)
             else:
                 do_sig = zz_pX_deg(self.x) *e > 1000
-                if do_sig: _sig_on
+                if do_sig: sig_on()
                 zz_pX_power(r.x, self.x, e)
-                if do_sig: _sig_off
+                if do_sig: sig_off()
         else:
             if not PY_TYPE_CHECK(modulus, Polynomial_dense_modn_ntl_zz):
                 modulus = self.parent()._coerce_(modulus)
@@ -824,9 +824,9 @@ cdef class Polynomial_dense_modn_ntl_zz(Polynomial_dense_mod_n):
             zz_pX_Modulus_build(mod[0], (<Polynomial_dense_modn_ntl_zz>modulus).x)
 
             do_sig = zz_pX_deg(self.x) * e * self.c.p_bits > 1e5
-            if do_sig: _sig_on
+            if do_sig: sig_on()
             zz_pX_PowerMod_long_pre(r.x, self.x, e, mod[0])
-            if do_sig: _sig_off
+            if do_sig: sig_off()
             zz_pX_Modulus_destruct(mod)
 
         if recip:
@@ -855,10 +855,10 @@ cdef class Polynomial_dense_modn_ntl_zz(Polynomial_dense_mod_n):
         cdef Polynomial_dense_modn_ntl_zz q = self._new()
         cdef Polynomial_dense_modn_ntl_zz r = self._new()
         cdef Polynomial_dense_modn_ntl_zz denom = <Polynomial_dense_modn_ntl_zz>right
-        _sig_on
+        sig_on()
         self.c.restore_c()
         zz_pX_divrem(q.x, r.x, self.x, denom.x)
-        _sig_off
+        sig_off()
         return q, r
 
     def __floordiv__(self, right):
@@ -882,10 +882,10 @@ cdef class Polynomial_dense_modn_ntl_zz(Polynomial_dense_mod_n):
         cdef Polynomial_dense_modn_ntl_zz numer = <Polynomial_dense_modn_ntl_zz>self
         cdef Polynomial_dense_modn_ntl_zz denom = <Polynomial_dense_modn_ntl_zz>right
         cdef Polynomial_dense_modn_ntl_zz q = numer._new()
-        _sig_on
+        sig_on()
         numer.c.restore_c()
         zz_pX_div(q.x, numer.x, denom.x)
-        _sig_off
+        sig_off()
         return q
 
     def __mod__(self, right):
@@ -905,10 +905,10 @@ cdef class Polynomial_dense_modn_ntl_zz(Polynomial_dense_mod_n):
         cdef Polynomial_dense_modn_ntl_zz numer = <Polynomial_dense_modn_ntl_zz>self
         cdef Polynomial_dense_modn_ntl_zz denom = <Polynomial_dense_modn_ntl_zz>right
         cdef Polynomial_dense_modn_ntl_zz r = numer._new()
-        _sig_on
+        sig_on()
         numer.c.restore_c()
         zz_pX_mod(r.x, numer.x, denom.x)
-        _sig_off
+        sig_off()
         return r
 
     def shift(self, n):
@@ -1256,10 +1256,10 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
         cdef Polynomial_dense_modn_ntl_ZZ right = <Polynomial_dense_modn_ntl_ZZ>_right
         cdef Polynomial_dense_modn_ntl_ZZ r = self._new()
         cdef bint do_sig = (ZZ_pX_deg(self.x) + ZZ_pX_deg(right.x)) * self.c.p_bits > 1e7
-        if do_sig: _sig_on
+        if do_sig: sig_on()
         self.c.restore_c()
         ZZ_pX_add(r.x, self.x, right.x)
-        if do_sig: _sig_off
+        if do_sig: sig_off()
         return r
 
     cpdef ModuleElement _sub_(self, ModuleElement _right):
@@ -1273,10 +1273,10 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
         cdef Polynomial_dense_modn_ntl_ZZ right = <Polynomial_dense_modn_ntl_ZZ>_right
         cdef Polynomial_dense_modn_ntl_ZZ r = self._new()
         cdef bint do_sig = (ZZ_pX_deg(self.x) + ZZ_pX_deg(right.x)) * self.c.p_bits > 1e7
-        if do_sig: _sig_on
+        if do_sig: sig_on()
         self.c.restore_c()
         ZZ_pX_sub(r.x, self.x, right.x)
-        if do_sig: _sig_off
+        if do_sig: sig_off()
         return r
 
     cpdef RingElement _mul_(self, RingElement _right):
@@ -1290,13 +1290,13 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
         cdef Polynomial_dense_modn_ntl_ZZ right = <Polynomial_dense_modn_ntl_ZZ>_right
         cdef Polynomial_dense_modn_ntl_ZZ r = self._new()
         cdef bint do_sig = (ZZ_pX_deg(self.x) + ZZ_pX_deg(right.x)) * self.c.p_bits > 1e5
-        if do_sig: _sig_on
+        if do_sig: sig_on()
         self.c.restore_c()
         if self is right:
             ZZ_pX_sqr(r.x, self.x)
         else:
             ZZ_pX_mul(r.x, self.x, right.x)
-        if do_sig: _sig_off
+        if do_sig: sig_off()
         return r
 
     cpdef ModuleElement _rmul_(self, RingElement c):
@@ -1309,11 +1309,11 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
         """
         cdef Polynomial_dense_modn_ntl_ZZ r = self._new()
         cdef bint do_sig = ZZ_pX_deg(self.x) * self.c.p_bits > 1e7
-        if do_sig: _sig_on
+        if do_sig: sig_on()
         self.c.restore_c()
         cdef ntl_ZZ_p value = ntl_ZZ_p(c, self.c)
         ZZ_pX_rmul(r.x, self.x, value.x)
-        if do_sig: _sig_off
+        if do_sig: sig_off()
         return r
 
     cpdef ModuleElement _lmul_(self, RingElement c):
@@ -1354,9 +1354,9 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
                 ZZ_pX_LeftShift(r.x, self.x, e - 1)
             else:
                 do_sig = ZZ_pX_deg(self.x) * e * self.c.p_bits > 1e5
-                if do_sig: _sig_on
+                if do_sig: sig_on()
                 ZZ_pX_power(r.x, self.x, e)
-                if do_sig: _sig_off
+                if do_sig: sig_off()
         else:
             if not PY_TYPE_CHECK(modulus, Polynomial_dense_modn_ntl_ZZ):
                 modulus = self.parent()._coerce_(modulus)
@@ -1364,9 +1364,9 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
             ZZ_pX_Modulus_build(mod[0], (<Polynomial_dense_modn_ntl_ZZ>modulus).x)
 
             do_sig = ZZ_pX_deg(self.x) * e * self.c.p_bits > 1e5
-            if do_sig: _sig_on
+            if do_sig: sig_on()
             ZZ_pX_PowerMod_long_pre(r.x, self.x, e, mod[0])
-            if do_sig: _sig_off
+            if do_sig: sig_off()
             ZZ_pX_Modulus_destruct(mod)
         if recip:
             return ~r
@@ -1394,10 +1394,10 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
         cdef Polynomial_dense_modn_ntl_ZZ q = self._new()
         cdef Polynomial_dense_modn_ntl_ZZ r = self._new()
         cdef Polynomial_dense_modn_ntl_ZZ denom = <Polynomial_dense_modn_ntl_ZZ>right
-        _sig_on
+        sig_on()
         self.c.restore_c()
         ZZ_pX_DivRem(q.x, r.x, self.x, denom.x)
-        _sig_off
+        sig_off()
         return q, r
 
     def __floordiv__(self, right):
@@ -1421,10 +1421,10 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
         cdef Polynomial_dense_modn_ntl_ZZ numer = <Polynomial_dense_modn_ntl_ZZ>self
         cdef Polynomial_dense_modn_ntl_ZZ denom = <Polynomial_dense_modn_ntl_ZZ>right
         cdef Polynomial_dense_modn_ntl_ZZ q = numer._new()
-        _sig_on
+        sig_on()
         numer.c.restore_c()
         ZZ_pX_div(q.x, numer.x, denom.x)
-        _sig_off
+        sig_off()
         return q
 
     def __mod__(self, right):
@@ -1444,10 +1444,10 @@ cdef class Polynomial_dense_modn_ntl_ZZ(Polynomial_dense_mod_n):
         cdef Polynomial_dense_modn_ntl_ZZ numer = <Polynomial_dense_modn_ntl_ZZ>self
         cdef Polynomial_dense_modn_ntl_ZZ denom = <Polynomial_dense_modn_ntl_ZZ>right
         cdef Polynomial_dense_modn_ntl_ZZ r = numer._new()
-        _sig_on
+        sig_on()
         numer.c.restore_c()
         ZZ_pX_rem(r.x, numer.x, denom.x)
-        _sig_off
+        sig_off()
         return r
 
     def shift(self, n):
