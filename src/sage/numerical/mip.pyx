@@ -169,10 +169,11 @@ cdef class MixedIntegerLinearProgram:
             sage: p = MixedIntegerLinearProgram(maximization=True)
         """
 
-        from sage.numerical.backends.generic_backend import getSolver
-        self._backend = getSolver(solver = solver)
+        from sage.numerical.backends.generic_backend import get_solver
+        self._backend = get_solver(solver = solver)
+
         if not maximization:
-            self._backend.set_direction(-1)
+            self._backend.set_sense(-1)
 
         self.__BINARY = 0
         self.__REAL = -1
@@ -201,13 +202,13 @@ cdef class MixedIntegerLinearProgram:
 
          return ("Mixed Integer Program "+
 
-                 ( "\"" +self._backend.get_problem_name()+ "\""
-                   if (str(self._backend.get_problem_name()) != "") else "")+
+                 ( "\"" +self._backend.problem_name()+ "\""
+                   if (str(self._backend.problem_name()) != "") else "")+
 
                  " ( " + ("maximization" if b.is_maximization() else "minimization" ) +
 
-                 ", " + str(b.n_cols()) + " variables, " +
-                 str(b.n_rows()) + " constraints )")
+                 ", " + str(b.ncols()) + " variables, " +
+                 str(b.nrows()) + " constraints )")
 
     def __getitem__(self, v):
         r"""
@@ -251,24 +252,7 @@ cdef class MixedIntegerLinearProgram:
             Mixed Integer Program "Test program" ( maximization, 0 variables, 0 constraints )
         """
 
-        self._backend.set_problem_name(name)
-
-    def set_objective_name(self,name):
-        r"""
-        Sets the name of the objective function.
-
-        INPUT:
-
-        - ``name`` -- A string representing the name of the
-          objective function.
-
-        EXAMPLE::
-
-            sage: p=MixedIntegerLinearProgram()
-            sage: p.set_objective_name("Objective function")
-        """
-
-        self._backend.set_objective_name(name)
+        self._backend.problem_name(name)
 
     def _update_variables_name(self):
         r"""
@@ -393,7 +377,7 @@ cdef class MixedIntegerLinearProgram:
         value+="  "
 
         first = True
-        for 0<= i< b.n_cols():
+        for 0<= i< b.ncols():
             c = b.get_objective_coeff(i)
             if c != 0:
 
@@ -404,14 +388,14 @@ cdef class MixedIntegerLinearProgram:
 
         value += "\nConstraints:"
 
-        for 0<= i < b.n_rows():
+        for 0<= i < b.nrows():
 
-            indices, values = b.get_row(i)
+            indices, values = b.row(i)
 
-            lb, ub = b.get_row_bounds(i)
+            lb, ub = b.row_bounds(i)
 
             value += ("\n  "+
-                      (b.get_row_name(i)+": " if b.get_row_name(i)!="" else "")+
+                      (b.row_name(i)+": " if b.row_name(i)!="" else "")+
                       (str(lb)+" <= " if lb!=None else "")
                       )
 
@@ -428,7 +412,7 @@ cdef class MixedIntegerLinearProgram:
 
         value += "\nVariables:"
 
-        for 0<= i < b.n_cols():
+        for 0<= i < b.ncols():
             value += "\n  " + str(inv_variables[i]) + " is"
 
             if b.is_variable_integer(i):
@@ -438,7 +422,7 @@ cdef class MixedIntegerLinearProgram:
             else:
                 value += " a real variable"
 
-            lb, ub = b.get_col_bounds(i)
+            lb, ub = b.col_bounds(i)
 
             value += " (min=" + \
                 ( str(lb)
@@ -639,7 +623,7 @@ cdef class MixedIntegerLinearProgram:
 
         f.pop(-1,0)
 
-        for i in range(self._backend.n_cols()):
+        for i in range(self._backend.ncols()):
             values.append(f.get(i,0))
 
         self._backend.set_objective(values)
@@ -771,7 +755,7 @@ cdef class MixedIntegerLinearProgram:
                 self._backend.add_constraint(indices, values, +1, max)
 
             if name != None:
-                self._backend.set_row_name(self._backend.n_rows()-1,name)
+                self._backend.row_name(self._backend.nrows()-1,name)
 
         elif isinstance(linear_function,LinearConstraint):
             functions = linear_function.constraints
@@ -1062,7 +1046,7 @@ cdef class MixedIntegerLinearProgram:
         if solver != None:
             raise ValueError("Solver argument deprecated. This parameter now has to be set when calling the class' constructor")
 
-        self._backend.set_log_level(log)
+        self._backend.set_verbosity(log)
 
         self._backend.solve()
 
@@ -1097,7 +1081,7 @@ cdef class MixedIntegerLinearProgram:
 
         self._variables[v] = len(self._variables)
         self._backend.add_variable()
-        self._backend.set_variable_type(self._backend.n_cols()-1,vtype)
+        self._backend.set_variable_type(self._backend.ncols()-1,vtype)
         return v
 
     def set_min(self, v, min):
@@ -1122,7 +1106,7 @@ cdef class MixedIntegerLinearProgram:
             sage: p.get_min(v[1])
             6.0
         """
-        self._backend.set_variable_min(self._variables[v], min)
+        self._backend.variable_min(self._variables[v], min)
 
     def set_max(self, v, max):
         r"""
@@ -1146,7 +1130,7 @@ cdef class MixedIntegerLinearProgram:
             6.0
         """
 
-        self._backend.set_variable_max(self._variables[v], max)
+        self._backend.variable_max(self._variables[v], max)
 
     def get_min(self, v):
         r"""
@@ -1173,7 +1157,7 @@ cdef class MixedIntegerLinearProgram:
             6.0
         """
 
-        return self._backend.get_variable_min(self._variables[v])
+        return self._backend.variable_min(self._variables[v])
 
     def get_max(self, v):
         r"""
@@ -1199,7 +1183,7 @@ cdef class MixedIntegerLinearProgram:
             6.0
         """
 
-        return self._backend.get_variable_max(self._variables[v])
+        return self._backend.variable_max(self._variables[v])
 
 class MIPSolverException(Exception):
     r"""
@@ -1346,7 +1330,7 @@ cdef class MIPVariable:
         if self._dim == 1:
             for (k,v) in self._dict.iteritems():
                 name = prefix + "[" + str(k) + "]"
-                self._p._backend.set_col_name(self._p._variables[v], name)
+                self._p._backend.col_name(self._p._variables[v], name)
                 #self._p._variables_name[self._p._variables[v]]=prefix + "[" + str(k) + "]"
         else:
             for v in self._dict.itervalues():
