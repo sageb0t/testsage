@@ -1894,7 +1894,7 @@ class Graph(GenericGraph):
 
         from sage.numerical.mip import MixedIntegerLinearProgram, MIPSolverException, Sum
 
-        p = MixedIntegerLinearProgram(maximization=False)
+        p = MixedIntegerLinearProgram(maximization=False, solver=solver)
         b = p.new_variable()
 
         reorder = lambda x,y: (x,y) if x<y else (y,x)
@@ -1920,7 +1920,7 @@ class Graph(GenericGraph):
         p.set_binary(b)
 
         try:
-            p.solve(solver=solver, log=verbose)
+            p.solve(log=verbose)
             g = self.copy()
             b = p.get_values(b)
             g.delete_edges([(x,y) for x,y,_ in g.edge_iterator() if b[reorder(x,y)] < 0.5])
@@ -2333,7 +2333,7 @@ class Graph(GenericGraph):
         """
 
         from sage.numerical.mip import MixedIntegerLinearProgram, Sum
-        p=MixedIntegerLinearProgram()
+        p=MixedIntegerLinearProgram(solver=solver)
 
         # Boolean variable indicating whether the vertex
         # is the representative of some set
@@ -2373,7 +2373,7 @@ class Graph(GenericGraph):
         p.set_binary(classss)
 
         try:
-            p.solve(solver=solver, log=verbose)
+            p.solve(log=verbose)
         except:
             return None
 
@@ -2476,7 +2476,7 @@ class Graph(GenericGraph):
         """
 
         from sage.numerical.mip import MixedIntegerLinearProgram, MIPSolverException, Sum
-        p = MixedIntegerLinearProgram()
+        p = MixedIntegerLinearProgram(solver=solver)
 
         # sorts an edge
         S = lambda (x,y) : (x,y) if x<y else (y,x)
@@ -2541,7 +2541,7 @@ class Graph(GenericGraph):
         p.set_objective(None)
 
         try:
-            p.solve(solver=solver, log=verbose)
+            p.solve(log=verbose)
         except MIPSolverException:
             raise ValueError("This graph has no minor isomorphic to H !")
 

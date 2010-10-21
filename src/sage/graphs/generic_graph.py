@@ -2234,7 +2234,7 @@ class GenericGraph(GenericGraph_pyx):
 
         from sage.numerical.mip import MixedIntegerLinearProgram, Sum
 
-        p = MixedIntegerLinearProgram(maximization=False)
+        p = MixedIntegerLinearProgram(maximization=False, solver=solver)
 
         # The orientation of an edge is boolean
         # and indicates whether the edge uv
@@ -2255,7 +2255,7 @@ class GenericGraph(GenericGraph_pyx):
 
         p.set_binary(orientation)
 
-        p.solve(solver=solver, log=verbose)
+        p.solve(log=verbose)
 
         orientation = p.get_values(orientation)
 
@@ -3256,7 +3256,7 @@ class GenericGraph(GenericGraph_pyx):
             v = pv
         return B, C
 
-    def steiner_tree(self,vertices, weighted = False):
+    def steiner_tree(self,vertices, weighted = False, solver = None, verbose = 0):
         r"""
         Returns a tree of minimum weight connecting the given
         set of vertices.
@@ -3282,6 +3282,17 @@ class GenericGraph(GenericGraph_pyx):
           weighted, and use each edge's label as a weight, considering
           ``None`` as a weight of `1`. If ``weighted=False`` (default)
           all edges are considered to have a weight of `1`.
+
+        - ``solver`` -- (default: ``None``) Specify a Linear Program (LP)
+          solver to be used. If set to ``None``, the default one is used. For
+          more information on LP solvers and which default solver is used, see
+          the method
+          :meth:`solve <sage.numerical.mip.MixedIntegerLinearProgram.solve>`
+          of the class
+          :class:`MixedIntegerLinearProgram <sage.numerical.mip.MixedIntegerLinearProgram>`.
+
+        - ``verbose`` -- integer (default: ``0``). Sets the level of
+          verbosity. Set to 0 by default, which means quiet.
 
         .. NOTE::
 
@@ -3354,7 +3365,7 @@ class GenericGraph(GenericGraph_pyx):
 
         # Then, LP formulation
         from sage.numerical.mip import MixedIntegerLinearProgram, Sum
-        p = MixedIntegerLinearProgram(maximization = False)
+        p = MixedIntegerLinearProgram(maximization = False, solver = solver)
 
         # Reorder an edge
         R = lambda (x,y) : (x,y) if x<y else (y,x)
@@ -3396,7 +3407,7 @@ class GenericGraph(GenericGraph_pyx):
         p.set_objective(Sum([w(e)*edges[R(e)] for e in g.edges(labels = False)]))
 
         p.set_binary(edges)
-        p.solve()
+        p.solve(log = verbose)
 
         edges = p.get_values(edges)
 
@@ -3404,7 +3415,7 @@ class GenericGraph(GenericGraph_pyx):
         st.delete_vertices([v for v in g if st.degree(v) == 0])
         return st
 
-    def edge_disjoint_spanning_trees(self,k, root=None, **kwds):
+    def edge_disjoint_spanning_trees(self,k, root=None, solver = None, verbose = 0):
         r"""
         Returns the desired number of edge-disjoint spanning
         trees/arborescences.
@@ -3418,9 +3429,16 @@ class GenericGraph(GenericGraph_pyx):
           when the graph is directed.
           If set to ``None``, the first vertex in the graph is picked.
 
-        - ``**kwds`` -- arguments to be passed down to the ``solve``
-          function of ``MixedIntegerLinearProgram``. See the documentation
-          of ``MixedIntegerLinearProgram.solve`` for more informations.
+        - ``solver`` -- (default: ``None``) Specify a Linear Program (LP)
+          solver to be used. If set to ``None``, the default one is used. For
+          more information on LP solvers and which default solver is used, see
+          the method
+          :meth:`solve <sage.numerical.mip.MixedIntegerLinearProgram.solve>`
+          of the class
+          :class:`MixedIntegerLinearProgram <sage.numerical.mip.MixedIntegerLinearProgram>`.
+
+        - ``verbose`` -- integer (default: ``0``). Sets the level of
+          verbosity. Set to 0 by default, which means quiet.
 
         ALGORITHM:
 
@@ -3491,7 +3509,7 @@ class GenericGraph(GenericGraph_pyx):
         """
 
         from sage.numerical.mip import MixedIntegerLinearProgram, MIPSolverException, Sum
-        p = MixedIntegerLinearProgram()
+        p = MixedIntegerLinearProgram(solver = solver)
         p.set_objective(None)
 
         # The colors we can use
@@ -3577,7 +3595,7 @@ class GenericGraph(GenericGraph_pyx):
         p.set_binary(edges)
 
         try:
-            p.solve(**kwds)
+            p.solve(log = verbose)
 
         except MIPSolverException:
             raise ValueError("This graph does not contain the required number of trees/arborescences !")
@@ -3749,7 +3767,7 @@ class GenericGraph(GenericGraph_pyx):
 
         from sage.numerical.mip import MixedIntegerLinearProgram, Sum
         g = self
-        p = MixedIntegerLinearProgram(maximization=False)
+        p = MixedIntegerLinearProgram(maximization=False, solver=solver)
         b = p.new_variable(dim=2)
         v = p.new_variable()
 
@@ -3780,9 +3798,9 @@ class GenericGraph(GenericGraph_pyx):
         p.set_binary(b)
 
         if value_only:
-            return p.solve(objective_only=True, solver=solver, log=verbose)
+            return p.solve(objective_only=True, log=verbose)
         else:
-            obj = p.solve(solver=solver, log=verbose)
+            obj = p.solve(log=verbose)
             b = p.get_values(b)
             answer = [obj]
             if g.is_directed():
@@ -3872,7 +3890,7 @@ class GenericGraph(GenericGraph_pyx):
         if vertices:
             value_only = False
 
-        p = MixedIntegerLinearProgram(maximization=False)
+        p = MixedIntegerLinearProgram(maximization=False, solver=solver)
         b = p.new_variable()
         v = p.new_variable()
 
@@ -3905,9 +3923,9 @@ class GenericGraph(GenericGraph_pyx):
         p.set_binary(v)
 
         if value_only:
-            return p.solve(objective_only=True, solver=solver, log=verbose)
+            return p.solve(objective_only=True, log=verbose)
         else:
-            obj = p.solve(solver=solver, log=verbose)
+            obj = p.solve(log=verbose)
             b = p.get_values(b)
             answer = [obj,[x for x in g if b[x] == 1]]
             if vertices:
@@ -3924,7 +3942,7 @@ class GenericGraph(GenericGraph_pyx):
                 answer.append([l0, l1])
             return tuple(answer)
 
-    def multiway_cut(self, vertices, value_only = False, use_edge_labels = False, **kwds):
+    def multiway_cut(self, vertices, value_only = False, use_edge_labels = False, solver = None, verbose = 0):
         r"""
         Returns a minimum edge multiway cut corresponding to the
         given set of vertices
@@ -3957,9 +3975,16 @@ class GenericGraph(GenericGraph_pyx):
 
             - when set to ``False`` (default), each edge has weight `1`.
 
-        - ``**kwds`` -- arguments to be passed down to the ``solve``
-          function of ``MixedIntegerLinearProgram``. See the documentation
-          of ``MixedIntegerLinearProgram.solve`` for more information.
+        - ``solver`` -- (default: ``None``) Specify a Linear Program (LP)
+          solver to be used. If set to ``None``, the default one is used. For
+          more information on LP solvers and which default solver is used, see
+          the method
+          :meth:`solve <sage.numerical.mip.MixedIntegerLinearProgram.solve>`
+          of the class
+          :class:`MixedIntegerLinearProgram <sage.numerical.mip.MixedIntegerLinearProgram>`.
+
+        - ``verbose`` -- integer (default: ``0``). Sets the level of
+          verbosity. Set to 0 by default, which means quiet.
 
         EXAMPLES:
 
@@ -4002,7 +4027,7 @@ class GenericGraph(GenericGraph_pyx):
         from sage.numerical.mip import MixedIntegerLinearProgram, Sum
         from itertools import combinations, chain
 
-        p = MixedIntegerLinearProgram(maximization = False)
+        p = MixedIntegerLinearProgram(maximization = False, solver= solver)
 
         # height[c][v] represents the height of vertex v for commodity c
         height = p.new_variable(dim = 2)
@@ -4052,9 +4077,9 @@ class GenericGraph(GenericGraph_pyx):
 
         p.set_binary(cut)
         if value_only:
-            return p.solve(objective_only = True, **kwds)
+            return p.solve(objective_only = True, log = verbose)
 
-        p.solve(**kwds)
+        p.solve(log = verbose)
 
         cut = p.get_values(cut)
 
@@ -4147,7 +4172,7 @@ class GenericGraph(GenericGraph_pyx):
 
             from sage.numerical.mip import MixedIntegerLinearProgram, Sum
             g = self
-            p = MixedIntegerLinearProgram(maximization=False)
+            p = MixedIntegerLinearProgram(maximization=False, solver=solver)
             b = p.new_variable()
 
             # minimizes the number of vertices in the set
@@ -4160,9 +4185,9 @@ class GenericGraph(GenericGraph_pyx):
             p.set_binary(b)
 
             if value_only:
-                return p.solve(objective_only=True, solver=solver, log=verbose)
+                return p.solve(objective_only=True, log=verbose)
             else:
-                p.solve(solver=solver, log=verbose)
+                p.solve(log=verbose)
                 b = p.get_values(b)
                 return set([v for v in g.vertices() if b[v] == 1])
         else:
@@ -4247,7 +4272,7 @@ class GenericGraph(GenericGraph_pyx):
 
         from sage.numerical.mip import MixedIntegerLinearProgram, Sum
 
-        p = MixedIntegerLinearProgram(maximization=True)
+        p = MixedIntegerLinearProgram(maximization=True, solver=solver)
 
         in_set = p.new_variable(dim=2)
         in_cut = p.new_variable(dim=1)
@@ -4286,10 +4311,10 @@ class GenericGraph(GenericGraph_pyx):
         p.set_objective(Sum([weight(l ) * in_cut[reorder_edge(u,v)] for (u,v,l ) in g.edge_iterator()]))
 
         if value_only:
-            obj = p.solve(objective_only=True, solver=solver, log=verbose)
+            obj = p.solve(objective_only=True, log=verbose)
             return obj if use_edge_labels else round(obj)
         else:
-            obj = p.solve(solver=solver, log=verbose)
+            obj = p.solve(log=verbose)
             val = [obj if use_edge_labels else round(obj)]
 
             in_cut = p.get_values(in_cut)
@@ -4314,7 +4339,7 @@ class GenericGraph(GenericGraph_pyx):
 
             return val
 
-    def traveling_salesman_problem(self, weighted = True):
+    def traveling_salesman_problem(self, weighted = True, solver = None, verbose = 0):
         r"""
         Solves the traveling salesman problem (TSP)
 
@@ -4338,6 +4363,17 @@ class GenericGraph(GenericGraph_pyx):
               - If set to ``True``, the weights are taken into
                 account, and the edges whose weight is ``None``
                 are assumed to be set to `1`
+
+        - ``solver`` -- (default: ``None``) Specify a Linear Program (LP)
+          solver to be used. If set to ``None``, the default one is used. For
+          more information on LP solvers and which default solver is used, see
+          the method
+          :meth:`solve <sage.numerical.mip.MixedIntegerLinearProgram.solve>`
+          of the class
+          :class:`MixedIntegerLinearProgram <sage.numerical.mip.MixedIntegerLinearProgram>`.
+
+        - ``verbose`` -- integer (default: ``0``). Sets the level of
+          verbosity. Set to 0 by default, which means quiet.
 
         OUTPUT:
 
@@ -4424,7 +4460,7 @@ class GenericGraph(GenericGraph_pyx):
 
         from sage.numerical.mip import MixedIntegerLinearProgram, Sum
 
-        p = MixedIntegerLinearProgram(maximization = False)
+        p = MixedIntegerLinearProgram(maximization = False, solver = solver)
 
         f = p.new_variable()
         r = p.new_variable()
@@ -4522,7 +4558,7 @@ class GenericGraph(GenericGraph_pyx):
         from sage.numerical.mip import MIPSolverException
 
         try:
-            obj = p.solve()
+            obj = p.solve(log = verbose)
             f = p.get_values(f)
             tsp.add_vertices(g.vertices())
             tsp.set_pos(g.get_pos())
@@ -4783,7 +4819,7 @@ class GenericGraph(GenericGraph_pyx):
 
         from sage.numerical.mip import MixedIntegerLinearProgram, Sum
         g=self
-        p=MixedIntegerLinearProgram(maximization=True)
+        p=MixedIntegerLinearProgram(maximization=True, solver = solver)
         flow=p.new_variable(dim=1)
 
         if use_edge_labels:
@@ -4834,9 +4870,9 @@ class GenericGraph(GenericGraph_pyx):
             p.set_integer(flow)
 
         if value_only:
-            return p.solve(objective_only=True)
+            return p.solve(objective_only=True, log = verbose)
 
-        obj=p.solve()
+        obj=p.solve(log = verbose)
 
         flow=p.get_values(flow)
         # Builds a clean flow Draph
@@ -5090,7 +5126,7 @@ class GenericGraph(GenericGraph_pyx):
 
         from sage.numerical.mip import MixedIntegerLinearProgram , Sum
         g=self
-        p=MixedIntegerLinearProgram(maximization=True)
+        p=MixedIntegerLinearProgram(maximization=True, solver = solver)
 
         # Adding the intensity if not present
         terminals = [(x if len(x) == 3 else (x[0],x[1],1)) for x in terminals]
@@ -5171,7 +5207,7 @@ class GenericGraph(GenericGraph_pyx):
         from sage.numerical.mip import MIPSolverException
 
         try:
-            obj=p.solve()
+            obj=p.solve(log = verbose)
         except MIPSolverException:
             raise ValueError("The multiflow problem has no solution")
 
@@ -5506,7 +5542,7 @@ class GenericGraph(GenericGraph_pyx):
             g = self
             # returns the weight of an edge considering it may not be
             # weighted ...
-            p = MixedIntegerLinearProgram(maximization=True)
+            p = MixedIntegerLinearProgram(maximization=True, solver=solver)
             b = p.new_variable(dim=2)
             p.set_objective(
                 Sum([weight(w) * b[min(u, v)][max(u, v)]
@@ -5519,9 +5555,9 @@ class GenericGraph(GenericGraph_pyx):
                          for u in g.neighbors(v)]), max=1)
             p.set_binary(b)
             if value_only:
-                return p.solve(objective_only=True, solver=solver, log=verbose)
+                return p.solve(objective_only=True, log=verbose)
             else:
-                p.solve(solver=solver, log=verbose)
+                p.solve(log=verbose)
                 b = p.get_values(b)
                 return [(u, v, w) for u, v, w in g.edges()
                         if b[min(u, v)][max(u, v)] == 1]
@@ -5596,7 +5632,7 @@ class GenericGraph(GenericGraph_pyx):
         """
         from sage.numerical.mip import MixedIntegerLinearProgram, Sum
         g=self
-        p=MixedIntegerLinearProgram(maximization=False)
+        p=MixedIntegerLinearProgram(maximization=False, solver=solver)
         b=p.new_variable()
 
         # For any vertex v, one of its neighbors or v itself is in
@@ -5615,9 +5651,9 @@ class GenericGraph(GenericGraph_pyx):
         p.set_integer(b)
 
         if value_only:
-            return p.solve(objective_only=True, solver=solver, log=verbose)
+            return p.solve(objective_only=True, log=verbose)
         else:
-            p.solve(solver=solver, log=verbose)
+            p.solve(log=verbose)
             b=p.get_values(b)
             return [v for v in g.vertices() if b[v]==1]
 
@@ -5763,7 +5799,7 @@ class GenericGraph(GenericGraph_pyx):
 
         from sage.numerical.mip import MixedIntegerLinearProgram, Sum
 
-        p = MixedIntegerLinearProgram(maximization=False)
+        p = MixedIntegerLinearProgram(maximization=False, solver=solver)
 
         in_set = p.new_variable(dim=2)
         in_cut = p.new_variable(dim=1)
@@ -5796,11 +5832,11 @@ class GenericGraph(GenericGraph_pyx):
         p.set_objective(Sum([weight(l ) * in_cut[reorder_edge(u,v)] for (u,v,l) in g.edge_iterator()]))
 
         if value_only:
-            obj = p.solve(objective_only=True, solver=solver, log=verbose)
+            obj = p.solve(objective_only=True, log=verbose)
             return obj if use_edge_labels else round(obj)
 
         else:
-            obj = p.solve(solver=solver, log=verbose)
+            obj = p.solve(log=verbose)
             val = [obj if use_edge_labels else round(obj)]
 
             in_cut = p.get_values(in_cut)
@@ -5935,7 +5971,7 @@ class GenericGraph(GenericGraph_pyx):
 
         from sage.numerical.mip import MixedIntegerLinearProgram, Sum
 
-        p = MixedIntegerLinearProgram(maximization=False)
+        p = MixedIntegerLinearProgram(maximization=False, solver=solver)
 
         # Sets 0 and 2 are "real" sets while set 1 represents the cut
         in_set = p.new_variable(dim=2)
@@ -5967,9 +6003,9 @@ class GenericGraph(GenericGraph_pyx):
         p.set_objective(Sum([in_set[1][v] for v in g]))
 
         if value_only:
-            return p.solve(objective_only=True, solver=solver, log=verbose)
+            return p.solve(objective_only=True, log=verbose)
         else:
-            val = [int(p.solve(solver=solver, log=verbose))]
+            val = [int(p.solve(log=verbose))]
 
             in_set = p.get_values(in_set)
 
@@ -7730,7 +7766,7 @@ class GenericGraph(GenericGraph_pyx):
 
         return 2*Integer(self.size())/Integer(self.order())
 
-    def maximum_average_degree(self, value_only=True):
+    def maximum_average_degree(self, value_only=True, solver = None, verbose = 0):
         r"""
         Returns the Maximum Average Degree (MAD) of the current graph.
 
@@ -7750,6 +7786,17 @@ class GenericGraph(GenericGraph_pyx):
 
             - Else, the subgraph of `G` realizing the `MAD`
               is returned.
+
+        - ``solver`` -- (default: ``None``) Specify a Linear Program (LP)
+          solver to be used. If set to ``None``, the default one is used. For
+          more information on LP solvers and which default solver is used, see
+          the method
+          :meth:`solve <sage.numerical.mip.MixedIntegerLinearProgram.solve>`
+          of the class
+          :class:`MixedIntegerLinearProgram <sage.numerical.mip.MixedIntegerLinearProgram>`.
+
+        - ``verbose`` -- integer (default: ``0``). Sets the level of
+          verbosity. Set to 0 by default, which means quiet.
 
         EXAMPLES:
 
@@ -7789,7 +7836,7 @@ class GenericGraph(GenericGraph_pyx):
         g = self
         from sage.numerical.mip import MixedIntegerLinearProgram, Sum
 
-        p = MixedIntegerLinearProgram(maximization=True)
+        p = MixedIntegerLinearProgram(maximization=True, solver = solver)
 
         d = p.new_variable()
         one = p.new_variable()
@@ -7806,7 +7853,7 @@ class GenericGraph(GenericGraph_pyx):
 
         p.set_objective( Sum([ one[reorder(u,v)] for u,v in g.edge_iterator(labels=False)]) )
 
-        obj = p.solve()
+        obj = p.solve(log = verbose)
 
         # Paying attention to numerical error :
         # The zero values could be something like 0.000000000001
