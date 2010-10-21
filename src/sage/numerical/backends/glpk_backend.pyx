@@ -264,7 +264,7 @@ cdef class GLPKBackend(GenericBackend):
         else:
             self.iocp.msg_lev = GLP_MSG_ALL
 
-    cpdef add_constraints(self, int number, int direction, double bound):
+    cpdef add_linear_constraints(self, int number, int direction, double bound):
         r"""
         Adds constraints.
 
@@ -288,7 +288,7 @@ cdef class GLPKBackend(GenericBackend):
             sage: p = get_solver(solver = "GLPK")
             sage: p.add_variables(5)
             5
-            sage: p.add_constraints(5, +1, 2)
+            sage: p.add_linear_constraints(5, +1, 2)
             sage: p.row(4)
             ([], [])
             sage: p.row_bounds(4)
@@ -309,7 +309,7 @@ cdef class GLPKBackend(GenericBackend):
         for 0<= i < number:
             glp_set_row_bnds(self.lp, n-i, direction, bound, bound)
 
-    cpdef add_constraint(self, list indices, list coeffs, int direction, double bound):
+    cpdef add_linear_constraint(self, list indices, list coeffs, int direction, double bound):
         r"""
         Adds a linear constraint.
 
@@ -345,7 +345,7 @@ cdef class GLPKBackend(GenericBackend):
             sage: p = get_solver(solver = "GLPK")
             sage: p.add_variables(5)
             5
-            sage: p.add_constraint(range(5), range(5), 0, 2)
+            sage: p.add_linear_constraint(range(5), range(5), 0, 2)
             sage: p.row(0)
             ([4, 3, 2, 1], [4.0, 3.0, 2.0, 1.0])
             sage: p.row_bounds(0)
@@ -389,7 +389,7 @@ cdef class GLPKBackend(GenericBackend):
         A pair ``(indices, coeffs)`` where ``indices`` lists the
         entries whose coefficient is nonzero, and to which ``coeffs``
         associates their coefficient on the model of the
-        ``add_constraint`` method.
+        ``add_linear_constraint`` method.
 
         EXAMPLE::
 
@@ -397,7 +397,7 @@ cdef class GLPKBackend(GenericBackend):
             sage: p = get_solver(solver = "GLPK")
             sage: p.add_variables(5)
             5
-            sage: p.add_constraint(range(5), range(5), 0, 2)
+            sage: p.add_linear_constraint(range(5), range(5), 0, 2)
             sage: p.row(0)
             ([4, 3, 2, 1], [4.0, 3.0, 2.0, 1.0])
             sage: p.row_bounds(0)
@@ -440,7 +440,7 @@ cdef class GLPKBackend(GenericBackend):
             sage: p = get_solver(solver = "GLPK")
             sage: p.add_variables(5)
             5
-            sage: p.add_constraint(range(5), range(5), 0, 2)
+            sage: p.add_linear_constraint(range(5), range(5), 0, 2)
             sage: p.row(0)
             ([4, 3, 2, 1], [4.0, 3.0, 2.0, 1.0])
             sage: p.row_bounds(0)
@@ -547,7 +547,7 @@ cdef class GLPKBackend(GenericBackend):
             0
             sage: p.nrows()
             0
-            sage: p.add_constraints(5, -1, 0)
+            sage: p.add_linear_constraints(5, -1, 0)
             sage: p.add_col(range(5), range(5))
             sage: p.nrows()
             5
@@ -584,7 +584,7 @@ cdef class GLPKBackend(GenericBackend):
 
             sage: from sage.numerical.backends.generic_backend import get_solver
             sage: p = get_solver(solver = "GLPK")
-            sage: p.add_constraints(5, -1, 0)
+            sage: p.add_linear_constraints(5, -1, 0)
             sage: p.add_col(range(5), range(5))
             sage: p.solve()
             0
@@ -623,7 +623,7 @@ cdef class GLPKBackend(GenericBackend):
             sage: p = get_solver(solver = "GLPK")
             sage: p.add_variables(2)
             2
-            sage: p.add_constraint([0, 1], [1, 2], +1, 3)
+            sage: p.add_linear_constraint([0, 1], [1, 2], +1, 3)
             sage: p.set_objective([2, 5])
             sage: p.solve()
             0
@@ -650,7 +650,7 @@ cdef class GLPKBackend(GenericBackend):
             sage: p = get_solver(solver = "GLPK")
             sage: p.add_variables(2)
             2
-            sage: p.add_constraint([0, 1], [1, 2], +1, 3)
+            sage: p.add_linear_constraint([0, 1], [1, 2], +1, 3)
             sage: p.set_objective([2, 5])
             sage: p.solve()
             0
@@ -690,7 +690,7 @@ cdef class GLPKBackend(GenericBackend):
             sage: p = get_solver(solver = "GLPK")
             sage: p.nrows()
             0
-            sage: p.add_constraints(2, -1, 2)
+            sage: p.add_linear_constraints(2, -1, 2)
             sage: p.nrows()
             2
         """
@@ -746,7 +746,7 @@ cdef class GLPKBackend(GenericBackend):
 
             sage: from sage.numerical.backends.generic_backend import get_solver
             sage: p = get_solver(solver = "GLPK")
-            sage: p.add_constraints(1, -1, 2)
+            sage: p.add_linear_constraints(1, -1, 2)
             sage: p.row_name(0, "Empty constraint 1")
             sage: p.row_name(0)
             'Empty constraint 1'
@@ -969,7 +969,7 @@ cdef class GLPKBackend(GenericBackend):
             sage: p = get_solver(solver = "GLPK")
             sage: p.add_variables(2)
             2
-            sage: p.add_constraint([0, 1], [1, 2], +1, 3)
+            sage: p.add_linear_constraint([0, 1], [1, 2], +1, 3)
             sage: p.set_objective([2, 5])
             sage: p.write_lp(SAGE_TMP+"/lp_problem.lp")
         """
@@ -989,7 +989,7 @@ cdef class GLPKBackend(GenericBackend):
             sage: p = get_solver(solver = "GLPK")
             sage: p.add_variables(2)
             2
-            sage: p.add_constraint([0, 1], [1, 2], +1, 3)
+            sage: p.add_linear_constraint([0, 1], [1, 2], +1, 3)
             sage: p.set_objective([2, 5])
             sage: p.write_lp(SAGE_TMP+"/lp_problem.lp")
         """

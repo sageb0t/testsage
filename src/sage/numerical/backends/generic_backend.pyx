@@ -185,7 +185,7 @@ cdef class GenericBackend:
 
         raise NotImplementedError()
 
-    cpdef add_constraint(self, list indices, list coeffs, int direction, double bound):
+    cpdef add_linear_constraint(self, list indices, list coeffs, int direction, double bound):
         r"""
         Adds a linear constraint.
 
@@ -221,7 +221,7 @@ cdef class GenericBackend:
             sage: p = get_solver(solver = "Nonexistent_LP_solver") # optional - Nonexistent_LP_solver
             sage: p.add_variables(5)                              # optional - Nonexistent_LP_solver
             5
-            sage: p.add_constraint(range(5), range(5), 0, 2)      # optional - Nonexistent_LP_solver
+            sage: p.add_linear_constraint(range(5), range(5), 0, 2)      # optional - Nonexistent_LP_solver
             sage: p.row(0)                                    # optional - Nonexistent_LP_solver
             ([4, 3, 2, 1], [4.0, 3.0, 2.0, 1.0])
             sage: p.row_bounds(0)                             # optional - Nonexistent_LP_solver
@@ -258,7 +258,7 @@ cdef class GenericBackend:
             0
             sage: p.nrows()                                       # optional - Nonexistent_LP_solver
             0
-            sage: p.add_constraints(5, -1, 0)                      # optional - Nonexistent_LP_solver
+            sage: p.add_linear_constraints(5, -1, 0)                      # optional - Nonexistent_LP_solver
             sage: p.add_col(range(5), range(5))                    # optional - Nonexistent_LP_solver
             sage: p.nrows()                                       # optional - Nonexistent_LP_solver
             5
@@ -266,7 +266,7 @@ cdef class GenericBackend:
 
         raise NotImplementedError()
 
-    cpdef add_constraints(self, int number, int direction, double bound):
+    cpdef add_linear_constraints(self, int number, int direction, double bound):
         r"""
         Adds constraints.
 
@@ -290,7 +290,7 @@ cdef class GenericBackend:
             sage: p = get_solver(solver = "Nonexistent_LP_solver")   # optional - Nonexistent_LP_solver
             sage: p.add_variables(5)                                # optional - Nonexistent_LP_solver
             5
-            sage: p.add_constraints(5, +1, 2)                       # optional - Nonexistent_LP_solver
+            sage: p.add_linear_constraints(5, +1, 2)                       # optional - Nonexistent_LP_solver
             sage: p.row(4)                                      # optional - Nonexistent_LP_solver
             ([], [])
             sage: p.row_bounds(4)                               # optional - Nonexistent_LP_solver
@@ -313,7 +313,7 @@ cdef class GenericBackend:
 
             sage: from sage.numerical.backends.generic_backend import get_solver
             sage: p = get_solver(solver = "Nonexistent_LP_solver") # optional - Nonexistent_LP_solver
-            sage: p.add_constraints(5, -1, 0)                     # optional - Nonexistent_LP_solver
+            sage: p.add_linear_constraints(5, -1, 0)                     # optional - Nonexistent_LP_solver
             sage: p.add_col(range(5), range(5))                   # optional - Nonexistent_LP_solver
             sage: p.solve()                                       # optional - Nonexistent_LP_solver
             0
@@ -339,7 +339,7 @@ cdef class GenericBackend:
             sage: p = get_solver(solver = "Nonexistent_LP_solver")  # optional - Nonexistent_LP_solver
             sage: p.add_variables(2)                               # optional - Nonexistent_LP_solver
             2
-            sage: p.add_constraint([0, 1], [1, 2], +1, 3)          # optional - Nonexistent_LP_solver
+            sage: p.add_linear_constraint([0, 1], [1, 2], +1, 3)          # optional - Nonexistent_LP_solver
             sage: p.set_objective([2, 5])                          # optional - Nonexistent_LP_solver
             sage: p.solve()                                        # optional - Nonexistent_LP_solver
             0
@@ -367,7 +367,7 @@ cdef class GenericBackend:
             sage: p = get_solver(solver = "Nonexistent_LP_solver") # optional - Nonexistent_LP_solver
             sage: p.add_variables(2)                              # optional - Nonexistent_LP_solver
             2
-            sage: p.add_constraint([0, 1], [1, 2], +1, 3)         # optional - Nonexistent_LP_solver
+            sage: p.add_linear_constraint([0, 1], [1, 2], +1, 3)         # optional - Nonexistent_LP_solver
             sage: p.set_objective([2, 5])                         # optional - Nonexistent_LP_solver
             sage: p.solve()                                       # optional - Nonexistent_LP_solver
             0
@@ -409,7 +409,7 @@ cdef class GenericBackend:
             sage: p = get_solver(solver = "Nonexistent_LP_solver") # optional - Nonexistent_LP_solver
             sage: p.nrows()                                      # optional - Nonexistent_LP_solver
             0
-            sage: p.add_constraints(2, -1, 2)                     # optional - Nonexistent_LP_solver
+            sage: p.add_linear_constraints(2, -1, 2)                     # optional - Nonexistent_LP_solver
             sage: p.nrows()                                      # optional - Nonexistent_LP_solver
             2
         """
@@ -469,7 +469,7 @@ cdef class GenericBackend:
             sage: p = get_solver(solver = "Nonexistent_LP_solver")  # optional - Nonexistent_LP_solver
             sage: p.add_variables(2)                               # optional - Nonexistent_LP_solver
             2
-            sage: p.add_constraint([0, 1], [1, 2], +1, 3)          # optional - Nonexistent_LP_solver
+            sage: p.add_linear_constraint([0, 1], [1, 2], +1, 3)          # optional - Nonexistent_LP_solver
             sage: p.set_objective([2, 5])                          # optional - Nonexistent_LP_solver
             sage: p.write_lp(SAGE_TMP+"/lp_problem.lp")            # optional - Nonexistent_LP_solver
         """
@@ -489,7 +489,7 @@ cdef class GenericBackend:
             sage: p = get_solver(solver = "Nonexistent_LP_solver")  # optional - Nonexistent_LP_solver
             sage: p.add_variables(2)                               # optional - Nonexistent_LP_solver
             2
-            sage: p.add_constraint([0, 1], [1, 2], +1, 3)          # optional - Nonexistent_LP_solver
+            sage: p.add_linear_constraint([0, 1], [1, 2], +1, 3)          # optional - Nonexistent_LP_solver
             sage: p.set_objective([2, 5])                          # optional - Nonexistent_LP_solver
             sage: p.write_lp(SAGE_TMP+"/lp_problem.lp")            # optional - Nonexistent_LP_solver
         """
@@ -508,7 +508,7 @@ cdef class GenericBackend:
         A pair ``(indices, coeffs)`` where ``indices`` lists the
         entries whose coefficient is nonzero, and to which ``coeffs``
         associates their coefficient on the model of the
-        ``add_constraint`` method.
+        ``add_linear_constraint`` method.
 
         EXAMPLE::
 
@@ -516,7 +516,7 @@ cdef class GenericBackend:
             sage: p = get_solver(solver = "Nonexistent_LP_solver")  # optional - Nonexistent_LP_solver
             sage: p.add_variables(5)                               # optional - Nonexistent_LP_solver
             5
-            sage: p.add_constraint(range(5), range(5), 0, 2)       # optional - Nonexistent_LP_solver
+            sage: p.add_linear_constraint(range(5), range(5), 0, 2)       # optional - Nonexistent_LP_solver
             sage: p.row(0)                                     # optional - Nonexistent_LP_solver
             ([4, 3, 2, 1], [4.0, 3.0, 2.0, 1.0])
             sage: p.row_bounds(0)                              # optional - Nonexistent_LP_solver
@@ -570,7 +570,7 @@ cdef class GenericBackend:
             sage: p = get_solver(solver = "Nonexistent_LP_solver")  # optional - Nonexistent_LP_solver
             sage: p.add_variables(5)                               # optional - Nonexistent_LP_solver
             5
-            sage: p.add_constraint(range(5), range(5), 0, 2)       # optional - Nonexistent_LP_solver
+            sage: p.add_linear_constraint(range(5), range(5), 0, 2)       # optional - Nonexistent_LP_solver
             sage: p.row(0)                                     # optional - Nonexistent_LP_solver
             ([4, 3, 2, 1], [4.0, 3.0, 2.0, 1.0])
             sage: p.row_bounds(0)                              # optional - Nonexistent_LP_solver
@@ -695,7 +695,7 @@ cdef class GenericBackend:
 
             sage: from sage.numerical.backends.generic_backend import get_solver
             sage: p = get_solver(solver = "Nonexistent_LP_solver")  # optional - Nonexistent_LP_solver
-            sage: p.add_constraints(1, -1, 2)                      # optional - Nonexistent_LP_solver
+            sage: p.add_linear_constraints(1, -1, 2)                      # optional - Nonexistent_LP_solver
             sage: p.row_name(0, "Empty constraint 1")          # optional - Nonexistent_LP_solver
             sage: p.row_name(0)                                # optional - Nonexistent_LP_solver
             'Empty constraint 1'
