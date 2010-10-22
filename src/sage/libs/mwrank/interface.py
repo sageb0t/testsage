@@ -372,10 +372,9 @@ class mwrank_EllipticCurve(SageObject):
 
             sage: EllipticCurve([0, prod(prime_range(10))]).mwrank_curve().two_descent()
             sage: EllipticCurve([0, prod(prime_range(100))]).mwrank_curve().two_descent()
-            ...
             Traceback (most recent call last):
             ...
-            RuntimeError
+            RuntimeError: Aborted
 
         """
         from sage.libs.mwrank.mwrank import _two_descent # import here to save time
