@@ -103,9 +103,11 @@ The top of each Sage code file should follow this format:
     """
 
     #*****************************************************************************
-    #       Copyright (C) 2008 YOUR NAME <your email>
+    #       Copyright (C) 2010 YOUR NAME <your email>
     #
     #  Distributed under the terms of the GNU General Public License (GPL)
+    #  as published by the Free Software Foundation; either version 2 of
+    #  the License, or (at your option) any later version.
     #                  http://www.gnu.org/licenses/
     #*****************************************************************************
 
@@ -115,7 +117,7 @@ contains the implementation for :math:`\ZZ`.
 
 ::
 
-    """
+    r"""
     Elements of the ring `\ZZ` of integers
 
     AUTHORS:
@@ -180,8 +182,6 @@ contains the implementation for :math:`\ZZ`.
         sage: loads((a+b).dumps()) == a+b
         True
 
-    ::
-
         sage: z = 32
         sage: -z
         -32
@@ -221,6 +221,7 @@ contains the implementation for :math:`\ZZ`.
         sage: RR = RealField(200)
         sage: RR(n)
         9.3908230000000000000000000000000000000000000000000000000000e6
+
     """
     #*****************************************************************************
     #       Copyright (C) 2004,2006 William Stein <wstein@gmail.com>
@@ -232,6 +233,8 @@ contains the implementation for :math:`\ZZ`.
     #       Copyright (C) 2007 David Roe <roed314@gmail.com>
     #
     #  Distributed under the terms of the GNU General Public License (GPL)
+    #  as published by the Free Software Foundation; either version 2 of
+    #  the License, or (at your option) any later version.
     #                  http://www.gnu.org/licenses/
     #*****************************************************************************
 
