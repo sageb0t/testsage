@@ -132,6 +132,7 @@ from sage.symbolic.function import get_sfunction_from_serial, SymbolicFunction
 from sage.rings.rational import Rational  # Used for sqrt.
 from sage.misc.derivative import multi_derivative
 from sage.rings.infinity import AnInfinity
+from sage.misc.decorators import rename_keyword
 
 """
 SAGE_DOCTEST_ALLOW_TABS
@@ -6430,7 +6431,8 @@ cdef class Expression(CommutativeRingElement):
 
     trig_simplify = simplify_trig
 
-    def simplify_rational(self,method='full', map=False):
+    @rename_keyword(deprecated='Sage version 4.6', method="algorithm")
+    def simplify_rational(self,algorithm='full', map=False):
         r"""
         Simplify rational expressions.
 
@@ -6438,8 +6440,8 @@ cdef class Expression(CommutativeRingElement):
 
         - ``self`` - symbolic expression
 
-        - ``method`` - (default: 'full') string which switches the
-          method for simplifications. Possible values are
+        - ``algorithm`` - (default: 'full') string which switches the
+          algorithm for simplifications. Possible values are
 
           - 'simple' (simplify rational functions into quotient of two
             polynomials),
@@ -6490,35 +6492,35 @@ cdef class Expression(CommutativeRingElement):
             x - log(x)/(x + 2) - 1
 
         Here is an example from the Maxima documentation of where
-        ``method='simple'`` produces an (possibly useful) intermediate
+        ``algorithm='simple'`` produces an (possibly useful) intermediate
         step::
 
             sage: y = var('y')
             sage: g = (x^(y/2) + 1)^2*(x^(y/2) - 1)^2/(x^y - 1)
-            sage: g.simplify_rational(method='simple')
+            sage: g.simplify_rational(algorithm='simple')
             -(2*x^y - x^(2*y) - 1)/(x^y - 1)
             sage: g.simplify_rational()
             x^y - 1
 
-        With option ``method='noexpand'`` we only convert to common
+        With option ``algorithm='noexpand'`` we only convert to common
         denominators and add. No expansion of products is performed::
 
             sage: f=1/(x+1)+x/(x+2)^2
             sage: f.simplify_rational()
             (2*x^2 + 5*x + 4)/(x^3 + 5*x^2 + 8*x + 4)
-            sage: f.simplify_rational(method='noexpand')
+            sage: f.simplify_rational(algorithm='noexpand')
             ((x + 1)*x + (x + 2)^2)/((x + 1)*(x + 2)^2)
 
         """
         self_m = self._maxima_()
-        if method == 'full':
+        if algorithm == 'full':
             maxima_method = 'fullratsimp'
-        elif method == 'simple':
+        elif algorithm == 'simple':
             maxima_method = 'ratsimp'
-        elif method == 'noexpand':
+        elif algorithm == 'noexpand':
             maxima_method = 'xthru'
         else:
-            raise NotImplementedError, "unknown method, see the help for available methods"
+            raise NotImplementedError, "unknown algorithm, see the help for available algorithms"
         P = self_m.parent()
         self_str=self_m.str()
         if map:
@@ -6628,7 +6630,8 @@ cdef class Expression(CommutativeRingElement):
     radical_simplify = simplify_radical
     simplify_exp = exp_simplify = simplify_radical
 
-    def simplify_log(self,method=None):
+    @rename_keyword(deprecated='Sage version 4.6', method="algorithm")
+    def simplify_log(self,algorithm=None):
         r"""
         Simplifies symbolic expression, which can contain logs.
 
@@ -6636,13 +6639,13 @@ cdef class Expression(CommutativeRingElement):
         subexpressions of the form a1*log(b1) + a2*log(b2) + c into
         log(b1^a1 * b2^a2) + c and simplifies inside logarithm. User
         can specify, which conditions must satisfy a1 and a2 to use
-        this transformation in optional parameter ``method``.
+        this transformation in optional parameter ``algorithm``.
 
         INPUT:
 
         - ``self`` - expression to be simplified
 
-        - ``method`` - (default: None) optional, governs the condition
+        - ``algorithm`` - (default: None) optional, governs the condition
           on a1 and a2 which must be satisfied to contract expression
           a1*log(b1) + a2*log(b2). Values are
 
@@ -6683,12 +6686,12 @@ cdef class Expression(CommutativeRingElement):
             sage: f.simplify_log()
             log(x*y^2) + 1/2*log(t)
 
-        To contract all terms in previous example use option ``method``::
+        To contract all terms in previous example use option ``algorithm``::
 
-            sage: f.simplify_log(method='ratios')
+            sage: f.simplify_log(algorithm='ratios')
             log(sqrt(t)*x*y^2)
 
-        This shows that the option ``method`` from the previous call
+        This shows that the option ``algorithm`` from the previous call
         has no influence to future calls (we changed some default
         Maxima flag, and have to ensure that this flag has been
         restored)::
@@ -6703,7 +6706,7 @@ cdef class Expression(CommutativeRingElement):
             log(x*y^2) + 1/2*log(t)
 
         To contract terms with no coefficient (more precisely, with
-        coefficients 1 and -1) use option ``method``::
+        coefficients 1 and -1) use option ``algorithm``::
 
             sage: f = log(x)+2*log(y)-log(t)
             sage: f.simplify_log('one')
@@ -6719,13 +6722,13 @@ cdef class Expression(CommutativeRingElement):
             log(x*y/(x + 1)^(1/3))
 
         `\pi` is irrational number, to contract logarithms in the following example
-        we have to put ``method`` to ``constants`` or ``all``::
+        we have to put ``algorithm`` to ``constants`` or ``all``::
 
             sage: f = log(x)+log(y)-pi*log((x+1))
             sage: f.simplify_log('constants')
             log(x*y/(x + 1)^pi)
 
-        x*log(9) is contracted only if ``method`` is ``all``::
+        x*log(9) is contracted only if ``algorithm`` is ``all``::
 
             sage: (x*log(9)).simplify_log()
             x*log(9)
@@ -6745,40 +6748,41 @@ cdef class Expression(CommutativeRingElement):
         """
         from sage.calculus.calculus import maxima
         maxima.eval('domain: real$ savelogexpand:logexpand$ logexpand:false$')
-        if method is not None:
+        if algorithm is not None:
             maxima.eval('logconcoeffp:\'logconfun$')
-        if method == 'ratios':
+        if algorithm == 'ratios':
             maxima.eval('logconfun(m):= featurep(m,integer) or ratnump(m)$')
-        elif method == 'one':
+        elif algorithm == 'one':
             maxima.eval('logconfun(m):= is(m=1) or is(m=-1)$')
-        elif method == 'constants':
+        elif algorithm == 'constants':
             maxima.eval('logconfun(m):= constantp(m)$')
-        elif method == 'all':
+        elif algorithm == 'all':
             maxima.eval('logconfun(m):= true$')
-        elif method is not None:
-            raise NotImplementedError, "unknown method, see the help for available methods"
+        elif algorithm is not None:
+            raise NotImplementedError, "unknown algorithm, see the help for available algorithms"
         res = self.parent()(self._maxima_().logcontract())
         maxima.eval('domain: complex$')
-        if method is not None:
+        if algorithm is not None:
             maxima.eval('logconcoeffp:false$')
         maxima.eval('logexpand:savelogexpand$')
         return res
 
     log_simplify = simplify_log
 
-    def expand_log(self,method='products'):
+    @rename_keyword(deprecated='Sage version 4.6', method="algorithm")
+    def expand_log(self,algorithm='products'):
         r"""
         Simplifies symbolic expression, which can contain logs.
 
         Expands logarithms of powers, logarithms of products and
-        logarithms of quotients.  The option ``method`` specifies
+        logarithms of quotients.  The option ``algorithm`` specifies
         which expression types should be expanded.
 
         INPUT:
 
         - ``self`` - expression to be simplified
 
-        - ``method`` - (default: 'products') optional, governs which
+        - ``algorithm`` - (default: 'products') optional, governs which
           expression is expanded. Possible values are
 
           - 'nothing' (no expansion),
@@ -6811,24 +6815,24 @@ cdef class Expression(CommutativeRingElement):
             sage: (log(3/4*x^pi)).log_expand()
             pi*log(x) + log(3/4)
 
-        To expand also log(3/4) use ``method='all'``::
+        To expand also log(3/4) use ``algorithm='all'``::
 
             sage: (log(3/4*x^pi)).log_expand('all')
             pi*log(x) + log(3) - log(4)
 
-        To expand only the power use ``method='powers'``.::
+        To expand only the power use ``algorithm='powers'``.::
 
             sage: (log(x^6)).log_expand('powers')
             6*log(x)
 
         The expression ``log((3*x)^6)`` is not expanded with
-        ``method='powers'``, since it is converted into product
+        ``algorithm='powers'``, since it is converted into product
         first::
 
             sage: (log((3*x)^6)).log_expand('powers')
             log(729*x^6)
 
-        This shows that the option ``method`` from the previous call
+        This shows that the option ``algorithm`` from the previous call
         has no influence to future calls (we changed some default
         Maxima flag, and have to ensure that this flag has been
         restored)::
@@ -6848,16 +6852,16 @@ cdef class Expression(CommutativeRingElement):
         """
         from sage.calculus.calculus import maxima
         maxima.eval('domain: real$ savelogexpand:logexpand$')
-        if method == 'nothing':
+        if algorithm == 'nothing':
             maxima_method='false'
-        elif method == 'powers':
+        elif algorithm == 'powers':
             maxima_method='true'
-        elif method == 'products':
+        elif algorithm == 'products':
             maxima_method='all'
-        elif method == 'all':
+        elif algorithm == 'all':
             maxima_method='super'
         else:
-            raise NotImplementedError, "unknown method, see the help for available methods"
+            raise NotImplementedError, "unknown algorithm, see the help for available algorithms"
         maxima.eval('logexpand:%s'%maxima_method)
         res = self._maxima_()
         res = res.sage()
