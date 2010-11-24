@@ -2141,10 +2141,7 @@ class GraphGenerators():
             21
             sage: G.size()
             42
-            sage: def is_4regular(G):
-            ...       D = G.degree_sequence()
-            ...       return all(d == 4 for d in D)
-            sage: is_4regular(G)
+            sage: G.is_regular(4)
             True
 
         It is an Eulerian graph with radius 3, diameter 3, and girth 5. ::
@@ -2164,6 +2161,12 @@ class GraphGenerators():
             True
             sage: G.chromatic_number()
             4
+
+        Its automorphism group is isomorphic to `D_7`::
+
+            sage: ag = G.automorphism_group()
+            sage: ag.is_isomorphic(DihedralGroup(7))
+            True
         """
         edge_dict = {
             0: [2,5,7,13],
