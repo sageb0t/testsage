@@ -758,24 +758,20 @@ cdef class MixedIntegerLinearProgram:
             indices = []
             values = []
 
-            for (v,coeff) in f.iteritems():
-                if v != -1:
-                    indices.append(v)
-                    values.append(coeff)
+            C = [(v,coeff) for (v,coeff) in f.iteritems() if v != -1]
 
             if min == None and max == None:
-                raise ValueError("Both max and min are set to None ? Weird !")
-            elif min == max:
-                self._backend.add_linear_constraint(indices, values, 0, min)
-            elif min != None:
-                self._backend.add_linear_constraint(indices, values, -1, min)
-            elif max != None:
-                self._backend.add_linear_constraint(indices, values, +1, max)
+                raise ValueError("Both max and min are set to None ? Weird!")
+
+            self._backend.add_linear_constraint(C, min, max)
 
             if name != None:
                 self._backend.row_name(self._backend.nrows()-1,name)
 
         elif isinstance(linear_function,LinearConstraint):
+            #######
+            ####### IS THIS DEAD CODE???
+            #######
             functions = linear_function.constraints
 
             if linear_function.equality:
@@ -1124,7 +1120,7 @@ cdef class MixedIntegerLinearProgram:
             sage: p.get_min(v[1])
             6.0
         """
-        self._backend.variable_min(self._variables[v], min)
+        self._backend.variable_lower_bound(self._variables[v], min)
 
     def set_max(self, v, max):
         r"""
@@ -1148,7 +1144,7 @@ cdef class MixedIntegerLinearProgram:
             6.0
         """
 
-        self._backend.variable_max(self._variables[v], max)
+        self._backend.variable_upper_bound(self._variables[v], max)
 
     def get_min(self, v):
         r"""
@@ -1175,7 +1171,7 @@ cdef class MixedIntegerLinearProgram:
             6.0
         """
 
-        return self._backend.variable_min(self._variables[v])
+        return self._backend.variable_lower_bound(self._variables[v])
 
     def get_max(self, v):
         r"""
@@ -1201,7 +1197,7 @@ cdef class MixedIntegerLinearProgram:
             6.0
         """
 
-        return self._backend.variable_max(self._variables[v])
+        return self._backend.variable_upper_bound(self._variables[v])
 
 class MIPSolverException(Exception):
     r"""
