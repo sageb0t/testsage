@@ -400,7 +400,7 @@ class Category(UniqueRepresentation, SageObject):
         """
         return cls()
 
-    def __call__(self, x):
+    def __call__(self, x, *args, **opts):
         """
         Constructs an object in this category from the data in ``x``,
         or throws ``TypeError`` or ``NotImplementedError``.
@@ -416,7 +416,7 @@ class Category(UniqueRepresentation, SageObject):
         """
         if x in self:
             return x
-        return self._call_(x)
+        return self._call_(x, *args, **opts)
 
     def _call_(self, x):
         """
