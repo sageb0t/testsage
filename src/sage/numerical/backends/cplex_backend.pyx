@@ -33,7 +33,7 @@ cdef class CPLEXBackend(GenericBackend):
         else:
             self.set_sense(-1)
 
-    cpdef int add_variable(self, lower_bound=0.0, upper_bound=None, binary=False, continuous=False, integer=False) except -1:
+    cpdef int add_variable(self, lower_bound=0.0, upper_bound=None, binary=False, continuous=False, integer=False, obj=0.0, name=None) except -1:
         """
         Add a variable.
 
@@ -51,6 +51,10 @@ cdef class CPLEXBackend(GenericBackend):
         - ``continuous`` - ``True`` if the variable is binary (default: ``True``).
 
         - ``integer`` - ``True`` if the variable is binary (default: ``False``).
+
+        - ``obj`` - (optional) coefficient of this variable in the objective function (default: 0.0)
+
+        - ``name`` - an optional name for the newly added variable (default: ``None``).
 
         OUTPUT: The index of the newly created variable
 
@@ -72,8 +76,16 @@ cdef class CPLEXBackend(GenericBackend):
             Traceback (most recent call last):
             ...
             ValueError: ...
-        """
+            sage: p.add_variable(name='x',obj=1.0)                  # optional - CPLEX
+            3
+            sage: p.col_name(3)                                     # optional - CPLEX
+            'x'
+            sage: p.objective_coefficient(3)                        # optional - CPLEX
+            1.0
 
+        """
+        cdef char * c_name
+        cdef double c_coeff = obj
         cdef int vtype = int(bool(binary)) + int(bool(continuous)) + int(bool(integer))
         if  vtype == 0:
             continuous = True
@@ -97,9 +109,18 @@ cdef class CPLEXBackend(GenericBackend):
         elif integer:
             self.set_variable_type(n,1)
 
+        if name is not None:
+            c_name = name
+            status = CPXchgcolname(self.env, self.lp, 1, &n, &c_name)
+            check(status)
+
+        if c_coeff:
+            status = CPXchgobj(self.env, self.lp, 1, &n, &c_coeff)
+            check(status)
+
         return n
 
-    cpdef int add_variables(self, int number, lower_bound=0.0, upper_bound=None, binary=False, continuous=False, integer=False) except -1:
+    cpdef int add_variables(self, int number, lower_bound=0.0, upper_bound=None, binary=False, continuous=False, integer=False, obj=0.0, names=None) except -1:
         """
         Add ``number`` new variables.
 
@@ -120,6 +141,10 @@ cdef class CPLEXBackend(GenericBackend):
 
         - ``integer`` - ``True`` if the variable is binary (default: ``False``).
 
+        - ``obj`` - (optional) coefficient of all variables in the objective function (default: 0.0)
+
+        - ``names`` - optional list of names (default: ``None``)
+
         OUTPUT: The index of the variable created last.
 
         EXAMPLE::
@@ -132,9 +157,11 @@ cdef class CPLEXBackend(GenericBackend):
             4
             sage: p.ncols()                                                # optional - CPLEX
             5
-            sage: p.add_variables(2, lower_bound=-2.0, integer=True)       # optional - CPLEX
+            sage: p.add_variables(2, lower_bound=-2.0, integer=True, names=['a','b']) # optional - CPLEX
             6
         """
+        cdef char * c_name
+        cdef double c_coeff = obj
         cdef int vtype = int(bool(binary)) + int(bool(continuous)) + int(bool(integer))
         if  vtype == 0:
             continuous = True
@@ -148,7 +175,7 @@ cdef class CPLEXBackend(GenericBackend):
         cdef int n
         n = CPXgetnumcols(self.env, self.lp) - 1
 
-        cdef int i
+        cdef int i, j
 
         for 0<= i < number:
             if lower_bound != 0.0:
@@ -160,6 +187,17 @@ cdef class CPLEXBackend(GenericBackend):
                 self.set_variable_type(n - i,0)
             elif integer:
                 self.set_variable_type(n - i,1)
+
+            if names:
+                j = n - i
+                c_name = names[i]
+                status = CPXchgcolname(self.env, self.lp, 1, &j, &c_name)
+                check(status)
+
+            if c_coeff:
+                j = n - i
+                status = CPXchgobj(self.env, self.lp, 1, &j, &c_coeff)
+                check(status)
 
         return n
 
@@ -227,32 +265,42 @@ cdef class CPLEXBackend(GenericBackend):
 
         CPXchgobjsen(self.env, self.lp, -sense)
 
-    cpdef set_objective_coefficient(self, int variable, double coeff):
-        r"""
-        Sets the coefficient of a variable in the objective function
+    cpdef objective_coefficient(self, int variable, coeff=None):
+        """
+        Set or get the coefficient of a variable in the objective function
 
         INPUT:
 
         - ``variable`` (integer) -- the variable's id
 
-        - ``coeff`` (double) -- its coefficient
+        - ``coeff`` (double) -- its coefficient or ``None`` for
+          reading (default: ``None``)
 
         EXAMPLE::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "CPLEX")  # optional - CPLEX
-            sage: p.add_variable()                                 # optional - CPLEX
+            sage: p = get_solver(solver = "CPLEX")       # optional -- CPLEX
+            sage: p.add_variable()                      # optional -- CPLEX
             0
-            sage: p.get_objective_coefficient(0)                         # optional - CPLEX
+            sage: p.objective_coefficient(0)            # optional -- CPLEX
             0.0
-            sage: p.set_objective_coefficient(0,2)                       # optional - CPLEX
-            sage: p.get_objective_coefficient(0)                         # optional - CPLEX
+            sage: p.objective_coefficient(0,2)          # optional -- CPLEX
+            sage: p.objective_coefficient(0)            # optional -- CPLEX
             2.0
         """
 
         cdef int status
-        status = CPXchgobj(self.env, self.lp, 1, &variable, &coeff)
-        check(status)
+        cdef double value
+
+        if coeff is None:
+            status = CPXgetobj(self.env, self.lp, &value, variable, variable)
+            check(status)
+            return value
+
+        else:
+            value = coeff
+            status = CPXchgobj(self.env, self.lp, 1, &variable, &value)
+            check(status)
 
     cpdef problem_name(self, char * name = NULL):
         r"""
@@ -304,7 +352,7 @@ cdef class CPLEXBackend(GenericBackend):
             sage: p.add_variables(5)                                 # optional - CPLEX
             4
             sage: p.set_objective([1, 1, 2, 1, 3])                   # optional - CPLEX
-            sage: map(lambda x :p.get_objective_coefficient(x), range(5))  # optional - CPLEX
+            sage: map(lambda x :p.objective_coefficient(x), range(5))  # optional - CPLEX
             [1.0, 1.0, 2.0, 1.0, 3.0]
         """
 
@@ -344,7 +392,7 @@ cdef class CPLEXBackend(GenericBackend):
             status = CPXsetintparam (self.env, CPX_PARAM_SCRIND, CPX_ON)
             check(status)
 
-    cpdef add_linear_constraints(self, int number, lower_bound, upper_bound):
+    cpdef add_linear_constraints(self, int number, lower_bound, upper_bound, names = None):
         """
         Add ``'number`` linear constraints.
 
@@ -355,6 +403,8 @@ cdef class CPLEXBackend(GenericBackend):
         - ``lower_bound`` - a lower bound, either a real value or ``None``
 
         - ``upper_bound`` - an upper bound, either a real value or ``None``
+
+        - ``names`` - an optional list of names (default: ``None``)
 
         EXAMPLE::
 
@@ -367,6 +417,7 @@ cdef class CPLEXBackend(GenericBackend):
             ([], [])
             sage: p.row_bounds(4)                        # optional - CPLEX
             (None, 2.0)
+            sage: p.add_linear_constraints(2, None, 2, names=['foo','bar']) # optional - Coin
         """
         if lower_bound is None and upper_bound is None:
             raise ValueError("At least one of 'upper_bound' or 'lower_bound' must be set.")
@@ -376,6 +427,7 @@ cdef class CPLEXBackend(GenericBackend):
         cdef double * bound = <double *> sage_malloc(number * sizeof(double))
         cdef double * rng = NULL
         cdef int i
+        cdef char ** c_names = <char **> sage_malloc(number * sizeof(char *))
 
         if upper_bound == lower_bound:
             sense[0] = 'E'
@@ -399,16 +451,21 @@ cdef class CPLEXBackend(GenericBackend):
             sense[0] = 'G'
             bound[0] = lower_bound
 
+        if names:
+            c_names[0] = names[0]
+
         for 1<= i <number:
             sense[i] = sense[0]
             bound[i] = bound[0]
             if rng != NULL:
                 rng[i] = rng[0]
+            if names:
+                c_names[i] = names[i]
 
-        status = CPXnewrows(self.env, self.lp, number, bound, sense, rng, NULL)
+        status = CPXnewrows(self.env, self.lp, number, bound, sense, rng, c_names if names else NULL)
         check(status)
 
-    cpdef add_linear_constraint(self, coefficients, lower_bound, upper_bound):
+    cpdef add_linear_constraint(self, coefficients, lower_bound, upper_bound, name = None):
         """
         Add a linear constraint.
 
@@ -422,6 +479,8 @@ cdef class CPLEXBackend(GenericBackend):
 
         - ``upper_bound`` - an upper bound, either a real value or ``None``
 
+        - ``name`` - an optional name for this row (default: ``None``)
+
         EXAMPLE::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
@@ -433,6 +492,10 @@ cdef class CPLEXBackend(GenericBackend):
             ([1, 2, 3, 4], [1.0, 2.0, 3.0, 4.0])
             sage: p.row_bounds(0)                                              # optional - CPLEX
             (2.0, 2.0)
+            sage: p.add_linear_constraint( zip(range(5), range(5)), 1.0, 1.0, name='foo') # optional - CPLEX
+            sage: p.row_name(1)                                                           # optional - CPLEX
+            'foo'
+
         """
         if lower_bound is None and upper_bound is None:
             raise ValueError("At least one of 'upper_bound' or 'lower_bound' must be set.")
@@ -442,6 +505,8 @@ cdef class CPLEXBackend(GenericBackend):
         cdef int n = len(coefficients)
         cdef int nrows = self.nrows()
         cdef char sense
+
+        cdef char * c_name
 
         cdef double * c_coeff
         cdef int * c_indices
@@ -481,7 +546,11 @@ cdef class CPLEXBackend(GenericBackend):
             sense = 'G'
             bound = lower_bound
 
-        status = CPXnewrows(self.env, self.lp, 1, &bound, &sense, &rng, NULL)
+        if name:
+            c_name = name
+
+        status = CPXnewrows(self.env, self.lp, 1, &bound, &sense, &rng, NULL if (name is None) else &c_name)
+
         check(status)
         status = CPXchgcoeflist(self.env, self.lp, n, c_row, c_indices, c_coeff)
         check(status)
@@ -624,35 +693,6 @@ cdef class CPLEXBackend(GenericBackend):
         return (lb if lb != -CPX_INFBOUND else None,
                 ub if ub != +CPX_INFBOUND else None)
 
-    cpdef double get_objective_coefficient(self, int index):
-        r"""
-        Sets the coefficient of a variable in the objective function
-
-        INPUT:
-
-        - ``variable`` (integer) -- the variable's id
-
-        - ``coeff`` (double) -- its coefficient
-
-        EXAMPLE::
-
-            sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "CPLEX")  # optional - CPLEX
-            sage: p.add_variable()                                 # optional - CPLEX
-            0
-            sage: p.get_objective_coefficient(0)                         # optional - CPLEX
-            0.0
-            sage: p.set_objective_coefficient(0,2)                       # optional - CPLEX
-            sage: p.get_objective_coefficient(0)                         # optional - CPLEX
-            2.0
-        """
-
-        cdef int status
-        cdef double value
-        status = CPXgetobj(self.env, self.lp, &value, index, index)
-        check(status)
-        return value
-
     cpdef add_col(self, list indices, list coeffs):
         r"""
         Adds a column.
@@ -727,7 +767,7 @@ cdef class CPLEXBackend(GenericBackend):
             sage: p.add_col(range(5), range(5))                   # optional - CPLEX
             sage: p.solve()                                       # optional - CPLEX
             0
-            sage: p.set_objective_coefficient(0,1)                      # optional - CPLEX
+            sage: p.objective_coefficient(0,1)                      # optional - CPLEX
             sage: p.solve()                                       # optional - CPLEX
             Traceback (most recent call last):
             ...
@@ -861,69 +901,54 @@ cdef class CPLEXBackend(GenericBackend):
 
         return CPXgetnumrows(self.env, self.lp)
 
-    cpdef row_name(self, int index, char * name = NULL):
+    cpdef row_name(self, int index):
         r"""
-        Returns or defines the ``index`` th row name
+        Return the ``index`` th row name
 
         INPUT:
 
         - ``index`` (integer) -- the row's id
 
-        - ``name`` (``char *``) -- its name. When set to ``NULL``
-          (default), the method returns the current name.
-
         EXAMPLE::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "CPLEX")  # optional - CPLEX
-            sage: p.add_linear_constraints(1, 2, None)                      # optional - CPLEX
-            sage: p.row_name(0, "Empty constraint 1")          # optional - CPLEX
-            sage: p.row_name(0)                                # optional - CPLEX
+            sage: p = get_solver(solver = "CPLEX")                                     # optional - CPLEX
+            sage: p.add_linear_constraints(1, 2, None, names=['Empty constraint 1'])   # optional - CPLEX
+            sage: p.row_name(0)                                                        # optional - CPLEX
             'Empty constraint 1'
-
         """
 
         cdef int status
         cdef int zero
         cdef char * n
 
-        if name == NULL:
-            n = <char *>sage_malloc(500*sizeof(char))
-            status = CPXgetrowname(self.env, self.lp, &n, n, 500, &zero, index, index)
-            if status == 1219:
-                sage_free(n)
-                return ""
-            check(status)
-
-            s = str(n)
+        n = <char *>sage_malloc(500*sizeof(char))
+        status = CPXgetrowname(self.env, self.lp, &n, n, 500, &zero, index, index)
+        if status == 1219:
             sage_free(n)
+            return ""
+        check(status)
 
-            return s
+        s = str(n)
+        sage_free(n)
 
-            pass
-        else:
-            status = CPXchgrowname(self.env, self.lp, 1, &index, &name)
-            check(status)
+        return s
 
-    cpdef col_name(self, int index, char * name = NULL):
+    cpdef col_name(self, int index):
         r"""
-        Returns or defines the ``index`` th col name.
+        Returns the ``index`` th col name.
 
         INPUT:
 
         - ``index`` (integer) -- the col's id
 
-        - ``name`` (``char *``) -- its name. When set to ``NULL``
-          (default), the method returns the current name.
-
         EXAMPLE::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "CPLEX")  # optional - CPLEX
-            sage: p.add_variable()                                 # optional - CPLEX
+            sage: p = get_solver(solver = "CPLEX")         # optional - CPLEX
+            sage: p.add_variable(name='I am a variable')   # optional - CPLEX
             0
-            sage: p.col_name(0, "I am a variable")             # optional - CPLEX
-            sage: p.col_name(0)                                # optional - CPLEX
+            sage: p.col_name(0)                            # optional - CPLEX
             'I am a variable'
         """
 
@@ -931,22 +956,16 @@ cdef class CPLEXBackend(GenericBackend):
         cdef char * n
         cdef int zero
 
-        if name == NULL:
-
-            n = <char *>sage_malloc(500*sizeof(char))
-            status = CPXgetcolname(self.env, self.lp, &n, n, 500, &zero, index, index)
-            if status == 1219:
-                sage_free(n)
-                return ""
-            check(status)
-
-            s = str(n)
+        n = <char *>sage_malloc(500*sizeof(char))
+        status = CPXgetcolname(self.env, self.lp, &n, n, 500, &zero, index, index)
+        if status == 1219:
             sage_free(n)
-            return s
+            return ""
+        check(status)
 
-        else:
-            status = CPXchgcolname(self.env, self.lp, 1, &index, &name)
-            check(status)
+        s = str(n)
+        sage_free(n)
+        return s
 
     cpdef bint is_variable_binary(self, int index):
         r"""
