@@ -904,6 +904,7 @@ code = setup(name = 'sage',
 
                      'sage.algebras',
                      'sage.algebras.quatalg',
+                     'sage.algebras.steenrod',
 
                      'sage.calculus',
 
