@@ -380,9 +380,6 @@ the :mod:`sage.graphs.graph_latex` module. ::
     \begin{tikzpicture}
     ...
     \end{tikzpicture}
-
-Graph classes and methods
--------------------------
 """
 
 #*****************************************************************************
