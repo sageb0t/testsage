@@ -9411,15 +9411,17 @@ cdef class Matrix(matrix1.Matrix):
             [-j + 1      1]
             [     0   -2*j]
 
-        Shortcuts::
+        There is a shortcut for the conjugate::
+
             sage: M.C
             [-j + 1      1]
             [     0   -2*j]
 
-        Conjugate and transpose::
+        There is also a shortcut for the conjugate transpose, or "Hermitian transpose"::
+
             sage: M.H
-            [     1 -j + 1]
-            [  -2*j      0]
+            [-j + 1      0]
+            [     1   -2*j]
 
         Conjugates work (trivially) for matrices over rings that embed
         canonically into the real numbers::
@@ -9460,7 +9462,7 @@ cdef class Matrix(matrix1.Matrix):
             sage: M.base_ring()
             Symbolic Ring
             sage: M.conjugate_transpose()
-            [   I + 2  6*I + 9]
+             [   I + 2  6*I + 9]
             [-4*I + 3     -5*I]
 
             sage: P = matrix(CC, 3, 2, [0.95-0.63*I, 0.84+0.13*I, 0.94+0.23*I, 0.23+0.59*I, 0.52-0.41*I, -0.50+0.90*I])
@@ -9469,6 +9471,12 @@ cdef class Matrix(matrix1.Matrix):
             sage: P.conjugate_transpose()
             [ 0.950... + 0.630...*I  0.940... - 0.230...*I  0.520... + 0.410...*I]
             [ 0.840... - 0.130...*I  0.230... - 0.590...*I -0.500... - 0.900...*I]
+
+        There is also a shortcut for the conjugate transpose, or "Hermitian transpose"::
+
+            sage: M.H
+             [   I + 2  6*I + 9]
+            [-4*I + 3     -5*I]
 
         Matrices over base rings that can be embedded in the
         real numbers will behave as expected. ::
@@ -11060,15 +11068,19 @@ cdef class Matrix(matrix1.Matrix):
     Provides shortcuts for various methods like transpose()
     """
     property T:
+        "``m.T`` gives the transpose of the matrix ``m``"
         def __get__(self):
             return self.transpose()
     property C:
+        "``m.C`` gives the conjugate of the matrix ``m``"
         def __get__(self):
             return self.conjugate()
     property H:
+        """``m.H`` gives the conjugate transpose, or "Hermitian transpose", of the matrix ``m``"""
         def __get__(self):
             return self.conjugate().transpose()
     property I:
+        "``m.I`` gives the inverse of the matrix ``m``"
         def __get__(self):
             return self.inverse()
 
