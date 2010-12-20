@@ -2326,6 +2326,8 @@ cdef class Set_PythonType_class(Set_generic):
             0.333333333333333...
 
         """
+        if PY_TYPE_CHECK(x,self._type):
+            return x
         return self._type(x)
 
     def __hash__(self):
