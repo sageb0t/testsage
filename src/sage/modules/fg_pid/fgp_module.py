@@ -167,8 +167,33 @@ element (1) of the image into the codomain, and get (3)::
     sage: M1(x)
     (3)
 
+TESTS::
+
+    sage: from sage.modules.fg_pid.fgp_module import FGP_Module
+    sage: V = span([[1/2,1,1],[3/2,2,1],[0,0,1]],ZZ)
+    sage: W = V.span([2*V.0+4*V.1, 9*V.0+12*V.1, 4*V.2])
+    sage: Q = FGP_Module(V, W); Q
+    Finitely generated module V/W over Integer Ring with invariants (4, 12)
+    sage: Q([1,3])
+    (1, 3)
+    sage: Q(V([1,3,4]))
+    (0, 11)
+    sage: Q(W([1,16,0]))
+    (0, 0)
+    sage: V = span([[1/2,1,1],[3/2,2,1],[0,0,1]],QQ)
+    sage: W = V.span([2*V.0+4*V.1, 9*V.0+12*V.1])
+    sage: Q = FGP_Module(V, W); Q
+    Finitely generated module V/W over Rational Field with invariants (0)
+    sage: q = Q.an_element(); q
+    (1)
+    sage: q*(1/2)
+    (1/2)
+    sage: (1/2)*q
+    (1/2)
+
 AUTHOR:
-- William Stein, 2009
+
+    - William Stein, 2009
 """
 
 ####################################################################################
@@ -189,7 +214,7 @@ AUTHOR:
 from sage.modules.module import Module
 from sage.modules.free_module import is_FreeModule
 from sage.structure.sequence import Sequence
-from fgp_element  import FGP_Element
+from fgp_element  import DEBUG, FGP_Element
 from fgp_morphism import FGP_Morphism, FGP_Homset
 from sage.rings.all import Integer, ZZ, lcm
 from sage.misc.cachefunc import cached_method
@@ -197,27 +222,22 @@ from sage.misc.cachefunc import cached_method
 import weakref
 _fgp_module = weakref.WeakValueDictionary()
 
-# This adds extra maybe-not-necessary checks in the code, but could
-# slow things down.  It can impact what happens in more than just this
-# file.
-DEBUG=True
-
 def FGP_Module(V, W, check=True):
     """
     INPUT:
 
     - ``V`` -- a free R-module
 
-    - ``W`` -- a free R-submodule of V
+    - ``W`` -- a free R-submodule of ``V``
 
-    - ``check`` -- bool (default: True); if True, more checks on
-                   correctness are performed; in particular, we check
-                   the data types of V and W, and that W is a
-                   submodule of V with the same base ring.
+    - ``check`` -- bool (default: ``True``); if ``True``, more checks
+      on correctness are performed; in particular, we check the data
+      types of ``V`` and ``W``, and that ``W`` is a submodule of ``V``
+      with the same base ring.
 
     OUTPUT:
 
-    - the quotient V/W as a finitely generated R-module
+    - the quotient ``V/W`` as a finitely generated R-module
 
     EXAMPLES::
 
@@ -225,7 +245,7 @@ def FGP_Module(V, W, check=True):
         sage: import sage.modules.fg_pid.fgp_module
         sage: Q = sage.modules.fg_pid.fgp_module.FGP_Module(V, W)
         sage: type(Q)
-        <class 'sage.modules.fg_pid.fgp_module.FGP_Module_class'>
+        <class 'sage.modules.fg_pid.fgp_module.FGP_Module_class_with_category'>
         sage: Q is sage.modules.fg_pid.fgp_module.FGP_Module(V, W, check=False)
         True
     """
@@ -280,8 +300,13 @@ class FGP_Module_class(Module):
         sage: Q = V/W; Q
         Finitely generated module V/W over Integer Ring with invariants (4, 12)
         sage: type(Q)
-        <class 'sage.modules.fg_pid.fgp_module.FGP_Module_class'>
+        <class 'sage.modules.fg_pid.fgp_module.FGP_Module_class_with_category'>
     """
+
+    # The class to be used for creating elements of this
+    # module. Should be overridden in derived classes.
+    Element = FGP_Element
+
     def __init__(self, V, W, check=True):
         """
         INPUT:
@@ -301,7 +326,7 @@ class FGP_Module_class(Module):
             sage: Q = V/W; Q
             Finitely generated module V/W over Integer Ring with invariants (4, 12)
             sage: type(Q)
-            <class 'sage.modules.fg_pid.fgp_module.FGP_Module_class'>
+            <class 'sage.modules.fg_pid.fgp_module.FGP_Module_class_with_category'>
         """
         if check:
             if not is_FreeModule(V):
@@ -314,43 +339,53 @@ class FGP_Module_class(Module):
                 raise ValueError, "W and V must have the same base ring"
         self._W = W
         self._V = V
-        self._populate_coercion_lists_(element_constructor = self._element_class(),
-                                       coerce_list = [V, W])
+        Module.__init__(self, base=V.base_ring())
 
-    def _subquotient_class(self):
+    # Note: There once was a
+    # def _subquotient_class():
+    # method that returned a functionoid to construct new modules, so
+    # you would call module._subquotient_class()(V,W,check). This has
+    # been replaced with module._module_constructor(V,W,check).
+
+    def _module_constructor(self, V, W, check=True):
         r"""
-        Return a constructor for subquotients of this module. This should be
-        overridden in derived classes. The object returned need not actually be
-        a class, as in the example below -- it may be any callable object
-        accepting 3 arguments `V`, `W`, and `check`.
+        Construct a quotient module ``V/W``.
+
+        This should be overridden in derived classes.
+
+        INPUT:
+
+        - ``V`` -- an R-module.
+
+        - ``W`` -- an R-submodule of ``V``.
+
+        - ``check`` -- bool (default: True).
+
+        OUTPUT:
+
+        The quotient ``V/W``.
 
         EXAMPLES::
 
             sage: V = span([[1/2,1,1],[3/2,2,1],[0,0,1]],ZZ); W = V.span([2*V.0+4*V.1, 9*V.0+12*V.1, 4*V.2])
-            sage: Q = V/W
-            sage: Q._subquotient_class()
-            <function FGP_Module at ...>
+            sage: Q = V/W; Q
+            Finitely generated module V/W over Integer Ring with invariants (4, 12)
+            sage: Q._module_constructor(V,W)
+            Finitely generated module V/W over Integer Ring with invariants (4, 12)
         """
-
-        return FGP_Module
-
-    def _element_class(self):
-        r"""
-        Return the class to be used for creating elements of this module.
-        (This should be overridden in derived classes.)
-
-        EXAMPLES::
-
-            sage: V = span([[1/2,1,1],[3/2,2,1],[0,0,1]],ZZ); W = V.span([2*V.0+4*V.1, 9*V.0+12*V.1, 4*V.2])
-            sage: Q = V/W
-            sage: Q._element_class()
-            <class 'sage.modules.fg_pid.fgp_element.FGP_Element'>
-        """
-        return FGP_Element
+        return FGP_Module(V,W,check)
 
     def _coerce_map_from_(self, S):
         """
-        Return true if S canonically coerces to self.
+        Return whether ``S`` canonically coerces to ``self``a.
+
+        INPUT:
+
+        - ``S`` -- anything.
+
+        OUTPUT:
+
+        Boolean.
 
         EXAMPLES::
 
@@ -416,7 +451,7 @@ class FGP_Module_class(Module):
                 raise TypeError, "other must be an FGP module"
         if not other.is_submodule(self):
             raise ValueError, "other must be a submodule of self"
-        return self._subquotient_class()(self._V, other._V+self._W)
+        return self._module_constructor(self._V, other._V+self._W)
 
     def __eq__(self, other):
         """
@@ -533,7 +568,7 @@ class FGP_Module_class(Module):
         """
         return other.is_submodule(self)
 
-    def __call__(self, x, check=True):
+    def _element_constructor_(self, x, check=True):
         """
         INPUT:
 
@@ -564,8 +599,7 @@ class FGP_Module_class(Module):
             sage: x.parent() is Q
             True
         """
-        if hasattr(x,'parent') and x.parent() is self:
-            return x
+#        print '_element_constructor_', x, check
         if isinstance(x, (list,tuple)):
             try:
                 x = self.optimized()[0].V().linear_combination_of_basis(x)
@@ -573,7 +607,7 @@ class FGP_Module_class(Module):
                 raise TypeError, msg
         elif isinstance(x, FGP_Element):
             x = x.lift()
-        return self._element_class()(self, self._V(x), check=check)
+        return self.Element(self, self._V(x))
 
     def linear_combination_of_smith_form_gens(self, x):
         r"""
@@ -591,7 +625,7 @@ class FGP_Module_class(Module):
             x = self.optimized()[0].V().linear_combination_of_basis(x)
         except ValueError, msg:
             raise TypeError, msg
-        return self._element_class()(self, self._V(x), check=False)
+        return self.Element(self, self._V(x))
 
     def __contains__(self, x):
         """
@@ -678,7 +712,7 @@ class FGP_Module_class(Module):
             # TODO: possibly inefficient in some cases
             x = [self(v).lift() for v in x]
         V = self._V.submodule(x) + self._W
-        return self._subquotient_class()(V, self._W)
+        return self._module_constructor(V, self._W)
 
     def has_canonical_map_to(self, A):
         """
@@ -1161,7 +1195,7 @@ class FGP_Module_class(Module):
             return self.__optimized
         except AttributeError: pass
         V = self._V.span_of_basis([x.lift() for x in self.smith_form_gens()])
-        M = self._subquotient_class()(V, self._W.intersection(V))
+        M = self._module_constructor(V, self._W.intersection(V))
         # Compute matrix T of linear transformation from self._V to V.
         # This matrix T gives each basis element of self._V in terms
         # of our new optimized V, modulo the W's.
