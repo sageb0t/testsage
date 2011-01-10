@@ -1487,7 +1487,7 @@ cdef class Matrix_integer_dense(matrix_dense.Matrix_dense):   # dense or sparse
 
         .. note::
 
-           The result is *not* cached.
+           The result is cached.
 
         EXAMPLES::
 
