@@ -661,7 +661,7 @@ class Category(UniqueRepresentation, SageObject):
                  "element" : abstract_methods_of_class(self.element_class) }
 
     # Operations on the lattice of categories
-
+    @cached_method
     def is_subcategory(self, c):
         """
         Returns True if self is naturally embedded as a subcategory of c.
