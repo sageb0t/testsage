@@ -628,10 +628,10 @@ class PowerSeriesRing_generic(commutative_ring.CommutativeRing, Nonexact):
            random elements from the base ring, randomized subject to the
            arguments ``*args`` and ``**kwds``
 
-        IMPLEMENTATION::
+        ALGORITHM:
 
-        Call the ``random_element`` method on the underlying
-        polynomial ring.
+        Call the ``random_element`` method on the underlying polynomial
+        ring.
 
         EXAMPLES::
 
