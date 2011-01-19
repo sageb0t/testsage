@@ -935,6 +935,7 @@ code = setup(name = 'sage',
                      'sage.modular.quatalg',
                      'sage.modular.ssmod',
                      'sage.modular.overconvergent',
+                     'sage.modular.local_comp',
 
                      'sage.monoids',
 
