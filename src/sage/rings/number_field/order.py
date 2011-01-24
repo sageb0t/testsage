@@ -1308,7 +1308,7 @@ class AbsoluteOrder(Order):
         The basis is an immutable sequence::
 
             sage: type(O.basis())
-            <class 'sage.structure.sequence.Sequence'>
+            <class 'sage.structure.sequence.Sequence_generic'>
 
         The generator functionality uses the basis method::
 
