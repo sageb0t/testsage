@@ -208,7 +208,7 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
         dims[1] = self._ncols
         if isinstance(entries,(tuple, list)):
             if len(entries)!=self._nrows*self._ncols:
-                    raise TypeError, "entries has wrong length"
+                    raise TypeError("entries has wrong length")
 
             if coerce:
                 for i from 0<=i<self._nrows:
@@ -228,10 +228,10 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
                 try:
                     z = self._python_dtype(entries)
                 except TypeError:
-                    raise TypeError, "entries must be coercible to a list or float"
+                    raise TypeError("entries must be coercible to a list or float")
             if z != 0:
                 if self._nrows != self._ncols:
-                    raise TypeError, "scalar matrix must be square"
+                    raise TypeError("scalar matrix must be square")
                 for i from 0<=i<self._ncols:
                     self.set_unsafe(i,i,z)
 
@@ -373,7 +373,7 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
             [128.0 152.0 176.0 200.0]
         """
         if self._ncols!=right._nrows:
-            raise IndexError, "Number of columns of self must equal number of rows of right"
+            raise IndexError("Number of columns of self must equal number of rows of right")
 
         if self._nrows == 0 or self._ncols == 0 or right._nrows == 0 or right._ncols == 0:
             return self.matrix_space(self._nrows, right._ncols).zero_matrix()
@@ -451,7 +451,7 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
 #            ZeroDivisionError: singular matrix
 #
         if self._nrows != self._ncols:
-            raise ArithmeticError, "self must be a square matrix"
+            raise ArithmeticError("self must be a square matrix")
         if self._nrows == 0 and self._ncols == 0:
             return self.__copy__()
 
@@ -466,7 +466,7 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
         try: ##  Standard error reporting for Sage.
             M._matrix_numpy = scipy.linalg.inv(self._matrix_numpy)
         except LinAlgError:
-            raise ZeroDivisionError, "singular matrix"
+            raise ZeroDivisionError("input matrix must be nonsingular")
         return M
 
     def __copy__(self):
@@ -568,7 +568,7 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
         cdef Matrix_double_dense P, L, U
 
         if self._ncols!=self._nrows:
-            raise TypeError,"LU decomposition only works for square matrix"
+            raise TypeError("LU decomposition only works for square matrix")
 
         if self._ncols == 0:
             return self.__copy__(), self.__copy__(), self.__copy__()
@@ -648,7 +648,7 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
         # For numerical values we leave decisions about
         # multiplicity to the calling routine
         if algebraic_multiplicity:
-            raise ValueError, "algebraic_multiplicity must be set to False for double precision matrices"
+            raise ValueError("algebraic_multiplicity must be set to False for double precision matrices")
         spectrum = self.left_eigenvectors()
         pairs = []
         for evalue,evectors,_ in spectrum:
@@ -716,7 +716,7 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
         # For numerical values we leave decisions about
         # multiplicity to the calling routine
         if algebraic_multiplicity:
-            raise ValueError, "algebraic_multiplicity must be set to False for double precision matrices"
+            raise ValueError("algebraic_multiplicity must be set to False for double precision matrices")
         spectrum = self.right_eigenvectors()
         pairs = []
         for evalue,evectors,_ in spectrum:
@@ -751,7 +751,7 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
             []
         """
         if not self.is_square():
-            raise ArithmeticError, "self must be a square matrix"
+            raise ArithmeticError("self must be a square matrix")
         if self._nrows == 0:
             return []
         global scipy
@@ -806,7 +806,7 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
             (-1.0, [(1.0, 1.0, 2.0, 2.0)], 1)
         """
         if not self.is_square():
-            raise ArithmeticError, "self must be a square matrix"
+            raise ArithmeticError("self must be a square matrix")
         if self._nrows == 0:
             return [], self.__copy__()
         global scipy
@@ -866,7 +866,7 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
             (-1.0, [(1.0, -0.5, 2.0, 0.5)], 1)
         """
         if not self.is_square():
-            raise ArithmeticError, "self must be a square matrix"
+            raise ArithmeticError("self must be a square matrix")
         if self._nrows == 0:
             return [], self.__copy__()
         global scipy
@@ -920,11 +920,11 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
 
         """
         if self._nrows != b.degree():
-            raise ValueError, "number of rows of self must equal degree of b"
+            raise ValueError("number of rows of self must equal degree of b")
         if self._nrows == 0 or self._ncols == 0:
             return self._row_ambient_module().zero_vector()
 
-        raise NotImplementedError, "this function is not finished (see trac 4932)"
+        raise NotImplementedError("this function is not finished (see trac 4932)")
         self._c_compute_LU()  # so self._L_M and self._U_M are defined below.
         cdef Matrix_double_dense M = self._new()
         lu = self._L_M*self._U_M
@@ -985,7 +985,7 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
             ValueError: self must be a square matrix
         """
         if not self.is_square():
-            raise ValueError, "self must be a square matrix"
+            raise ValueError("self must be a square matrix")
         if self._nrows == 0 or self._ncols == 0:
             return self._sage_dtype(1)
         global scipy
@@ -1034,7 +1034,7 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
             return sage.rings.real_double.RDF(0)
 
         if not self.is_square():
-            raise ArithmeticError, "self must be a square matrix"
+            raise ArithmeticError("self must be a square matrix")
 
         P, L, U = self.LU()
         if numpy is None:
@@ -1436,7 +1436,7 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
             [3.0 4.0]
         """
         if (<object>self._matrix_numpy).shape != (<object>numpy_matrix).shape:
-            raise ValueError, "matrix shapes are not the same"
+            raise ValueError("matrix shapes are not the same")
         self._matrix_numpy = numpy_matrix.astype(self._numpy_dtype)
 
     def _replace_self_with_numpy32(self,numpy_matrix):
@@ -1535,7 +1535,7 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
             [-32.3835771246 + 21.8842351994*I  2.26963458304 + 44.9013203415*I]
         """
         if algorithm not in ('pade', 'eig', 'taylor'):
-            raise ValueError, "algorithm must be 'pade', 'eig', or 'taylor'"
+            raise ValueError("algorithm must be 'pade', 'eig', or 'taylor'")
 
         if scipy is None:
             import scipy
