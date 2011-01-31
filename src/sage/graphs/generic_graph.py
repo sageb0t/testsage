@@ -9431,7 +9431,7 @@ class GenericGraph(GenericGraph_pyx):
 
         Through the use of PQ-Trees
 
-        AUTHOR :
+        AUTHOR:
 
         Nathann Cohen (implementation)
 
