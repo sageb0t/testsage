@@ -1413,7 +1413,7 @@ cdef class Matrix_rational_dense(matrix_dense.Matrix_dense):
            multimodular algorithm. Note that the Sage global default is
            proof=True.
 
-        OUTPUT: self is no in reduced row echelon form.
+        OUTPUT: the reduced row echelon form of self.
 
         EXAMPLES::
 
@@ -1433,9 +1433,9 @@ cdef class Matrix_rational_dense(matrix_dense.Matrix_dense):
             [      0       0       1 238/157]
             [      0       0       0       0]
 
-        The result is an immutable matrix, so a copy is necessary
-        if you want a result you can change somehow.  This exercises a
-        fix for Trac #10543.
+        The result is an immutable matrix, so if you want to
+        modify the result then you need to make a copy.  This
+        checks that Trac #10543 is fixed. ::
 
             sage: A = matrix(QQ, 2, range(6))
             sage: E = A.echelon_form()
