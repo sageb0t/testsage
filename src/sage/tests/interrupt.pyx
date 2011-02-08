@@ -143,8 +143,8 @@ def test_sig_str(long delay = DEFAULT_DELAY):
         ...
         RuntimeError: Everything ok!
     """
-    signal_after_delay(SIGABRT, delay)
     sig_str("Everything ok!")
+    signal_after_delay(SIGABRT, delay)
     infinite_loop()
 
 cdef c_test_sig_on_cython():
@@ -298,10 +298,10 @@ def test_sig_str_no_except(long delay = DEFAULT_DELAY):
         print "Unexpected zero returned from sig_on_no_except()"
     sig_off()
 
-    signal_after_delay(SIGABRT, delay)
     if not sig_str_no_except("Everything ok!"):
         cython_check_exception()
         return 0 # fail
+    signal_after_delay(SIGABRT, delay)
     infinite_loop()
 
 def test_sig_check_no_except(long delay = DEFAULT_DELAY):
@@ -353,8 +353,8 @@ def test_old_sig_str(long delay = DEFAULT_DELAY):
         ...
         RuntimeError: Everything ok!
     """
-    signal_after_delay(SIGABRT, delay)
     _sig_str("Everything ok!")
+    signal_after_delay(SIGABRT, delay)
     infinite_loop()
 
 ########################################################################
@@ -370,8 +370,8 @@ def test_signal_segv(long delay = DEFAULT_DELAY):
         ...
         RuntimeError: Segmentation fault
     """
-    signal_after_delay(SIGSEGV, delay)
     sig_on()
+    signal_after_delay(SIGSEGV, delay)
     infinite_loop()
 
 def test_signal_fpe(long delay = DEFAULT_DELAY):
@@ -384,8 +384,8 @@ def test_signal_fpe(long delay = DEFAULT_DELAY):
         ...
         RuntimeError: Floating point exception
     """
-    signal_after_delay(SIGFPE, delay)
     sig_on()
+    signal_after_delay(SIGFPE, delay)
     infinite_loop()
 
 def test_signal_ill(long delay = DEFAULT_DELAY):
@@ -398,8 +398,8 @@ def test_signal_ill(long delay = DEFAULT_DELAY):
         ...
         RuntimeError: Illegal instruction
     """
-    signal_after_delay(SIGILL, delay)
     sig_on()
+    signal_after_delay(SIGILL, delay)
     infinite_loop()
 
 def test_signal_abrt(long delay = DEFAULT_DELAY):
@@ -412,8 +412,8 @@ def test_signal_abrt(long delay = DEFAULT_DELAY):
         ...
         RuntimeError: Aborted
     """
-    signal_after_delay(SIGABRT, delay)
     sig_on()
+    signal_after_delay(SIGABRT, delay)
     infinite_loop()
 
 def test_signal_bus(long delay = DEFAULT_DELAY):
@@ -426,8 +426,8 @@ def test_signal_bus(long delay = DEFAULT_DELAY):
         ...
         RuntimeError: Bus error
     """
-    signal_after_delay(SIGBUS, delay)
     sig_on()
+    signal_after_delay(SIGBUS, delay)
     infinite_loop()
 
 ########################################################################
@@ -520,9 +520,9 @@ def test_bad_str(long delay = DEFAULT_DELAY):
         ------------------------------------------------------------------------
         ...
     """
-    signal_after_delay(SIGSEGV, delay)
     cdef char* s = <char*>(16)
     sig_str(s)
+    signal_after_delay(SIGILL, delay)
     infinite_loop()
 
 ########################################################################
@@ -548,9 +548,9 @@ def test_sig_on_inside_try(long delay = DEFAULT_DELAY):
         sage: from sage.tests.interrupt import *
         sage: test_sig_on_inside_try()
     """
-    signal_after_delay(SIGABRT, delay)
     try:
         sig_on()
+        signal_after_delay(SIGABRT, delay)
         infinite_loop()
     except RuntimeError:
         pass
@@ -671,14 +671,15 @@ def test_sig_block(long delay = DEFAULT_DELAY):
         sage: test_sig_block()
         42
     """
-    signal_after_delay(SIGINT, delay)
     cdef volatile_int v = 0
 
     try:
         sig_on()
     except KeyboardInterrupt:
         return v
+
     sig_block()
+    signal_after_delay(SIGINT, delay)
     ms_sleep(delay * 2)  # We get signaled during this sleep
     v = 42
     sig_unblock()        # Here, the interrupt will be handled
