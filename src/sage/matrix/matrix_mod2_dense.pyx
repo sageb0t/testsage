@@ -757,7 +757,7 @@ cdef class Matrix_mod2_dense(matrix_dense.Matrix_dense):   # dense or sparse
 
         cdef Matrix_mod2_dense ans
 
-        ans = self.new_matrix(nrows = self.nrows(), ncols = right.ncols())
+        ans = self.new_matrix(nrows = self._nrows, ncols = right._ncols)
         if self._nrows == 0 or self._ncols == 0 or right._ncols == 0:
             return ans
         sig_on()
@@ -809,7 +809,7 @@ cdef class Matrix_mod2_dense(matrix_dense.Matrix_dense):   # dense or sparse
             []
         """
         cdef Matrix_mod2_dense A
-        A = self.new_matrix(nrows = self.nrows(), ncols = right.ncols())
+        A = self.new_matrix(nrows = self._nrows, ncols = right._ncols)
         if self._nrows == 0 or self._ncols == 0 or right._ncols == 0:
             return A
         A._entries = mzd_mul_naive(A._entries, self._entries,(<Matrix_mod2_dense>right)._entries)
@@ -894,7 +894,9 @@ cdef class Matrix_mod2_dense(matrix_dense.Matrix_dense):   # dense or sparse
             raise ArithmeticError("left ncols must match right nrows")
 
         cdef Matrix_mod2_dense ans
-        ans = self.new_matrix(nrows = self.nrows(), ncols = right.ncols())
+        #ans = self.new_matrix(nrows = self._nrows, ncols = right._ncols)
+        # The following is a little faster:
+        ans = self.matrix_space(self._nrows, right._ncols, sparse=False).zero_matrix().__copy__()
         if self._nrows == 0 or self._ncols == 0 or right._ncols == 0:
             return ans
 
