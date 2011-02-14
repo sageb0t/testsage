@@ -619,7 +619,7 @@ class Gap_generic(Expect):
 
             sage: s = gap.function_call('Display', [gap.SymmetricGroup(5).CharacterTable()])
             sage: type(s)
-            <class 'sage.interfaces.expect.AsciiArtString'>
+            <class 'sage.interfaces.interface.AsciiArtString'>
             sage: s.startswith('CT')
             True
         """
