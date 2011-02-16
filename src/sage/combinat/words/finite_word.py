@@ -439,6 +439,19 @@ exponent %s: the length of the word (%s) times the exponent \
         """
         return self.length()==0
 
+    def is_finite(self):
+        r"""
+        Returns True.
+
+        EXAMPLES::
+
+            sage: Word([]).is_finite()
+            True
+            sage: Word('a').is_finite()
+            True
+        """
+        return True
+
     def to_integer_word(self):
         r"""
         Returns a word defined over the integers [0,1,...,self.length()-1]
@@ -772,6 +785,7 @@ exponent %s: the length of the word (%s) times the exponent \
         """
         return self[::-1]
 
+    @cached_method
     def prefix_function_table(self):
         r"""
         Returns a vector containing the length of the proper prefix-suffixes
@@ -796,6 +810,7 @@ exponent %s: the length of the word (%s) times the exponent \
             res[q] = k
         return res
 
+    @cached_method
     def good_suffix_table(self):
         r"""
         Returns a table of the maximum skip you can do in order not to miss
@@ -2618,6 +2633,7 @@ exponent %s: the length of the word (%s) times the exponent \
             return [lpd.get(a,-1) for a in self.parent().alphabet()]
         return lpd
 
+    @cached_method
     def last_position_dict(self):
         r"""
         Returns a dictionary that contains the last position of each letter
@@ -2655,7 +2671,7 @@ exponent %s: the length of the word (%s) times the exponent \
             0
         """
         lf = self.length()
-        lm = len(other)
+        lm = other.length()
         if lf == 0:
             return p
         elif lm == 0:
@@ -2862,7 +2878,7 @@ exponent %s: the length of the word (%s) times the exponent \
             [0, 2, 8]
         """
         if self.length() == 0:
-            raise NotImplementedError, "undefined value"
+            raise NotImplementedError, "The factor must be non empty"
         p = self._pos_in(other, 0)
         while p is not None:
             yield p
@@ -2878,7 +2894,7 @@ exponent %s: the length of the word (%s) times the exponent \
             sage: Word().nb_factor_occurrences_in(Word('123'))
             Traceback (most recent call last):
             ...
-            NotImplementedError: undefined value
+            NotImplementedError: The factor must be non empty
             sage: Word('123').nb_factor_occurrences_in(Word('112332312313112332121123'))
             4
             sage: Word('321').nb_factor_occurrences_in(Word('11233231231311233221123'))
@@ -2931,23 +2947,20 @@ exponent %s: the length of the word (%s) times the exponent \
         r"""
         Returns the return words as a list in the order they appear in the word.
 
+        INPUT:
+
+        - ``fact`` - a non empty finite word
+
+        OUTPUT:
+
+        Python list of finite words
+
         TESTS::
 
             sage: Word('baccabccbacbca')._return_words_list(Word('b'))
             [word: bacca, word: bcc, word: bac]
         """
-        i = fact.first_pos_in(self)
-        if i is None:
-            return []
-        w = self[i+1:]
-        j = fact.first_pos_in(w)
-        res = []
-        while j is not None:
-            res.append(self[i:i+j+1])
-            w = w[j+1:]
-            i += j+1
-            j = fact.first_pos_in(w)
-        return res
+        return list(self.return_words_iterator(fact))
 
     def return_words(self, fact):
         r"""
@@ -2955,6 +2968,14 @@ exponent %s: the length of the word (%s) times the exponent \
 
         This is the set of all factors starting by the given factor and ending
         just before the next occurrence of this factor. See [1] and [2].
+
+        INPUT:
+
+        - ``fact`` - a non empty finite word
+
+        OUTPUT:
+
+        Python set of finite words
 
         EXAMPLES::
 
@@ -2965,6 +2986,12 @@ exponent %s: the length of the word (%s) times the exponent \
             sage: Word('121212').return_words(Word('1212'))
             set([word: 12])
 
+        ::
+
+            sage: TM = words.ThueMorseWord()[:10000]
+            sage: TM.return_words(Word([0]))     # optional long time (1.34 s)
+            set([word: 0, word: 01, word: 011])
+
         REFERENCES:
 
         -   [1] F. Durand, A characterization of substitutive sequences using
@@ -2972,7 +2999,7 @@ exponent %s: the length of the word (%s) times the exponent \
         -   [2] C. Holton, L.Q. Zamboni, Descendants of primitive substitutions,
             Theory Comput. Syst. 32 (1999) 133-157.
         """
-        return set(self._return_words_list(fact))
+        return set(self.return_words_iterator(fact))
 
     def complete_return_words(self, fact):
         r"""
@@ -2980,6 +3007,14 @@ exponent %s: the length of the word (%s) times the exponent \
 
         This is the set of all factors starting by the given factor and ending
         just after the next occurrence of this factor. See for instance [1].
+
+        INPUT:
+
+        - ``fact`` - a non empty finite word
+
+        OUTPUT:
+
+        Python set of finite words
 
         EXAMPLES::
 
@@ -2996,18 +3031,7 @@ exponent %s: the length of the word (%s) times the exponent \
         -   [1] J. Justin, L. Vuillon, Return words in Sturmian and
             episturmian words, Theor. Inform. Appl. 34 (2000) 343--356.
         """
-        i = fact.first_pos_in(self)
-        if i is None:
-            return set()
-        w = self[i+1:]
-        j = fact.first_pos_in(w)
-        res = set()
-        while j is not None:
-            res.add(self[i:i+j+len(fact)+1])
-            w = w[j+1:]
-            i += j+1
-            j = fact.first_pos_in(w)
-        return res
+        return set(self.complete_return_words_iterator(fact))
 
     def return_words_derivate(self, fact):
         r"""
