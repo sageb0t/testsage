@@ -1387,7 +1387,7 @@ cdef class ETuple:
 
     cpdef ETuple emax(ETuple self,ETuple other):
         """
-        Vector subtraction of self with other.
+        Vector of maximum of components of self and other.
 
         EXAMPLES::
 
@@ -1434,7 +1434,7 @@ cdef class ETuple:
 
     cpdef ETuple emin(ETuple self,ETuple other):
         """
-        Vector subtraction of self with other.
+        Vector of minimum of components of self and other.
 
         EXAMPLES::
 
