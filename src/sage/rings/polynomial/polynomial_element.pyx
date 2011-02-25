@@ -4133,6 +4133,8 @@ cdef class Polynomial(CommutativeAlgebraElement):
             sage: f.discriminant()
             1
         """
+        if self.is_zero():
+            return self.parent().zero_element()
         n = self.degree()
         d = self.derivative()
         k = d.degree()
