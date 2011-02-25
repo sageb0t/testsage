@@ -41,6 +41,7 @@ graphplot_options.update(
                     'vertex_shape': 'The shape to draw the vertices, Currently unavailable for Multi-edged DiGraphs.',
                     'edge_labels': 'Whether or not to draw edge labels.',
                     'edge_style': 'The linestyle of the edges-- one of "solid", "dashed", "dotted", dashdot".',
+                    'edge_color': 'The default color for edges.',
                     'edge_colors': 'Dictionary of edge coloring.',
                     'color_by_label': 'Whether or not to color the edges by their label values.',
                     'partition': 'A partition of the vertex set.  (Draws each cell of vertices in a different color).',
@@ -65,7 +66,8 @@ class GraphPlot(SageObject):
             ...     'vertex_labels':True,
             ...     'layout':None,
             ...     'edge_style':'solid',
-            ...     'edge_colors':'black',
+            ...     'edge_color':'black',
+            ...     'edge_colors':None,
             ...     'edge_labels':False,
             ...     'iterations':50,
             ...     'tree_orientation':'down',
@@ -255,7 +257,7 @@ class GraphPlot(SageObject):
             sage: GP = g.graphplot(vertex_size=100, edge_labels=True, color_by_label=True, edge_style='dashed')
             sage: GP.set_edges(edge_style='solid')
             sage: GP.plot()
-            sage: GP.set_edges(edge_colors='black')
+            sage: GP.set_edges(edge_color='black')
             sage: GP.plot()
 
             sage: d = DiGraph({}, loops=True, multiedges=True, sparse=True)
@@ -264,7 +266,7 @@ class GraphPlot(SageObject):
             sage: GP = d.graphplot(vertex_size=100, edge_labels=True, color_by_label=True, edge_style='dashed')
             sage: GP.set_edges(edge_style='solid')
             sage: GP.plot()
-            sage: GP.set_edges(edge_colors='black')
+            sage: GP.set_edges(edge_color='black')
             sage: GP.plot()
 
         TESTS::
@@ -337,9 +339,9 @@ class GraphPlot(SageObject):
                 if key == (edge[0],edge[1]): head = 1
                 else: head = 0
                 if key in edges_to_draw:
-                    edges_to_draw[key].append((edge[2], self._options['edge_colors'], head))
+                    edges_to_draw[key].append((edge[2], self._options['edge_color'], head))
                 else:
-                    edges_to_draw[key] = [(edge[2], self._options['edge_colors'], head)]
+                    edges_to_draw[key] = [(edge[2], self._options['edge_color'], head)]
 
         if edges_to_draw:
             self._plot_components['edges'] = []
@@ -542,6 +544,7 @@ class GraphPlot(SageObject):
              ('color_by_label', 'Whether or not to color the edges by their label values.'),
              ('dim', 'The dimension of the layout -- 2 or 3.'),
              ('dist', 'The distance between multiedges.'),
+             ('edge_color', 'The default color for edges.'),
              ('edge_colors', 'Dictionary of edge coloring.'),
              ('edge_labels', 'Whether or not to draw edge labels.'),
              ('edge_style', 'The linestyle of the edges-- one of "solid", "dashed", "dotted", dashdot".'),
