@@ -42,6 +42,9 @@ The following patches are applied in spkg-install:
  * makefile.patch (Fix compiler, inject CFLAGS)
  * sort_sum_rename.patch (rename sort tp sym_sort, sum to sym_sum)
 
+Permissions in the upstream tarball are funky, please run
+"chmod 644 src/" after unpacking.
+
 == Changelog ==
 
 === symmetrica-2.0.p6 (Volker Braun, 31st January 2011) ===
