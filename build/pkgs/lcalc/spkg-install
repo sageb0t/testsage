@@ -187,6 +187,9 @@ success "patch: Lcommandline_elliptic.cc"
 cp ../../patches/Makefile Makefile
 success "patch: Makefile"
 
+cp ../../patches/Lcommon.h ../include/
+success "patch: Lcommon.h"
+
 $MAKE
 success 'make'
 
