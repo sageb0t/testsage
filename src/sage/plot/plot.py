@@ -129,7 +129,7 @@ have a preference::
 
 We construct a plot involving several graphics objects::
 
-    sage: G = plot(cos(x), (x, -5, 5), thickness=5, color='green')
+    sage: G = plot(cos(x), (x, -5, 5), thickness=5, color='green', title='A plot')
     sage: P = polygon([[1,2], [5,6], [5,0]], color='red')
     sage: G + P
 
@@ -164,6 +164,11 @@ We can put text in a graph::
     sage: y = text('y axis', (0.4,0.9))
     sage: g = p+t+x+y
     sage: g.show(xmin=-1.5, xmax=2, ymin=-1, ymax=1)
+
+We can add a title to a graph::
+
+    sage: x = var('x')
+    sage: plot(x^2, (x,-2,2), title='A plot of $x^2$')
 
 We plot the Riemann zeta function along the critical line and see
 the first few zeros::
@@ -944,8 +949,8 @@ def plot(funcs, *args, **kwds):
 
     Extra options will get passed on to show(), as long as they are valid::
 
-        sage: plot(sin(x^2), (x, -3, 3), axes_labels=['$x$','$y$']) # These labels will be nicely typeset
-        sage: plot(sin(x^2), (x, -3, 3), axes_labels=['x','y']) # These will not
+        sage: plot(sin(x^2), (x, -3, 3), title='Plot of $\sin(x)$', axes_labels=['$x$','$y$']) # These labels will be nicely typeset
+        sage: plot(sin(x^2), (x, -3, 3), title='Plot of sin(x)', axes_labels=['x','y']) # These will not
 
     ::
 
