@@ -323,6 +323,12 @@ class DiGraph(GenericGraph):
             ...
             ValueError: Two different labels given for the same edge in a graph without multiple edges.
 
+        Detection of multiple edges::
+
+            sage: DiGraph([(1, 2, 0), (1,2,1)])
+            Multi-digraph on 2 vertices
+            sage: DiGraph([(1, 2, 0)])
+            Digraph on 2 vertices
         """
         msg = ''
         GenericGraph.__init__(self)
@@ -408,7 +414,7 @@ class DiGraph(GenericGraph):
                         # dictionary so that data[u][v] is a list
 
                         if (multiedges is None and
-                            (u in data[v])):
+                            (v in data[u])):
                             multiedges = True
                             for uu, dd in data.iteritems():
                                 for vv, ddd in dd.iteritems():
