@@ -151,6 +151,9 @@ export CLIQUER
 CDDLIB=`$newest cddlib`
 export CDDLIB
 
+PPL=`$newest ppl`
+export PPL
+
 ECL=`$newest ecl`
 export ECL
 
