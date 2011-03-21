@@ -1,10 +1,18 @@
 #include <NTL/tools.h>
 
 #include <ctype.h>
+#include <stdio.h>
 
 #include <NTL/new.h>
 
+void _ntl_abort_cxx_callback(void)
+{
+   if (NTL_NNS ErrorCallback) (*NTL_NNS ErrorCallback)();
+}
+
 NTL_START_IMPL
+
+void (*ErrorCallback)() = 0;
 
 /*
    The following code differs from vanilla NTL 5.4.2.
@@ -34,7 +42,7 @@ void Error(const char *s)
       ErrorCallbackFunction(s, ErrorCallbackContext);
 
    cerr << s << "\n";
-   abort();
+   _ntl_abort();
 }
 
 // The following implementation of CharToIntVal is completely portable.
@@ -127,6 +135,11 @@ long SkipWhiteSpace(istream& s)
       return 0;
    else
       return 1;
+}
+
+long IsEOFChar(long c)
+{
+   return c == EOF;
 }
 
 void PrintTime(ostream& s, double t)
