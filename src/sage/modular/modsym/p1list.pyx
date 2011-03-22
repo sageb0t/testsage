@@ -655,6 +655,8 @@ cdef class P1List:
             sage: L
             The projective line over the integers modulo 120
         """
+        cdef int i
+
         self.__N = N
         if N <= 46340:
             self.__list = p1list_int(N)
@@ -677,7 +679,6 @@ cdef class P1List:
         if not self.t: raise MemoryError
 
         # Initialize xgcd table
-        cdef int i
         cdef llong ll_s, ll_t, ll_N = N
 
         if N <= 46340:
