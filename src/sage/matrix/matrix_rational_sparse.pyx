@@ -491,7 +491,7 @@ cdef class Matrix_rational_sparse(matrix_sparse.Matrix_sparse):
         pivots = self._echelonize_multimodular(height_guess, proof, **kwds)
 
         self.cache('in_echelon_form', True)
-        self.cache('pivots', pivots)
+        self.cache('pivots', tuple(pivots))
 
     def echelon_form(self, algorithm='default',
                      height_guess=None, proof=True, **kwds):

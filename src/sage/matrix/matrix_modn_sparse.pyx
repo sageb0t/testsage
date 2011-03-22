@@ -51,9 +51,9 @@ EXAMPLES::
     [ 1  0 36]
     [ 0  1  2]
     sage: a.pivots()
-    [0, 1]
+    (0, 1)
     sage: b.pivots()
-    [0, 1]
+    (0, 1)
     sage: a.rank()
     2
     sage: b.rank()
@@ -515,7 +515,7 @@ cdef class Matrix_modn_sparse(matrix_sparse.Matrix_sparse):
                 sig_off()
                 start_row = start_row + 1
 
-        self.cache('pivots',pivots)
+        self.cache('pivots',tuple(pivots))
         self.cache('in_echelon_form',True)
 
     def _nonzero_positions_by_row(self, copy=True):
