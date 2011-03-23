@@ -30,8 +30,8 @@ cdef class Matrix_dense(matrix.Matrix):
         not change the entries of this matrix.
         """
         A = self.new_matrix(entries=self.list(), coerce=False, copy=False)
-        if self.subdivisions is not None:
-            A.subdivide(*self.get_subdivisions())
+        if self._subdivisions is not None:
+            A.subdivide(*self.subdivisions())
         return A
 
     def __hash__(self):
@@ -192,8 +192,8 @@ cdef class Matrix_dense(matrix.Matrix):
             for i from 0<= i < nr:
                 trans.set_unsafe(j,i,self.get_unsafe(i,j))
 
-        if self.subdivisions is not None:
-            row_divs, col_divs = self.get_subdivisions()
+        if self._subdivisions is not None:
+            row_divs, col_divs = self.subdivisions()
             trans.subdivide(col_divs, row_divs)
         return trans
 
@@ -237,8 +237,8 @@ cdef class Matrix_dense(matrix.Matrix):
                 ri = ri-1
                 atrans.set_unsafe(j , i, self.get_unsafe(ri,rj))
 
-        if self.subdivisions is not None:
-            row_divs, col_divs = self.get_subdivisions()
+        if self._subdivisions is not None:
+            row_divs, col_divs = self.subdivisions()
             atrans.subdivide([nc - t for t in reversed(col_divs)],
                              [nr - t for t in reversed(row_divs)])
         return atrans
@@ -325,8 +325,8 @@ cdef class Matrix_dense(matrix.Matrix):
         M = sage.matrix.matrix_space.MatrixSpace(R, self._nrows,
                    self._ncols, sparse=False)
         image = M([phi(z) for z in self.list()])
-        if self.subdivisions is not None:
-            image.subdivide(*self.get_subdivisions())
+        if self._subdivisions is not None:
+            image.subdivide(*self.subdivisions())
         return image
 
     def apply_map(self, phi, R=None, sparse=False):
@@ -414,8 +414,8 @@ cdef class Matrix_dense(matrix.Matrix):
         M = sage.matrix.matrix_space.MatrixSpace(R, self._nrows,
                    self._ncols, sparse=sparse)
         image = M(v)
-        if self.subdivisions is not None:
-            image.subdivide(*self.get_subdivisions())
+        if self._subdivisions is not None:
+            image.subdivide(*self.subdivisions())
         return image
 
     def _derivative(self, var=None):
@@ -446,6 +446,6 @@ cdef class Matrix_dense(matrix.Matrix):
         M = sage.matrix.matrix_space.MatrixSpace(R, self._nrows,
                    self._ncols, sparse=False)
         image = M(v)
-        if self.subdivisions is not None:
-            image.subdivide(*self.get_subdivisions())
+        if self._subdivisions is not None:
+            image.subdivide(*self.subdivisions())
         return image
