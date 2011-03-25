@@ -29,4 +29,6 @@
 - (BOOL)application:(NSApplication * )theApplication openFile: (NSString * )filename;
 - (void)getUrl:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent;
 
+-(IBAction)openDocumentWithDialogBox:(id)sender;
+
 @end

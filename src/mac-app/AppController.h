@@ -24,6 +24,7 @@
 
     NSString *sageBinary;
     NSString *logPath;
+    NSMutableArray *URLQueue;
 
     NSUserDefaults *defaults;
 
