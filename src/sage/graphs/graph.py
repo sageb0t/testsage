@@ -1219,9 +1219,11 @@ class Graph(GenericGraph):
                     if m[k] == '1':
                         self.add_edge(i, j)
                     k += 1
+
         elif format == 'sparse6':
             for i,j in edges:
                 self.add_edge(i,j)
+
         elif format == 'adjacency_matrix':
             e = []
             if weighted:
@@ -1237,10 +1239,13 @@ class Graph(GenericGraph):
                     if i <= j:
                         e.append((i,j))
             self.add_edges(e)
+
         elif format == 'incidence_matrix':
             self.add_edges(positions)
+
         elif format == 'Graph':
             self.name(data.name())
+
         elif format == 'rule':
             verts = list(verts)
             for u in xrange(num_verts):
@@ -1248,6 +1253,7 @@ class Graph(GenericGraph):
                     uu,vv = verts[u], verts[v]
                     if f(uu,vv):
                         self.add_edge(uu,vv)
+
         elif format == 'dict_of_dicts':
             for u in data:
                 for v in data[u]:
@@ -1256,12 +1262,14 @@ class Graph(GenericGraph):
                             self.add_edges([(u,v,l) for l in data[u][v]])
                         else:
                             self.add_edge((u,v,data[u][v]))
+
         elif format == 'dict_of_lists':
             for u in data:
                 for v in data[u]:
                     if multiedges or hash(u) <= hash(v) or \
                        v not in data or u not in data[v]:
                         self.add_edge(u,v)
+
         elif format == 'elliptic_curve_congruence':
             from sage.rings.arith import lcm, prime_divisors
             from sage.rings.fast_arith import prime_range
@@ -1288,6 +1296,7 @@ class Graph(GenericGraph):
                         self.add_edge(E.cremona_label(), F.cremona_label(), str(p_edges)[1:-1])
         else:
             assert format == 'int'
+
         self._pos = pos
         self._boundary = boundary
         name = kwds.get('name', None)
