@@ -37,7 +37,7 @@ AUTHORS:
 from subprocess import *
 import os, select
 
-def test_executable(args, input="", timeout=10.0):
+def test_executable(args, input="", timeout=50.0):
     """
     Run the program defined by ``args`` using the string ``input`` on
     the standard input.
@@ -69,14 +69,14 @@ def test_executable(args, input="", timeout=10.0):
 
     We test the timeout option::
 
-        sage: (out, err, ret) = test_executable(["sleep", "1"], "", 0.1)
+        sage: (out, err, ret) = test_executable(["sleep", "1"], timeout=0.1)
         Traceback (most recent call last):
         ...
         RuntimeError: timeout in test_executable()
 
     TESTS::
 
-        sage: (out, err, ret) = test_executable(["sage"], timeout=50)
+        sage: (out, err, ret) = test_executable(["sage"])
         sage: out.find(version()) >= 0
         True
         sage: err
@@ -84,7 +84,7 @@ def test_executable(args, input="", timeout=10.0):
         sage: ret
         0
 
-        sage: (out, err, ret) = test_executable(["sage"], "3^33\n", timeout=50)
+        sage: (out, err, ret) = test_executable(["sage"], "3^33\n")
         sage: out.find(version()) >= 0
         True
         sage: out.find("5559060566555523") >= 0
@@ -94,7 +94,7 @@ def test_executable(args, input="", timeout=10.0):
         sage: ret
         0
 
-        sage: (out, err, ret) = test_executable(["sage", "-q"], "3^33\n", timeout=50)
+        sage: (out, err, ret) = test_executable(["sage", "-q"], "3^33\n")
         sage: out.find(version()) >= 0
         False
         sage: out.find("5559060566555523") >= 0
@@ -104,7 +104,7 @@ def test_executable(args, input="", timeout=10.0):
         sage: ret
         0
 
-        sage: (out, err, ret) = test_executable(["sage", "-c", "print 3^33"], timeout=50)
+        sage: (out, err, ret) = test_executable(["sage", "-c", "print 3^33"])
         sage: out.find("5559060566555523\n") >= 0
         True
         sage: err
@@ -112,7 +112,7 @@ def test_executable(args, input="", timeout=10.0):
         sage: ret
         0
 
-        sage: (out, err, ret) = test_executable(["sage", "--min", "-c", "print 3^33"], timeout=50)
+        sage: (out, err, ret) = test_executable(["sage", "--min", "-c", "print 3^33"])
         sage: out.find("5559060566555523\n") >= 0
         True
         sage: err
@@ -168,7 +168,7 @@ def test_executable(args, input="", timeout=10.0):
         sage: ret
         0
 
-        sage: (out, err, ret) = test_executable(["sage", "--startuptime"], timeout=50)
+        sage: (out, err, ret) = test_executable(["sage", "--startuptime"])
         sage: out.find("sage.all: ") >= 0
         True
         sage: err
