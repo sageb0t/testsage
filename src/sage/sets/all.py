@@ -9,3 +9,4 @@ from primes import Primes
 from family import Family
 
 from disjoint_set import DisjointSet
+from finite_set_maps import FiniteSetMaps
