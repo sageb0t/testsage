@@ -1,4 +1,6 @@
 #!/bin/sh
+# This is the spkg-install script which will be emplaced within the SPKG for
+# the extcode repository whenever it is packaged.
 
 CUR=`pwd`
 DIR="$SAGE_ROOT"/data/extcode
@@ -25,3 +27,9 @@ else
    hg ci -m "Check-in during upgrade of Sage."
    hg update
 fi
+
+# Create an appropriate hgrc file for the target
+cat > "$DIR/.hg/hgrc" <<"HEREDOC"
+[diff]
+git = true
+HEREDOC
