@@ -220,7 +220,8 @@ ext_modules = [
               sources=['sage/combinat/dict_addition.pyx']),
 
     Extension('sage.combinat.combinat_cython',
-              sources=['sage/combinat/combinat_cython.pyx']),
+              sources=['sage/combinat/combinat_cython.pyx'],
+              libraries=['gmp']),
 
     ################################
     ##
@@ -296,7 +297,8 @@ ext_modules = [
      ################################
 
      Extension('sage.geometry.toric_lattice_element',
-               sources = ['sage/geometry/toric_lattice_element.pyx']),
+               sources = ['sage/geometry/toric_lattice_element.pyx'],
+               libraries=['gmp']),
 
      Extension('sage.geometry.triangulation.base',
                sources = ['sage/geometry/triangulation/functions.cc',
@@ -867,7 +869,7 @@ ext_modules = [
     Extension('sage.matrix.matrix_integer_dense',
               sources = ['sage/matrix/matrix_integer_dense.pyx'],
               # order matters for cygwin!!
-              libraries = ['iml', 'gmp', 'm', 'pari', BLAS, BLAS2]),
+              libraries = ['iml', 'pari', 'm', 'gmp', BLAS, BLAS2]),
 
     Extension('sage.matrix.matrix_integer_sparse',
               sources = ['sage/matrix/matrix_integer_sparse.pyx'],
@@ -901,7 +903,7 @@ ext_modules = [
 
     Extension('sage.matrix.matrix_rational_dense',
               sources = ['sage/matrix/matrix_rational_dense.pyx'],
-              libraries = ['gmp', 'pari']),
+              libraries = ['pari', 'gmp']),
 
     Extension('sage.matrix.matrix_rational_sparse',
               sources = ['sage/matrix/matrix_rational_sparse.pyx'],
@@ -1205,7 +1207,7 @@ ext_modules = [
 
     Extension('sage.rings.integer',
               sources = ['sage/rings/integer.pyx'],
-              libraries=['ntl', 'gmp', 'pari', 'flint'],
+              libraries=['ntl', 'pari', 'flint', 'gmp'],
               include_dirs = [SAGE_INC + 'FLINT/'],
               depends = numpy_depends + flint_depends),
 
@@ -1215,7 +1217,7 @@ ext_modules = [
 
     Extension('sage.rings.fast_arith',
               sources = ['sage/rings/fast_arith.pyx'],
-              libraries=['gmp','pari','csage']),
+              libraries=['pari','gmp','csage']),
 
     Extension('sage.rings.fraction_field_element',
               sources = ['sage/rings/fraction_field_element.pyx']),
@@ -1327,7 +1329,7 @@ ext_modules = [
 
     Extension('sage.rings.number_field.totallyreal',
               sources = ['sage/rings/number_field/totallyreal.pyx'],
-              libraries = ['gmp', 'pari']),
+              libraries = ['pari', 'gmp']),
 
     Extension('sage.rings.number_field.totallyreal_data',
               sources = ['sage/rings/number_field/totallyreal_data.pyx'],
@@ -1497,9 +1499,7 @@ ext_modules = [
 
     Extension('sage.rings.polynomial.pbori',
               sources = ['sage/rings/polynomial/pbori.pyx'],
-              libraries=(['polybori','pboriCudd', 'groebner', 'gd'] +
-                           uname_specific('CYGWIN', ['png'], ['png12']) +
-                           ['m4ri']),
+              libraries=(['polybori','pboriCudd', 'groebner', 'gd', 'png12', 'm4ri']),
               include_dirs = [SAGE_ROOT+'/local/include/cudd',
                               SAGE_ROOT+'/local/include/polybori',
                               SAGE_ROOT+'/local/include/polybori/groebner',
@@ -1537,7 +1537,8 @@ ext_modules = [
               libraries = ['flint', 'gmp', 'ratpoints']),
 
     Extension('sage.schemes.generic.toric_divisor_class',
-              sources = ['sage/schemes/generic/toric_divisor_class.pyx']),
+              sources = ['sage/schemes/generic/toric_divisor_class.pyx'],
+              libraries = ['gmp']),
 
     Extension('sage.schemes.hyperelliptic_curves.hypellfrob',
               sources = ['sage/schemes/hyperelliptic_curves/hypellfrob.pyx',
