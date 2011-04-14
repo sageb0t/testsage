@@ -156,7 +156,7 @@ zeta = Function_zeta()
 
 class Function_zetaderiv(GinacFunction):
     def __init__(self):
-        """
+        r"""
         Derivatives of the Riemann zeta function.
 
         EXAMPLES::
