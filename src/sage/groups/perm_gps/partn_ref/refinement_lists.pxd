@@ -6,8 +6,8 @@
 #                         http://www.gnu.org/licenses/
 #*****************************************************************************
 
-include '../../../ext/cdefs.pxi'
-include '../../../ext/stdsage.pxi'
+include 'sage/ext/cdefs.pxi'
+include 'sage/ext/stdsage.pxi'
 include 'data_structures_pxd.pxi' # includes bitsets
 
 from sage.rings.integer cimport Integer
@@ -15,5 +15,5 @@ from double_coset cimport double_coset
 
 # name of the three functions to customize
 cdef int refine_list(PartitionStack *, void *, int *, int)
-cdef int compare_lists(int *, int *, void *, void *)
+cdef int compare_lists(int *, int *, void *, void *, int)
 cdef bint all_list_children_are_equivalent(PartitionStack *, void *)
