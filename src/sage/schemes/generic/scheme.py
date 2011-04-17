@@ -458,7 +458,7 @@ class Scheme(Parent):
         """
         return morphism.SchemeMorphism_id(self)
 
-    def hom(self, x, Y=None):
+    def hom(self, x, Y=None, check=True):
         """
         Return the scheme morphism from self to Y defined by x. If x is a
         scheme, try to determine a natural map to x.
@@ -479,7 +479,7 @@ class Scheme(Parent):
                 return self.Hom(x).natural_map()
             else:
                 raise TypeError, "unable to determine codomain"
-        return self.Hom(Y)(x)
+        return self.Hom(Y)(x, check)
 
     def _Hom_(self, Y, category=None, check=True):
         """
