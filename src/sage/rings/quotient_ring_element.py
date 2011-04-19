@@ -111,7 +111,7 @@ class QuotientRingElement(ring_element.RingElement):
         TESTS::
 
             sage: R.<x,y> = QQ[]; S.<a,b> = R.quo(x^2 + y^2); type(a)
-            <class 'sage.rings.quotient_ring_element.QuotientRingElement'>
+            <class 'sage.rings.quotient_ring_element.QuotientRing_generic_with_category.element_class'>
             sage: a._reduce_()
             sage: a._QuotientRingElement__rep
             x
@@ -127,7 +127,7 @@ class QuotientRingElement(ring_element.RingElement):
         EXAMPLES::
 
             sage: R.<x,y> = QQ[]; S.<a,b> = R.quo(x^2 + y^2); type(a)
-            <class 'sage.rings.quotient_ring_element.QuotientRingElement'>
+            <class 'sage.rings.quotient_ring_element.QuotientRing_generic_with_category.element_class'>
             sage: a.lift()
             x
             sage: (3/5*(a + a^2 + b^2)).lift()
@@ -144,8 +144,8 @@ class QuotientRingElement(ring_element.RingElement):
         EXAMPLES::
 
             sage: R.<x,y> = QQ[]; S.<a,b> = R.quo(x^2 + y^2); type(a)
-            <class 'sage.rings.quotient_ring_element.QuotientRingElement'>
-            sage: bool(a)
+            <class 'sage.rings.quotient_ring_element.QuotientRing_generic_with_category.element_class'>
+            sage: bool(a)     # indirect docteest
             True
             sage: bool(S(0))
             False
@@ -170,7 +170,7 @@ class QuotientRingElement(ring_element.RingElement):
         EXAMPLES::
 
             sage: R.<x,y> = QQ[]; S.<a,b> = R.quo(1 - x*y); type(a)
-            <class 'sage.rings.quotient_ring_element.QuotientRingElement'>
+            <class 'sage.rings.quotient_ring_element.QuotientRing_generic_with_category.element_class'>
             sage: a*b
             1
             sage: a.is_unit()
@@ -191,9 +191,9 @@ class QuotientRingElement(ring_element.RingElement):
         TESTS::
 
             sage: R.<x,y> = QQ[]; S.<a,b> = R.quo(x^2 + y^2); type(a)
-            <class 'sage.rings.quotient_ring_element.QuotientRingElement'>
-            sage: (a-2*a*b)._repr_()
-            '-2*a*b + a'
+            <class 'sage.rings.quotient_ring_element.QuotientRing_generic_with_category.element_class'>
+            sage: a-2*a*b     # indirect doctest
+            -2*a*b + a
         """
         from sage.structure.parent_gens import localvars
         P = self.parent()
@@ -213,7 +213,7 @@ class QuotientRingElement(ring_element.RingElement):
         EXAMPLES::
 
             sage: R.<x,y> = QQ[]; S.<a,b> = R.quo(x^2 + y^2); type(a)
-            <class 'sage.rings.quotient_ring_element.QuotientRingElement'>
+            <class 'sage.rings.quotient_ring_element.QuotientRing_generic_with_category.element_class'>
             sage: a + b
             a + b
 
@@ -233,7 +233,7 @@ class QuotientRingElement(ring_element.RingElement):
         EXAMPLES::
 
             sage: R.<x,y> = QQ[]; S.<a,b> = R.quo(x^2 + y^2); type(a)
-            <class 'sage.rings.quotient_ring_element.QuotientRingElement'>
+            <class 'sage.rings.quotient_ring_element.QuotientRing_generic_with_category.element_class'>
             sage: a - b
             a - b
 
@@ -253,7 +253,7 @@ class QuotientRingElement(ring_element.RingElement):
         EXAMPLES::
 
             sage: R.<x,y> = QQ[]; S.<a,b> = R.quo(x^2 + y^2); type(a)
-            <class 'sage.rings.quotient_ring_element.QuotientRingElement'>
+            <class 'sage.rings.quotient_ring_element.QuotientRing_generic_with_category.element_class'>
             sage: a * b
             a*b
 
@@ -295,7 +295,7 @@ class QuotientRingElement(ring_element.RingElement):
         Another really easy example::
 
             sage: R.<x,y> = QQ[]; S.<a,b> = R.quo(x^2 + y^2); type(a)
-            <class 'sage.rings.quotient_ring_element.QuotientRingElement'>
+            <class 'sage.rings.quotient_ring_element.QuotientRing_generic_with_category.element_class'>
             sage: a / S(2)
             1/2*a
             sage: (a*b)._div_(b)
@@ -368,7 +368,7 @@ class QuotientRingElement(ring_element.RingElement):
         EXAMPLES::
 
             sage: R.<x,y> = QQ[]; S.<a,b> = R.quo(x^2 + y^2); type(a)
-            <class 'sage.rings.quotient_ring_element.QuotientRingElement'>
+            <class 'sage.rings.quotient_ring_element.QuotientRing_generic_with_category.element_class'>
             sage: int(S(-3))                # indirect doctest
             -3
             sage: type(int(S(-3)))
@@ -385,7 +385,7 @@ class QuotientRingElement(ring_element.RingElement):
         EXAMPLES::
 
             sage: R.<x,y> = QQ[]; S.<a,b> = R.quo(x^2 + y^2); type(a)
-            <class 'sage.rings.quotient_ring_element.QuotientRingElement'>
+            <class 'sage.rings.quotient_ring_element.QuotientRing_generic_with_category.element_class'>
             sage: ZZ(S(-3))
             -3
 
@@ -404,7 +404,7 @@ class QuotientRingElement(ring_element.RingElement):
         EXAMPLES::
 
             sage: R.<x,y> = QQ[]; S.<a,b> = R.quo(x^2 + y^2); type(a)
-            <class 'sage.rings.quotient_ring_element.QuotientRingElement'>
+            <class 'sage.rings.quotient_ring_element.QuotientRing_generic_with_category.element_class'>
             sage: QQ(S(-2/3))
             -2/3
 
@@ -423,7 +423,7 @@ class QuotientRingElement(ring_element.RingElement):
         EXAMPLES::
 
             sage: R.<x,y> = QQ[]; S.<a,b> = R.quo(x^2 + y^2); type(a)
-            <class 'sage.rings.quotient_ring_element.QuotientRingElement'>
+            <class 'sage.rings.quotient_ring_element.QuotientRing_generic_with_category.element_class'>
             sage: long(S(-3))            # indirect doctest
             -3L
         """
@@ -434,7 +434,7 @@ class QuotientRingElement(ring_element.RingElement):
         EXAMPLES::
 
             sage: R.<x,y> = QQ[]; S.<a,b> = R.quo(x^2 + y^2); type(a)
-            <class 'sage.rings.quotient_ring_element.QuotientRingElement'>
+            <class 'sage.rings.quotient_ring_element.QuotientRing_generic_with_category.element_class'>
             sage: -a                     # indirect doctest
             -a
             sage: -(a+b)
@@ -447,7 +447,7 @@ class QuotientRingElement(ring_element.RingElement):
         TESTS::
 
             sage: R.<x,y> = QQ[]; S.<a,b> = R.quo(x^2 + y^2); type(a)
-            <class 'sage.rings.quotient_ring_element.QuotientRingElement'>
+            <class 'sage.rings.quotient_ring_element.QuotientRing_generic_with_category.element_class'>
             sage: (a+b).__pos__()
             a + b
             sage: c = a+b; c.__pos__() is c
@@ -460,7 +460,7 @@ class QuotientRingElement(ring_element.RingElement):
         EXAMPLES::
 
             sage: R.<x,y> = QQ[]; S.<a,b> = R.quo(x^2 + y^2); type(a)
-            <class 'sage.rings.quotient_ring_element.QuotientRingElement'>
+            <class 'sage.rings.quotient_ring_element.QuotientRing_generic_with_category.element_class'>
             sage: ~S(2/3)
             3/2
 
@@ -488,7 +488,7 @@ class QuotientRingElement(ring_element.RingElement):
         EXAMPLES::
 
             sage: R.<x,y> = QQ[]; S.<a,b> = R.quo(x^2 + y^2); type(a)
-            <class 'sage.rings.quotient_ring_element.QuotientRingElement'>
+            <class 'sage.rings.quotient_ring_element.QuotientRing_generic_with_category.element_class'>
             sage: float(S(2/3))
             0.6666666666666666
             sage: float(a)
@@ -503,12 +503,12 @@ class QuotientRingElement(ring_element.RingElement):
         EXAMPLES::
 
             sage: R.<x,y> = QQ[]; S.<a,b> = R.quo(x^2 + y^2); type(a)
-            <class 'sage.rings.quotient_ring_element.QuotientRingElement'>
-            sage: a > b
+            <class 'sage.rings.quotient_ring_element.QuotientRing_generic_with_category.element_class'>
+            sage: a > b    # indirect doctest
             True
             sage: b > a
             False
-            sage: a == a
+            sage: a == loads(dumps(a))
             True
 
         TESTS::
@@ -518,9 +518,18 @@ class QuotientRingElement(ring_element.RingElement):
             sage: a.__cmp__(b)
             1
         """
-        if self.__rep == other.__rep or ((self.__rep - other.__rep) in self.parent().defining_ideal()):
-            return 0
-        return cmp(self.__rep, other.__rep)
+        #if self.__rep == other.__rep or ((self.__rep - other.__rep) in self.parent().defining_ideal()):
+        #    return 0
+        # A containment test is not implemented for univariate polynomial
+        # ideals. There are cases in which one would not like to add
+        # elements of different degrees. The whole quotient stuff relies
+        # in I.reduce(x) returning a normal form of x with respect to I.
+        # Hence, we will not use more than that.
+        #return cmp(self.__rep, other.__rep)
+        # Since we have to compute normal forms anyway, it makes sense
+        # to use it for comparison in the case of an inequality as well.
+        I = self.parent().defining_ideal()
+        return cmp(I.reduce(self.__rep), I.reduce(other.__rep))
 
     def lt(self):
         """
@@ -538,7 +547,7 @@ class QuotientRingElement(ring_element.RingElement):
         TESTS::
 
             sage: R.<x,y> = QQ[]; S.<a,b> = R.quo(x^2 + y^2); type(a)
-            <class 'sage.rings.quotient_ring_element.QuotientRingElement'>
+            <class 'sage.rings.quotient_ring_element.QuotientRing_generic_with_category.element_class'>
             sage: (a+3*a*b+b).lt()
             3*a*b
         """
@@ -560,7 +569,7 @@ class QuotientRingElement(ring_element.RingElement):
         TESTS::
 
             sage: R.<x,y> = QQ[]; S.<a,b> = R.quo(x^2 + y^2); type(a)
-            <class 'sage.rings.quotient_ring_element.QuotientRingElement'>
+            <class 'sage.rings.quotient_ring_element.QuotientRing_generic_with_category.element_class'>
             sage: (a+3*a*b+b).lm()
             a*b
 
@@ -583,7 +592,7 @@ class QuotientRingElement(ring_element.RingElement):
         TESTS::
 
             sage: R.<x,y> = QQ[]; S.<a,b> = R.quo(x^2 + y^2); type(a)
-            <class 'sage.rings.quotient_ring_element.QuotientRingElement'>
+            <class 'sage.rings.quotient_ring_element.QuotientRing_generic_with_category.element_class'>
             sage: (a+3*a*b+b).lc()
             3
         """
@@ -601,7 +610,7 @@ class QuotientRingElement(ring_element.RingElement):
         EXAMPLES::
 
             sage: R.<x,y> = QQ[]; S.<a,b> = R.quo(x^2 + y^2); type(a)
-            <class 'sage.rings.quotient_ring_element.QuotientRingElement'>
+            <class 'sage.rings.quotient_ring_element.QuotientRing_generic_with_category.element_class'>
             sage: a.variables()
             (a,)
             sage: b.variables()
@@ -626,7 +635,7 @@ class QuotientRingElement(ring_element.RingElement):
         EXAMPLES::
 
             sage: R.<x,y> = QQ[]; S.<a,b> = R.quo(x^2 + y^2); type(a)
-            <class 'sage.rings.quotient_ring_element.QuotientRingElement'>
+            <class 'sage.rings.quotient_ring_element.QuotientRing_generic_with_category.element_class'>
             sage: a.monomials()
             [a]
             sage: (a+a*b).monomials()
@@ -667,7 +676,7 @@ class QuotientRingElement(ring_element.RingElement):
         TESTS::
 
             sage: R.<x,y> = QQ[]; S.<a,b> = R.quo(x^2 + y^2); type(a)
-            <class 'sage.rings.quotient_ring_element.QuotientRingElement'>
+            <class 'sage.rings.quotient_ring_element.QuotientRing_generic_with_category.element_class'>
             sage: (a-2/3*b)._singular_()
             x-2/3*y
             sage: S((a-2/3*b)._singular_())
