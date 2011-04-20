@@ -8437,9 +8437,7 @@ cdef unsigned long num_primes
 
 # Callbacks from PARI to print stuff using sys.stdout.write() instead
 # of C library functions like puts().
-cdef extern:
-    PariOUT defaultOut
-    PariOUT defaultErr
+cdef PariOUT sage_pariOut
 
 cdef void sage_putchar(char c):
     cdef char str[2]
@@ -8519,9 +8517,11 @@ cdef class PariInstance(sage.structure.parent_base.ParentWithBase):
         GP_DATA.fmt.sigd = prec_bits_to_dec(53)
 
         # Set printing functions
-        defaultOut.putch = sage_putchar
-        defaultOut.puts = sage_puts
-        defaultOut.flush = sage_flush
+        global pariOut
+        pariOut = &sage_pariOut
+        pariOut.putch = sage_putchar
+        pariOut.puts = sage_puts
+        pariOut.flush = sage_flush
 
         self.PARI_ZERO = self.new_gen_noclear(gen_0)
         self.PARI_ONE = self.new_gen_noclear(gen_1)
