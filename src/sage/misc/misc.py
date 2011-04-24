@@ -2053,7 +2053,7 @@ def embedded():
 #################################################################
 # Deprecation
 #################################################################
-from warnings import warn
+from warnings import warn, resetwarnings
 
 def deprecation(message, version=None):
     r"""
@@ -2082,6 +2082,7 @@ def deprecation(message, version=None):
     """
     # Stack level 3 to get the line number of the code which called
     # the deprecated function which called this function.
+    resetwarnings()
     if version is not None:
         message = "(Since " + version + ") " + message
     warn(message, DeprecationWarning, stacklevel=3)
