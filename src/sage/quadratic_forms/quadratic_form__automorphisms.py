@@ -278,7 +278,7 @@ def automorphisms(self):
     ## Check for a cached value
     try:
         return self.__automorphisms
-    except:
+    except AttributeError:
         pass
 
     ## Find a basis of short vectors, and their lengths
@@ -373,7 +373,7 @@ def number_of_automorphisms(self, recompute=False):
             #print "Using the cached number of automorphisms."
             #print "We stored", self.__number_of_automorphisms
             return self.__number_of_automorphisms
-        except:
+        except AttributeError:
             pass
 
     ## Otherwise cache and return the result

@@ -203,7 +203,7 @@ class GenericDeclaration(SageObject):
             return False
         try:
             CC(value)
-        except:
+        except TypeError:
             return False
         if self._assumption == 'integer':
             return value not in ZZ

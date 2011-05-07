@@ -810,7 +810,7 @@ class SkewPartitions_all(CombinatorialClass):
         try:
             if len(x) != 2:
                 return False
-        except:
+        except TypeError:
             return False
 
         p = sage.combinat.partition.Partitions()

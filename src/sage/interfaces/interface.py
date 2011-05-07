@@ -48,9 +48,6 @@ class AsciiArtString(str):
     def __repr__(self):
         return str(self)
 
-class PropTypeError(Exception):
-    pass
-
 class Interface(ParentWithBase):
     """
     Interface interface object.

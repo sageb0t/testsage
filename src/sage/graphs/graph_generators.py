@@ -7368,7 +7368,7 @@ class GraphGenerators():
         import networkx
         try:
             return graph.Graph(networkx.random_powerlaw_tree(n, gamma, seed=seed, tries=tries))
-        except:
+        except networkx.NetworkXError:
             return False
 
     def RandomRegular(self, d, n, seed=None):

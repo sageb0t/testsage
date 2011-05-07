@@ -1243,7 +1243,7 @@ class CombinatorialFreeModule(UniqueRepresentation, Module):
             g = iter(self.basis().keys())
             for c in range(1,4):
                 x = x + self.term(g.next(), R(c))
-        except:
+        except (StandardError, StopIteration):
             pass
         return x
 

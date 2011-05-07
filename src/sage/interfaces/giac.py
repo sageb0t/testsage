@@ -302,7 +302,7 @@ class Giac(Expect):
             2
             sage: try:                                   # optional - giac
             ...     giac._keyboard_interrupt()
-            ... except:
+            ... except KeyboardInterrupt:
             ...     pass
             ...
             Interrupting Giac...

@@ -324,7 +324,7 @@ cdef class CoercionModel_cache_maps(CoercionModel):
 
             try:
                 raise TypeError, "just a test"
-            except:
+            except TypeError:
                 cm._record_exception()
         """
         if not self._record_exceptions:
@@ -352,7 +352,7 @@ cdef class CoercionModel_cache_maps(CoercionModel):
         """
         try:
             raise TypeError, "just a test"
-        except:
+        except TypeError:
             self._record_exception()
 
     def exception_stack(self):

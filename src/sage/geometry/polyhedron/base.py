@@ -1104,7 +1104,7 @@ class Polyhedron_base(SageObject):
         """
         try:
             return self._equations
-        except:
+        except AttributeError:
             self._equations = [list(eq) for eq in self.equation_generator()]
             return self._equations
 
@@ -1150,7 +1150,7 @@ class Polyhedron_base(SageObject):
         """
         try:
             return self._vertices
-        except:
+        except AttributeError:
             self._vertices = [list(x) for x in self.vertex_generator()]
             return self._vertices
 
@@ -1222,7 +1222,7 @@ class Polyhedron_base(SageObject):
         """
         try:
             return self._rays
-        except:
+        except AttributeError:
             self._rays = [list(x) for x in self.ray_generator()]
             return self._rays
 
@@ -1260,7 +1260,7 @@ class Polyhedron_base(SageObject):
         """
         try:
             return self._lines
-        except:
+        except AttributeError:
             self._lines = [list(x) for x in self.line_generator()]
             return self._lines
 

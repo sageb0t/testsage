@@ -35,7 +35,7 @@ class POVRay:
         try:
             width = kwargs['W']
             height = kwargs['H']
-        except:
+        except KeyError:
             return "You must specify a width and height."
 
         cmd = "povray -D +FP +I%s +O%s " % (pov_file, outfile)
