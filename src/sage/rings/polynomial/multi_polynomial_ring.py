@@ -480,7 +480,7 @@ class MPolynomialRing_polydict_domain(integral_domain.IntegralDomain,
                                       MPolynomialRing_polydict,
                                       MPolynomialRing_macaulay2_repr):
     def __init__(self, base_ring, n, names, order):
-        order = TermOrder(order, n)
+        order = TermOrder(order,n)
         MPolynomialRing_polydict.__init__(self, base_ring, n, names, order)
 
     def is_integral_domain(self, proof = True):
