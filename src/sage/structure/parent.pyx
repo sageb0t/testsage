@@ -259,17 +259,21 @@ def getattr_from_other_class(self, cls, str name):
         sage: getattr_from_other_class(1, A, "inc")()
         2
 
-    Caveat: lazy attributes don't work currently with extension types,
-    with or without a __dict__:
+    Caveat: lazy attributes work with extension types only
+    if they allow attribute assignment or have a public attribute
+    ``__cached_methods`` of type ``<dict>``. This condition
+    is satisfied, e.g., by any class that is derived from
+    :class:`Parent`::
 
         sage: getattr_from_other_class(1, A, "lazy_attribute")
         Traceback (most recent call last):
         ...
         AttributeError: 'sage.rings.integer.Integer' object has no attribute 'lazy_attribute'
+
+    The integer ring is a parent, so, lazy attributes work::
+
         sage: getattr_from_other_class(ZZ, A, "lazy_attribute")
-        Traceback (most recent call last):
-        ...
-        AttributeError: 'sage.rings.integer_ring.IntegerRing_class' object has no attribute 'lazy_attribute'
+        'Integer Ring'
         sage: getattr_from_other_class(PolynomialRing(QQ, name='x', sparse=True).one(), A, "lazy_attribute")
         '1'
         sage: getattr_from_other_class(PolynomialRing(QQ, name='x', implementation="FLINT").one(), A, "lazy_attribute")
@@ -859,7 +863,16 @@ cdef class Parent(category_object.CategoryObject):
         """
         if (name.startswith('__') and not name.endswith('_')) or self._category is None:
             raise AttributeError, AttributeErrorMessage(self, name)
-        return getattr_from_other_class(self, self._category.parent_class, name)
+        try:
+            return self.__cached_methods[name]
+        except KeyError:
+            attr = getattr_from_other_class(self, self._category.parent_class, name)
+            self.__cached_methods[name] = attr
+            return attr
+        except TypeError:
+            attr = getattr_from_other_class(self, self._category.parent_class, name)
+            self.__cached_methods = {name:attr}
+            return attr
 
     def __dir__(self):
         """
