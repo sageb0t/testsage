@@ -756,7 +756,7 @@ cdef class Element(sage_object.SageObject):
             sage: (v+w).__nonzero__()
             False
         """
-        return self != self._parent(0)
+        return self != self._parent.zero_element()
 
     def is_zero(self):
         """
@@ -1264,7 +1264,7 @@ def is_RingElement(x):
 cdef class RingElement(ModuleElement):
     ##################################################
     def is_one(self):
-        return self == self._parent(1)
+        return self == self._parent.one_element()
 
     ##################################
     # Fast long add/sub path.

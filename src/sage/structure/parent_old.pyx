@@ -9,7 +9,10 @@ SageObject
             ParentWithGens
 
 TESTS:
+
 This came up in some subtle bug once.
+::
+
     sage: gp(2) + gap(3)
     5
 """
@@ -99,10 +102,10 @@ cdef class Parent(parent.Parent):
               To:   Multivariate Polynomial Ring in q, t over Rational Field
               Defn:   Native morphism:
                       From: Set of Python objects of type 'int'
-                      To:   Integer Ring
+                      To:   Rational Field
                     then
-                      Call morphism:
-                      From: Integer Ring
+                      Polynomial base injection morphism:
+                      From: Rational Field
                       To:   Multivariate Polynomial Ring in q, t over Rational Field
         """
         check_old_coerce(self)
