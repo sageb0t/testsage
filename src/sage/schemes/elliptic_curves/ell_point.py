@@ -93,27 +93,29 @@ in the error message::
 AUTHORS:
 
 - William Stein (2005) -- Initial version
+
 - Robert Bradshaw et al....
+
 - John Cremona (Feb 2008) -- Point counting and group structure for
-   non-prime fields, Frobenius endomorphism and order, elliptic logs
+  non-prime fields, Frobenius endomorphism and order, elliptic logs
+
 - John Cremona (Aug 2008) -- Introduced ``EllipticCurvePoint_number_field`` class
+
 - Tobias Nagel, Michael Mardaus, John Cremona (Dec 2008) -- `p`-adic elliptic logarithm over `\QQ`
+
 - David Hansen (Jan 2009) -- Added ``weil_pairing`` function to ``EllipticCurvePoint_finite_field`` class
-- Mariah Lenox (March 2011) -- Added ``tate_pairing`` and ``ate_pairing`` functions to ``EllipticCurvePoint_finite_field`` class
+
+- Mariah Lenox (March 2011) -- Added ``tate_pairing`` and ``ate_pairing``
+  functions to ``EllipticCurvePoint_finite_field`` class
+
 """
 
 #*****************************************************************************
 #       Copyright (C) 2005 William Stein <wstein@gmail.com>
 #
 #  Distributed under the terms of the GNU General Public License (GPL)
-#
-#    This code is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-#    General Public License for more details.
-#
-#  The full text of the GPL is available at:
-#
+#  as published by the Free Software Foundation; either version 2 of
+#  the License, or (at your option) any later version.
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
 
@@ -1610,15 +1612,15 @@ class EllipticCurvePoint_field(AdditiveGroupElement): # SchemeMorphism_abelian_v
 
         INPUT:
 
-        - ``P=self`` - Elliptic curve point having order n
+        - ``P=self`` -- Elliptic curve point having order n
 
-        - ``Q`` - Elliptic curve point on same curve as P (can be any order)
+        - ``Q`` -- Elliptic curve point on same curve as P (can be any order)
 
-        - ``n`` - positive integer: order of P
+        - ``n`` -- positive integer: order of P
 
-        - ``k`` - positive integer: embedding degree
+        - ``k`` -- positive integer: embedding degree
 
-        - ``q`` - positive integer: size of base field (the "big"
+        - ``q`` -- positive integer: size of base field (the "big"
           field is `GF(q^k)`. `q` needs to be set only if its value
           cannot be deduced.)
 
@@ -1626,7 +1628,7 @@ class EllipticCurvePoint_field(AdditiveGroupElement): # SchemeMorphism_abelian_v
 
         An `n`'th root of unity in the base field self.curve().base_field()
 
-        EXAMPLES::
+        EXAMPLES:
 
         A simple example, pairing a point with itself, and pairing a point with
         another rational point::
@@ -1760,19 +1762,19 @@ class EllipticCurvePoint_field(AdditiveGroupElement): # SchemeMorphism_abelian_v
 
         INPUT:
 
-        - ``P=self`` - Elliptic curve point -- order `n`, in `ker(\pi-1)`, where
+        - ``P=self`` -- a point of order `n`, in `ker(\pi-1)`, where
           `\pi` is the `q`-Frobenius map (e.g., `P` is `q-rational`).
 
-        - ``Q`` - Elliptic curve point -- order `n`, in `ker(\pi-q)`
+        - ``Q`` -- a point of order `n` in `ker(\pi-q)`
 
-        - ``n`` - positive Integer -- order of `P` and `Q`.
+        - ``n`` -- the order of `P` and `Q`.
 
-        - ``k`` - positive Integer -- embedding degree.
+        - ``k`` -- the embedding degree.
 
-        - ``t`` - Integer -- trace of Frobenius of the curve over `GF(q)`.
+        - ``t`` -- the trace of Frobenius of the curve over `GF(q)`.
 
-        - ``q`` - positive Integer (default:None) -- size of base field (the
-          "big" field is `GF(q^k)`. `q` needs to be set only if its value
+        - ``q`` -- (default:None) the size of base field (the "big"
+          field is `GF(q^k)`). `q` needs to be set only if its value
           cannot be deduced.
 
         OUTPUT:
@@ -1781,9 +1783,7 @@ class EllipticCurvePoint_field(AdditiveGroupElement): # SchemeMorphism_abelian_v
 
         EXAMPLES:
 
-        An example with embedding degree 6
-
-        ::
+        An example with embedding degree 6::
 
             sage: p = 7549; A = 0; B = 1; n = 157; k = 6; t = 14
             sage: F = GF(p); E = EllipticCurve(F, [A, B])
@@ -1798,9 +1798,7 @@ class EllipticCurvePoint_field(AdditiveGroupElement): # SchemeMorphism_abelian_v
             sage: P.ate_pairing(s*Q, n, k, t) == P.ate_pairing(Q, n, k, t)^s
             True
 
-        Another example with embedding degree 7 and positive trace:
-
-        ::
+        Another example with embedding degree 7 and positive trace::
 
             sage: p = 2213; A = 1; B = 49; n = 1093; k = 7; t = 28
             sage: F = GF(p); E = EllipticCurve(F, [A, B])
@@ -1818,9 +1816,7 @@ class EllipticCurvePoint_field(AdditiveGroupElement): # SchemeMorphism_abelian_v
             sage: P.ate_pairing(s*Q, n, k, t) == P.ate_pairing(Q, n, k, t)^s
             True
 
-        Another example with embedding degree 7 and negative trace:
-
-        ::
+        Another example with embedding degree 7 and negative trace::
 
             sage: p = 2017; A = 1; B = 30; n = 29; k = 7; t = -70
             sage: F = GF(p); E = EllipticCurve(F, [A, B])
@@ -1918,12 +1914,12 @@ class EllipticCurvePoint_field(AdditiveGroupElement): # SchemeMorphism_abelian_v
 
         REFERENCES:
 
-        .. [HSV] Hess, Smart, Vercauteren, "The Eta Pairing Revisited", IEEE
-        Trans. Information Theory, 52(10): 4595-4602, 2006.
+        .. [HSV] Hess, Smart, Vercauteren, "The Eta Pairing Revisited",
+           IEEE Trans. Information Theory, 52(10): 4595-4602, 2006.
 
         AUTHORS:
 
-         - Mariah Lenox (2011-03-08)
+        - Mariah Lenox (2011-03-08)
         """
         P = self
         # check for same curve
