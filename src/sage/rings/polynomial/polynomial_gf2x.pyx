@@ -10,7 +10,7 @@ AUTHOR:
 # 'polynomial_template.pxi'.
 
 ctypedef long cparent
-cdef cparent get_cparent(parent):
+cdef inline cparent get_cparent(parent):
     return 0
 
 # first we include the definitions
