@@ -181,7 +181,7 @@ cdef MethodType
 from types import MethodType
 
 from sage.categories.category   import Category
-from sage.structure.parent      cimport Parent, raise_attribute_error
+from sage.structure.parent      cimport Parent, AttributeErrorMessage
 from sage.structure.parent      import is_extension_type, getattr_from_other_class
 from sage.misc.lazy_format      import LazyFormat
 
@@ -259,7 +259,7 @@ cdef class Element(sage_object.SageObject):
         self._parent = parent
         return self
 
-    def __getattr__(self, name):
+    def __getattr__(self, str name):
         """
         Let cat be the category of the parent of ``self``.  This
         method emulates ``self`` being an instance of both ``Element``
@@ -316,9 +316,9 @@ cdef class Element(sage_object.SageObject):
             AttributeError: 'sage.rings.polynomial.polynomial_rational_flint.Polynomial_rational_flint' object has no attribute '__foo'
 
         """
-        if name.startswith('__') and not name.endswith('_'):
-            raise_attribute_error(self, name)
-        return getattr_from_other_class(self, self.parent().category().element_class, name)
+        if (name.startswith('__') and not name.endswith('_')) or self._parent._category is None:
+            raise AttributeError, AttributeErrorMessage(self, name)
+        return getattr_from_other_class(self, self._parent._category.element_class, name)
 
     def __dir__(self):
         """
