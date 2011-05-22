@@ -1327,7 +1327,7 @@ class DiGraph(GenericGraph):
             sage: cycle.size()
             5
             sage: dcycle.feedback_edge_set(value_only=True)
-            5.0
+            5
 
         And in this situation, for any edge `uv` of the first graph, `uv` of
         `vu` is in the returned feedback arc set::
@@ -1405,7 +1405,7 @@ class DiGraph(GenericGraph):
                 obj = p.solve(log = verbose)
 
             if value_only:
-                return obj
+                return Integer(round(obj))
 
             else:
 
@@ -1433,7 +1433,7 @@ class DiGraph(GenericGraph):
             p.set_objective(Sum([b[(u,v)] for (u,v) in self.edges(labels=None)]))
 
             if value_only:
-                return p.solve(objective_only=True, log=verbose)
+                return Integer(round(p.solve(objective_only=True, log=verbose)))
             else:
                 p.solve(log=verbose)
 
@@ -1640,7 +1640,7 @@ class DiGraph(GenericGraph):
             p.set_objective(Sum([b[v] for v in self]))
 
             if value_only:
-                return p.solve(objective_only=True, log=verbose)
+                return Integer(round(p.solve(objective_only=True, log=verbose)))
             else:
                 p.solve(log=verbose)
                 b_sol=p.get_values(b)

@@ -3907,6 +3907,12 @@ class GenericGraph(GenericGraph_pyx):
            ...      g.set_edge_label(u,v,round(random(),5))
            sage: g.edge_cut(0,1, method="FF") == g.edge_cut(0,1,method="LP")
            True
+
+        Rounded return value when using the LP method::
+
+           sage: g = graphs.PappusGraph()
+           sage: g.edge_cut(1, 2, value_only=True, method = "LP")
+           3
         """
 
         if vertices:
@@ -3975,9 +3981,16 @@ class GenericGraph(GenericGraph_pyx):
         p.set_binary(b)
 
         if value_only:
-            return p.solve(objective_only=True, log=verbose)
+            if use_edge_labels:
+                return p.solve(objective_only=True, log=verbose)
+            else:
+                return Integer(round(p.solve(objective_only=True, log=verbose)))
         else:
             obj = p.solve(log=verbose)
+
+            if use_edge_labels is False:
+                obj = Integer(round(obj))
+
             b = p.get_values(b)
             answer = [obj]
             if g.is_directed():
@@ -4040,7 +4053,7 @@ class GenericGraph(GenericGraph_pyx):
 
            sage: g = graphs.PappusGraph()
            sage: g.vertex_cut(1, 16, value_only=True)
-           3.0
+           3
 
         In the bipartite complete graph `K_{2,8}`, a cut between the two
         vertices in the size `2` part consists of the other `8` vertices::
@@ -4048,7 +4061,7 @@ class GenericGraph(GenericGraph_pyx):
            sage: g = graphs.CompleteBipartiteGraph(2, 8)
            sage: [value, vertices] = g.vertex_cut(0, 1, value_only=False)
            sage: print value
-           8.0
+           8
            sage: vertices == range(2,10)
            True
 
@@ -4100,9 +4113,9 @@ class GenericGraph(GenericGraph_pyx):
         p.set_binary(v)
 
         if value_only:
-            return p.solve(objective_only=True, log=verbose)
+            return Integer(round(p.solve(objective_only=True, log=verbose)))
         else:
-            obj = p.solve(log=verbose)
+            obj = Integer(round(p.solve(log=verbose)))
             b = p.get_values(b)
             answer = [obj,[x for x in g if b[x] == 1]]
             if vertices:
@@ -4254,7 +4267,10 @@ class GenericGraph(GenericGraph_pyx):
 
         p.set_binary(cut)
         if value_only:
-            return p.solve(objective_only = True, log = verbose)
+            if use_edge_labels:
+                return p.solve(objective_only = True, log = verbose)
+            else:
+                return Integer(round(p.solve(objective_only = True, log = verbose)))
 
         p.solve(log = verbose)
 
@@ -4428,7 +4444,7 @@ class GenericGraph(GenericGraph_pyx):
 
            sage: g=graphs.PetersenGraph()
            sage: g.max_cut()
-           12.0
+           12
 
         """
         g=self
@@ -4489,10 +4505,14 @@ class GenericGraph(GenericGraph_pyx):
 
         if value_only:
             obj = p.solve(objective_only=True, log=verbose)
-            return obj if use_edge_labels else round(obj)
+            return obj if use_edge_labels else Integer(round(obj))
         else:
             obj = p.solve(log=verbose)
-            val = [obj if use_edge_labels else round(obj)]
+
+            if use_edge_labels:
+                obj = Integer(round(obj))
+
+            val = [obj]
 
             in_cut = p.get_values(in_cut)
             in_set = p.get_values(in_set)
@@ -4516,7 +4536,7 @@ class GenericGraph(GenericGraph_pyx):
 
             return val
 
-    def longest_path(self, s=None, t=None, weighted=False, algorithm="MILP", solver=None, verbose=0):
+    def longest_path(self, s=None, t=None, use_edge_labels=False, algorithm="MILP", solver=None, verbose=0):
         r"""
         Returns a longest path of ``self``.
 
@@ -4532,8 +4552,8 @@ class GenericGraph(GenericGraph_pyx):
           ``None`` by default, which means that no constraint is set upon the
           last vertex in the path.
 
-        - ``weighted`` (boolean) -- whether the labels on the edges are to be
-          considered as weights (a label set to ``None`` or ``{}`` being
+        - ``use_edge_labels`` (boolean) -- whether the labels on the edges are
+          to be considered as weights (a label set to ``None`` or ``{}`` being
           considered as a weight of `1`). Set to ``False`` by default.
 
         - ``algorithm`` -- one of ``"MILP"`` (default) or ``"backtrack"``. Two
@@ -4543,7 +4563,7 @@ class GenericGraph(GenericGraph_pyx):
                 backtrack algorithm is a randomized heuristic.
 
               * As the backtrack algorithm does not support edge weighting,
-                setting ``weighted=True`` will force the use of the MILP
+                setting ``use_edge_labels=True`` will force the use of the MILP
                 algorithm.
 
         - ``solver`` -- (default: ``None``) Specify the Linear Program (LP)
@@ -4565,8 +4585,8 @@ class GenericGraph(GenericGraph_pyx):
         OUTPUT:
 
         A subgraph of ``self`` corresponding to a (directed if ``self`` is
-        directed) longest path. If ``weighted == True``, a pair ``weight, path``
-        is returned.
+        directed) longest path. If ``use_edge_labels == True``, a pair ``weight,
+        path`` is returned.
 
         ALGORITHM:
 
@@ -4627,8 +4647,8 @@ class GenericGraph(GenericGraph_pyx):
             sage: for u,v in g.edges(labels=False):
             ...       g.set_edge_label(u, v, random())
             sage: g2 = 2 * g1
-            sage: lp1 = g1.longest_path(weighted=True)
-            sage: lp2 = g2.longest_path(weighted=True)
+            sage: lp1 = g1.longest_path(use_edge_labels=True)
+            sage: lp2 = g2.longest_path(use_edge_labels=True)
             sage: lp1[0] == lp2[0]
             True
 
@@ -4636,11 +4656,11 @@ class GenericGraph(GenericGraph_pyx):
 
             sage: Graph().longest_path()
             Graph on 0 vertices
-            sage: Graph().longest_path(weighted=True)
+            sage: Graph().longest_path(use_edge_labels=True)
             [0, Graph on 0 vertices]
             sage: graphs.EmptyGraph().longest_path()
             Graph on 0 vertices
-            sage: graphs.EmptyGraph().longest_path(weighted=True)
+            sage: graphs.EmptyGraph().longest_path(use_edge_labels=True)
             [0, Graph on 0 vertices]
 
         Trivial graphs::
@@ -4649,11 +4669,11 @@ class GenericGraph(GenericGraph_pyx):
             sage: G.add_vertex(0)
             sage: G.longest_path()
             Graph on 0 vertices
-            sage: G.longest_path(weighted=True)
+            sage: G.longest_path(use_edge_labels=True)
             [0, Graph on 0 vertices]
             sage: graphs.CompleteGraph(1).longest_path()
             Graph on 0 vertices
-            sage: graphs.CompleteGraph(1).longest_path(weighted=True)
+            sage: graphs.CompleteGraph(1).longest_path(use_edge_labels=True)
             [0, Graph on 0 vertices]
 
         Random test for digraphs::
@@ -4670,21 +4690,21 @@ class GenericGraph(GenericGraph_pyx):
             ...           print("Error!")
             ...           break
         """
-        if weighted:
+        if use_edge_labels:
             algorithm = "MILP"
         if algorithm not in ("backtrack", "MILP"):
             raise ValueError("algorithm must be either 'backtrack' or 'MILP'")
 
         # Quick improvement
         if not self.is_connected():
-            if weighted:
+            if use_edge_labels:
                 return max(g.longest_path(s=s, t=t,
-                                          weighted=weighted,
+                                          use_edge_labels=use_edge_labels,
                                           algorithm=algorithm)
                            for g in self.connected_components_subgraphs())
             else:
                 return max((g.longest_path(s=s, t=t,
-                                           weighted=weighted,
+                                           use_edge_labels=use_edge_labels,
                                            algorithm=algorithm)
                             for g in self.connected_components_subgraphs()),
                            key=lambda x: x.order())
@@ -4713,9 +4733,9 @@ class GenericGraph(GenericGraph_pyx):
              len(self.shortest_path(s, t) == 0))):
             if self._directed:
                 from sage.graphs.all import DiGraph
-                return [0, DiGraph()] if weighted else DiGraph()
+                return [0, DiGraph()] if use_edge_labels else DiGraph()
             from sage.graphs.all import Graph
-            return [0, Graph()] if weighted else Graph()
+            return [0, Graph()] if use_edge_labels else Graph()
 
         # Calling the backtrack heuristic if asked
         if algorithm == "backtrack":
@@ -4732,7 +4752,7 @@ class GenericGraph(GenericGraph_pyx):
         epsilon = 1/(6*float(self.order()))
 
         # Associating a weight to a label
-        if weighted:
+        if use_edge_labels:
             weight = lambda x: x if (x is not None and x != {}) else 1
         else:
             weight = lambda x: 1
@@ -4866,17 +4886,17 @@ class GenericGraph(GenericGraph_pyx):
                 vertices=(v for v in self if vertex_used[v] >= 0.5),
                 edges=((u,v,l) for u, v, l in self.edges()
                        if f_edge_used(u,v) >= 0.5))
-        if weighted:
+        if use_edge_labels:
             return sum(map(weight, g.edge_labels())), g
         else:
             return g
 
-    def traveling_salesman_problem(self, weighted = True, solver = None, constraint_generation = None, verbose = 0, verbose_constraints = False):
+    def traveling_salesman_problem(self, use_edge_labels = True, solver = None, constraint_generation = None, verbose = 0, verbose_constraints = False):
         r"""
         Solves the traveling salesman problem (TSP)
 
         Given a graph (resp. a digraph) `G` with weighted edges, the traveling
-        salesman problem consists in finding a hamiltonian cycle (resp. circuit)
+        salesman problem consists in finding a Hamiltonian cycle (resp. circuit)
         of the graph of minimum cost.
 
         This TSP is one of the most famous NP-Complete problems, this function
@@ -4884,14 +4904,13 @@ class GenericGraph(GenericGraph_pyx):
 
         INPUT:
 
-        - ``weighted`` (boolean) -- whether to consider the weights of the
-          edges.
+        - ``use_edge_labels`` (boolean) -- whether to consider the weights of
+          the edges.
 
               - If set to ``False`` (default), all edges are assumed to weight
                 `1`
 
               - If set to ``True``, the weights are taken into account, and the
-                edges whose weight is ``None`` are assumed to be set to `1`
 
         - ``solver`` -- (default: ``None``) Specify a Linear Program (LP)
           solver to be used. If set to ``None``, the default one is used. For
@@ -4977,7 +4996,7 @@ class GenericGraph(GenericGraph_pyx):
             ...          g.add_edge(u,v)
             ...      g.set_edge_label(u,v,2)
 
-            sage: tsp = g.traveling_salesman_problem(weighted = True)
+            sage: tsp = g.traveling_salesman_problem(use_edge_labels = True)
             sage: sum( tsp.edge_labels() ) < 2*10
             True
 
@@ -4987,7 +5006,7 @@ class GenericGraph(GenericGraph_pyx):
             sage: for u,v in cycle.edges(labels = None):
             ...      g.set_edge_label(u,v,1/2)
 
-            sage: tsp = g.traveling_salesman_problem(weighted = True)
+            sage: tsp = g.traveling_salesman_problem(use_edge_labels = True)
             sage: sum( tsp.edge_labels() ) == (1/2)*10
             True
 
@@ -5070,7 +5089,7 @@ class GenericGraph(GenericGraph_pyx):
             multi = self.multiple_edges()
             g.delete_edges(multi)
             g.allow_multiple_edges(False)
-            if weighted:
+            if use_edge_labels:
                 e = {}
 
                 for u,v,l in multi:
@@ -5114,7 +5133,7 @@ class GenericGraph(GenericGraph_pyx):
                 b = p.new_variable(binary = True, dim = 2)
 
                 # Objective function
-                if weighted:
+                if use_edge_labels:
                     p.set_objective(Sum([ weight(l)*b[u][v]
                                           for u,v,l in g.edges()]))
 
@@ -5167,7 +5186,7 @@ class GenericGraph(GenericGraph_pyx):
                 B = lambda u,v : b[(u,v)] if u<v else b[(v,u)]
 
                 # Objective function
-                if weighted:
+                if use_edge_labels:
                     p.set_objective(Sum([ weight(l)*B(u,v)
                                           for u,v,l in g.edges()]) )
 
@@ -5284,7 +5303,7 @@ class GenericGraph(GenericGraph_pyx):
             if v != x:
                 p.add_constraint(Sum([ r[(u,v)] for u in g.neighbors(v)]),max = 1-eps)
 
-        if weighted:
+        if use_edge_labels:
             p.set_objective(Sum([ weight(l)*E(u,v) for u,v,l in g.edges()]) )
         else:
             p.set_objective(None)
@@ -5389,7 +5408,7 @@ class GenericGraph(GenericGraph_pyx):
             from sage.numerical.mip import MIPSolverException
 
             try:
-                return self.traveling_salesman_problem(weighted = False)
+                return self.traveling_salesman_problem(use_edge_labels = False)
             except MIPSolverException:
                 raise ValueError("The given graph is not Hamiltonian")
         elif algorithm=='backtrack':
@@ -5607,6 +5626,9 @@ class GenericGraph(GenericGraph_pyx):
             return p.solve(objective_only=True, log = verbose)
 
         obj=p.solve(log = verbose)
+
+        if integer or use_edge_labels is False:
+            obj = Integer(round(obj))
 
         flow=p.get_values(flow)
         # Builds a clean flow Draph
@@ -6202,11 +6224,10 @@ class GenericGraph(GenericGraph_pyx):
 
           - ``"LP"`` uses a Linear Program formulation of the matching problem
 
-        - ``use_edge_labels`` -- boolean (default: ``True``)
+        - ``use_edge_labels`` -- boolean (default: ``False``)
 
-          - When set to ``True``, computes a weighted matching
-            where each edge is weighted by its label. (If
-            an edge has no label, `1` is assumed.)
+          - When set to ``True``, computes a weighted matching where each edge
+            is weighted by its label. (If an edge has no label, `1` is assumed.)
 
           - When set to ``False``, each edge has weight `1`.
 
@@ -6266,8 +6287,11 @@ class GenericGraph(GenericGraph_pyx):
                 g = self.networkx_graph(copy=False)
             d = networkx.max_weight_matching(g)
             if value_only:
-                return sum([weight(self.edge_label(u, v))
-                            for u, v in d.iteritems()]) * 0.5
+                if use_edge_labels:
+                    return sum([weight(self.edge_label(u, v))
+                                for u, v in d.iteritems()]) * 0.5
+                else:
+                    return Integer(len(d))
             else:
                 return [(u, v, self.edge_label(u, v))
                         for u, v in d.iteritems() if u < v]
@@ -6290,7 +6314,10 @@ class GenericGraph(GenericGraph_pyx):
                          for u in g.neighbors(v)]), max=1)
             p.set_binary(b)
             if value_only:
-                return p.solve(objective_only=True, log=verbose)
+                if use_edge_labels:
+                    return p.solve(objective_only=True, log=verbose)
+                else:
+                    return Integer(round(p.solve(objective_only=True, log=verbose)))
             else:
                 p.solve(log=verbose)
                 b = p.get_values(b)
@@ -6351,7 +6378,7 @@ class GenericGraph(GenericGraph_pyx):
 
            sage: g=graphs.PappusGraph()
            sage: g.dominating_set(value_only=True)
-           5.0
+           5
 
         If we build a graph from two disjoint stars, then link their centers
         we will find a difference between the cardinality of an independent set
@@ -6386,7 +6413,7 @@ class GenericGraph(GenericGraph_pyx):
         p.set_integer(b)
 
         if value_only:
-            return p.solve(objective_only=True, log=verbose)
+            return Integer(round(p.solve(objective_only=True, log=verbose)))
         else:
             p.solve(log=verbose)
             b=p.get_values(b)
@@ -6439,7 +6466,7 @@ class GenericGraph(GenericGraph_pyx):
 
            sage: g = graphs.PappusGraph()
            sage: g.edge_connectivity()
-           3.0
+           3
 
         The edge connectivity of a complete graph ( and of a random graph )
         is its minimum degree, and one of the two parts of the bipartition
@@ -6449,7 +6476,7 @@ class GenericGraph(GenericGraph_pyx):
            sage: g = graphs.CompleteGraph(5)
            sage: [ value, edges, [ setA, setB ]] = g.edge_connectivity(vertices=True)
            sage: print value
-           4.0
+           4
            sage: len(setA) == 1 or len(setB) == 1
            True
            sage: cut = Graph()
@@ -6566,13 +6593,16 @@ class GenericGraph(GenericGraph_pyx):
 
         p.set_objective(Sum([weight(l ) * in_cut[reorder_edge(u,v)] for (u,v,l) in g.edge_iterator()]))
 
+        obj = p.solve(objective_only=value_only, log=verbose)
+
+        if use_edge_labels is False:
+            obj = Integer(round(obj))
+
         if value_only:
-            obj = p.solve(objective_only=True, log=verbose)
-            return obj if use_edge_labels else round(obj)
+            return obj
 
         else:
-            obj = p.solve(log=verbose)
-            val = [obj if use_edge_labels else round(obj)]
+            val = [obj]
 
             in_cut = p.get_values(in_cut)
             in_set = p.get_values(in_set)
@@ -6635,7 +6665,7 @@ class GenericGraph(GenericGraph_pyx):
 
            sage: g=graphs.PappusGraph()
            sage: g.vertex_connectivity()
-           3.0
+           3
 
         In a grid, the vertex connectivity is equal to the
         minimum degree, in which case one of the two sets it
@@ -6738,9 +6768,9 @@ class GenericGraph(GenericGraph_pyx):
         p.set_objective(Sum([in_set[1][v] for v in g]))
 
         if value_only:
-            return p.solve(objective_only=True, log=verbose)
+            return Integer(round(p.solve(objective_only=True, log=verbose)))
         else:
-            val = [int(p.solve(log=verbose))]
+            val = [Integer(round(p.solve(log=verbose)))]
 
             in_set = p.get_values(in_set)
 
@@ -15053,7 +15083,7 @@ class GenericGraph(GenericGraph_pyx):
         """
 
         try:
-            tsp = self.traveling_salesman_problem(weighted = False)
+            tsp = self.traveling_salesman_problem(use_edge_labels = False)
             return True
 
         except ValueError:
