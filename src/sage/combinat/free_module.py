@@ -1061,6 +1061,7 @@ class CombinatorialFreeModule(UniqueRepresentation, Module):
         """
         return self.element_class
 
+    @cached_method
     def basis(self):
         """
         Returns the basis of self.
