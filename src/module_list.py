@@ -878,6 +878,7 @@ ext_modules = [
     # TODO -- change to use BLAS at some point.
     Extension('sage.matrix.matrix_integer_dense',
               sources = ['sage/matrix/matrix_integer_dense.pyx'],
+              extra_compile_args = ['-std=c99'],
               # order matters for cygwin!!
               libraries = ['iml', 'pari', 'm', 'gmp', BLAS, BLAS2]),
 
@@ -888,6 +889,7 @@ ext_modules = [
     Extension('sage.matrix.matrix_mod2_dense',
               sources = ['sage/matrix/matrix_mod2_dense.pyx'],
               libraries = ['gmp','m4ri', 'gd', 'png12', 'z'],
+              extra_compile_args = ['-std=c99'],
               depends = [SAGE_INC + "png.h", SAGE_INC + "m4ri/m4ri.h"]),
 
     Extension('sage.matrix.matrix_modn_dense',
@@ -1089,6 +1091,7 @@ ext_modules = [
     Extension('sage.modules.vector_mod2_dense',
               sources = ['sage/modules/vector_mod2_dense.pyx'],
               libraries = ['gmp','m4ri', 'png12', 'gd'],
+              extra_compile_args = ['-std=c99'],
               depends = [SAGE_INC + "png.h", SAGE_INC + "m4ri/m4ri.h"]),
 
     Extension('sage.modules.vector_rational_dense',
