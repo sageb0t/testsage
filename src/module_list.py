@@ -1664,6 +1664,12 @@ ext_modules = [
               depends = ginac_depends,
               libraries = ["pynac", "gmp"]),
 
+    Extension('sage.symbolic.getitem',
+              sources = ['sage/symbolic/getitem.pyx'],
+              language = 'c++',
+              depends = [SAGE_LOCAL + "/include/pynac/ginac.h"],
+              libraries = ["pynac", "gmp"]),
+
     Extension('sage.symbolic.function',
               sources = ['sage/symbolic/function.pyx'],
               language = 'c++',
