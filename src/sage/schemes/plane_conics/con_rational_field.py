@@ -104,6 +104,10 @@ class ProjectiveConic_rational_field(ProjectiveConic_number_field):
 
          - ``'default'`` -- Use ``'qfsolve'``
 
+         - ``'magma'`` (requires Magma to be installed) --
+           delegates the task to the Magma computer algebra
+           system.
+
         EXAMPLES::
 
             sage: C = Conic(QQ, [1, 2, -3])
@@ -126,6 +130,8 @@ class ProjectiveConic_rational_field(ProjectiveConic_number_field):
             (True, (-76842858034579/5424 : -5316144401/5424 : 1))
             sage: C.has_rational_point(algorithm = 'local', read_cache = False)
             True
+            sage: C.has_rational_point(point=True, algorithm='magma', read_cache=False) # optional - magma
+            (True, (30106379962113/7913 : 12747947692/7913 : 1))
 
         TESTS:
 
