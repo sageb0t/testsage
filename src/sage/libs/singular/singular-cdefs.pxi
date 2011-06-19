@@ -713,6 +713,10 @@ cdef extern from "libsingular.h":
 
     number *nlInit2(int i, int j)
 
+    # simplify rational number (cancel common factors)
+
+    number *nlNormalize(number *)
+
     # copy a number
 
     number *nlCopy(number *)
