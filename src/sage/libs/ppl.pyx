@@ -2245,8 +2245,8 @@ cdef class Polyhedron(_mutable_or_immutable):
             sage: sage_cmd += 'p.minimized_generators()\n'
             sage: sage_cmd += 'p.ascii_dump()\n'
             sage: from sage.tests.cmdline import test_executable
-            sage: (out, err, ret) = test_executable(['sage', '-c', sage_cmd]);  # indirect doctest
-            sage: print err
+            sage: (out, err, ret) = test_executable(['sage', '-c', sage_cmd], timeout=100);  # long time, indirect doctest
+            sage: print err  # long time
             space_dim 2
             -ZE -EM  +CM +GM  +CS +GS  -CP -GP  -SC +SG
             con_sys (up-to-date)
@@ -3207,8 +3207,8 @@ cdef class Linear_Expression(object):
             sage: sage_cmd += 'e = 3*x+2*y+1\n'
             sage: sage_cmd += 'e.ascii_dump()\n'
             sage: from sage.tests.cmdline import test_executable
-            sage: (out, err, ret) = test_executable(['sage', '-c', sage_cmd]);  # indirect doctest
-            sage: print err
+            sage: (out, err, ret) = test_executable(['sage', '-c', sage_cmd], timeout=100);  # long time, indirect doctest
+            sage: print err  # long time
             size 3 1 3 2 f -RPI_V -RPI  -NNC_V -NNC
         """
         self.thisptr.ascii_dump()
@@ -4054,8 +4054,8 @@ cdef class Generator(object):
             sage: sage_cmd += 'p = point(3*x+2*y)\n'
             sage: sage_cmd += 'p.ascii_dump()\n'
             sage: from sage.tests.cmdline import test_executable
-            sage: (out, err, ret) = test_executable(['sage', '-c', sage_cmd]);   # indirect doctest
-            sage: print err
+            sage: (out, err, ret) = test_executable(['sage', '-c', sage_cmd], timeout=100);  # long time, indirect doctest
+            sage: print err  # long time
             size 3 1 3 2 f -RPI_V +RPI  -NNC_V -NNC
         """
         self.thisptr.ascii_dump()
@@ -4304,8 +4304,8 @@ cdef class Generator_System(_mutable_or_immutable):
             sage: sage_cmd += 'gs = Generator_System( point(3*x+2*y+1) )\n'
             sage: sage_cmd += 'gs.ascii_dump()\n'
             sage: from sage.tests.cmdline import test_executable
-            sage: (out, err, ret) = test_executable(['sage', '-c', sage_cmd]);   # indirect doctest
-            sage: print err
+            sage: (out, err, ret) = test_executable(['sage', '-c', sage_cmd], timeout=100);  # long time, indirect doctest
+            sage: print err  # long time
             topology NECESSARILY_CLOSED
             1 x 3 (sorted)
             index_first_pending 1
@@ -4889,8 +4889,8 @@ cdef class Constraint(object):
             sage: sage_cmd += 'e = (3*x+2*y+1 > 0)\n'
             sage: sage_cmd += 'e.ascii_dump()\n'
             sage: from sage.tests.cmdline import test_executable
-            sage: (out, err, ret) = test_executable(['sage', '-c', sage_cmd]);   # indirect doctest
-            sage: print err
+            sage: (out, err, ret) = test_executable(['sage', '-c', sage_cmd], timeout=100);  # long time, indirect doctest
+            sage: print err  # long time
             size 4 1 3 2 -1 f -RPI_V +RPI  -NNC_V +NNC
         """
         self.thisptr.ascii_dump()
@@ -5114,8 +5114,8 @@ cdef class Constraint_System(object):
             sage: sage_cmd += 'cs = Constraint_System( 3*x > 2*y+1 )\n'
             sage: sage_cmd += 'cs.ascii_dump()\n'
             sage: from sage.tests.cmdline import test_executable
-            sage: (out, err, ret) = test_executable(['sage', '-c', sage_cmd]);   # indirect doctest
-            sage: print err
+            sage: (out, err, ret) = test_executable(['sage', '-c', sage_cmd], timeout=100);  # long time, indirect doctest
+            sage: print err  # long time
             topology NOT_NECESSARILY_CLOSED
             1 x 4 (sorted)
             index_first_pending 1
@@ -5376,8 +5376,8 @@ cdef class Poly_Gen_Relation(object):
             sage: sage_cmd  = 'from sage.libs.ppl import Poly_Gen_Relation\n'
             sage: sage_cmd += 'Poly_Gen_Relation.nothing().ascii_dump()\n'
             sage: from sage.tests.cmdline import test_executable
-            sage: (out, err, ret) = test_executable(['sage', '-c', sage_cmd]);   # indirect doctest
-            sage: print err
+            sage: (out, err, ret) = test_executable(['sage', '-c', sage_cmd], timeout=100);  # long time, indirect doctest
+            sage: print err  # long time
             NOTHING
         """
         self.thisptr.ascii_dump()
@@ -5613,8 +5613,8 @@ cdef class Poly_Con_Relation(object):
             sage: sage_cmd  = 'from sage.libs.ppl import Poly_Con_Relation\n'
             sage: sage_cmd += 'Poly_Con_Relation.nothing().ascii_dump()\n'
             sage: from sage.tests.cmdline import test_executable
-            sage: (out, err, ret) = test_executable(['sage', '-c', sage_cmd]);   # indirect doctest
-            sage: print err
+            sage: (out, err, ret) = test_executable(['sage', '-c', sage_cmd], timeout=100);  # long time, indirect doctest
+            sage: print err  # long time
             NOTHING
         """
         self.thisptr.ascii_dump()
