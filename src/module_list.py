@@ -1848,3 +1848,12 @@ if UNAME[0] == "Darwin" and not UNAME[2].startswith('8.'):
                        'sage/misc/darwin_utilities.pyx'],
             depends = ['sage/misc/darwin_memory_usage.h'])
         )
+
+if is_package_installed('lrcalc'):
+    ext_modules.append(
+        Extension('sage.libs.lrcalc.lrcalc',
+                  sources = ["sage/libs/lrcalc/lrcalc.pyx"],
+                  include_dirs = [SAGE_LOCAL + '/include/lrcalc/'],
+                  libraries = ["lrcalc"],
+                  depends = [SAGE_LOCAL + "/include/lrcalc/symfcn.h"]), # should include all .h
+        )
