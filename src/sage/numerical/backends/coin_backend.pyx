@@ -957,3 +957,24 @@ cdef class CoinBackend(GenericBackend):
             <BLANKLINE>
         """
         return ""
+
+    cpdef CoinBackend copy(self):
+        """
+        Returns a copy of self.
+
+        EXAMPLE::
+
+            sage: from sage.numerical.backends.generic_backend import get_solver
+            sage: p = MixedIntegerLinearProgram(solver = "Coin")        # optional - Coin
+            sage: b = p.new_variable()                         # optional - Coin
+            sage: p.add_constraint(b[1] + b[2] <= 6)           # optional - Coin
+            sage: p.set_objective(b[1] + b[2])                 # optional - Coin
+            sage: copy(p).solve()                              # optional - Coin
+            6.0
+
+        """
+        cdef CoinBackend p = CoinBackend(maximization = (1 if self.is_maximization() else -1))
+
+        p.si = new2_c_OsiCbcSolverInterface(<OsiSolverInterface *> self.si)
+
+        return p
