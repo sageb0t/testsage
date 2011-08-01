@@ -63,7 +63,7 @@ import os
 
 import sage.misc.misc
 import sage.databases.db   # very important that this be fully qualified
-_CONWAYDATA = "%s/conway_polynomials/"%sage.databases.db.DB_HOME
+_CONWAYDATA = "%s/conway_polynomials/"%sage.misc.misc.SAGE_DATA
 
 class ConwayPolynomials(sage.databases.db.Database):
     def __init__(self, read_only=True):
