@@ -36,6 +36,6 @@ def add_up_polynomials(polys, init):
 def WeakRingRef(ring):
     return weakref.weakref(ring)
 
-Monomial = MonomialConstruct()
-Polynomial = PolynomialConstruct()
-Variable = VariableConstruct()
+Monomial = MonomialFactory()
+Polynomial = PolynomialFactory()
+Variable = VariableFactory()
