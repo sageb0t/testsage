@@ -445,9 +445,9 @@ class HG:
         """
         Apply patches from a hg patch to the repository.
 
-        If the bundle is a .patch file, instead call the import_patch
+        If the bundle is a .patch file, instead call the :meth:`import_patch`
         method. To see what is in a bundle before applying it, using
-        self.incoming(bundle).
+        ``self.incoming(bundle)``.
 
         INPUT:
 
@@ -707,7 +707,7 @@ class HG:
         -  ``files`` - list or string; name of file or
            directory.
 
-        -  ``options`` - string (e.g., '--dry-run')
+        -  ``options`` - string (e.g., ``'--dry-run'``)
 
         -  ``debug`` - boolean (default True); if True, print the full
            system command being executed.
@@ -912,7 +912,7 @@ class HG:
             sage: hg_sage.diff()
             cd ... && hg diff    --config pager.pager="LESS='R' less"
 
-        To see the changes in this file since revision 10000:
+        To see the changes in this file since revision 10000::
 
             sage: hg_sage.diff('sage/misc/hg.py', rev=10000) # not tested
             cd ... && hg diff  -r 10000  sage/misc/hg.py  --config pager.pager="LESS='R' less"
@@ -931,7 +931,7 @@ class HG:
 
     def revert(self, files='', options='', rev=None, debug=True):
         """
-        Revert files or dirs to their states as of some revision
+        Revert files or dirs to their states as of some revision.
 
         .. note::
 
@@ -1063,7 +1063,7 @@ class HG:
         """
         Use this to find changsets that are in your branch, but not in the
         specified destination repository. If no destination is specified,
-        the official repository is used. By default, push_url() is used.
+        the official repository is used. By default, :meth:`push_url` is used.
 
         From the Mercurial documentation:
 
@@ -1071,11 +1071,11 @@ class HG:
             repository or the default push location.  These are the
             changesets that would be pushed if a push was requested.
 
-            See push() for valid destination format details.
+            See :meth:`push` for valid destination format details.
 
         INPUT:
 
-        -  ``url`` - (Default: self.push_url())  the official
+        -  ``url`` - (Default: :meth:`push_url`)  the official
            repository
 
            - ``http://[user@]host[:port]/[path]``
@@ -1126,7 +1126,7 @@ class HG:
 
         INPUT:
 
-        -  ``url`` - (Default: self.pull_url())  the official
+        -  ``url`` - (Default: :meth:`pull_url`)  the official
            repository
 
            - ``http://[user@]host[:port]/[path]``
@@ -1201,7 +1201,7 @@ class HG:
 
         INPUT:
 
-        -  ``url`` - (Default: self.push_url())  the official
+        -  ``url`` - (Default: :meth:`push_url`)  the official
            repository
 
            - ``http://[user@]host[:port]/[path]``
@@ -1329,8 +1329,6 @@ class HG:
 
     def head(self, options='', debug=True):
         """
-        show current repository heads
-
         Show all repository head changesets.
 
         Repository "heads" are changesets that don't have children
@@ -1527,7 +1525,7 @@ class HG:
         r"""
         Create an hg changeset bundle with the given filename against the
         repository at the given url (which is by default the 'official'
-        Sage repository, unless push_url() is changed in a setup file).
+        Sage repository, unless :meth:`push_url` is changed in a setup file).
 
         If you have internet access, it's best to just do
         ``hg_sage.bundle(filename)``. If you don't find a
@@ -1535,11 +1533,11 @@ class HG:
         at ``hg_sage.log()``), then do
         ``hg_sage.bundle(filename, base=r)``.
 
-        Use self.inspect('file.bundle') to inspect the resulting bundle.
+        Use ``hg_sage.inspect('file.bundle')`` to inspect the resulting bundle.
 
-        This is a file that you should probably send to William Stein
-        (wstein@gmail.com), post to a web page, or send to sage-devel. It
-        will be written to the current directory.
+        This is a file that you could post to a web page.   However,
+        Sage now typically accepts only patch files at its Trac
+        server.  The file will be written to the current directory.
 
         INPUT:
 
@@ -1548,7 +1546,7 @@ class HG:
         -  ``options`` - pass to hg
 
         -  ``url`` - url to bundle against (default:
-           SAGE_SERVER, or push_url())
+           ``SAGE_SERVER``, or :meth:`push_url`)
 
         -  ``base`` - a base changeset revision number to
            bundle against (doesn't require internet access)
