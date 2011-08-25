@@ -864,7 +864,7 @@ class MatrixSpace_generic(parent_gens.ParentWithGens):
                    yield self(entries=[base_elements[i] for i in iv], rows=True)
 
     def _get_matrix_class(self):
-        """
+        r"""
         Returns the class of self
 
         EXAMPLES::
@@ -877,6 +877,10 @@ class MatrixSpace_generic(parent_gens.ParentWithGens):
             <type 'sage.matrix.matrix_integer_sparse.Matrix_integer_sparse'>
             sage: type(matrix(SR, 2, 2, 0))
             <type 'sage.matrix.matrix_symbolic_dense.Matrix_symbolic_dense'>
+            sage: type(matrix(GF(7), 2, range(4)))
+            <type 'sage.matrix.matrix_modn_dense_float.Matrix_modn_dense_float'>
+            sage: type(matrix(GF(16007), 2, range(4)))
+            <type 'sage.matrix.matrix_modn_dense_double.Matrix_modn_dense_double'>
         """
         R = self.base_ring()
         if self.is_dense():
