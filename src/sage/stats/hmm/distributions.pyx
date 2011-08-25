@@ -84,6 +84,7 @@ cdef class Distribution:
 
         This method must be defined in a derived class::
 
+            sage: import sage.stats.hmm.distributions
             sage: sage.stats.hmm.distributions.Distribution().sample()
             Traceback (most recent call last):
             ...
@@ -107,6 +108,7 @@ cdef class Distribution:
 
         This method must be defined in a derived class::
 
+            sage: import sage.stats.hmm.distributions
             sage: sage.stats.hmm.distributions.Distribution().prob(0)
             Traceback (most recent call last):
             ...
@@ -237,7 +239,7 @@ cdef class GaussianMixtureDistribution(Distribution):
 
         EXAMPLES::
 
-            sage: G = sage.stats.hmm.distributions.GaussianMixtureDistribution([(.1,1,2), (.9,0,1)])
+            sage: G = hmm.GaussianMixtureDistribution([(.1,1,2), (.9,0,1)])
             sage: loads(dumps(G)) == G
             True
         """
@@ -248,8 +250,8 @@ cdef class GaussianMixtureDistribution(Distribution):
         """
         EXAMPLES::
 
-            sage: G = sage.stats.hmm.distributions.GaussianMixtureDistribution([(.1,1,2), (.9,0,1)])
-            sage: H = sage.stats.hmm.distributions.GaussianMixtureDistribution([(.3,1,2), (.7,1,5)])
+            sage: G = hmm.GaussianMixtureDistribution([(.1,1,2), (.9,0,1)])
+            sage: H = hmm.GaussianMixtureDistribution([(.3,1,2), (.7,1,5)])
             sage: G < H
             True
             sage: H > G
