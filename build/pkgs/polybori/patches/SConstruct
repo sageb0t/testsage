@@ -510,7 +510,7 @@ symlinkbld = Builder(action = build_symlink)
 
 env.Append(BUILDERS={'SymLink' : symlinkbld})
 
-env.Append(CCFLAGS=["$M4RI_CFLAGS"])
+env.Append(CCFLAGS="$M4RI_CFLAGS")
 
 ######################################################################
 # Stuff for building Cudd library
