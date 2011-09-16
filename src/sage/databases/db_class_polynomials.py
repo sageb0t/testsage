@@ -70,7 +70,8 @@ class HilbertClassPolynomialDatabase(ClassPolynomialDatabase):
     """
     The database of Hilbert class polynomials.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: db = HilbertClassPolynomialDatabase()
         sage: db[-4]                 # optional Kohel database required
         x - 1728
