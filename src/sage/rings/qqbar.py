@@ -474,7 +474,7 @@ Here are examples of all of these conversions::
     sage: convert_test_all(QQ)
     [42, 22/7, None, -13, 89/55, None, None]
 
-TESTS::
+TESTS:
 
 Verify that trac 10981 is fixed::
 
@@ -3100,7 +3100,8 @@ class AlgebraicNumber(AlgebraicNumber_base):
         that field.  Works only if the imaginary component of self is
         exactly zero; otherwise it raises a ``ValueError``.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: QQbar(sqrt(2))._mpfr_(RR)
             1.41421356237309
             sage: QQbar(-22/7)._mpfr_(RR)
@@ -3393,7 +3394,7 @@ class AlgebraicReal(AlgebraicNumber_base):
         """
         Create an algebraic real from x, possibly taking the real part of x.
 
-        TESTS::
+        TESTS:
 
         Both of the following examples, from trac 11728, trigger
         taking the real part below.  This is necessary because
@@ -3433,7 +3434,7 @@ class AlgebraicReal(AlgebraicNumber_base):
         Recompute the interval bounding this number with higher-precision
         interval arithmetic.
 
-        TESTS::
+        TESTS:
 
         We have to ensure after doing this that self._value is still
         real which isn't the case without calling _ensure_real (see
@@ -3454,6 +3455,7 @@ class AlgebraicReal(AlgebraicNumber_base):
         Add customized pickling support.
 
         EXAMPLES::
+
             sage: t = AA(sqrt(2))
             sage: loads(dumps(t)) == t
             True
@@ -3465,6 +3467,7 @@ class AlgebraicReal(AlgebraicNumber_base):
         Compare two algebraic reals.
 
         EXAMPLES::
+
             sage: cmp(AA(golden_ratio), AA(sqrt(5)))
             -1
             sage: cmp(AA(golden_ratio), AA((sqrt(5)+1)/2))
