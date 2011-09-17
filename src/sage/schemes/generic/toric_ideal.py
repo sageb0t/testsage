@@ -153,7 +153,6 @@ AUTHORS:
 #   * Cythonize the Buchberger algorithm for toric ideals
 #   * Use the (multiple) weighted homegeneity during Groebner basis computations
 
-from sage.structure.sage_object import SageObject
 from sage.rings.polynomial.polynomial_ring_constructor import PolynomialRing
 from sage.misc.misc_c import prod
 from sage.matrix.constructor import matrix

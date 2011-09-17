@@ -18,8 +18,6 @@ import sage.misc.misc as misc
 import sage.rings.all as rings
 from sage.rings.all import O
 
-import ell_generic
-
 class EllipticCurveFormalGroup(SageObject):
     r"""
     The formal group associated to an elliptic curve.

@@ -97,9 +97,7 @@ import os
 
 from expect import Expect, ExpectElement, AsciiArtString, ExpectFunction
 
-from sage.misc.misc import DOT_SAGE, verbose
 from sage.misc.multireplace import multiple_replace
-import random
 
 import re
 
@@ -1141,7 +1139,7 @@ def is_Macaulay2Element(x):
 # An instance
 macaulay2 = Macaulay2(script_subdirectory='user')
 
-import os, sys
+import os
 
 def macaulay2_console():
     """

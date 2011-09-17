@@ -20,7 +20,6 @@ Degeneracy maps
 #*****************************************************************************
 
 import morphism
-import homspace
 
 class DegeneracyMap(morphism.HeckeModuleMorphism_matrix):
     """

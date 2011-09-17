@@ -49,8 +49,6 @@ TODO:
 
 from tri_plot import Triangle, SmoothTriangle, TriangleFactory, TrianglePlot
 
-from sage.plot.colors import hue
-
 from sage.interfaces.tachyon import tachyon_rt
 
 from sage.structure.sage_object import SageObject
@@ -61,7 +59,7 @@ from sage.misc.misc import SAGE_TMP
 
 import os
 
-from math import modf,fabs,sqrt
+from math import sqrt
 
 class Tachyon(SageObject):
     r"""

@@ -152,8 +152,6 @@ import os
 
 from expect import Expect, ExpectElement
 
-from sage.misc.misc import verbose
-
 #import sage.matrix.matrix_space
 
 class Matlab(Expect):

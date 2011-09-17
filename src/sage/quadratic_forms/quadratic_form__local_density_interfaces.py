@@ -4,10 +4,8 @@ Local Density Interfaces
 ## // This is needed in the filter for primitivity...
 ## #include "../max-min.h"
 
-from copy import deepcopy
-
 from sage.rings.arith import valuation
-from sage.rings.rational_field import QQ, RationalField
+from sage.rings.rational_field import QQ
 
 def local_density(self, p, m):
     """

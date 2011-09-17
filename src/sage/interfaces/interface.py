@@ -44,8 +44,6 @@ from sage.structure.element import RingElement
 
 import sage.misc.sage_eval
 
-from sage.misc.misc import SAGE_ROOT, verbose, SAGE_TMP_INTERFACE, LOCAL_IDENTIFIER
-
 class AsciiArtString(str):
     def __repr__(self):
         return str(self)

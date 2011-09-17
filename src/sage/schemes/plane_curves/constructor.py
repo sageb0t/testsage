@@ -30,8 +30,6 @@ from sage.structure.all import Sequence
 from sage.schemes.generic.all import (is_AmbientSpace, is_AlgebraicScheme,
                                       AffineSpace, ProjectiveSpace)
 
-import affine_curve
-
 from projective_curve import (ProjectiveCurve_generic,
                               ProjectiveSpaceCurve_generic,
                               ProjectiveCurve_finite_field,

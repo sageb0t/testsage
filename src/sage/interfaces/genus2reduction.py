@@ -28,7 +28,7 @@ code however they want.
 #                  http://www.gnu.org/licenses/
 ########################################################################
 
-import os, weakref
+import os
 from expect import Expect
 from sage.structure.sage_object import SageObject
 

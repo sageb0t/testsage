@@ -160,8 +160,6 @@ sage: test_qq_formatter(qq_sage_input_v4)
 
 """
 
-import math
-
 ##########################################################################
 #
 #       Copyright (C) 2008 Carl Witty <Carl.Witty@gmail.com>

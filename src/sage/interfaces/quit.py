@@ -11,7 +11,7 @@ Quitting interfaces
 #                  http://www.gnu.org/licenses/
 ################################################################################
 
-import os, time, pexpect
+import os
 
 expect_objects = []
 

@@ -187,10 +187,8 @@ AUTHORS:
 ##############################################################################
 
 import os
-import sys
 
 from expect import Expect, ExpectElement
-from sage.misc.misc import verbose
 
 class Scilab(Expect):
     """

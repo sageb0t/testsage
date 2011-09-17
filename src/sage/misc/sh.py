@@ -1,7 +1,5 @@
 import os
 
-from misc import tmp_filename
-
 class Sh:
     r"""
     Evaluates a shell script and returns the output.

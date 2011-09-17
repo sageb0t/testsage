@@ -17,7 +17,7 @@ Saving Sage objects to a file
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
 
-import cPickle,pickle
+import cPickle
 import os
 import misc
 

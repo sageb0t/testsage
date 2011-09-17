@@ -30,8 +30,6 @@
       http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/442482
 """
 
-from sage.misc.misc import SAGE_EXTCODE
-
 # Imports
 import cgi
 import string
@@ -40,8 +38,6 @@ import cStringIO
 import keyword
 import token
 import tokenize
-import re
-import os
 
 #Set up basic values.
 _KEYWORD = token.NT_OFFSET + 1

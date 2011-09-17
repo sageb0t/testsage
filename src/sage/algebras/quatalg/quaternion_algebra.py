@@ -34,7 +34,7 @@ Pickling test::
 #                  http://www.gnu.org/licenses/
 ########################################################################
 
-from sage.rings.arith import (GCD, fundamental_discriminant, hilbert_symbol,
+from sage.rings.arith import (GCD,
                               hilbert_conductor_inverse, hilbert_conductor,
                               factor, gcd, lcm)
 from sage.rings.all import RR, Integer

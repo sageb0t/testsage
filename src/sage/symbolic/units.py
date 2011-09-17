@@ -79,12 +79,10 @@ AUTHORS:
 
 # standard Python libraries
 import re
-import operator
 
 # Sage library
 from ring import SR
 from expression import Expression
-from sage.misc.all import prod
 
 ###############################################################################
 # Unit conversions dictionary.
