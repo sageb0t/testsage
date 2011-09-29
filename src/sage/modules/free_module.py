@@ -317,8 +317,10 @@ class FreeModuleFactory(UniqueFactory):
         [1 2]
         [3 4]
 
-    .. todo:: Refactor modules such that it only counts what category the base
-    ring belongs to, but not what is its Python class.
+    .. todo::
+
+        Refactor modules such that it only counts what category the base
+        ring belongs to, but not what is its Python class.
 
     """
     def create_key(self, base_ring, rank, sparse=False, inner_product_matrix=None):
@@ -1278,7 +1280,7 @@ done from the right side.""")
         return self.basis_matrix().block_sum(other.basis_matrix()).row_module(self.base_ring())
 
     def coordinates(self, v, check=True):
-        """
+        r"""
         Write `v` in terms of the basis for self.
 
         INPUT:
@@ -1505,9 +1507,9 @@ done from the right side.""")
         return self.basis()[i]
 
     def gram_matrix(self):
-        """
+        r"""
         Return the gram matrix associated to this free module, defined to
-        be G = B\*A\*B.transpose(), where A is the inner product matrix
+        be `G = B*A*B.transpose()`, where A is the inner product matrix
         (induced from the ambient space), and B the basis matrix.
 
         EXAMPLES::
