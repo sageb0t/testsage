@@ -14,7 +14,7 @@ include "sage/ext/cdefs.pxi"
 cdef extern from "stdlib.h":
     void delete "delete" (void *ptr)
 
-cdef extern from "factory.h":
+cdef extern from "factory/factory.h":
 
     #
     # CF OPTIONS
@@ -316,7 +316,7 @@ cdef extern from "libsingular.h":
         #data is some union, so this might be very dangerous, but I am lazy now
         attr *attribute
         void (* Init)()
-        void (* CleanUp)()
+        void (* CleanUp)(ring *r)
         int  rtyp
 
     ctypedef struct package "ip_package":
@@ -574,7 +574,7 @@ cdef extern from "libsingular.h":
 
     # total degree of p
 
-    long pTotaldegree(poly *p, ring *r)
+    long p_Totaldegree(poly *p, ring *r)
 
     # iterate through the monomials of p
 
@@ -668,34 +668,6 @@ cdef extern from "libsingular.h":
 
     # Copy this number
     number *n_Copy(number *n, ring* r)
-
-    # return int representation of number n
-
-    int n_Int(number *n, ring *r)
-
-    # general number division
-
-    number *n_Div(number *a, number *b, ring *r)
-
-    # compare general number with zero
-
-    int n_GreaterZero(number *a, ring *r)
-
-    # TRUE if a == 0
-
-    int n_IsZero(number *a, ring *r)
-
-    # TRUE if a == 1
-
-    int n_IsOne(number *a, ring *r)
-
-    # general number subtraction
-
-    number *n_Sub(number *a, number *b, ring *r)
-
-    # general number inversion
-
-    number *nInvers(number *n)
 
     # rational number from int
 
@@ -862,7 +834,7 @@ cdef extern from "libsingular.h":
 
     # gauss-bareiss algorithm
 
-    void smCallNewBareiss(ideal *, int, int, ideal *, intvec**)
+    void smCallBareiss(ideal *, int, int, ideal *, intvec**)
 
     # determinant
     poly *smCallDet(ideal *)
