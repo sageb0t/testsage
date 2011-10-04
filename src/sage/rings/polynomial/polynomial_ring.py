@@ -462,7 +462,7 @@ class PolynomialRing_general(sage.algebras.algebra.Algebra):
         - a multivariate polynomial ring P such that self's variable name
           is among the variable names of P, and the ring obtained by
           removing that variable is different from the base ring of self,
-          but coerces into it.
+          but coerces into it. (see trac ticket #813 for a discussion of this)
 
         Caveat: There is no coercion from a dense into a sparse
         polynomial ring. So, when adding a dense and a sparse
@@ -518,11 +518,12 @@ class PolynomialRing_general(sage.algebras.algebra.Algebra):
         ring of Q is more complicated than "P minus one variable"::
 
             sage: Q = QQ['x']['y']
+            sage: P.has_coerce_map_from(Q)
+            True
             sage: Q.has_coerce_map_from(P)
             False
             sage: Q.base_ring() is P.remove_var(Q.variable_name())
             True
-
         """
         # handle constants that canonically coerce into self.base_ring()
         # first, if possible
@@ -557,6 +558,7 @@ class PolynomialRing_general(sage.algebras.algebra.Algebra):
                     return self.base_ring().has_coerce_map_from(P.base_ring())
         except AttributeError:
             pass
+
         # Last, we consider multivariate polynomial rings:
         from sage.rings.polynomial.multi_polynomial_ring import is_MPolynomialRing
         if is_MPolynomialRing(P) and self.variable_name() in P.variable_names():
