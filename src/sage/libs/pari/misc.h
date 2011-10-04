@@ -1,12 +1,15 @@
 /*****************************************
-          For PARI
-
+   PARI misc macros and functions
  *****************************************/
+#ifndef SAGE_LIBS_PARI_MISC_H
+#define SAGE_LIBS_PARI_MISC_H
+
 #include <pari/pari.h>
 #include "interrupt.h"
 
-#define set_gel(x, n, z)  gel(x,n)=z;
-
+/*****************************************
+   Interrupts and PARI exception handling
+ *****************************************/
 #define _pari_sig_on() sig_on(); _pari_catch;
 #define _pari_sig_str(s) sig_str(s); _pari_catch;
 #define _pari_sig_off() _pari_endcatch; sig_off();
@@ -107,3 +110,5 @@ int factorint_withproof_sage(GEN* ans, GEN x, GEN cutoff) {
   }
   return 0;
 }
+
+#endif  /* SAGE_LIBS_PARI_MISC_H */
