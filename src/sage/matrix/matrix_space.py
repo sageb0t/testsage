@@ -83,6 +83,10 @@ from sage.structure.sequence import Sequence
 from sage.misc.all import lazy_attribute
 
 from sage.categories.rings import Rings
+from sage.categories.fields import Fields
+
+_Rings = Rings()
+_Fields = Fields()
 
 def is_MatrixSpace(x):
     """
@@ -174,9 +178,8 @@ def MatrixSpace(base_ring, nrows, ncols=None, sparse=False):
         sage: loads(M.dumps()) == M
         True
     """
-    if not base_ring in Rings():
+    if base_ring not in _Rings:
         raise TypeError("base_ring (=%s) must be a ring"%base_ring)
-
     if ncols is None: ncols = nrows
     nrows = int(nrows); ncols = int(ncols); sparse=bool(sparse)
     key = (base_ring, nrows, ncols, sparse)
@@ -215,6 +218,7 @@ class MatrixSpace_generic(parent_gens.ParentWithGens):
         sage: MatrixSpace(QQ,10).category()
         Category of algebras over Rational Field
     """
+    _no_generic_basering_coercion = True
 
     def __init__(self,  base_ring,
                         nrows,
@@ -245,8 +249,7 @@ class MatrixSpace_generic(parent_gens.ParentWithGens):
         from sage.categories.all import Modules, Algebras
         parent_gens.ParentWithGens.__init__(self, base_ring) # category = Modules(base_ring)
         # Temporary until the inheritance glitches are fixed
-
-        if not base_ring in Rings():
+        if base_ring not in _Rings:
             raise TypeError("base_ring must be a ring")
         nrows = int(nrows)
         ncols = int(ncols)
@@ -271,14 +274,72 @@ class MatrixSpace_generic(parent_gens.ParentWithGens):
             # For conversion from the base ring, multiplication with the one element is *slower*
             # than creating a new diagonal matrix. Hence, we circumvent
             # the conversion that is provided by Algebras(base_ring).parent_class.
-            from sage.categories.morphism import CallMorphism
-            from sage.categories.homset import Hom
-            self.register_coercion(CallMorphism(Hom(base_ring,self)))
+#            from sage.categories.morphism import CallMorphism
+#            from sage.categories.homset import Hom
+#            self.register_coercion(CallMorphism(Hom(base_ring,self)))
             category = Algebras(base_ring)
         else:
             category = Modules(base_ring)
+        # One shouldn't fully initialise the category framework by default,
+        # since that's slow
+        #sage.structure.parent.Parent.__init__(self, category=category)
+        sage.structure.category_object.CategoryObject._init_category_(self, category)
+
+    def full_category_initialisation(self):
+        """
+        Make full use of the category framework.
+
+        NOTE:
+
+        It turns out that it causes a massive speed regression in
+        computations with elliptic curves, if a full initialisation
+        of the category framework of matrix spaces happens at
+        initialisation: The elliptic curves code treats matrix spaces
+        as containers, not as objects of a category. Therefore,
+        making full use of the category framework is now provided by
+        a separate method (see trac ticket #11900).
+
+        EXAMPLES::
+
+            sage: MS = MatrixSpace(QQ,8)
+            sage: TestSuite(MS).run()
+            Failure in _test_category:
+            Traceback (most recent call last):
+            ...
+            AssertionError: category of self improperly initialized
+            ------------------------------------------------------------
+            The following tests failed: _test_category
+            sage: type(MS)
+            <class 'sage.matrix.matrix_space.MatrixSpace_generic'>
+            sage: MS.full_category_initialisation()
+            sage: TestSuite(MS).run()
+            sage: type(MS)
+            <class 'sage.matrix.matrix_space.MatrixSpace_generic_with_category'>
+
+        .. todo::
+
+            Add instead an optional argument to :func:`MatrixSpace` to
+            temporarily disable the category initialization in those
+            special cases where speed is critical::
+
+                sage: MS = MatrixSpace(QQ,7, init_category=False) # todo: not implemented
+                sage: TestSuite(MS).run()                         # todo: not implemented
+                Traceback (most recent call last):
+                ...
+                AssertionError: category of self improperly initialized
+
+            until someone recreates explicitly the same matrix space
+            without that optional argument::
+
+                sage: MS = MatrixSpace(QQ,7)                      # todo: not implemented
+                sage: TestSuite(MS).run()                         # todo: not implemented
+        """
+        if type(type(self)) is not type:
+            # Apparently the category is already taken care of.
+            return
+        category = self.category()
+        self._category = None
         sage.structure.parent.Parent.__init__(self, category=category)
-        #sage.structure.category_object.CategoryObject._init_category_(self, category)
 
     def __reduce__(self):
         """
@@ -940,7 +1001,7 @@ class MatrixSpace_generic(parent_gens.ParentWithGens):
                 return matrix_generic_dense.Matrix_generic_dense
             elif sage.rings.finite_rings.all.is_FiniteField(R) and R.characteristic() == 2 and R.order() <= 1024:
                 return matrix_mod2e_dense.Matrix_mod2e_dense
-            elif sage.rings.polynomial.multi_polynomial_ring_generic.is_MPolynomialRing(R) and R.base_ring().is_field():
+            elif sage.rings.polynomial.multi_polynomial_ring_generic.is_MPolynomialRing(R) and R.base_ring() in _Fields:
                 return matrix_mpolynomial_dense.Matrix_mpolynomial_dense
             #elif isinstance(R, sage.rings.padics.padic_ring_capped_relative.pAdicRingCappedRelative):
             #    return padics.matrix_padic_capped_relative_dense

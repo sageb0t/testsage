@@ -143,6 +143,9 @@ ext_modules = [
     Extension('sage.categories.action',
               sources = ['sage/categories/action.pyx']),
 
+    Extension('sage.categories.category_singleton',
+              sources = ['sage/categories/category_singleton.pyx']),
+
     Extension('sage.categories.functor',
               sources = ['sage/categories/functor.pyx']),
 
@@ -1016,6 +1019,9 @@ ext_modules = [
 
     Extension('sage.misc.citation',
               sources = ['sage/misc/citation.pyx']),
+
+    Extension('sage.misc.constant_function',
+              sources = ['sage/misc/constant_function.pyx']),
 
     Extension('sage.misc.cython_c',
               sources = ['sage/misc/cython_c.pyx']),

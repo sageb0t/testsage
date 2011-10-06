@@ -2,10 +2,12 @@
 Finite Prime Fields
 
 AUTHORS:
-     -- William Stein: initial version
-     -- Martin Albrecht (2008-01): refactoring
 
-TESTS:
+- William Stein: initial version
+- Martin Albrecht (2008-01): refactoring
+
+TESTS::
+
     sage: k = GF(3)
     sage: TestSuite(k).run()
 """
@@ -27,11 +29,18 @@ TESTS:
 #*****************************************************************************
 
 from sage.rings.finite_rings.finite_field_base import FiniteField as FiniteField_generic
+from sage.categories.finite_fields import FiniteFields
+_FiniteFields = FiniteFields()
 
 import sage.rings.finite_rings.integer_mod_ring as integer_mod_ring
 import sage.rings.integer as integer
 import sage.rings.finite_rings.integer_mod as integer_mod
 import sage.rings.arith as arith
+
+from sage.rings.integer_ring import ZZ
+from sage.rings.finite_rings.integer_mod_ring import IntegerModRing_generic
+import sage.structure.factorization as factorization
+from sage.structure.parent import Parent
 
 class FiniteField_prime_modn(FiniteField_generic, integer_mod_ring.IntegerModRing_generic):
     def __init__(self, p, name=None, check=True):
@@ -40,10 +49,10 @@ class FiniteField_prime_modn(FiniteField_generic, integer_mod_ring.IntegerModRin
 
         INPUT:
 
-            - p -- an integer >= 2
-            - ``name`` -- ignored
-            - ``check`` -- bool (default: True); if False, do not
-              check p for primality
+        - p -- an integer >= 2
+        - ``name`` -- ignored
+        - ``check`` -- bool (default: True); if False, do not
+          check p for primality
 
         EXAMPLES::
 
@@ -56,13 +65,12 @@ class FiniteField_prime_modn(FiniteField_generic, integer_mod_ring.IntegerModRin
         p = integer.Integer(p)
         if check and not arith.is_prime(p):
             raise ArithmeticError, "p must be prime"
-        from sage.categories.finite_fields import FiniteFields
         self.__char = p
-        import sage.structure.factorization as factorization
         self._IntegerModRing_generic__factored_order = factorization.Factorization([(p,1)], integer.Integer(1))
         self._kwargs = {}
-        integer_mod_ring.IntegerModRing_generic.__init__(self, p, category = FiniteFields())
-        FiniteField_generic.__init__(self, self, ('x',), normalize=False)
+        # FiniteField_generic does nothing more than IntegerModRing_generic, and
+        # it saves a non trivial overhead
+        integer_mod_ring.IntegerModRing_generic.__init__(self, p, category = _FiniteFields)
 
     def __reduce__(self):
         """
@@ -80,7 +88,8 @@ class FiniteField_prime_modn(FiniteField_generic, integer_mod_ring.IntegerModRin
         Compare \code{self} with \code{other}. Two finite prime fields
         are considered equal if their characteristic is equal.
 
-        EXAMPLE:
+        EXAMPLES::
+
             sage: K = FiniteField(3)
             sage: copy(K) == K
             True
@@ -95,7 +104,7 @@ class FiniteField_prime_modn(FiniteField_generic, integer_mod_ring.IntegerModRin
         r"""
         Compare \code{self} with \code{right}.
 
-        EXAMPLE::
+        EXAMPLES::
 
             sage: k = GF(2)
             sage: j = GF(3)
@@ -111,7 +120,8 @@ class FiniteField_prime_modn(FiniteField_generic, integer_mod_ring.IntegerModRin
         """
         This is called implicitly by the hom constructor.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: k = GF(73^2,'a')
             sage: f = k.modulus()
             sage: r = f.change_ring(k).roots()
@@ -128,7 +138,8 @@ class FiniteField_prime_modn(FiniteField_generic, integer_mod_ring.IntegerModRin
         """
         This is called implicitly by arithmetic methods.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: k = GF(7)
             sage: e = k(6)
             sage: e * 2 # indirect doctest
@@ -146,8 +157,6 @@ class FiniteField_prime_modn(FiniteField_generic, integer_mod_ring.IntegerModRin
              To:   Finite Field of size 13
              Defn: 1 |--> 1
         """
-        from sage.rings.integer_ring import ZZ
-        from sage.rings.finite_rings.integer_mod_ring import IntegerModRing_generic
         if S is int:
             return integer_mod.Int_to_IntegerMod(self)
         elif S is ZZ:
@@ -168,7 +177,8 @@ class FiniteField_prime_modn(FiniteField_generic, integer_mod_ring.IntegerModRin
         r"""
         Return the characteristic of \code{self}.
 
-        EXAMPLE:
+        EXAMPLES::
+
             sage: k = GF(7)
             sage: k.characteristic()
             7
@@ -179,7 +189,8 @@ class FiniteField_prime_modn(FiniteField_generic, integer_mod_ring.IntegerModRin
         """
         Return the minimal polynomial of self, which is always $x - 1$.
 
-        EXAMPLE:
+        EXAMPLES::
+
             sage: k = GF(199)
             sage: k.modulus()
             x + 198
@@ -195,7 +206,8 @@ class FiniteField_prime_modn(FiniteField_generic, integer_mod_ring.IntegerModRin
         """
         Return True
 
-        EXAMPLE:
+        EXAMPLES::
+
             sage: k.<a> = GF(3)
             sage: k.is_prime_field()
             True
@@ -210,7 +222,8 @@ class FiniteField_prime_modn(FiniteField_generic, integer_mod_ring.IntegerModRin
         """
         Returns the polynomial \var{name}.
 
-        EXAMPLE:
+        EXAMPLES::
+
             sage: k.<a> = GF(3)
             sage: k.polynomial()
             x
@@ -234,7 +247,8 @@ class FiniteField_prime_modn(FiniteField_generic, integer_mod_ring.IntegerModRin
         """
         Return the order of this finite field.
 
-        EXAMPLE:
+        EXAMPLES::
+
             sage: k = GF(5)
             sage: k.order()
             5
@@ -249,7 +263,8 @@ class FiniteField_prime_modn(FiniteField_generic, integer_mod_ring.IntegerModRin
         NOTE: If you want a primitive element for this finite field
         instead, use \code{self.multiplicative_generator()}.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: k = GF(13)
             sage: k.gen()
             1
@@ -264,12 +279,14 @@ class FiniteField_prime_modn(FiniteField_generic, integer_mod_ring.IntegerModRin
 
     def __iter__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: list(GF(7))
             [0, 1, 2, 3, 4, 5, 6]
 
         We can even start iterating over something that would be too big
-        to actually enumerate:
+        to actually enumerate::
+
             sage: K = GF(next_prime(2^256))
             sage: all = iter(K)
             sage: all.next()
@@ -290,7 +307,8 @@ class FiniteField_prime_modn(FiniteField_generic, integer_mod_ring.IntegerModRin
         Returns the degree of the finite field, which is a positive
         integer.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: FiniteField(3).degree()
             1
         """
