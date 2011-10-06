@@ -2336,7 +2336,7 @@ class RationalPolyhedralFan(IntegralRayCollection,
           <sage.geometry.fan.RationalPolyhedralFan>`.
 
         Currently the "default" algorithm corresponds to iterative stellar
-        subdivison for each ray in ``new_rays``.
+        subdivision for each ray in ``new_rays``.
 
         EXAMPLES::
 
@@ -2354,6 +2354,16 @@ class RationalPolyhedralFan(IntegralRayCollection,
             9
             sage: new_fan.nrays()
             9
+
+        TESTS:
+
+        We check that Trac #11902 is fixed::
+
+            sage: fan = toric_varieties.P2().fan()
+            sage: fan.subdivide(new_rays=[(0,0)])
+            Traceback (most recent call last):
+            ...
+            ValueError: the origin cannot be used for fan subdivision!
         """
         # Maybe these decisions should be done inside the algorithms
         # We can figure it out once we have at least two of them.
@@ -2365,6 +2375,8 @@ class RationalPolyhedralFan(IntegralRayCollection,
                         if ray not in self.ray_set())
         if not rays:
             return self # Nothing has to be done
+        if self.lattice().zero() in rays:
+            raise ValueError("the origin cannot be used for fan subdivision!")
         if algorithm == "default":
             algorithm = "palp"
         method_name = "_subdivide_" + algorithm
