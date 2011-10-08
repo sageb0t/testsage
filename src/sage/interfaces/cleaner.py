@@ -40,4 +40,4 @@ def start_cleaner_if_not_running():
         os.kill(pid,0)
         return
     except (IOError, OSError, ValueError):
-        os.system('sage-cleaner &')   # it has died
+        os.system('sage-cleaner >/dev/null 2>/dev/null &')   # it has died
