@@ -33,7 +33,7 @@ NUM_THREADS = 0 # 0 interpreted as min(8, multiprocessing.cpu_count())
 
 PIPE = spkg/pipestatus
 
-all: doc # (already) indirectly depends on build
+all: start doc  # indirectly depends on build
 
 # $(PIPE):
 #	# We could generate it here if it doesn't exist, or a specific version
@@ -43,6 +43,11 @@ all: doc # (already) indirectly depends on build
 
 build: $(PIPE)
 	cd spkg && "../$(PIPE)" "./install all 2>&1" "tee -a ../install.log"
+
+# Start Sage if the file local/lib/sage-started.txt does not exist
+# (i.e. when we just installed Sage for the first time)
+start: build
+	[ -f local/lib/sage-started.txt ] || local/bin/sage-starts
 
 # You can choose to have the built HTML version of the documentation link to
 # the PDF version. To do so, you need to build both the HTML and PDF versions.
@@ -152,7 +157,7 @@ install:
 	cp $(DESTDIR)/sage/sage $(DESTDIR)/bin/
 	cd $(DESTDIR)/bin/; ./sage -c
 
-.PHONY: all build doc doc-html doc-html-jsmath doc-pdf \
+.PHONY: all build start doc doc-html doc-html-jsmath doc-pdf \
 	doc-clean clean	distclean \
 	test check testoptional testlong ptest ptestall ptestlong \
 	install testall ptestoptional
