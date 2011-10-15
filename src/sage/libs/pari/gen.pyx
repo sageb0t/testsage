@@ -744,9 +744,9 @@ cdef class gen(sage.structure.element.RingElement):
             sage: x = polygen(QQ)
             sage: K.<a> = NumberField(x^4 - 4*x^2 + 1)
             sage: K.pari_nf().nf_get_pol()
-            x^4 - 4*x^2 + 1
+            y^4 - 4*y^2 + 1
             sage: K.pari_bnf().nf_get_pol()
-            x^4 - 4*x^2 + 1
+            y^4 - 4*y^2 + 1
             sage: bnr = pari("K = bnfinit(x^4 - 4*x^2 + 1); bnrinit(K, 2*x)")
             sage: bnr.nf_get_pol()
             x^4 - 4*x^2 + 1
@@ -784,7 +784,7 @@ cdef class gen(sage.structure.element.RingElement):
 
             sage: K.<a> = NumberField(x^4 - 4*x^2 + 1)
             sage: pari(K).nf_get_pol()
-            x^4 - 4*x^2 + 1
+            y^4 - 4*y^2 + 1
             sage: bnr = pari("K = bnfinit(x^4 - 4*x^2 + 1); bnrinit(K, 2*x)")
             sage: bnr.nf_get_pol()
             x^4 - 4*x^2 + 1
@@ -794,7 +794,7 @@ cdef class gen(sage.structure.element.RingElement):
 
             sage: L.<b> = K.extension(x^2 - 5)
             sage: pari(L).nf_get_pol()   # Absolute polynomial
-            x^8 - 28*x^6 + 208*x^4 - 408*x^2 + 36
+            y^8 - 28*y^6 + 208*y^4 - 408*y^2 + 36
             sage: L.pari_rnf().nf_get_pol()
             Traceback (most recent call last):
             ...
@@ -866,7 +866,7 @@ cdef class gen(sage.structure.element.RingElement):
 
             sage: K.<a> = NumberField(x^4 - 4*x^2 + 1)
             sage: pari(K).nf_get_zk()
-            [1, x, x^3 - 4*x, x^2 - 2]
+            [1, y, y^3 - 4*y, y^2 - 2]
         """
         cdef GEN nf = self.get_nf()
         sig_on()
@@ -6564,10 +6564,10 @@ cdef class gen(sage.structure.element.RingElement):
         sig_on()
         return self.new_gen(galoispermtopol(self.g, t0))
 
-    def galoisfixedfield(self, v, long flag, long y):
-        t0GEN(v);
+    def galoisfixedfield(self, perm, long flag=0, v=-1):
+        t0GEN(perm);
         sig_on()
-        return self.new_gen(galoisfixedfield(self.g, t0, flag, y))
+        return self.new_gen(galoisfixedfield(self.g, t0, flag, P.get_var(v)))
 
     def idealred(self, I, vdir=0):
         t0GEN(I); t1GEN(vdir)
@@ -6861,13 +6861,13 @@ cdef class gen(sage.structure.element.RingElement):
 
             sage: F = NumberField(x^3-2,'alpha')
             sage: F._pari_()[0].nfbasis_d()
-            ([1, x, x^2], -108)
+            ([1, y, y^2], -108)
 
         ::
 
             sage: G = NumberField(x^5-11,'beta')
             sage: G._pari_()[0].nfbasis_d()
-            ([1, x, x^2, x^3, x^4], 45753125)
+            ([1, y, y^2, y^3, y^4], 45753125)
 
         ::
 
@@ -6906,13 +6906,13 @@ cdef class gen(sage.structure.element.RingElement):
             sage: K.<a> = NumberField(x^3 - 17)
             sage: Kpari = K.pari_nf()
             sage: Kpari.getattr('zk')
-            [1, 1/3*x^2 - 1/3*x + 1/3, x]
+            [1, 1/3*y^2 - 1/3*y + 1/3, y]
             sage: Kpari.nfbasistoalg(42)
-            Mod(42, x^3 - 17)
+            Mod(42, y^3 - 17)
             sage: Kpari.nfbasistoalg("[3/2, -5, 0]~")
-            Mod(-5/3*x^2 + 5/3*x - 1/6, x^3 - 17)
+            Mod(-5/3*y^2 + 5/3*y - 1/6, y^3 - 17)
             sage: Kpari.getattr('zk') * pari("[3/2, -5, 0]~")
-            -5/3*x^2 + 5/3*x - 1/6
+            -5/3*y^2 + 5/3*y - 1/6
         """
         t0GEN(x)
         sig_on()
@@ -6939,13 +6939,13 @@ cdef class gen(sage.structure.element.RingElement):
             sage: K.<a> = NumberField(x^3 - 17)
             sage: Kpari = K.pari_nf()
             sage: Kpari.getattr('zk')
-            [1, 1/3*x^2 - 1/3*x + 1/3, x]
+            [1, 1/3*y^2 - 1/3*y + 1/3, y]
             sage: Kpari.nfbasistoalg_lift(42)
             42
             sage: Kpari.nfbasistoalg_lift("[3/2, -5, 0]~")
-            -5/3*x^2 + 5/3*x - 1/6
+            -5/3*y^2 + 5/3*y - 1/6
             sage: Kpari.getattr('zk') * pari("[3/2, -5, 0]~")
-            -5/3*x^2 + 5/3*x - 1/6
+            -5/3*y^2 + 5/3*y - 1/6
         """
         t0GEN(x)
         sig_on()
@@ -7126,23 +7126,23 @@ cdef class gen(sage.structure.element.RingElement):
             sage: F = NumberField(x^3-2,'alpha')
             sage: G = NumberField(x^3-2,'beta')
             sage: F._pari_().nfisisom(G._pari_())
-            [x]
+            [y]
 
         ::
 
             sage: GG = NumberField(x^3-4,'gamma')
             sage: F._pari_().nfisisom(GG._pari_())
-            [1/2*x^2]
+            [1/2*y^2]
 
         ::
 
             sage: F._pari_().nfisisom(GG.pari_nf())
-            [1/2*x^2]
+            [1/2*y^2]
 
         ::
 
             sage: F.pari_nf().nfisisom(GG._pari_()[0])
-            [x^2]
+            [y^2]
 
         ::
 
@@ -8291,7 +8291,7 @@ cdef class gen(sage.structure.element.RingElement):
 
             sage: Kpari = K.pari_nf()
             sage: Kpari.nf_get_pol()
-            x^2 + 5
+            y^2 + 5
             sage: Lpari = Kpari.nf_subst('a')
             sage: Lpari.nf_get_pol()
             a^2 + 5
@@ -8300,7 +8300,7 @@ cdef class gen(sage.structure.element.RingElement):
 
             sage: Kpari = K.pari_bnf()
             sage: Kpari.nf_get_pol()
-            x^2 + 5
+            y^2 + 5
             sage: Kpari.bnf_get_cyc()  # Structure of class group
             [2]
             sage: Lpari = Kpari.nf_subst('a')

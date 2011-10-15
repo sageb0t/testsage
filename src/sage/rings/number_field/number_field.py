@@ -67,14 +67,6 @@ We do some arithmetic in a tower of relative number fields::
    canonical coercions is currently VERY SLOW. It is much better to
    explicitly coerce all elements into a common field, then do
    arithmetic with them there (which is quite fast).
-
-TESTS::
-
-    sage: y = polygen(QQ,'y'); K.<beta> = NumberField([y^3 - 3, y^2 - 2])
-    sage: K(y^10)
-    27*beta0
-    sage: beta^10
-    27*beta0
 """
 #*****************************************************************************
 #       Copyright (C) 2004, 2005, 2006, 2007 William Stein <wstein@gmail.com>
@@ -2603,9 +2595,9 @@ class NumberField_generic(number_field_base.NumberField):
             sage: k.<a> = NumberField(x^4 - 3*x + 7); k
             Number Field in a with defining polynomial x^4 - 3*x + 7
             sage: k.pari_nf()[:4]
-            [x^4 - 3*x + 7, [0, 2], 85621, 1]
+            [y^4 - 3*y + 7, [0, 2], 85621, 1]
             sage: pari(k)[:4]
-            [x^4 - 3*x + 7, [0, 2], 85621, 1]
+            [y^4 - 3*y + 7, [0, 2], 85621, 1]
 
         ::
 
@@ -2640,20 +2632,20 @@ class NumberField_generic(number_field_base.NumberField):
 
             sage: K.<a> = NumberField(x^2 - p*q, maximize_at_primes=[p])
             sage: K.pari_nf()
-            [x^2 - 100000000000000000000...]
+            [y^2 - 100000000000000000000...]
 
         Since the discriminant is square-free, this also works::
 
             sage: K.<a> = NumberField(x^2 - p*q, assume_disc_small=True)
             sage: K.pari_nf()
-            [x^2 - 100000000000000000000...]
+            [y^2 - 100000000000000000000...]
         """
         if self.absolute_polynomial().denominator() != 1:
             raise TypeError, "Unable to coerce number field defined by non-integral polynomial to PARI."
         try:
             return self.__pari_nf
         except AttributeError:
-            f = self.pari_polynomial()
+            f = self.pari_polynomial("y")
             self.__pari_nf = pari([f, self._pari_integral_basis(important=important)]).nfinit()
             return self.__pari_nf
 
@@ -2667,9 +2659,9 @@ class NumberField_generic(number_field_base.NumberField):
 
             sage: k.<a> = NumberField(x^3 - 17)
             sage: k.pari_zk()
-            [1, 1/3*x^2 - 1/3*x + 1/3, x]
+            [1, 1/3*y^2 - 1/3*y + 1/3, y]
             sage: k.pari_nf().getattr('zk')
-            [1, 1/3*x^2 - 1/3*x + 1/3, x]
+            [1, 1/3*y^2 - 1/3*y + 1/3, y]
         """
         return self.pari_nf().nf_get_zk()
 
@@ -2684,9 +2676,9 @@ class NumberField_generic(number_field_base.NumberField):
 
             sage: k = NumberField(x^2 + x + 1, 'a')
             sage: k._pari_()
-            [x^2 + x + 1, [0, 1], -3, 1, ... [1, x], [1, 0; 0, 1], [1, 0, 0, -1; 0, 1, 1, -1]]
+            [y^2 + y + 1, [0, 1], -3, 1, ... [1, y], [1, 0; 0, 1], [1, 0, 0, -1; 0, 1, 1, -1]]
             sage: pari(k)
-            [x^2 + x + 1, [0, 1], -3, 1, ...[1, x], [1, 0; 0, 1], [1, 0, 0, -1; 0, 1, 1, -1]]
+            [y^2 + y + 1, [0, 1], -3, 1, ...[1, y], [1, 0; 0, 1], [1, 0, 0, -1; 0, 1, 1, -1]]
         """
         return self.pari_nf()
 
@@ -2701,9 +2693,9 @@ class NumberField_generic(number_field_base.NumberField):
 
             sage: k = NumberField(x^2 + x + 1, 'a')
             sage: k._pari_init_()
-            '[x^2 + x + 1, [0, 1], -3, 1, ... [1, x], [1, 0; 0, 1], [1, 0, 0, -1; 0, 1, 1, -1]]'
+            '[y^2 + y + 1, [0, 1], -3, 1, ... [1, y], [1, 0; 0, 1], [1, 0, 0, -1; 0, 1, 1, -1]]'
             sage: gp(k)
-            [x^2 + x + 1, [0, 1], -3, 1, ...[1, x], [1, 0; 0, 1], [1, 0, 0, -1; 0, 1, 1, -1]]
+            [y^2 + y + 1, [0, 1], -3, 1, ...[1, y], [1, 0; 0, 1], [1, 0, 0, -1; 0, 1, 1, -1]]
         """
         return str(self.pari_nf())
 
@@ -2751,7 +2743,7 @@ class NumberField_generic(number_field_base.NumberField):
         except AttributeError:
             if self.absolute_polynomial().denominator() != 1:
                 raise TypeError, "Unable to coerce number field defined by non-integral polynomial to PARI."
-            f = self.pari_polynomial()
+            f = self.pari_polynomial("y")
             if units:
                 self.__pari_bnf = f.bnfinit(1)
             else:
@@ -2787,13 +2779,8 @@ class NumberField_generic(number_field_base.NumberField):
             raise ValueError, "L must be an extension of self"
 
         relpoly = L.defining_polynomial()
-        # Substitute the variable y in the defining polynomial of the
-        # bnf structure.  The syntax "'y" refers to the *variable* y
-        # as opposed to whatever value happens to be assigned to y.
-        Kbnf = self.pari_bnf(proof=proof).nf_subst("'y")
-        coeffs = [ a._pari_("y") for a in relpoly.coeffs() ]
-        polrel = pari(coeffs).Polrev()
-        return Kbnf.rnfisnorminit(polrel)
+        Kbnf = self.pari_bnf(proof=proof)
+        return Kbnf.rnfisnorminit(relpoly._pari_with_name())
 
     def _gap_init_(self):
         """
@@ -4001,7 +3988,7 @@ class NumberField_generic(number_field_base.NumberField):
 
             sage: K.<a> = NumberField(x^5 + 10*x + 1)
             sage: K._pari_integral_basis()
-            [1, x, x^2, x^3, x^4]
+            [1, y, y^2, y^3, y^4]
 
         Next we compute the ring of integers of a cubic field in which 2 is
         an "essential discriminant divisor", so the ring of integers is not
@@ -4011,7 +3998,7 @@ class NumberField_generic(number_field_base.NumberField):
 
             sage: K.<a> = NumberField(x^3 + x^2 - 2*x + 8)
             sage: K._pari_integral_basis()
-            [1, x, 1/2*x^2 - 1/2*x]
+            [1, y, 1/2*y^2 - 1/2*y]
             sage: K.integral_basis()
             [1, 1/2*a^2 + 1/2*a, a^2]
         """
@@ -4022,7 +4009,7 @@ class NumberField_generic(number_field_base.NumberField):
         try:
             return self._integral_basis_dict[v]
         except (AttributeError, KeyError):
-            f = self.pari_polynomial()
+            f = self.pari_polynomial("y")
             if len(v) > 0:
                 m = self._pari_disc_factorization_matrix(v)
                 B = f.nfbasis(fa = m)
@@ -7911,7 +7898,7 @@ class NumberField_cyclotomic(NumberField_absolute):
         EXAMPLES::
 
             sage: CyclotomicField(5)._pari_integral_basis()
-            [1, x, x^2, x^3]
+            [1, y, y^2, y^3]
             sage: len(CyclotomicField(137)._pari_integral_basis())
             136
         """
