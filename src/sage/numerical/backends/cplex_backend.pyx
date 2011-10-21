@@ -463,6 +463,10 @@ cdef class CPLEXBackend(GenericBackend):
                 c_names[i] = names[i]
 
         status = CPXnewrows(self.env, self.lp, number, bound, sense, rng, c_names if names else NULL)
+
+        sage_free(sense)
+        sage_free(bound)
+        sage_free(c_names)
         check(status)
 
     cpdef add_linear_constraint(self, coefficients, lower_bound, upper_bound, name = None):
@@ -537,6 +541,7 @@ cdef class CPLEXBackend(GenericBackend):
 
             sense = 'R'
             bound = lower_bound
+            rng = upper_bound - lower_bound
 
         elif upper_bound is not None:
             sense = 'L'
