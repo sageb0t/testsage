@@ -14,11 +14,9 @@ This is placed in a separate file from categories.py to avoid circular imports
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
 
-from sage.misc.cachefunc import cached_method
 from sage.misc.latex import latex
 from category import Category
-from sage.categories.rings import Rings
-_Rings = Rings()
+from objects import Objects
 
 ####################################################################
 #   Different types of categories
@@ -76,7 +74,6 @@ class Elements(Category):
         """
         return self.__object(x)
 
-    @cached_method
     def super_categories(self):
         """
         EXAMPLES::
@@ -88,7 +85,6 @@ class Elements(Category):
 
         check that this is what we want.
         """
-        from objects import Objects
         return [Objects()]
 
     def object(self):
@@ -152,7 +148,6 @@ class Sequences(Category):
         from sage.rings.rational_field import QQ
         return cls(QQ)
 
-    @cached_method
     def super_categories(self):
         """
         EXAMPLES::
@@ -160,7 +155,6 @@ class Sequences(Category):
             sage: Sequences(ZZ).super_categories()
             [Category of objects]
         """
-        from objects import Objects
         return [Objects()]  # Almost FiniteEnumeratedSets() except for possible repetitions
 
     def _call_(self, x):
@@ -258,9 +252,14 @@ class Category_over_base(Category):
 #############################################################
 # Category of objects over some base ring
 #############################################################
+class AbelianCategory(Category):
+    def is_abelian(self):
+        return True
+
 class Category_over_base_ring(Category_over_base):
     def __init__(self, base, name=None):
-        assert base in _Rings, "base must be a ring"
+        from sage.categories.rings import Rings
+        assert base in Rings(), "base must be a ring"
         Category_over_base.__init__(self, base, name)
         self.__base = base
 
@@ -270,10 +269,6 @@ class Category_over_base_ring(Category_over_base):
         defined.
         """
         return self.base()
-
-class AbelianCategory(Category):
-    def is_abelian(self):
-        return True
 
 #############################################################
 # Category of objects in some ambient object
@@ -356,7 +351,6 @@ class SimplicialComplexes(Category):
         sage: TestSuite(SimplicialComplexes()).run()
     """
 
-    @cached_method
     def super_categories(self):
         """
         EXAMPLES::
@@ -364,7 +358,6 @@ class SimplicialComplexes(Category):
             sage: SimplicialComplexes().super_categories()
             [Category of objects]
         """
-        from objects import Objects
         return [Objects()] # anything better?
 
 #############################################################
@@ -387,7 +380,6 @@ class ChainComplexes(Category_module):
         sage: TestSuite(ChainComplexes(RationalField())).run()
     """
 
-    @cached_method
     def super_categories(self):
         """
         EXAMPLES::
@@ -395,5 +387,4 @@ class ChainComplexes(Category_module):
             sage: ChainComplexes(Integers(9)).super_categories()
             [Category of objects]
         """
-        from objects import Objects
         return [Objects()] # anything better?

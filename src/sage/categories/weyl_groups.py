@@ -47,7 +47,6 @@ class WeylGroups(Category_singleton):
         sage: TestSuite(C).run()
     """
 
-    @cached_method
     def super_categories(self):
         r"""
         EXAMPLES::
