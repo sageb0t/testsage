@@ -403,6 +403,7 @@ def copy_gz_file(gz_source, bz_destination):
     - ``bz_destination`` - string.  The name of the newly compressed file.
     """
     import gzip
+    from sage.misc.misc import sage_makedirs
 
     # Read the gzipped input
     try:
@@ -414,8 +415,7 @@ def copy_gz_file(gz_source, bz_destination):
 
     # Write the bzipped output
     try:
-        if not os.path.exists(os.path.dirname(bz_destination)):
-            os.mkdir(os.path.dirname(bz_destination))
+        sage_makedirs(os.path.dirname(bz_destination))
         bz2_output = bz2.BZ2File(bz_destination, 'w')
         bz2_output.write(db_text)
         bz2_output.close()
