@@ -222,6 +222,7 @@ class MatrixPlot(GraphicPrimitive):
             subplot.xaxis.tick_top()
         elif origin=='lower':
             subplot.xaxis.tick_bottom()
+        subplot.xaxis.set_ticks_position('both') #only tick marks, not tick labels
 
 @suboptions('colorbar', orientation='vertical', format=None)
 @suboptions('subdivision',boundaries=None, style=None)
