@@ -4,9 +4,22 @@ verbose = False
 
 timeout = 60
 
-def report(F, title):
-    systems = ['sage', 'magma']
-    print '\n\n'
+def report(F, title, systems = ['sage', 'magma']):
+    """
+    Run benchmarks with default arguments for each function in the list F.
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: b.report([b.det_ZZ], 'Test', systems=['sage'])
+        ======================================================================
+                  Test
+        ======================================================================
+        ...
+        ======================================================================
+    """
+    if len(systems) > 2:
+        raise NotImplementedError, "at most two systems ('sage' or 'magma')"
     print '='*70
     print ' '*10 + title
     print '='*70
@@ -25,23 +38,34 @@ def report(F, title):
                 t = -timeout
             alarm(0)
             w.append(float(t))
-        if w[1] == 0:
-            w.append(0.0)
-        else:
-            w.append(w[0]/w[1])
-        w = tuple(w)
+        if len(w) > 1:
+            if w[1] == 0:
+                w.append(0.0)
+            else:
+                w.append(w[0]/w[1])
 
+        w = tuple(w)
         print ('%15.3f'*len(w))%w
+    print '='*70
 
 #######################################################################
 # Dense Benchmarks over ZZ
 #######################################################################
 
-def report_ZZ():
+def report_ZZ(**kwds):
     """
     Reports all the benchmarks for integer matrices and few
     rational matrices.
-    TODO: Probably I should start report_QQ as well.
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: b.report_ZZ(systems=['sage'])
+        ======================================================================
+        Dense benchmarks over ZZ
+        ======================================================================
+        ...
+        ======================================================================
     """
     F = [vecmat_ZZ, rank_ZZ, rank2_ZZ, charpoly_ZZ, smithform_ZZ,
          det_ZZ, det_QQ, matrix_multiply_ZZ, matrix_add_ZZ,
@@ -49,15 +73,21 @@ def report_ZZ():
          nullspace_ZZ]
 
     title = 'Dense benchmarks over ZZ'
-    report(F, title)
+    report(F, title, **kwds)
 
 # Integer Nullspace
 
-def nullspace_ZZ(n=400, min=0, max=2**32, system='sage'):
+def nullspace_ZZ(n=200, min=0, max=2**32, system='sage'):
     """
     Nullspace over ZZ:
     Given a n+1 x n (with n=400) matrix over ZZ with random entries
     with 32 bits, compute the nullspace.
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: ts = b.nullspace_ZZ(200)
+        sage: tm = b.nullspace_ZZ(200, system='magma')  # optional - magma
     """
     if system == 'sage':
         A = random_matrix(ZZ, n+1, n, x=min, y=max+1).change_ring(QQ)
@@ -78,11 +108,17 @@ s := Cputime(t);
     else:
         raise ValueError, 'unknown system "%s"'%system
 
-def charpoly_ZZ(n=300, min=0, max=9, system='sage'):
+def charpoly_ZZ(n=100, min=0, max=9, system='sage'):
     """
     Characteristic polynomial over ZZ:
     Given a n x n (with n=300) matrix over ZZ with random entries
     between min=0 and max=9, compute the charpoly.
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: ts = b.charpoly_ZZ(100)
+        sage: tm = b.charpoly_ZZ(100, system='magma')  # optional - magma
     """
     if system == 'sage':
         A = random_matrix(ZZ, n, n, x=min, y=max+1)
@@ -108,6 +144,12 @@ def rank_ZZ(n=700, min=0, max=9, system='sage'):
     Rank over ZZ:
     Given a n x (n+10) (with n=700) matrix over ZZ with random entries
     between min=0 and max=9, compute the rank.
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: ts = b.rank_ZZ(300)
+        sage: tm = b.rank_ZZ(300, system='magma')  # optional - magma
     """
     if system == 'sage':
         A = random_matrix(ZZ, n, n+10, x=min, y=max+1)
@@ -133,6 +175,12 @@ def rank2_ZZ(n=400, min=0, max=2**64, system='sage'):
     Rank 2 over ZZ:
     Given a (n + 10) x n (with n=400) matrix over ZZ with random entries
     between with 64 bits, compute the rank.
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: ts = b.rank2_ZZ(300)
+        sage: tm = b.rank2_ZZ(300, system='magma')  # optional - magma
     """
     if system == 'sage':
         A = random_matrix(ZZ, n+10, n, x=min, y=max+1)
@@ -160,6 +208,12 @@ def smithform_ZZ(n=128, min=0, max=9, system='sage'):
     Smith Form over ZZ:
     Given a n x n (with n=128) matrix over ZZ with random entries
     between min=0 and max=9, compute the Smith normal form.
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: ts = b.smithform_ZZ(100)
+        sage: tm = b.smithform_ZZ(100, system='magma')  # optional - magma
     """
     if system == 'sage':
         A = random_matrix(ZZ, n, n, x=min, y=max+1)
@@ -185,6 +239,12 @@ def matrix_multiply_ZZ(n=300, min=-9, max=9, system='sage', times=1):
     Matrix multiplication over ZZ
     Given an n x n (with n=300) matrix A over ZZ with random entries
     between min=-9 and max=9, inclusive, compute A * (A+1).
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: ts = b.matrix_multiply_ZZ(200)
+        sage: tm = b.matrix_multiply_ZZ(200, system='magma')  # optional - magma
     """
     if system == 'sage':
         A = random_matrix(ZZ, n, n, x=min, y=max+1)
@@ -210,11 +270,17 @@ s := Cputime(t);
     else:
         raise ValueError, 'unknown system "%s"'%system
 
-def matrix_add_ZZ(n=500, min=-9, max=9, system='sage', times=50):
+def matrix_add_ZZ(n=200, min=-9, max=9, system='sage', times=50):
     """
     Matrix addition over ZZ
     Given an n x n (with n=500) matrix A and B over ZZ with random entries
     between min=-9 and max=9, inclusive, compute A + B 50 times.
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: ts = b.matrix_add_ZZ(200)
+        sage: tm = b.matrix_add_ZZ(200, system='magma')  # optional - magma
     """
     if system == 'sage':
         A = random_matrix(ZZ, n, n, x=min, y=max+1)
@@ -242,20 +308,32 @@ s := Cputime(t);
     else:
         raise ValueError, 'unknown system "%s"'%system
 
-def matrix_add_ZZ_2(n=500, bits=16, system='sage', times=50):
+def matrix_add_ZZ_2(n=200, bits=16, system='sage', times=50):
     """
     Matrix addition over ZZ.
     Given an n x n (with n=500) matrix A and B over ZZ with random 16-bit
     entries, compute A + B 50 times.
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: ts = b.matrix_add_ZZ_2(200)
+        sage: tm = b.matrix_add_ZZ_2(200, system='magma')  # optional - magma
     """
     b = 2**bits
     return matrix_add_ZZ(n=n, min=-b, max=b,system=system, times=times)
 
-def det_ZZ(n=400, min=1, max=100, system='sage'):
+def det_ZZ(n=200, min=1, max=100, system='sage'):
     """
     Dense integer determinant over ZZ.
     Given an n x n (with n=400) matrix A over ZZ with random entries
     between min=1 and max=100, inclusive, compute det(A).
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: ts = b.det_ZZ(200)
+        sage: tm = b.det_ZZ(200, system='magma')  # optional - magma
     """
     if system == 'sage':
         A = random_matrix(ZZ, n, n, x=min, y=max+1)
@@ -282,6 +360,13 @@ def det_QQ(n=300, num_bound=10, den_bound=10, system='sage'):
     Given an n x n (with n=300) matrix A over QQ with random entries
     with numerator and denominator between min=-10 and 10,
     inclusive, compute det(A).
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: ts = b.det_QQ(200)
+        sage: ts = b.det_QQ(10, num_bound=100000, den_bound=10000)
+        sage: tm = b.det_QQ(200, system='magma')  # optional - magma
     """
     if system == 'sage':
         A = random_matrix(QQ, n, n, num_bound=num_bound, den_bound=den_bound)
@@ -302,13 +387,19 @@ s := Cputime(t);
     else:
         raise ValueError, 'unknown system "%s"'%system
 
-def vecmat_ZZ(n=750, system='sage', min=-9, max=9, times=200):
+def vecmat_ZZ(n=300, system='sage', min=-9, max=9, times=200):
     """
     Vector matrix multiplication over ZZ.
 
     Given an n x n (with n=750) matrix A over ZZ with random entries
     between min=-9 and max=9, inclusive, and v the first row of A,
     compute the product v * A  200 times.
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: ts = b.vecmat_ZZ(300)
+        sage: tm = b.vecmat_ZZ(300, system='magma')  # optional - magma
     """
     if system == 'sage':
         A = random_matrix(ZZ, n, n, x=min, y=max+1)
@@ -338,18 +429,28 @@ s := Cputime(t);
 # Dense Benchmarks over GF(p), for small p.
 #######################################################################
 
-def report_GF(p=16411):
+def report_GF(p=16411, **kwds):
     """
     Runs all the reports for finite field matrix operations, for
     prime p=16411.
     Note: right now, even though p is an input, it is being ignored!
     If you need to check the performance for other primes, you can
     call individual benchmark functions.
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: b.report_GF(systems=['sage'])
+        ======================================================================
+        Dense benchmarks over GF with prime 16411
+        ======================================================================
+        ...
+        ======================================================================
     """
     F = [rank_GF, rank2_GF, nullspace_GF, charpoly_GF,
          matrix_multiply_GF, det_GF]
     title = 'Dense benchmarks over GF with prime %i' % p
-    report(F, title)
+    report(F, title, **kwds)
 
 # Nullspace over GF
 
@@ -357,6 +458,12 @@ def nullspace_GF(n=300, p=16411, system='sage'):
     """
     Given a n+1 x n (with n=300) matrix over GF(p) p=16411 with random
     entries, compute the nullspace.
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: ts = b.nullspace_GF(300)
+        sage: tm = b.nullspace_GF(300, system='magma')  # optional - magma
     """
     if system == 'sage':
         A = random_matrix(GF(p), n, n+1)
@@ -383,6 +490,12 @@ def charpoly_GF(n=100, p=16411, system='sage'):
     """
     Given a n x n (with n=100) matrix over GF with random entries,
     compute the charpoly.
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: ts = b.charpoly_GF(100)
+        sage: tm = b.charpoly_GF(100, system='magma')  # optional - magma
     """
     if system == 'sage':
         A = random_matrix(GF(p), n, n)
@@ -407,6 +520,12 @@ def matrix_add_GF(n=1000, p=16411, system='sage',times=100):
     """
     Given two n x n (with n=1000) matrix over GF with random entries,
     add them.
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: ts = b.matrix_add_GF(500, p=19)
+        sage: tm = b.matrix_add_GF(500, p=19, system='magma')  # optional - magma
     """
     if system == 'sage':
         A = random_matrix(GF(p), n, n)
@@ -438,6 +557,12 @@ def matrix_multiply_GF(n=100, p=16411, system='sage', times=3):
     """
     Given an n x n (with n=100) matrix A over GF(p) with random
     entries, compute A * (A+1).
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: ts = b.matrix_multiply_GF(100, p=19)
+        sage: tm = b.matrix_multiply_GF(100, p=19, system='magma')  # optional - magma
     """
     if system == 'sage':
         A = random_matrix(GF(p), n)
@@ -468,6 +593,12 @@ def rank_GF(n=500, p=16411, min=0, max=9, system='sage'):
     Rank over GF:
     Given a n x (n+10) (with n=500) matrix over ZZ with random entries
     between min=0 and max=9, compute the rank.
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: ts = b.rank_GF(1000)
+        sage: tm = b.rank_GF(1000, system='magma')  # optional - magma
     """
     if system == 'sage':
         A = random_matrix(GF(p), n, n+10)
@@ -493,6 +624,12 @@ def rank2_GF(n=500, p=16411, min=0, max=9, system='sage'):
     Rank over GF(p):
     Given a (n + 10) x n (with n=500) matrix over GF(p) with random entries
     between min=0 and max=9, compute the rank.
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: ts = b.rank2_GF(500)
+        sage: tm = b.rank2_GF(500, system='magma')  # optional - magma
     """
     if system == 'sage':
         A = random_matrix(GF(p), n+10, n)
@@ -518,6 +655,12 @@ def det_GF(n=400, p=16411 , system='sage'):
     Dense integer determinant over GF.
     Given an n x n (with n=400) matrix A over GF with random entries
     compute det(A).
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: ts = b.det_GF(1000)
+        sage: tm = b.det_GF(1000, system='magma')  # optional - magma
     """
     if system == 'sage':
         A = random_matrix(GF(p), n, n)
@@ -545,6 +688,14 @@ s := Cputime(t);
 def hilbert_matrix(n):
     """
     Returns the Hilbert matrix of size n over rationals.
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: b.hilbert_matrix(3)
+        [  1 1/2 1/3]
+        [1/2 1/3 1/4]
+        [1/3 1/4 1/5]
     """
     A = Matrix(QQ,n,n)
     for i in range(A.nrows()):
@@ -558,6 +709,12 @@ def echelon_QQ(n=100, min=0, max=9, system='sage'):
     """
     Given a n x (2*n) (with n=100) matrix over QQ with random integer entries
     between min=0 and max=9, compute the reduced row echelon form.
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: ts = b.echelon_QQ(100)
+        sage: tm = b.echelon_QQ(100, system='magma')  # optional - magma
     """
     if system == 'sage':
         A = random_matrix(ZZ, n, 2*n, x=min, y=max+1).change_ring(QQ)
@@ -584,6 +741,12 @@ def inverse_QQ(n=100, min=0, max=9, system='sage'):
     """
     Given a n x n (with n=100) matrix over QQ with random integer entries
     between min=0 and max=9, compute the reduced row echelon form.
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: ts = b.inverse_QQ(100)
+        sage: tm = b.inverse_QQ(100, system='magma')  # optional - magma
     """
     if system == 'sage':
         A = random_matrix(ZZ, n, n, x=min, y=max+1).change_ring(QQ)
@@ -610,6 +773,12 @@ def matrix_multiply_QQ(n=100, bnd=2, system='sage', times=1):
     Given an n x n (with n=100) matrix A over QQ with random entries
     whose numerators and denominators are bounded by b, compute A *
     (A+1).
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: ts = b.matrix_multiply_QQ(100)
+        sage: tm = b.matrix_multiply_QQ(100, system='magma')  # optional - magma
     """
     if system == 'sage':
         A = random_matrix(QQ, n, n, num_bound=bnd, den_bound=bnd)
@@ -641,6 +810,12 @@ def det_hilbert_QQ(n=80, system='sage'):
     """
     Runs the benchmark for calculating the determinant of the hilbert
     matrix over rationals of dimension n.
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: ts = b.det_hilbert_QQ(50)
+        sage: tm = b.det_hilbert_QQ(50, system='magma')  # optional - magma
     """
     if system == 'sage':
         A = hilbert_matrix(n)
@@ -664,6 +839,12 @@ def invert_hilbert_QQ(n=40, system='sage'):
     """
     Runs the benchmark for calculating the inverse of the hilbert
     matrix over rationals of dimension n.
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: ts = b.invert_hilbert_QQ(30)
+        sage: tm = b.invert_hilbert_QQ(30, system='magma')  # optional - magma
     """
     if system == 'sage':
         A = hilbert_matrix(n)
@@ -683,6 +864,16 @@ delete h;
         return float(magma.eval('s'))
 
 def MatrixVector_QQ(n=1000,h=100,system='sage',times=1):
+    """
+    Compute product of square n matrix by random vector with num and
+    denom bounded by 100 the given number of times.
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: ts = b.MatrixVector_QQ(500)
+        sage: tm = b.MatrixVector_QQ(500, system='magma')  # optional - magma
+    """
     if system=='sage':
         V=QQ**n
         v=V.random_element(h)
@@ -723,9 +914,46 @@ def nullspace_RR(n=300, min=0, max=10, system='sage'):
     Nullspace over RR:
     Given a n+1 x n (with n=300) matrix over RR with random entries
     between min=0 and max=10, compute the nullspace.
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: ts = b.nullspace_RR(100)
+        sage: tm = b.nullspace_RR(100, system='magma')  # optional - magma
     """
     if system == 'sage':
         A = random_matrix(ZZ, n+1, n, x=min, y=max+1).change_ring(RR)
+        t = cputime()
+        v = A.kernel()
+        return cputime(t)
+    elif system == 'magma':
+        code = """
+n := %s;
+A := RMatrixSpace(RealField(16), n+1,n)![Random(%s,%s) : i in [1..n*(n+1)]];
+t := Cputime();
+K := Kernel(A);
+s := Cputime(t);
+"""%(n,min,max)
+        if verbose: print code
+        magma.eval(code)
+        return float(magma.eval('s'))
+    else:
+        raise ValueError, 'unknown system "%s"'%system
+
+def nullspace_RDF(n=300, min=0, max=10, system='sage'):
+    """
+    Nullspace over RDF:
+    Given a n+1 x n (with n=300) matrix over RDF with random entries
+    between min=0 and max=10, compute the nullspace.
+
+    EXAMPLES::
+
+        sage: import sage.matrix.benchmark as b
+        sage: ts = b.nullspace_RDF(100)
+        sage: tm = b.nullspace_RDF(100, system='magma')  # optional - magma
+    """
+    if system == 'sage':
+        A = random_matrix(ZZ, n+1, n, x=min, y=max+1).change_ring(RDF)
         t = cputime()
         v = A.kernel()
         return cputime(t)
