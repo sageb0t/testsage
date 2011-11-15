@@ -1151,7 +1151,8 @@ def lift_to_sl2z_int(int c, int d, int N):
     `c=c'` (mod `N`) and `d=d'` (mod `N`).
 
     INPUT:
-        -  ``c,d,N`` - integers such that `\gcd(c,d,N)=1`.
+
+    -  ``c,d,N`` - integers such that `\gcd(c,d,N)=1`.
 
     EXAMPLES::
 
@@ -1216,7 +1217,8 @@ def lift_to_sl2z_llong(llong c, llong d, int N):
     and `d=d'` (mod `N`).
 
     INPUT:
-        -  ``c,d,N`` - integers such that `\gcd(c,d,N)=1`.
+
+    -  ``c,d,N`` - integers such that `\gcd(c,d,N)=1`.
 
     EXAMPLES::
 
@@ -1277,7 +1279,8 @@ def lift_to_sl2z(c, d, N):
     `c,d` modulo `N`.
 
     INPUT:
-        -  ``c,d,N`` - Python ints or longs such that `\gcd(c,d,N)=1`.
+
+    -  ``c,d,N`` - Python ints or longs such that `\gcd(c,d,N)=1`.
 
     EXAMPLES::
 
