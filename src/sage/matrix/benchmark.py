@@ -4,9 +4,16 @@ verbose = False
 
 timeout = 60
 
-def report(F, title, systems = ['sage', 'magma']):
+def report(F, title, systems = ['sage', 'magma'], **kwds):
     """
     Run benchmarks with default arguments for each function in the list F.
+
+    INPUT:
+
+    - ``F`` - a list of callables used for benchmarking
+    - ``title`` - a string describing this report
+    - ``systems - a list of systems (supported entries are 'sage' and 'magma')
+    - ``**kwds`` - keyword arguments passed to all functions in ``F``
 
     EXAMPLES::
 
@@ -33,7 +40,7 @@ def report(F, title, systems = ['sage', 'magma']):
         for s in systems:
             alarm(timeout)
             try:
-                t = f(system=s)
+                t = f(system=s, **kwds)
             except KeyboardInterrupt:
                 t = -timeout
             alarm(0)
@@ -56,6 +63,10 @@ def report_ZZ(**kwds):
     """
     Reports all the benchmarks for integer matrices and few
     rational matrices.
+
+    INPUT:
+
+    - ``**kwds`` - passed through to :func:`report`
 
     EXAMPLES::
 
@@ -80,8 +91,15 @@ def report_ZZ(**kwds):
 def nullspace_ZZ(n=200, min=0, max=2**32, system='sage'):
     """
     Nullspace over ZZ:
-    Given a n+1 x n (with n=400) matrix over ZZ with random entries
-    with 32 bits, compute the nullspace.
+    Given a n+1 x n matrix over ZZ with random entries
+    between min and max, compute the nullspace.
+
+    INPUT:
+
+    - ``n`` - matrix dimension (default: ``200``)
+    - ``min`` - minimal value for entries of matrix (default: ``0``)
+    - ``max`` - maximal value for entries of matrix (default: ``2**32``)
+    - ``system`` - either 'sage' or 'magma' (default: 'sage')
 
     EXAMPLES::
 
@@ -111,8 +129,15 @@ s := Cputime(t);
 def charpoly_ZZ(n=100, min=0, max=9, system='sage'):
     """
     Characteristic polynomial over ZZ:
-    Given a n x n (with n=300) matrix over ZZ with random entries
-    between min=0 and max=9, compute the charpoly.
+    Given a n x n matrix over ZZ with random entries between min and
+    max, compute the charpoly.
+
+    INPUT:
+
+    - ``n`` - matrix dimension (default: ``100``)
+    - ``min`` - minimal value for entries of matrix (default: ``0``)
+    - ``max`` - maximal value for entries of matrix (default: ``9``)
+    - ``system`` - either 'sage' or 'magma' (default: 'sage')
 
     EXAMPLES::
 
@@ -142,8 +167,15 @@ s := Cputime(t);
 def rank_ZZ(n=700, min=0, max=9, system='sage'):
     """
     Rank over ZZ:
-    Given a n x (n+10) (with n=700) matrix over ZZ with random entries
-    between min=0 and max=9, compute the rank.
+    Given a n x (n+10) matrix over ZZ with random entries
+    between min and max, compute the rank.
+
+    INPUT:
+
+    - ``n`` - matrix dimension (default: ``700``)
+    - ``min`` - minimal value for entries of matrix (default: ``0``)
+    - ``max`` - maximal value for entries of matrix (default: ``9``)
+    - ``system`` - either 'sage' or 'magma' (default: 'sage')
 
     EXAMPLES::
 
@@ -173,8 +205,15 @@ s := Cputime(t);
 def rank2_ZZ(n=400, min=0, max=2**64, system='sage'):
     """
     Rank 2 over ZZ:
-    Given a (n + 10) x n (with n=400) matrix over ZZ with random entries
-    between with 64 bits, compute the rank.
+    Given a (n + 10) x n matrix over ZZ with random entries
+    between min and max, compute the rank.
+
+    INPUT:
+
+    - ``n`` - matrix dimension (default: ``400``)
+    - ``min`` - minimal value for entries of matrix (default: ``0``)
+    - ``max`` - maximal value for entries of matrix (default: ``2**64``)
+    - ``system`` - either 'sage' or 'magma' (default: 'sage')
 
     EXAMPLES::
 
@@ -206,8 +245,15 @@ s := Cputime(t);
 def smithform_ZZ(n=128, min=0, max=9, system='sage'):
     """
     Smith Form over ZZ:
-    Given a n x n (with n=128) matrix over ZZ with random entries
-    between min=0 and max=9, compute the Smith normal form.
+    Given a n x n matrix over ZZ with random entries
+    between min and max, compute the Smith normal form.
+
+    INPUT:
+
+    - ``n`` - matrix dimension (default: ``128``)
+    - ``min`` - minimal value for entries of matrix (default: ``0``)
+    - ``max`` - maximal value for entries of matrix (default: ``9``)
+    - ``system`` - either 'sage' or 'magma' (default: 'sage')
 
     EXAMPLES::
 
@@ -237,8 +283,16 @@ s := Cputime(t);
 def matrix_multiply_ZZ(n=300, min=-9, max=9, system='sage', times=1):
     """
     Matrix multiplication over ZZ
-    Given an n x n (with n=300) matrix A over ZZ with random entries
-    between min=-9 and max=9, inclusive, compute A * (A+1).
+    Given an n x n matrix A over ZZ with random entries
+    between min and max, inclusive, compute A * (A+1).
+
+    INPUT:
+
+    - ``n`` - matrix dimension (default: ``300``)
+    - ``min`` - minimal value for entries of matrix (default: ``-9``)
+    - ``max`` - maximal value for entries of matrix (default: ``9``)
+    - ``system`` - either 'sage' or 'magma' (default: 'sage')
+    - ``times`` - number of experiments (default: ``1``)
 
     EXAMPLES::
 
@@ -273,8 +327,16 @@ s := Cputime(t);
 def matrix_add_ZZ(n=200, min=-9, max=9, system='sage', times=50):
     """
     Matrix addition over ZZ
-    Given an n x n (with n=500) matrix A and B over ZZ with random entries
-    between min=-9 and max=9, inclusive, compute A + B 50 times.
+    Given an n x n matrix A and B over ZZ with random entries between
+    ``min`` and ``max``, inclusive, compute A + B ``times`` times.
+
+    INPUT:
+
+    - ``n`` - matrix dimension (default: ``200``)
+    - ``min`` - minimal value for entries of matrix (default: ``-9``)
+    - ``max`` - maximal value for entries of matrix (default: ``9``)
+    - ``system`` - either 'sage' or 'magma' (default: 'sage')
+    - ``times`` - number of experiments (default: ``50``)
 
     EXAMPLES::
 
@@ -311,8 +373,15 @@ s := Cputime(t);
 def matrix_add_ZZ_2(n=200, bits=16, system='sage', times=50):
     """
     Matrix addition over ZZ.
-    Given an n x n (with n=500) matrix A and B over ZZ with random 16-bit
-    entries, compute A + B 50 times.
+    Given an n x n matrix A and B over ZZ with random ``bits``-bit
+    entries, compute A + B.
+
+    INPUT:
+
+    - ``n`` - matrix dimension (default: ``200``)
+    - ``bits`` - bitsize of entries
+    - ``system`` - either 'sage' or 'magma' (default: 'sage')
+    - ``times`` - number of experiments (default: ``50``)
 
     EXAMPLES::
 
@@ -326,8 +395,15 @@ def matrix_add_ZZ_2(n=200, bits=16, system='sage', times=50):
 def det_ZZ(n=200, min=1, max=100, system='sage'):
     """
     Dense integer determinant over ZZ.
-    Given an n x n (with n=400) matrix A over ZZ with random entries
-    between min=1 and max=100, inclusive, compute det(A).
+    Given an n x n matrix A over ZZ with random entries
+    between min and max, inclusive, compute det(A).
+
+    INPUT:
+
+    - ``n`` - matrix dimension (default: ``200``)
+    - ``min`` - minimal value for entries of matrix (default: ``1``)
+    - ``max`` - maximal value for entries of matrix (default: ``100``)
+    - ``system`` - either 'sage' or 'magma' (default: 'sage')
 
     EXAMPLES::
 
@@ -357,9 +433,15 @@ s := Cputime(t);
 def det_QQ(n=300, num_bound=10, den_bound=10, system='sage'):
     """
     Dense rational determinant over QQ.
-    Given an n x n (with n=300) matrix A over QQ with random entries
-    with numerator and denominator between min=-10 and 10,
-    inclusive, compute det(A).
+    Given an n x n matrix A over QQ with random entries
+    with numerator bound and denominator bound, compute det(A).
+
+    INPUT:
+
+    - ``n`` - matrix dimension (default: ``200``)
+    - ``num_bound`` - numerator bound, inclusive (default: ``10``)
+    - ``den_bound`` - denominator bound, inclusive (default: ``10``)
+    - ``system`` - either 'sage' or 'magma' (default: 'sage')
 
     EXAMPLES::
 
@@ -387,13 +469,21 @@ s := Cputime(t);
     else:
         raise ValueError, 'unknown system "%s"'%system
 
-def vecmat_ZZ(n=300, system='sage', min=-9, max=9, times=200):
+def vecmat_ZZ(n=300, min=-9, max=9, system='sage', times=200):
     """
     Vector matrix multiplication over ZZ.
 
-    Given an n x n (with n=750) matrix A over ZZ with random entries
-    between min=-9 and max=9, inclusive, and v the first row of A,
-    compute the product v * A  200 times.
+    Given an n x n  matrix A over ZZ with random entries
+    between min and max, inclusive, and v the first row of A,
+    compute the product v * A.
+
+    INPUT:
+
+    - ``n`` - matrix dimension (default: ``300``)
+    - ``min`` - minimal value for entries of matrix (default: ``-9``)
+    - ``max`` - maximal value for entries of matrix (default: ``9``)
+    - ``system`` - either 'sage' or 'magma' (default: 'sage')
+    - ``times`` - number of runs (default: ``200``)
 
     EXAMPLES::
 
@@ -433,9 +523,17 @@ def report_GF(p=16411, **kwds):
     """
     Runs all the reports for finite field matrix operations, for
     prime p=16411.
-    Note: right now, even though p is an input, it is being ignored!
-    If you need to check the performance for other primes, you can
-    call individual benchmark functions.
+
+    INPUT:
+
+    - ``p`` - ignored
+    - ``**kwds`` - passed through to :func:`report`
+
+    .. note::
+
+        right now, even though p is an input, it is being ignored!  If
+        you need to check the performance for other primes, you can
+        call individual benchmark functions.
 
     EXAMPLES::
 
@@ -456,8 +554,14 @@ def report_GF(p=16411, **kwds):
 
 def nullspace_GF(n=300, p=16411, system='sage'):
     """
-    Given a n+1 x n (with n=300) matrix over GF(p) p=16411 with random
+    Given a n+1 x n  matrix over GF(p) with random
     entries, compute the nullspace.
+
+    INPUT:
+
+    - ``n`` - matrix dimension (default: 300)
+    - ``p`` - prime number (default: ``16411``)
+    - ``system`` - either 'magma' or 'sage' (default: 'sage')
 
     EXAMPLES::
 
@@ -488,8 +592,14 @@ s := Cputime(t);
 
 def charpoly_GF(n=100, p=16411, system='sage'):
     """
-    Given a n x n (with n=100) matrix over GF with random entries,
-    compute the charpoly.
+    Given a n x n matrix over GF with random entries, compute the
+    charpoly.
+
+    INPUT:
+
+    - ``n`` - matrix dimension (default: 100)
+    - ``p`` - prime number (default: ``16411``)
+    - ``system`` - either 'magma' or 'sage' (default: 'sage')
 
     EXAMPLES::
 
@@ -518,8 +628,14 @@ s := Cputime(t);
 
 def matrix_add_GF(n=1000, p=16411, system='sage',times=100):
     """
-    Given two n x n (with n=1000) matrix over GF with random entries,
-    add them.
+    Given two n x n matrix over GF(p) with random entries, add them.
+
+    INPUT:
+
+    - ``n`` - matrix dimension (default: 300)
+    - ``p`` - prime number (default: ``16411``)
+    - ``system`` - either 'magma' or 'sage' (default: 'sage')
+    - ``times`` - number of experiments (default: ``100``)
 
     EXAMPLES::
 
@@ -555,8 +671,15 @@ s := Cputime(t);
 
 def matrix_multiply_GF(n=100, p=16411, system='sage', times=3):
     """
-    Given an n x n (with n=100) matrix A over GF(p) with random
-    entries, compute A * (A+1).
+    Given an n x n matrix A over GF(p) with random entries, compute
+    A * (A+1).
+
+    INPUT:
+
+    - ``n`` - matrix dimension (default: 100)
+    - ``p`` - prime number (default: ``16411``)
+    - ``system`` - either 'magma' or 'sage' (default: 'sage')
+    - ``times`` - number of experiments (default: ``3``)
 
     EXAMPLES::
 
@@ -588,11 +711,16 @@ s := Cputime(t);
     else:
         raise ValueError, 'unknown system "%s"'%system
 
-def rank_GF(n=500, p=16411, min=0, max=9, system='sage'):
+def rank_GF(n=500, p=16411, system='sage'):
     """
-    Rank over GF:
-    Given a n x (n+10) (with n=500) matrix over ZZ with random entries
-    between min=0 and max=9, compute the rank.
+    Rank over GF(p):
+    Given a n x (n+10) matrix over GF(p) with random entries, compute the rank.
+
+    INPUT:
+
+    - ``n`` - matrix dimension (default: 300)
+    - ``p`` - prime number (default: ``16411``)
+    - ``system`` - either 'magma' or 'sage' (default: 'sage')
 
     EXAMPLES::
 
@@ -619,11 +747,16 @@ s := Cputime(t);
     else:
         raise ValueError, 'unknown system "%s"'%system
 
-def rank2_GF(n=500, p=16411, min=0, max=9, system='sage'):
+def rank2_GF(n=500, p=16411, system='sage'):
     """
-    Rank over GF(p):
-    Given a (n + 10) x n (with n=500) matrix over GF(p) with random entries
-    between min=0 and max=9, compute the rank.
+    Rank over GF(p): Given a (n + 10) x n matrix over GF(p) with
+    random entries, compute the rank.
+
+    INPUT:
+
+    - ``n`` - matrix dimension (default: 300)
+    - ``p`` - prime number (default: ``16411``)
+    - ``system`` - either 'magma' or 'sage' (default: 'sage')
 
     EXAMPLES::
 
@@ -652,9 +785,15 @@ s := Cputime(t);
 
 def det_GF(n=400, p=16411 , system='sage'):
     """
-    Dense integer determinant over GF.
-    Given an n x n (with n=400) matrix A over GF with random entries
-    compute det(A).
+    Dense determinant over GF(p).
+    Given an n x n matrix A over GF with random entries compute
+    det(A).
+
+    INPUT:
+
+    - ``n`` - matrix dimension (default: 300)
+    - ``p`` - prime number (default: ``16411``)
+    - ``system`` - either 'magma' or 'sage' (default: 'sage')
 
     EXAMPLES::
 
@@ -707,8 +846,15 @@ def hilbert_matrix(n):
 
 def echelon_QQ(n=100, min=0, max=9, system='sage'):
     """
-    Given a n x (2*n) (with n=100) matrix over QQ with random integer entries
-    between min=0 and max=9, compute the reduced row echelon form.
+    Given a n x (2*n) matrix over QQ with random integer entries
+    between min and max, compute the reduced row echelon form.
+
+    INPUT:
+
+    - ``n`` - matrix dimension (default: ``300``)
+    - ``min`` - minimal value for entries of matrix (default: ``-9``)
+    - ``max`` - maximal value for entries of matrix (default: ``9``)
+    - ``system`` - either 'sage' or 'magma' (default: 'sage')
 
     EXAMPLES::
 
@@ -739,8 +885,15 @@ s := Cputime(t);
 
 def inverse_QQ(n=100, min=0, max=9, system='sage'):
     """
-    Given a n x n (with n=100) matrix over QQ with random integer entries
-    between min=0 and max=9, compute the reduced row echelon form.
+    Given a n x n matrix over QQ with random integer entries
+    between min and max, compute the reduced row echelon form.
+
+    INPUT:
+
+    - ``n`` - matrix dimension (default: ``300``)
+    - ``min`` - minimal value for entries of matrix (default: ``-9``)
+    - ``max`` - maximal value for entries of matrix (default: ``9``)
+    - ``system`` - either 'sage' or 'magma' (default: 'sage')
 
     EXAMPLES::
 
@@ -770,9 +923,16 @@ s := Cputime(t);
 # Matrix multiplication over QQ
 def matrix_multiply_QQ(n=100, bnd=2, system='sage', times=1):
     """
-    Given an n x n (with n=100) matrix A over QQ with random entries
-    whose numerators and denominators are bounded by b, compute A *
-    (A+1).
+    Given an n x n matrix A over QQ with random entries
+    whose numerators and denominators are bounded by bnd,
+    compute A * (A+1).
+
+    INPUT:
+
+    - ``n`` - matrix dimension (default: ``300``)
+    - ``bnd`` - numerator and denominator bound (default: ``bnd``)
+    - ``system`` - either 'sage' or 'magma' (default: 'sage')
+    - ``times`` - number of experiments (default: ``1``)
 
     EXAMPLES::
 
@@ -811,6 +971,11 @@ def det_hilbert_QQ(n=80, system='sage'):
     Runs the benchmark for calculating the determinant of the hilbert
     matrix over rationals of dimension n.
 
+    INPUT:
+
+    - ``n`` - matrix dimension (default: ``300``)
+    - ``system`` - either 'sage' or 'magma' (default: 'sage')
+
     EXAMPLES::
 
         sage: import sage.matrix.benchmark as b
@@ -840,6 +1005,11 @@ def invert_hilbert_QQ(n=40, system='sage'):
     Runs the benchmark for calculating the inverse of the hilbert
     matrix over rationals of dimension n.
 
+    INPUT:
+
+    - ``n`` - matrix dimension (default: ``300``)
+    - ``system`` - either 'sage' or 'magma' (default: 'sage')
+
     EXAMPLES::
 
         sage: import sage.matrix.benchmark as b
@@ -865,8 +1035,15 @@ delete h;
 
 def MatrixVector_QQ(n=1000,h=100,system='sage',times=1):
     """
-    Compute product of square n matrix by random vector with num and
-    denom bounded by 100 the given number of times.
+    Compute product of square ``n`` matrix by random vector with num and
+    denom bounded by ``h`` the given number of ``times``.
+
+    INPUT:
+
+    - ``n`` - matrix dimension (default: ``300``)
+    - ``h`` - numerator and denominator bound (default: ``bnd``)
+    - ``system`` - either 'sage' or 'magma' (default: 'sage')
+    - ``times`` - number of experiments (default: ``1``)
 
     EXAMPLES::
 
@@ -912,8 +1089,15 @@ def MatrixVector_QQ(n=1000,h=100,system='sage',times=1):
 def nullspace_RR(n=300, min=0, max=10, system='sage'):
     """
     Nullspace over RR:
-    Given a n+1 x n (with n=300) matrix over RR with random entries
-    between min=0 and max=10, compute the nullspace.
+    Given a n+1 x n matrix over RR with random entries
+    between min and max, compute the nullspace.
+
+    INPUT:
+
+    - ``n`` - matrix dimension (default: ``300``)
+    - ``min`` - minimal value for entries of matrix (default: ``0``)
+    - ``max`` - maximal value for entries of matrix (default: ``10``)
+    - ``system`` - either 'sage' or 'magma' (default: 'sage')
 
     EXAMPLES::
 
@@ -943,8 +1127,15 @@ s := Cputime(t);
 def nullspace_RDF(n=300, min=0, max=10, system='sage'):
     """
     Nullspace over RDF:
-    Given a n+1 x n (with n=300) matrix over RDF with random entries
-    between min=0 and max=10, compute the nullspace.
+    Given a n+1 x n  matrix over RDF with random entries
+    between min and max, compute the nullspace.
+
+    INPUT:
+
+    - ``n`` - matrix dimension (default: ``300``)
+    - ``min`` - minimal value for entries of matrix (default: ``0``)
+    - ``max`` - maximal value for entries of matrix (default: `10``)
+    - ``system`` - either 'sage' or 'magma' (default: 'sage')
 
     EXAMPLES::
 
