@@ -26,9 +26,10 @@ class HyperellipticCurve_padic_field(hyperelliptic_generic.HyperellipticCurve_ge
     def local_analytic_interpolation(self, P, Q):
         """
         For points $P$, $Q$ in the same residue disc,
-        this constructs an interpolation from $P$ to $Q$ (in homogeneous coordinates)
-        in a power series in the local parameter $t$, with precision equal
-        to the $p$-adic precision of the underlying ring.
+        this constructs an interpolation from $P$ to $Q$
+        (in homogeneous coordinates) in a power series in
+        the local parameter $t$, with precision equal to
+        the $p$-adic precision of the underlying ring.
 
         INPUT:
 
@@ -314,7 +315,7 @@ class HyperellipticCurve_padic_field(hyperelliptic_generic.HyperellipticCurve_ge
         Evaluate the integrals of $f_i dx/2y$ from $P$ to $Q$ for each $f_i$ in $F$
         by formally integrating a power series in a local parameter $t$
 
-        $P$ and $Q$ MUST be in the same residue disk for this result to make sense.
+        $P$ and $Q$ MUST be in the same residue disc for this result to make sense.
 
         INPUT:
 
@@ -695,12 +696,11 @@ class HyperellipticCurve_padic_field(hyperelliptic_generic.HyperellipticCurve_ge
 
         the Coleman integral $\int_P^Q w$
 
-        EXAMPLES:
+        EXAMPLES::
 
         Example of Leprevost from Kiran Kedlaya
         The first two should be zero as $(P-Q) = 30(P-Q)$ in the Jacobian
         and $dx/2y$ and $x dx/2y$ are holomorphic.
-        ::
 
             sage: K = pAdicField(11, 6)
             sage: x = polygen(K)
