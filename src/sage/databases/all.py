@@ -71,8 +71,6 @@ deprecated_callable_import('sage.databases.cremona', globals(), locals(),
                             'old_cremona_letter_code', 'is_optimal_id'])
 del deprecated_callable_import
 
-from gamma0wt2 import Gamma0Wt2Database
-
 from jones import JonesDatabase
 
 from stein_watkins import SteinWatkinsAllData, SteinWatkinsPrimeData
