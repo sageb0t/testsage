@@ -35,7 +35,8 @@ cdef extern from "ginac_wrap.h":
 
     object GSymbol_to_str "_to_PyString<symbol>"(GSymbol *s)
 
-    ctypedef struct GExPair "std::pair<ex, ex>"
+    ctypedef struct GExPair "std::pair<ex, ex>":
+        pass
     ctypedef struct GExMap "exmap":
         void insert(GExPair e)
 
@@ -69,6 +70,10 @@ cdef extern from "ginac_wrap.h":
         GEx coeff(GEx expr, int n)    except +
         GEx lcoeff(GEx expr)          except +
         GEx tcoeff(GEx expr)          except +
+        GEx normal()                  except +
+        GEx numer()                   except +
+        GEx denom()                   except +
+        GEx numer_denom()             except +
         int degree(GEx expr)          except +
         int ldegree(GEx expr)         except +
         GEx rhs()                     except +
@@ -84,8 +89,13 @@ cdef extern from "ginac_wrap.h":
 
     GExPair make_pair "std::make_pair" (GEx, GEx)
 
+    ctypedef struct GNumeric "numeric":
+        bint is_positive() except +
+        bint is_negative() except +
+
     # Numericals
     bint is_a_numeric "is_a<numeric>" (GEx e)
+    GNumeric ex_to_numeric "ex_to<numeric>" (GEx e)
     # given a GEx that is known to be a numeric, return reference to
     # the underlying PyObject*.
     object py_object_from_numeric(GEx e)     except +
@@ -142,6 +152,7 @@ cdef extern from "ginac_wrap.h":
     unsigned info_nonnegint     "GiNaC::info_flags::nonnegint"
     unsigned info_even          "GiNaC::info_flags::even"
     unsigned info_odd           "GiNaC::info_flags::odd"
+    unsigned info_rational_function "GiNaC::info_flags::rational_function"
 
     # Constants
     GEx g_Pi "Pi"
