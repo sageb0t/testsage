@@ -143,10 +143,7 @@ from functional import (additive_order,
                         log as log_b,
                         parent)
 
-from latex import latex, view, pretty_print, pretty_print_default
-
-# disabled -- nobody uses mathml
-#from mathml ml
+from latex import LatexExpr, latex, view, pretty_print, pretty_print_default
 
 from trace import trace
 
