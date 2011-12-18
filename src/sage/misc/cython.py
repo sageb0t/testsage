@@ -74,8 +74,8 @@ include_dirs = ['%sinclude/csage/'%SAGE_LOCAL,
                 '%s/devel/sage/'%SAGE_ROOT, \
                 '%s/devel/sage/sage/gsl/'%SAGE_ROOT]
 
-standard_libs = ['mpfr', 'gmp', 'gmpxx', 'stdc++', 'pari', 'm', 'curvesntl', \
-                 'g0nntl', 'jcntl', 'rankntl', 'gsl', cblas(), atlas(), 'ntl', 'csage']
+standard_libs = ['mpfr', 'gmp', 'gmpxx', 'stdc++', 'pari', 'm', \
+                 'jc', 'gsl', cblas(), atlas(), 'ntl', 'csage']
 
 offset = 0
 
@@ -201,10 +201,7 @@ def pyx_preparse(s):
         'stdc++',
         'pari',
         'm',
-        'curvesntl',
-        'g0nntl',
-        'jcntl',
-        'rankntl',
+        'jc',
         'gsl',
         '...blas',
         ...,
@@ -229,7 +226,7 @@ def pyx_preparse(s):
         'stdc++',
         'pari',
         'm',
-        'curvesntl', 'g0nntl', 'jcntl', 'rankntl',
+        'jc',
         'gsl', '...blas', ...,
         'ntl',
         'csage']
