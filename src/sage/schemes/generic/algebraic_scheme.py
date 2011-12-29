@@ -336,8 +336,8 @@ class AlgebraicScheme(scheme.Scheme):
 
         OUTPUT:
 
-        A scheme morphism whose :meth:`~morphism.PyMorphism.domain` is
-        ``self``.
+        A scheme morphism whose
+        :meth:`~morphism.SchemeMorphism.domain` is ``self``.
 
         * By default, it is the tautological embedding into its own
           ambient space :meth:`ambient_space`.
