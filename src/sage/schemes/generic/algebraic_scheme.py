@@ -513,8 +513,8 @@ class AlgebraicScheme(scheme.Scheme):
         """
         return "Subscheme of %s"%self.__A
 
-    def _homset_class(self, *args, **kwds):
-        return self.__A._homset_class(*args, **kwds)
+    def _point_homset_class(self, *args, **kwds):
+        return self.__A._point_homset_class(*args, **kwds)
 
     def _point_class(self, *args, **kwds):
         return self.__A._point_class(*args, **kwds)
@@ -1469,8 +1469,8 @@ class AlgebraicScheme_subscheme_affine(AlgebraicScheme_subscheme):
           x^2 - y*z
     """
 
-    def _point_morphism_class(self, *args, **kwds):
-        return morphism.SchemeMorphism_on_points_affine_space(*args, **kwds)
+    def _morphism_class(self, *args, **kwds):
+        return morphism.SchemeMorphism_polynomial_affine_space(*args, **kwds)
 
     def dimension(self):
         """
@@ -1662,7 +1662,7 @@ class AlgebraicScheme_subscheme_projective(AlgebraicScheme_subscheme):
           x^2 - y*z
     """
 
-    def _point_morphism_class(self, *args, **kwds):
+    def _morphism_class(self, *args, **kwds):
         r"""
         Construct a morphism determined by action on points of ``self``.
 
@@ -1671,11 +1671,11 @@ class AlgebraicScheme_subscheme_projective(AlgebraicScheme_subscheme):
         INPUT:
 
         - same as for
-          :class:`~sage.schemes.generic.morphism.SchemeMorphism_on_points_projective_space`.
+          :class:`~sage.schemes.generic.morphism.SchemeMorphism_polynomial_projective_space`.
 
         OUPUT:
 
-        - :class:`~sage.schemes.generic.morphism.SchemeMorphism_on_points_projective_space`.
+        - :class:`~sage.schemes.generic.morphism.SchemeMorphism_polynomial_projective_space`.
 
         TESTS::
 
@@ -1688,14 +1688,14 @@ class AlgebraicScheme_subscheme_projective(AlgebraicScheme_subscheme):
               To:   Projective Space of dimension 2 over Rational Field
               Defn: Defined on coordinates by sending (x : y) to
                 (x^2 : x*y : y^2)
-            sage: P1._point_morphism_class(H12, [x^2,x*y, y^2])
+            sage: P1._morphism_class(H12, [x^2,x*y, y^2])
             Scheme morphism:
               From: Projective Space of dimension 1 over Rational Field
               To:   Projective Space of dimension 2 over Rational Field
               Defn: Defined on coordinates by sending (x : y) to
                 (x^2 : x*y : y^2)
         """
-        return morphism.SchemeMorphism_on_points_projective_space(*args, **kwds)
+        return morphism.SchemeMorphism_polynomial_projective_space(*args, **kwds)
 
     def dimension(self):
         """
@@ -2043,18 +2043,18 @@ class AlgebraicScheme_subscheme_toric(AlgebraicScheme_subscheme):
         super(AlgebraicScheme_subscheme_toric, self).__init__(toric_variety,
                                                               polynomials)
 
-    def _point_morphism_class(self, *args, **kwds):
+    def _morphism_class(self, *args, **kwds):
         r"""
         Construct a morphism determined by action on points of ``self``.
 
         INPUT:
 
         - same as for
-          :class:`~sage.schemes.generic.morphism.SchemeMorphism_on_points_toric_variety`.
+          :class:`~sage.schemes.generic.morphism.SchemeMorphism_polynomial_toric_variety`.
 
         OUPUT:
 
-        - :class:`~sage.schemes.generic.morphism.SchemeMorphism_on_points_toric_variety`.
+        - :class:`~sage.schemes.generic.morphism.SchemeMorphism_polynomial_toric_variety`.
 
         TESTS::
 
@@ -2064,7 +2064,7 @@ class AlgebraicScheme_subscheme_toric(AlgebraicScheme_subscheme):
             Defining z0, z1, z2, z3
             sage: P1 = P1xP1.subscheme(z0-z2)
             sage: H = P1.Hom(P1xP1)
-            sage: P1._point_morphism_class(H, [z0,z1,z0,z3])
+            sage: P1._morphism_class(H, [z0,z1,z0,z3])
             Scheme morphism:
               From: Closed subscheme of 2-d toric variety
               covered by 4 affine patches defined by:
@@ -2073,8 +2073,8 @@ class AlgebraicScheme_subscheme_toric(AlgebraicScheme_subscheme):
               Defn: Defined on coordinates by sending [z0 : z1 : z2 : z3] to
                     [z2 : z1 : z2 : z3]
         """
-        from sage.schemes.generic.toric_morphism import SchemeMorphism_on_points_toric_variety
-        return SchemeMorphism_on_points_toric_variety(*args, **kwds)
+        from sage.schemes.generic.toric_morphism import SchemeMorphism_polynomial_toric_variety
+        return SchemeMorphism_polynomial_toric_variety(*args, **kwds)
 
     def affine_patch(self, i):
         r"""

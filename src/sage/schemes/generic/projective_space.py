@@ -313,9 +313,6 @@ class ProjectiveSpace_ring(AmbientSpace):
                 raise TypeError("%s is not a homogeneous polynomial!" % f)
         return polynomials
 
-    def _point_morphism_class(self, *args, **kwds):
-        return morphism.SchemeMorphism_on_points_projective_space(*args, **kwds)
-
     def __cmp__(self, right):
         """
         EXAMPLES::
@@ -350,11 +347,14 @@ class ProjectiveSpace_ring(AmbientSpace):
         """
         return "{\\mathbf P}_{%s}^%s"%(latex(self.base_ring()), self.dimension_relative())
 
-    def _homset_class(self, *args, **kwds):
-        return homset.SchemeHomset_projective_coordinates_ring(*args, **kwds)
+    def _morphism_class(self, *args, **kwds):
+        return morphism.SchemeMorphism_polynomial_projective_space(*args, **kwds)
+
+    def _point_homset_class(self, *args, **kwds):
+        return homset.SchemeHomset_points_projective_ring(*args, **kwds)
 
     def _point_class(self, *args, **kwds):
-        return morphism.SchemeMorphism_projective_coordinates_ring(*args, **kwds)
+        return morphism.SchemeMorphism_point_projective_ring(*args, **kwds)
 
     def _repr_(self):
         """
@@ -544,11 +544,11 @@ class ProjectiveSpace_ring(AmbientSpace):
         return AA
 
 class ProjectiveSpace_field(ProjectiveSpace_ring):
-    def _homset_class(self, *args, **kwds):
-        return homset.SchemeHomset_projective_coordinates_field(*args, **kwds)
+    def _point_homset_class(self, *args, **kwds):
+        return homset.SchemeHomset_points_projective_field(*args, **kwds)
 
     def _point_class(self, *args, **kwds):
-        return morphism.SchemeMorphism_projective_coordinates_field(*args, **kwds)
+        return morphism.SchemeMorphism_point_projective_field(*args, **kwds)
 
 class ProjectiveSpace_finite_field(ProjectiveSpace_field):
     def __iter__(self):

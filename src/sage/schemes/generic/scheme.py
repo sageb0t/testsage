@@ -168,12 +168,14 @@ class Scheme(Parent):
 
     __add__ = union
 
-    def _point_morphism_class(self, *args, **kwds):
+    def _morphism_class(self, *args, **kwds):
         """
+        Construct a morphism determined by action on points of ``self``.
+
         EXAMPLES::
 
             sage: X = Spec(QQ)
-            sage: X._point_morphism_class()
+            sage: X._morphism_class()
             Traceback (most recent call last):
             ...
             NotImplementedError
@@ -269,10 +271,10 @@ class Scheme(Parent):
             return self.point_homset(S)
         if is_Scheme(S):
             return S.Hom(self)
-        from sage.schemes.generic.morphism import SchemeMorphism_coordinates
+        from sage.schemes.generic.morphism import SchemeMorphism_point
         if isinstance(S, (list, tuple)):
             args = S
-        elif isinstance(S, SchemeMorphism_coordinates):
+        elif isinstance(S, SchemeMorphism_point):
             if S.codomain() == self:
                 return S
         else:
@@ -351,7 +353,7 @@ class Scheme(Parent):
         if is_EllipticCurve(self):
             return self._point_class(self, v, check=check)
 
-        return self._point_class(self.point_homset(), v, check=check)
+        return self.point_homset() (v, check=check)
 
     def _point_class(self):
         """
@@ -371,7 +373,7 @@ class Scheme(Parent):
         """
         raise NotImplementedError
 
-    def _homset_class(self, *args, **kwds):
+    def _point_homset_class(self, *args, **kwds):
         """
         Return the Hom set from ``self`` to another scheme.
 
@@ -379,7 +381,7 @@ class Scheme(Parent):
 
             sage: from sage.schemes.generic.scheme import Scheme
             sage: X = Scheme(QQ)
-            sage: X._homset_class()
+            sage: X._point_homset_class()
             Traceback (most recent call last):
             ...
             NotImplementedError

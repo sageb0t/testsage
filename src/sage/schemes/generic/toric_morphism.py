@@ -16,10 +16,10 @@ from sage.structure.sequence  import Sequence
 import scheme
 from sage.schemes.generic.morphism import (
     is_SchemeMorphism,
-    SchemeMorphism_coordinates, SchemeMorphism_on_points
+    SchemeMorphism_point, SchemeMorphism_polynomial
 )
 
-class SchemeMorphism_toric_coordinates_field(SchemeMorphism_coordinates):
+class SchemeMorphism_point_toric_field(SchemeMorphism_point):
     """
     Construct a morphism determined by giving coordinates in a field.
 
@@ -38,7 +38,7 @@ class SchemeMorphism_toric_coordinates_field(SchemeMorphism_coordinates):
 
     OUTPUT:
 
-    - :class:`SchemeMorphism_toric_coordinates_field`.
+    - :class:`SchemeMorphism_point_toric_field`.
 
     TESTS::
 
@@ -50,7 +50,7 @@ class SchemeMorphism_toric_coordinates_field(SchemeMorphism_coordinates):
     # Mimicking affine/projective classes
     def __init__(self, X, coordinates, check=True):
         r"""
-        See :class:`SchemeMorphism_toric_coordinates_field` for documentation.
+        See :class:`SchemeMorphism_point_toric_field` for documentation.
 
         TESTS::
 
@@ -62,7 +62,7 @@ class SchemeMorphism_toric_coordinates_field(SchemeMorphism_coordinates):
         # Convert scheme to its set of points over the base ring
         if scheme.is_Scheme(X):
             X = X(X.base_ring())
-        super(SchemeMorphism_toric_coordinates_field, self).__init__(X)
+        super(SchemeMorphism_point_toric_field, self).__init__(X)
         if check:
             # Verify that there are the right number of coords
             # Why is it not done in the parent?
@@ -81,9 +81,9 @@ class SchemeMorphism_toric_coordinates_field(SchemeMorphism_coordinates):
             X.codomain()._check_satisfies_equations(coordinates)
         self._coords = coordinates
 
-class SchemeMorphism_on_points_toric_variety(SchemeMorphism_on_points):
+class SchemeMorphism_polynomial_toric_variety(SchemeMorphism_polynomial):
     """
-    Construct a morphism determined by action on points.
+    Construct a morphism determined by homogeneous polynomials.
 
     .. WARNING::
 
@@ -92,11 +92,11 @@ class SchemeMorphism_on_points_toric_variety(SchemeMorphism_on_points):
     INPUT:
 
     - same as for
-      :class:`~sage.schemes.generic.morphism.SchemeMorphism_on_points`.
+      :class:`~sage.schemes.generic.morphism.SchemeMorphism_polynomial`.
 
     OUPUT:
 
-    - :class:`~sage.schemes.generic.morphism.SchemeMorphism_on_points_toric_variety`.
+    - :class:`~sage.schemes.generic.morphism.SchemeMorphism_polynomial_toric_variety`.
 
     TESTS::
 
@@ -107,7 +107,7 @@ class SchemeMorphism_on_points_toric_variety(SchemeMorphism_on_points):
         sage: P1 = P1xP1.subscheme(z0-z2)
         sage: H = P1xP1.Hom(P1)
         sage: import sage.schemes.generic.toric_morphism as MOR
-        sage: MOR.SchemeMorphism_on_points_toric_variety(H, [z0,z1,z0,z3])
+        sage: MOR.SchemeMorphism_polynomial_toric_variety(H, [z0,z1,z0,z3])
         Scheme morphism:
           From: 2-d toric variety covered by 4 affine patches
           To:   Closed subscheme of 2-d toric variety
@@ -119,7 +119,7 @@ class SchemeMorphism_on_points_toric_variety(SchemeMorphism_on_points):
 
     def __init__(self, parent, polynomials, check=True):
         r"""
-        See :class:`SchemeMorphism_on_points_toric_variety` for documentation.
+        See :class:`SchemeMorphism_polynomial_toric_variety` for documentation.
 
         TESTS::
 
@@ -130,7 +130,7 @@ class SchemeMorphism_on_points_toric_variety(SchemeMorphism_on_points):
             sage: P1 = P1xP1.subscheme(z0-z2)
             sage: H = P1xP1.Hom(P1)
             sage: import sage.schemes.generic.toric_morphism as MOR
-            sage: MOR.SchemeMorphism_on_points_toric_variety(H, [z0,z1,z0,z3])
+            sage: MOR.SchemeMorphism_polynomial_toric_variety(H, [z0,z1,z0,z3])
             Scheme morphism:
               From: 2-d toric variety covered by 4 affine patches
               To:   Closed subscheme of 2-d toric variety
@@ -139,7 +139,7 @@ class SchemeMorphism_on_points_toric_variety(SchemeMorphism_on_points):
               Defn: Defined on coordinates by sending
                     [z0 : z1 : z2 : z3] to [z0 : z1 : z0 : z3]
         """
-        SchemeMorphism_on_points.__init__(self, parent, polynomials, check)
+        SchemeMorphism_polynomial.__init__(self, parent, polynomials, check)
         if check:
             # Check that defining polynomials are homogeneous (degrees can be
             # different if the target uses weighted coordinates)
