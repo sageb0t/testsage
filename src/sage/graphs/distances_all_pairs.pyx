@@ -270,7 +270,7 @@ cdef inline all_pairs_shortest_path_BFS(gg,
 # Predecessors #
 ################
 
-cdef unsigned short * c_shortest_path_all_pairs(G):
+cdef unsigned short * c_shortest_path_all_pairs(G) except NULL:
     r"""
     Returns the matrix of predecessors in G.
 
@@ -321,6 +321,9 @@ def shortest_path_all_pairs(G):
     """
 
     cdef int n = G.order()
+
+    if n == 0:
+        return {}
 
     cdef unsigned short * predecessors = c_shortest_path_all_pairs(G)
     cdef unsigned short * c_predecessors = predecessors
@@ -398,6 +401,10 @@ def distances_all_pairs(G):
     from sage.rings.infinity import Infinity
 
     cdef int n = G.order()
+
+    if n == 0:
+        return {}
+
     cdef unsigned short * distances = c_distances_all_pairs(G)
     cdef unsigned short * c_distances = distances
 
@@ -473,6 +480,10 @@ def distances_and_predecessors_all_pairs(G):
 
     from sage.rings.infinity import Infinity
     cdef int n = G.order()
+
+    if n == 0:
+        return {}, {}
+
     cdef unsigned short * distances = <unsigned short *> sage_malloc(n*n*sizeof(unsigned short *))
     cdef unsigned short * c_distances = distances
     cdef unsigned short * predecessor = <unsigned short *> sage_malloc(n*n*sizeof(unsigned short *))
@@ -518,7 +529,7 @@ def distances_and_predecessors_all_pairs(G):
 # Eccentricity #
 ################
 
-cdef unsigned short * c_eccentricity(G):
+cdef unsigned short * c_eccentricity(G) except NULL:
     r"""
     Returns the vector of eccentricities in G.
 
@@ -550,6 +561,10 @@ def eccentricity(G):
     """
     from sage.rings.infinity import Infinity
     cdef int n = G.order()
+
+    if n == 0:
+        return []
+
     cdef unsigned short * ecc = c_eccentricity(G)
 
     cdef list l_ecc = []
@@ -680,6 +695,12 @@ def floyd_warshall(gg, paths = True, distances = False):
     cdef CGraph g = <CGraph> gg._backend._cg
 
     cdef list gverts = g.verts()
+
+    if gverts == []:
+        if distances and paths:
+            return {}, {}
+        else:
+            return {}
 
     cdef int n = max(gverts) + 1
 
