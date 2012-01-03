@@ -8813,7 +8813,15 @@ class GenericGraph(GenericGraph_pyx):
 
             sage: graphs.HouseGraph().is_regular()
             False
+
+        A graph without vertices is `k`-regular for every `k`::
+
+            sage: Graph().is_regular()
+            True
         """
+        if self.order() == 0:
+            return True
+
         deg_it = self.degree_iterator()
         if k is None:
             k = deg_it.next()
