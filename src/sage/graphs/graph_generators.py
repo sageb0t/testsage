@@ -314,6 +314,15 @@ class GraphGenerators():
     - ``sparse`` -- (default: ``True``) ignored if implementation is not
       ``'c_graph'``.
 
+    - ``copy`` (boolean) -- If set to ``True`` (default)
+      this method makes copies of the graphs before returning
+      them. If set to ``False`` the method returns the graph it
+      is working on. The second alternative is faster, but modifying
+      any of the graph instances returned by the method may break
+      the function's behaviour, as it is using these graphs to
+      compute the next ones : only use ``copy_graph = False`` when
+      you stick to *reading* the graphs returned.
+
     EXAMPLES:
 
     Print graphs on 3 or less vertices::
@@ -469,6 +478,17 @@ class GraphGenerators():
 
         sage: print 10, len([g for g in graphs(10,degree_sequence=[3]*10) if g.is_connected()]) # not tested
         10 19
+
+    Make sure that the graphs are really independent and the generator
+    survives repeated vertex removal (trac 8458)::
+
+        sage: for G in graphs(3):
+        ...       G.delete_vertex(0)
+        ...       print(G.order())
+        2
+        2
+        2
+        2
 
     REFERENCE:
 
@@ -6370,7 +6390,7 @@ class GraphGenerators():
 
     def __call__(self, vertices=None, property=lambda x: True, augment='edges',
         size=None, deg_seq=None, degree_sequence=None, loops=False, implementation='c_graph',
-        sparse=True):
+        sparse=True, copy = True):
         """
         Accesses the generator of isomorphism class representatives.
         Iterates over distinct, exhaustive representatives. See the docstring
@@ -6417,6 +6437,8 @@ class GraphGenerators():
         """
         from sage.graphs.all import Graph
         from sage.misc.misc import deprecation
+        from copy import copy as copyfun
+
         if deg_seq is not None:
             deprecation("The argument name deg_seq is deprecated. It will be "
                         "removed in a future release of Sage. So, please use "
@@ -6445,14 +6467,14 @@ class GraphGenerators():
             g = Graph(loops=loops, implementation=implementation, sparse=sparse)
             for gg in canaug_traverse_vert(g, [], vertices, property, loops=loops, implementation=implementation, sparse=sparse):
                 if extra_property(gg):
-                    yield gg
+                    yield copyfun(gg) if copy else gg
         elif augment == 'edges':
             if vertices is None:
                 from sage.rings.all import Integer
                 vertices = Integer(0)
                 while True:
                     for g in self(vertices, loops=loops, implementation=implementation, sparse=sparse):
-                        yield g
+                        yield copyfun(g) if copy else g
                     vertices += 1
             g = Graph(vertices, loops=loops, implementation=implementation, sparse=sparse)
             gens = []
@@ -6463,7 +6485,7 @@ class GraphGenerators():
                 gens.append(gen)
             for gg in canaug_traverse_edge(g, gens, property, loops=loops, implementation=implementation, sparse=sparse):
                 if extra_property(gg):
-                    yield gg
+                    yield copyfun(gg) if copy else gg
         else:
             raise NotImplementedError
 
