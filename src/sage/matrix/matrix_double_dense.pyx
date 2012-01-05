@@ -1028,7 +1028,7 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
             sage: A.singular_values(eps='junk')
             Traceback (most recent call last):
             ...
-            ValueError: invalid literal for float(): junk
+            ValueError: could not convert string to float: junk
 
         REFERENCES:
 

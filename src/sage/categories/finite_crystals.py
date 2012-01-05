@@ -110,7 +110,7 @@ class FiniteCrystals(Category):
                 sage: B._test_stembridge_local_axioms()
                 Traceback (most recent call last):
                 ...
-                AssertionError
+                AssertionError: None
             """
             tester = self._tester(**options)
             goodness=True
