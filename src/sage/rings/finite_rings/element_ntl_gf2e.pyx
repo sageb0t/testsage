@@ -149,6 +149,13 @@ cdef class Cache_ntl_gf2e(SageObject):
     the parent (see #12062).
     """
     def __init__(self, parent, k, modulus):
+        """
+        Initialization.
+
+        TESTS::
+
+            sage: k.<a> = GF(2^8)
+        """
         cdef GF2X_c ntl_m, ntl_tmp
         cdef GF2_c c
         cdef Py_ssize_t i
@@ -472,6 +479,13 @@ cdef class FiniteField_ntl_gf2eElement(FinitePolyExtElement):
             raise ValueError, "You must provide a parent to construct a finite field element"
 
     def __cinit__(FiniteField_ntl_gf2eElement self, parent=None ):
+        """
+        Restores the cache and constructs the underlying NTL element.
+
+        EXAMPLES::
+
+            sage: k.<a> = GF(2^8) # indirect doctest
+        """
         if parent is None:
             return
         if PY_TYPE_CHECK(parent, FiniteField_ntl_gf2e):
@@ -636,7 +650,7 @@ cdef class FiniteField_ntl_gf2eElement(FinitePolyExtElement):
         EXAMPLES::
 
             sage: k.<a> = GF(2^16)
-            sage: e = a^2 + a + 1
+            sage: e = a^2 + a + 1 # indirect doctest
             sage: f = a^15 + a^2 + 1
             sage: e + f
             a^15 + a
@@ -652,7 +666,7 @@ cdef class FiniteField_ntl_gf2eElement(FinitePolyExtElement):
         EXAMPLES::
 
             sage: k.<a> = GF(2^16)
-            sage: e = a^2 + a + 1
+            sage: e = a^2 + a + 1 # indirect doctest
             sage: f = a^15 + a^2 + 1
             sage: e + f
             a^15 + a
@@ -667,7 +681,7 @@ cdef class FiniteField_ntl_gf2eElement(FinitePolyExtElement):
         EXAMPLES::
 
             sage: k.<a> = GF(2^16)
-            sage: e = a^2 + a + 1
+            sage: e = a^2 + a + 1 # indirect doctest
             sage: f = a^15 + a^2 + 1
             sage: e * f
             a^15 + a^6 + a^5 + a^3 + a^2
@@ -683,7 +697,7 @@ cdef class FiniteField_ntl_gf2eElement(FinitePolyExtElement):
         EXAMPLES::
 
             sage: k.<a> = GF(2^16)
-            sage: e = a^2 * a + 1
+            sage: e = a^2 * a + 1 # indirect doctest
             sage: f = a^15 * a^2 + 1
             sage: e * f
             a^9 + a^7 + a + 1
@@ -698,7 +712,7 @@ cdef class FiniteField_ntl_gf2eElement(FinitePolyExtElement):
         EXAMPLES::
 
             sage: k.<a> = GF(2^16)
-            sage: e = a^2 + a + 1
+            sage: e = a^2 + a + 1 # indirect doctest
             sage: f = a^15 + a^2 + 1
             sage: e / f
             a^11 + a^8 + a^7 + a^6 + a^5 + a^3 + a^2 + 1
@@ -720,7 +734,7 @@ cdef class FiniteField_ntl_gf2eElement(FinitePolyExtElement):
         EXAMPLES::
 
             sage: k.<a> = GF(2^16)
-            sage: e = a^2 / a + 1
+            sage: e = a^2 / a + 1 # indirect doctest
             sage: f = a^15 / a^2 + 1
             sage: e / f
             a^15 + a^12 + a^10 + a^9 + a^6 + a^5 + a^3
@@ -735,7 +749,7 @@ cdef class FiniteField_ntl_gf2eElement(FinitePolyExtElement):
         EXAMPLES::
 
             sage: k.<a> = GF(2^16)
-            sage: e = a^2 - a + 1
+            sage: e = a^2 - a + 1 # indirect doctest
             sage: f = a^15 - a^2 + 1
             sage: e - f
             a^15 + a
@@ -751,7 +765,7 @@ cdef class FiniteField_ntl_gf2eElement(FinitePolyExtElement):
         EXAMPLES::
 
             sage: k.<a> = GF(2^16)
-            sage: e = a^2 - a + 1
+            sage: e = a^2 - a + 1 # indirect doctest
             sage: f = a^15 - a^2 + 1
             sage: e - f
             a^15 + a
