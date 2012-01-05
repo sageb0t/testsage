@@ -2429,7 +2429,7 @@ cdef class RealNumber(sage.structure.element.RingElement):
         EXAMPLES::
 
             sage: RR(pi).__float__()
-            3.1415926535897931
+            3.141592653589793
             sage: type(RR(pi).__float__())
             <type 'float'>
         """
@@ -2493,7 +2493,7 @@ cdef class RealNumber(sage.structure.element.RingElement):
         EXAMPLES::
 
             sage: RR(pi).__complex__()
-            (3.1415926535897931+0j)
+            (3.141592653589793+0j)
             sage: type(RR(pi).__complex__())
             <type 'complex'>
         """
