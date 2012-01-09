@@ -98,7 +98,8 @@ cdef class GenericAction(Action):
             Multivariate Polynomial Ring in x, y, z over Rational Field
         """
         if self._codomain is None:
-            self._codomain = parent_c(self.act(an_element(self.G), an_element(self.S)))
+            self._codomain = parent_c(self.act(an_element(self.G),
+                                               an_element(self.underlying_set())))
         return self._codomain
 
 cdef class ActOnAction(GenericAction):
@@ -327,7 +328,7 @@ cdef class ModuleAction(Action):
         """
         if self.extended_base is not None:
             return self.extended_base
-        return self.S
+        return self.underlying_set()
 
     def domain(self):
         """
@@ -340,7 +341,7 @@ cdef class ModuleAction(Action):
             sage: A.domain()
             Multivariate Polynomial Ring in x, y, z over Integer Ring
         """
-        return self.S
+        return self.underlying_set()
 
 cdef class LeftModuleAction(ModuleAction):
 

@@ -29,6 +29,7 @@ cimport sage_object
 import operator
 from parent import Set_PythonType, Set_PythonType_class
 from coerce import py_scalar_parent
+from sage.structure.coerce_dict import TripleDict
 
 include '../ext/python_object.pxi'
 include '../ext/python_bool.pxi'
@@ -64,7 +65,7 @@ cdef class Parent(parent.Parent):
         self._coerce_from_list = list(coerce_from)
         self._coerce_from_hash = {}
         self._action_list = list(actions)
-        self._action_hash = {}
+        self._action_hash = TripleDict(23)
 
         cdef parent.Parent other
         for mor in embeddings:
