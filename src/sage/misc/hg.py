@@ -283,7 +283,7 @@ class HG:
 
             sage: hg_sage.status()
             Getting status of modified or unknown files:
-            cd ... && hg status
+            cd ... && sage --hg status
             ...
             sage: hg_sage.status(debug=False)
             Getting status of modified or unknown files:
@@ -383,7 +383,13 @@ class HG:
         self._warning()
         if cmd is None:
             cmd = 'status'
-        s = 'cd "%s" && hg %s'%(self.__dir, cmd)
+        # Invoke Mercurial with "sage --hg", not just "hg": when
+        # calling "hg", the variable HGPLAIN is set (by sage-env),
+        # which disables various configuration options, like the use
+        # of a pager.  When calling "sage --hg", HGPLAIN is explicitly
+        # unset (see the script sage-sage), so the pager will be used,
+        # as will color output, etc.  See trac ticket #12288.
+        s = 'cd "%s" && sage --hg %s'%(self.__dir, cmd)
         if debug:
             print s
         if interactive:
@@ -673,7 +679,7 @@ class HG:
         EXAMPLES::
 
             sage: hg_sage.incoming("http://hg.sagemath.org/sage-main") # not tested
-            cd ... && hg incoming "http://hg.sagemath.org/sage-main"  --config pager.pager="LESS='R' less"
+            cd ... && sage --hg incoming "http://hg.sagemath.org/sage-main"  --config pager.pager="LESS='R' less"
             comparing with http://hg.sagemath.org/sage-main
             searching for changes
             no changes found
@@ -716,7 +722,7 @@ class HG:
 
             sage: hg_sage.add('module_list.pyc', options='--dry-run')
             Adding file module_list.pyc
-            cd ... && hg add --dry-run "module_list.pyc"
+            cd ... && sage --hg add --dry-run "module_list.pyc"
         """
         if isinstance(files, str):
             if ' ' in files:
@@ -746,7 +752,7 @@ class HG:
 
             sage: hg_sage.remove('sage/misc/remove_me.py') # not tested
             Removing file sage/misc/remove_me.py
-            cd ... && hg rm "sage/misc/remove_me.py"
+            cd ... && sage --hg rm "sage/misc/remove_me.py"
         """
         if isinstance(files, str):
             files = [files]
@@ -779,7 +785,7 @@ class HG:
 
             sage: hg_sage.rename('sage/misc/hg.py', 'sage/misc/hgnew.py', options='--dry-run')
             Moving sage/misc/hg.py --> sage/misc/hgnew.py
-            cd ... && hg mv --dry-run "sage/misc/hg.py" "sage/misc/hgnew.py"
+            cd ... && sage --hg mv --dry-run "sage/misc/hg.py" "sage/misc/hgnew.py"
         """
         print "Moving %s --> %s"%(src,dest)
         self('mv %s "%s" "%s"'%(options, src,dest), debug=debug)
@@ -839,7 +845,7 @@ class HG:
         EXAMPLES::
 
             sage: hg_sage.log() # not tested
-            cd ... && hg log   --config pager.pager="LESS='R' less"
+            cd ... && sage --hg log   --config pager.pager="LESS='R' less"
             ...
         """
         if embedded() and limit is None:
@@ -910,12 +916,12 @@ class HG:
         EXAMPLES::
 
             sage: hg_sage.diff() # not tested
-            cd ... && hg diff    --config pager.pager="LESS='R' less"
+            cd ... && sage --hg diff    --config pager.pager="LESS='R' less"
 
         To see the changes in this file since revision 10000::
 
             sage: hg_sage.diff('sage/misc/hg.py', rev=10000) # not tested
-            cd ... && hg diff  -r 10000  sage/misc/hg.py  --config pager.pager="LESS='R' less"
+            cd ... && sage --hg diff  -r 10000  sage/misc/hg.py  --config pager.pager="LESS='R' less"
             ...
         """
         if not rev is None:
@@ -989,7 +995,7 @@ class HG:
         EXAMPLES::
 
             sage: hg_sage.revert('sage/misc/hg.py', rev=12000, options='--dry-run')
-            cd ... && hg revert --dry-run -r 12000 sage/misc/hg.py
+            cd ... && sage --hg revert --dry-run -r 12000 sage/misc/hg.py
         """
         if not rev is None:
             options = options +' -r %s %s'%(rev, files)
@@ -1106,7 +1112,7 @@ class HG:
         EXAMPLES::
 
             sage: hg_sage.outgoing() # not tested
-            cd ... && hg outgoing  http://hg.sagemath.org/sage-main/ --config pager.pager="LESS='R' less"
+            cd ... && sage --hg outgoing  http://hg.sagemath.org/sage-main/ --config pager.pager="LESS='R' less"
             comparing with http://hg.sagemath.org/sage-main/
             searching for changes
             ...
@@ -1175,7 +1181,7 @@ class HG:
         EXAMPLES::
 
             sage: hg_sage.pull() # not tested
-            cd ... && hg pull http://hg.sagemath.org/sage-main/
+            cd ... && sage --hg pull http://hg.sagemath.org/sage-main/
             ...
         """
         self._ensure_safe()
@@ -1249,7 +1255,7 @@ class HG:
         EXAMPLES::
 
             sage: hg_sage.push() # not tested
-            cd ... && hg push http://hg.sagemath.org/sage-main/
+            cd ... && sage --hg push http://hg.sagemath.org/sage-main/
             ...
         """
         self._ensure_safe()
@@ -1283,7 +1289,7 @@ class HG:
         EXAMPLES::
 
             sage: hg_sage.merge() # not tested
-            cd ... && hg merge
+            cd ... && sage --hg merge
         """
         self('merge %s'%options, debug=debug)
 
@@ -1319,7 +1325,7 @@ class HG:
         EXAMPLES::
 
             sage: hg_sage.update() # not tested
-            cd ... && hg update
+            cd ... && sage --hg update
         """
         self('update %s'%options, debug=debug)
 
@@ -1349,7 +1355,7 @@ class HG:
         EXAMPLES::
 
             sage: hg_sage.head() # random
-            cd ... && hg head
+            cd ... && sage --hg head
             changeset:   15825:6ca08864b80c
             tag:         tip
             user:        Jeroen Demeyer <jdemeyer@cage.ugent.be>
@@ -1488,7 +1494,7 @@ class HG:
         EXAMPLES::
 
             sage: hg_sage.commit('hg.py', comment='miscellaneous fixes') # not tested
-            cd ... && hg commit -m "miscellaneous fixes" hg.py
+            cd ... && sage --hg commit -m "miscellaneous fixes" hg.py
         """
         if embedded() and comment is None:
             raise RuntimeError, "You're using the Sage notebook, so you *must* explicitly specify the comment in the commit command."
@@ -1516,7 +1522,7 @@ class HG:
         EXAMPLES::
 
             sage: hg_sage.rollback() # not tested
-            cd ... && hg rollback
+            cd ... && sage --hg rollback
         """
         self('rollback', debug=debug)
 
@@ -1558,7 +1564,7 @@ class HG:
 
             sage: hg_sage.bundle('new-bundle') # not tested
             Writing to /.../new-bundle.hg
-            cd ... && hg bundle tmphg http://hg.sagemath.org/sage-main/
+            cd ... && sage --hg bundle tmphg http://hg.sagemath.org/sage-main/
             searching for changes
             133 changesets found
             Successfully created hg patch bundle /.../new-bundle.hg
@@ -1610,7 +1616,7 @@ class HG:
         EXAMPLES::
 
             sage: hg_sage.qseries()
-            cd ... && hg qseries
+            cd ... && sage --hg qseries
         """
         options = "--summary" if verbose else ""
         self('qseries %s %s' % (options, color(),), debug=debug)
@@ -1629,7 +1635,7 @@ class HG:
         EXAMPLES::
 
             sage: hg_sage.qapplied()
-            cd ... && hg qapplied
+            cd ... && sage --hg qapplied
         """
         options = "--summary" if verbose else ""
         self('qapplied %s %s' % (options, color(),), debug=debug)
@@ -1648,7 +1654,7 @@ class HG:
         EXAMPLES::
 
             sage: hg_sage.qunapplied()
-            cd ... && hg qunapplied
+            cd ... && sage --hg qunapplied
         """
         options = "--summary" if verbose else ""
         self('qunapplied %s %s' % (options, color(),), debug=debug)
@@ -1675,7 +1681,7 @@ class HG:
         EXAMPLES::
 
             sage: hg_sage.qimport('old.patch') # not tested
-            cd ... && hg qimport old.patch ...
+            cd ... && sage --hg qimport old.patch ...
         """
         if filename.startswith("http://") or filename.startswith("https://"):
             filename = get_remote_file(filename, verbose=True)
@@ -1701,7 +1707,7 @@ class HG:
         EXAMPLES::
 
             sage: hg_sage.qdelete('old.patch new.patch') # not tested
-            cd ... && hg qdelete old.patch new.patch ...
+            cd ... && sage --hg qdelete old.patch new.patch ...
         """
         options = "--keep" if keep_patch else ""
         self('qdelete %s %s' % (options, patches),
@@ -1729,7 +1735,7 @@ class HG:
         EXAMPLES::
 
             sage: hg_sage.qpush() # not tested
-            cd ... && hg  qpush
+            cd ... && sage --hg  qpush
         """
         extra_options = ''
         if force:
@@ -1762,7 +1768,7 @@ class HG:
         EXAMPLES::
 
             sage: hg_sage.qpop() # not tested
-            cd ... && hg qpop
+            cd ... && sage --hg qpop
         """
         extra_options = ''
         if force:
@@ -1793,7 +1799,7 @@ class HG:
         EXAMPLES::
 
             sage: hg_sage.qrefresh() # not tested
-            cd ... && hg qrefresh
+            cd ... && sage --hg qrefresh
         """
         self('qrefresh %s' % options, debug=debug)
 
@@ -1822,7 +1828,7 @@ class HG:
         EXAMPLES::
 
             sage: hg_sage.qdiff() # not tested
-            cd ... && hg qdiff ...
+            cd ... && sage --hg qdiff ...
         """
         self('qdiff %s %s %s' % (options, color(), pager()), debug=debug)
 
@@ -1848,7 +1854,7 @@ class HG:
         EXAMPLES::
 
             sage: hg_sage.qnew('my_new.patch') # not tested
-            cd ... && hg qnew my_new.patch
+            cd ... && sage --hg qnew my_new.patch
         """
         self('qnew %s %s' % (patch, options), debug=debug)
 
