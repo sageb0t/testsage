@@ -125,7 +125,7 @@ cdef class Polynomial_ZZ_pEX(Polynomial_template):
                         e = K(e) # K.coerce(e)
                         e_polynomial = e.polynomial()
                     except TypeError:
-                        raise TypeError, "unable to convert %s into the base ring"%repr(e)
+                        raise TypeError("unable to convert %s into the base ring"%repr(e))
                 d = parent._modulus.ZZ_pE(list(e_polynomial))
                 ZZ_pEX_SetCoeff(self.x, i, d.x)
             return
@@ -134,7 +134,7 @@ cdef class Polynomial_ZZ_pEX(Polynomial_template):
 
     def __getitem__(self,i):
         """
-        EXAMPLE::
+        EXAMPLES::
 
             sage: K.<a>=GF(next_prime(2**60)**3)
             sage: R.<x> = PolynomialRing(K,implementation='NTL')
@@ -145,16 +145,34 @@ cdef class Polynomial_ZZ_pEX(Polynomial_template):
             2*a + 1
             sage: f[2]
             0
+            sage: f[1:4]
+            x^3 + (2*a + 1)*x
+            sage: f[-5:50] == f
+            True
         """
         cdef ZZ_pE_c c_pE
         cdef cparent _parent
+        cdef Polynomial_template r
+        if isinstance(i, slice):
+            start, stop = i.start, i.stop
+            _parent = get_cparent((<Polynomial_template>self)._parent)
+            if start < 0:
+                start = 0
+            if stop > celement_len(&self.x,_parent) or stop is None:
+                stop = celement_len(&self.x, _parent)
+            x = (<Polynomial_template>self)._parent.gen()
+            v = [self[t] for t from start <= t < stop]
 
-        _parent = get_cparent(self._parent)
-        _parent[0].restore()
-        c_pE = ZZ_pEX_coeff(self.x, i)
+            r = <Polynomial_template>PY_NEW(self.__class__)
+            Polynomial_template.__init__(r, (<Polynomial_template>self)._parent, v)
+            return r << start
+        else:
+            _parent = get_cparent(self._parent)
+            _parent[0].restore()
+            c_pE = ZZ_pEX_coeff(self.x, i)
 
-        K = self._parent.base_ring()
-        return K(ZZ_pE_c_to_list(c_pE))
+            K = self._parent.base_ring()
+            return K(ZZ_pE_c_to_list(c_pE))
 
     def list(self):
         """
@@ -240,15 +258,15 @@ cdef class Polynomial_ZZ_pEX(Polynomial_template):
 
         if kwds:
             if x:
-                raise TypeError, "%s__call__() takes exactly 1 argument"%type(self)
+                raise TypeError("%s__call__() takes exactly 1 argument"%type(self))
             try:
                 x = [kwds.pop(self.variable_name())]
             except KeyError:
                 pass
         if kwds:
-            raise TypeError, "%s__call__() accepts no named argument except '%s'"%(type(self),self.variable_name())
+            raise TypeError("%s__call__() accepts no named argument except '%s'"%(type(self),self.variable_name()))
         if len(x)!=1:
-            raise TypeError, "%s__call__() takes exactly 1 positional argument"%type(self)
+            raise TypeError("%s__call__() takes exactly 1 positional argument"%type(self))
 
         a = x[0]
         try:
