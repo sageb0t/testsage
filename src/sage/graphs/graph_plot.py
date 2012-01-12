@@ -774,6 +774,7 @@ class GraphPlot(SageObject):
 
         - ``orientation`` -- Whether to place the root
           at the top or at the bottom :
+
             - ``orientation="down"`` -- children are placed below
               their parent
             - ``orientation="top"`` -- children are placed above
