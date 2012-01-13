@@ -2555,7 +2555,7 @@ class Graph(GenericGraph):
         from sage.numerical.mip import MixedIntegerLinearProgram, Sum
 
         g = self.copy()
-        p = MixedIntegerLinearProgram()
+        p = MixedIntegerLinearProgram(constraint_generation = True)
 
         # One variable per edge
         r = p.new_variable(dim = 2)
