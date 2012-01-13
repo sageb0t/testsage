@@ -1167,10 +1167,18 @@ class DiGraph(GenericGraph):
             {0: 3, 1: 2, 2: 1}
             sage: D.out_degree()
             [3, 2, 1, 1, 2, 1]
+            sage: D.out_degree(2)
+            1
         """
         if vertices in self:
-            for d in self.out_degree_iterator(vertices):
-                return d # (weird, but works: only happens once!)
+
+            try:
+                return self._backend.out_degree(vertices)
+
+            except AttributeError:
+                for d in self.out_degree_iterator(vertices):
+                    return d # (weird, but works: only happens once!)
+
         elif labels:
             di = {}
             for v, d in self.out_degree_iterator(vertices, labels=labels):
@@ -2695,18 +2703,24 @@ class DiGraph(GenericGraph):
 
         TESTS:
 
-        Checking against NetworkX::
+        Checking against NetworkX, and another of Sage's implementations::
 
+            sage: from sage.graphs.base.static_sparse_graph import strongly_connected_components
             sage: import networkx
             sage: for i in range(100):                                     # long
             ...        g = digraphs.RandomDirectedGNP(100,.05)             # long
             ...        h = g.networkx_graph()                              # long
             ...        scc1 = g.strongly_connected_components()            # long
             ...        scc2 = networkx.strongly_connected_components(h)    # long
+            ...        scc3 = strongly_connected_components(g)             # long
             ...        s1 = Set(map(Set,scc1))                             # long
             ...        s2 = Set(map(Set,scc2))                             # long
+            ...        s3 = Set(map(Set,scc3))                             # long
             ...        if s1 != s2:                                        # long
             ...            print "Ooch !"                                  # long
+            ...        if s1 != s3:                                        # long
+            ...            print "Oooooch !"                               # long
+
         """
 
         try:
@@ -2718,7 +2732,7 @@ class DiGraph(GenericGraph):
                 scc.append(tmp)
             return scc
 
-        except ValueError:
+        except AttributeError:
             import networkx
             return networkx.strongly_connected_components(self.networkx_graph(copy=False))
 
@@ -2748,7 +2762,7 @@ class DiGraph(GenericGraph):
             return self._backend.strongly_connected_component_containing_vertex(v)
 
         except AttributeError:
-            raise ValueError("This function is only defined for C graphs.")
+            raise AttributeError("This function is only defined for C graphs.")
 
     def strongly_connected_components_subgraphs(self):
         r"""
