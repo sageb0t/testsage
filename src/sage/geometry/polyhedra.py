@@ -4721,7 +4721,7 @@ class Polyhedron(SageObject):
 
         from sage.groups.perm_gps.permgroup import PermutationGroup
 
-        G = Graph(dense=False)
+        G = Graph(sparse=True)
         for edge in self.vertex_graph().edges():
             i = edge[0]
             j = edge[1]
@@ -4987,7 +4987,7 @@ class Polyhedron(SageObject):
 
         # Finally, construct the graph
         Qinv = sum( v.column() * v.row() for v in v_list ).inverse()
-        G = Graph(dense=True)
+        G = Graph(sparse=False)
         for i in range(0,len(v_list)):
             for j in range(i+1,len(v_list)):
                 v_i = v_list[i]
