@@ -108,4 +108,6 @@ from multichoose_nk import MultichooseNK
 
 from kazhdan_lusztig import KazhdanLusztigPolynomial
 
+from cyclic_sieving_phenomenon import CyclicSievingPolynomial, CyclicSievingCheck
+
 from sidon_sets import sidon_sets
