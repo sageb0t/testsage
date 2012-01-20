@@ -805,6 +805,12 @@ class Graph(GenericGraph):
             Traceback (most recent call last):
             ...
             ValueError: Non-multigraph input dict has multiple edges (1,2)
+
+        An empty dictionary defines a simple graph (trac #10441)::
+
+            sage: Graph({})
+            Graph on 0 vertices
+            sage: # not "Multi-graph on 0 vertices"
         """
         GenericGraph.__init__(self)
         msg = ''
@@ -1107,7 +1113,8 @@ class Graph(GenericGraph):
                         if multiedges is None: multiedges = False
                         if multiedges:
                             raise ValueError("Dict of dicts for multigraph must be in the format {v : {u : list}}")
-            if multiedges is None: multiedges = True
+            if multiedges is None and len(data) > 0:
+                multiedges = True
             num_verts = len(verts)
         elif format == 'dict_of_lists':
             if not all(isinstance(data[u], list) for u in data):
