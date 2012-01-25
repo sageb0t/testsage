@@ -7,6 +7,7 @@
 ###############################################################################
 
 cimport parent
+from sage.structure.coerce_dict cimport MonoDict
 cdef class Parent(parent.Parent):
 
     # returns a Morphism from S to self, or None
@@ -18,7 +19,7 @@ cdef class Parent(parent.Parent):
     cpdef get_action_c(self, S, op, bint self_on_left)
     cdef get_action_c_impl(self, S, op, bint self_on_left)
 
-    cdef public object _has_coerce_map_from
+    cdef public MonoDict _has_coerce_map_from
 
     #########################################
     # Canonical Coercion Methods
