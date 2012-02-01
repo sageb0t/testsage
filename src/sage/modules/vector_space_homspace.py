@@ -349,6 +349,17 @@ class VectorSpaceHomspace(sage.modules.free_module_homspace.FreeModuleHomspace):
             True
 
         See other examples in the module-level documentation.
+
+        TESTS::
+
+            sage: V = GF(3)^0
+            sage: W = GF(3)^1
+            sage: H = V.Hom(W)
+            sage: H.zero_element().is_zero()
+            True
+
+        Previously the above code resulted in a TypeError because the
+        dimensions of the matrix were incorrect.
         """
         import vector_space_morphism
         D = self.domain()
@@ -364,7 +375,7 @@ class VectorSpaceHomspace(sage.modules.free_module_homspace.FreeModuleHomspace):
                 msg = 'function cannot be applied properly to some basis element because\n' + e.args[0]
                 raise ValueError(msg)
             try:
-                A = matrix.matrix([C.coordinates(C(a)) for a in images])
+                A = matrix.matrix(D.dimension(), C.dimension(), [C.coordinates(C(a)) for a in images])
             except (ArithmeticError, TypeError), e:
                 msg = 'some image of the function is not in the codomain, because\n' + e.args[0]
                 raise ArithmeticError(msg)
@@ -374,7 +385,7 @@ class VectorSpaceHomspace(sage.modules.free_module_homspace.FreeModuleHomspace):
                 raise ValueError(msg.format(len(D.basis()), len(A)))
             try:
                 v = [C(a) for a in A]
-                A = matrix.matrix([C.coordinates(a) for a in v])
+                A = matrix.matrix(D.dimension(), C.dimension(), [C.coordinates(a) for a in v])
             except (ArithmeticError, TypeError), e:
                 msg = 'some proposed image is not in the codomain, because\n' + e.args[0]
                 raise ArithmeticError(msg)
