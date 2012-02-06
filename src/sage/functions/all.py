@@ -19,7 +19,7 @@ from other import ( ceil, floor, gamma, psi, factorial, beta,
                     arg, real_part, real,
                     imag_part, imag, imaginary, conjugate)
 
-from log import (exp, log, ln, polylog, dilog)
+from log import (exp, log, ln, polylog, dilog, lambert_w)
 
 from transcendental import (exponential_integral_1,
                             zeta, zetaderiv, zeta_symmetric,
