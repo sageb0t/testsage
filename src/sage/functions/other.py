@@ -144,7 +144,7 @@ class Function_erf(BuiltinFunction):
             sage: erf(x).diff(x)
             2*e^(-x^2)/sqrt(pi)
 
-        TESTS::
+        TESTS:
 
         Check if #8568 is fixed::
 
@@ -186,6 +186,11 @@ class Function_abs(GinacFunction):
             \mathrm{abs}
             sage: latex(abs(x))
             {\left| x \right|}
+
+        Test pickling::
+
+            sage: loads(dumps(abs(x)))
+            abs(x)
         """
         GinacFunction.__init__(self, "abs", latex_name=r"\mathrm{abs}")
 
@@ -264,6 +269,11 @@ class Function_ceil(BuiltinFunction):
             sage: a = numpy.linspace(0,2,6)
             sage: ceil(a)
             array([ 0.,  1.,  1.,  2.,  2.,  2.])
+
+        Test pickling::
+
+            sage: loads(dumps(ceil))
+            ceil
         """
         BuiltinFunction.__init__(self, "ceil",
                                    conversions=dict(maxima='ceiling'))
@@ -412,10 +422,16 @@ class Function_floor(BuiltinFunction):
             100000000000000000000000000000000000000000000000000
 
         ::
+
             sage: import numpy
             sage: a = numpy.linspace(0,2,6)
             sage: floor(a)
             array([ 0.,  0.,  0.,  1.,  1.,  2.])
+
+        Test pickling::
+
+            sage: loads(dumps(floor))
+            floor
         """
         BuiltinFunction.__init__(self, "floor")
 
@@ -514,7 +530,11 @@ class Function_gamma(GinacFunction):
     def __init__(self):
         r"""
         The Gamma function.  This is defined by
-        `\Gamma(z) = \int_0^\infty t^{z-1}e^{-t} dt`
+
+        .. math::
+
+            \Gamma(z) = \int_0^\infty t^{z-1}e^{-t} dt
+
         for complex input `z` with real part greater than zero, and by
         analytic continuation on the rest of the complex plane (except
         for negative integers, which are poles).
@@ -617,6 +637,11 @@ class Function_gamma(GinacFunction):
 
             sage: latex(gamma(1/4))
             \Gamma\left(\frac{1}{4}\right)
+
+        Test pickling::
+
+            sage: loads(dumps(gamma(x)))
+            gamma(x)
         """
         GinacFunction.__init__(self, "gamma", latex_name=r'\Gamma',
                 ginac_name='tgamma',
@@ -772,7 +797,10 @@ def gamma(a, *args, **kwds):
     r"""
     Gamma and incomplete gamma functions.
     This is defined by the integral
-    `\Gamma(a, z) = \int_z^\infty t^{a-1}e^{-t} dt`.
+
+    .. math::
+
+        \Gamma(a, z) = \int_z^\infty t^{a-1}e^{-t} dt
 
     EXAMPLES::
 
@@ -850,7 +878,9 @@ class Function_psi1(GinacFunction):
         The digamma function, `\psi(x)`, is the logarithmic derivative of the
         gamma function.
 
-        `\psi(x) = \frac{d}{dx} \log(\Gamma(x)) = \frac{\Gamma'(x)}{\Gamma(x)}`
+        .. math::
+
+            \psi(x) = \frac{d}{dx} \log(\Gamma(x)) = \frac{\Gamma'(x)}{\Gamma(x)}
 
         EXAMPLES::
 
@@ -872,7 +902,7 @@ class Function_psi1(GinacFunction):
             sage: psi(RealField(100)(.5))
             -1.9635100260214234794409763330
 
-        Tests::
+        TESTS::
 
             sage: latex(psi1(x))
             \psi\left(x\right)
@@ -951,10 +981,12 @@ def psi(x, *args, **kwds):
     The digamma function, `\psi(x)`, is the logarithmic derivative of the
     gamma function.
 
-    `\psi(x) = \frac{d}{dx} \log(\Gamma(x)) = \frac{\Gamma'(x)}{\Gamma(x)}`
+    .. math::
+
+        \psi(x) = \frac{d}{dx} \log(\Gamma(x)) = \frac{\Gamma'(x)}{\Gamma(x)}
 
     We represent the `n`-th derivative of the digamma function with
-    `\psi(n, x)` or ``psi(n, x).
+    `\psi(n, x)` or `psi(n, x)`.
 
     EXAMPLES::
 
@@ -979,6 +1011,7 @@ def psi(x, *args, **kwds):
         psi(1, 5)
 
     TESTS::
+
         sage: psi(2, x, 3)
         Traceback (most recent call last):
         ...
@@ -1088,6 +1121,11 @@ class Function_factorial(GinacFunction):
 
             sage: latex(factorial)
             {\rm factorial}
+
+        Test pickling::
+
+            sage: loads(dumps(factorial))
+            factorial
         """
         GinacFunction.__init__(self, "factorial", latex_name='{\\rm factorial}',
                 conversions=dict(maxima='factorial', mathematica='Factorial'))
@@ -1133,7 +1171,7 @@ class Function_binomial(GinacFunction):
 
         .. math::
 
-                    \binom{x}{m} = x (x-1) \cdots (x-m+1) / m!
+            \binom{x}{m} = x (x-1) \cdots (x-m+1) / m!
 
         which is defined for `m \in \ZZ` and any
         `x`. We extend this definition to include cases when
@@ -1178,6 +1216,7 @@ class Function_binomial(GinacFunction):
             1
 
         ::
+
             sage: k, i = var('k,i')
             sage: binomial(k,i)
             binomial(k, i)
@@ -1202,6 +1241,11 @@ class Function_binomial(GinacFunction):
             binomial(n, k)
             sage: sage.functions.other.binomial._maxima_init_() # temporary workaround until we can get symbolic binomial to import in global namespace, if that's desired
             'binomial'
+
+        Test pickling::
+
+            sage: loads(dumps(binomial(n,k)))
+            binomial(n, k)
         """
         GinacFunction.__init__(self, "binomial", nargs=2,
                 conversions=dict(maxima='binomial', mathematica='Binomial'))
@@ -1283,6 +1327,10 @@ class Function_beta(GinacFunction):
             sage: beta(2,1+5*I)
             -0.0305039787798408 - 0.0198938992042440*I
 
+        Test pickling::
+
+            sage: loads(dumps(beta))
+            beta
         """
         GinacFunction.__init__(self, "beta", nargs=2,
                 conversions=dict(maxima='beta', mathematica='Beta'))
@@ -1753,6 +1801,11 @@ class Function_conjugate(GinacFunction):
             a
             sage: conjugate(a*sqrt(-2)*sqrt(-3))
             conjugate(a)*conjugate(sqrt(-3))*conjugate(sqrt(-2))
+
+        Test pickling::
+
+            sage: loads(dumps(conjugate))
+            conjugate
         """
         GinacFunction.__init__(self, "conjugate")
 
