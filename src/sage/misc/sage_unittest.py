@@ -29,6 +29,7 @@ class TestSuite(object):
         sage: TestSuite(1).run(verbose = True)
         running ._test_category() . . . pass
         running ._test_eq() . . . pass
+        running ._test_nonzero_equal() . . . pass
         running ._test_not_implemented_methods() . . . pass
         running ._test_pickling() . . . pass
 
@@ -175,6 +176,7 @@ class TestSuite(object):
             sage: TestSuite(1).run(verbose = True)
             running ._test_category() . . . pass
             running ._test_eq() . . . pass
+            running ._test_nonzero_equal() . . . pass
             running ._test_not_implemented_methods() . . . pass
             running ._test_pickling() . . . pass
 
@@ -183,9 +185,11 @@ class TestSuite(object):
             sage: TestSuite(1).run(verbose = True, skip ="_test_pickling")
             running ._test_category() . . . pass
             running ._test_eq() . . . pass
+            running ._test_nonzero_equal() . . . pass
             running ._test_not_implemented_methods() . . . pass
             sage: TestSuite(1).run(verbose = True, skip =["_test_pickling", "_test_category"])
             running ._test_eq() . . . pass
+            running ._test_nonzero_equal() . . . pass
             running ._test_not_implemented_methods() . . . pass
 
         We now show (and test) some standard error reports::
