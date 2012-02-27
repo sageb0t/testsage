@@ -3071,6 +3071,7 @@ def plot(funcs, *args, **kwds):
         sage: plot(1/g(x), (x, -3, 4), exclude = g(x) == 0, ymin = -5, ymax = 5)
 
     ``exclude`` and ``detect_poles`` can be used together::
+
         sage: f(x) = (floor(x)+0.5) / (1-(x-0.5)^2)
         sage: plot(f, (x, -3.5, 3.5), detect_poles = 'show', exclude = [-3..3], ymin = -5, ymax = 5)
 
@@ -3810,7 +3811,7 @@ class GraphicsArray(SageObject):
             sage: G = graphics_array(L,2,3)
             sage: G # plot shown is default
 
-        We can make commands not display their plots by default.
+        We can make commands not display their plots by default. ::
 
             sage: show_default(False)
             sage: graphics_array(L)
@@ -3835,7 +3836,7 @@ class GraphicsArray(SageObject):
             sage: str(G)
             'Graphics Array of size 2 x 3'
 
-        We can make commands not display their plots by default.
+        We can make commands not display their plots by default. ::
 
             sage: show_default(False)
             sage: graphics_array(L)
@@ -3846,7 +3847,7 @@ class GraphicsArray(SageObject):
 
     def nrows(self):
         """
-        String representation of the graphics array.
+        Number of rows of the graphics array.
 
         EXAMPLES::
 
