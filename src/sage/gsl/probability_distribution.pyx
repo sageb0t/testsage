@@ -43,7 +43,7 @@ include '../ext/stdsage.pxi'
 include 'gsl.pxi'
 #cimport sage.rings.real_double
 import sage.rings.real_double
-import random
+import random, sys
 import integration
 from sage.modules.free_module_element import vector
 
@@ -179,6 +179,15 @@ cdef class SphericalDistribution(ProbabilityDistribution):
         sage: T = SphericalDistribution(dimension = 4, rng = 'luxury')
         sage: T.get_random_element() # random
         (-0.196597969334, -0.536955365418, -0.672242159448, -0.470232552109)
+
+    TESTS:
+
+    Make sure that repeated initializations are randomly seeded
+    (:trac:`9770`)::
+
+        sage: Xs = [tuple(SphericalDistribution(2).get_random_element()) for _ in range(1000)]
+        sage: len(set(Xs)) > 2^^32
+        True
     """
 
     cdef gsl_rng *r
@@ -200,7 +209,7 @@ cdef class SphericalDistribution(ProbabilityDistribution):
         self.set_random_number_generator(rng)
         self.r = gsl_rng_alloc(self.T)
         if seed == None:
-            self.seed = random.randint(1, 2^32)
+            self.seed = random.randint(1, sys.maxint)
         self.set_seed(self.seed)
         self.dimension = dimension
         self.vec = <double *>sage_malloc(self.dimension*(sizeof(double)))
@@ -456,6 +465,16 @@ cdef class RealDistribution(ProbabilityDistribution):
     To change the seed at a later time use ``set_seed``::
 
          sage: T.set_seed(100)
+
+    TESTS:
+
+    Make sure that repeated initializations are randomly seeded
+    (:trac:`9770`)::
+
+        sage: Xs = [RealDistribution('gaussian', 1).get_random_element() for _ in range(1000)]
+        sage: len(set(Xs)) > 2^^32
+        True
+
     """
     cdef gsl_rng_type *T
     cdef gsl_rng *r
@@ -474,6 +493,7 @@ cdef class RealDistribution(ProbabilityDistribution):
             sage: T = RealDistribution('gaussian', 1, seed = 0)
             sage: T.get_random_element()
             0.133918608119
+
         """
 
         gsl_rng_env_setup()
@@ -481,7 +501,7 @@ cdef class RealDistribution(ProbabilityDistribution):
         self.set_random_number_generator(rng)
         self.r = gsl_rng_alloc(self.T)
         if seed == None:
-            self.seed = random.randint(1, 2^32)
+            self.seed = random.randint(1, sys.maxint)
         self.set_seed(self.seed)
         self.name = " "
         self.set_distribution(type, parameters)
@@ -918,6 +938,16 @@ cdef class GeneralDiscreteDistribution(ProbabilityDistribution):
         ...       counts[X.get_random_element()] += 1
         sage: float(counts[1]/counts[0])
         3.042037186742118
+
+    TESTS:
+
+    Make sure that repeated initializations are randomly seeded
+    (:trac:`9770`)::
+
+        sage: P = [0.001] * 1000
+        sage: Xs = [GeneralDiscreteDistribution(P).get_random_element() for _ in range(1000)]
+        sage: len(set(Xs)) > 2^^32
+        True
     """
 
     cdef gsl_rng_type * T
@@ -941,7 +971,7 @@ cdef class GeneralDiscreteDistribution(ProbabilityDistribution):
         self.set_random_number_generator(rng)
         self.r = gsl_rng_alloc(self.T)
         if seed == None:
-            self.seed = random.randint(1, 2^32)
+            self.seed = random.randint(1, sys.maxint)
         self.set_seed(self.seed)
 
         cdef int n
