@@ -73,7 +73,7 @@ cdef class Farey:
 
     Calculate the generators::
 
-         sage: [g.matrix() for g in F.generators()]
+         sage: F.generators()
          [
          [1 1]  [ 7 -2]  [ 8 -3]  [-1  0]
          [0 1], [11 -3], [11 -4], [ 0 -1]
@@ -92,7 +92,7 @@ cdef class Farey:
 
     Calculate the generators of `\Gamma_1(4)`::
 
-         sage: [g.matrix() for g in FareySymbol(Gamma1(4)).generators()]
+         sage: FareySymbol(Gamma1(4)).generators()
          [
          [1 1]  [-3  1]
          [0 1], [-4  1]
@@ -103,7 +103,7 @@ cdef class Farey:
     index 10 arithmetic subgroup given by Tim Hsu::
 
          sage: from sage.modular.arithgroup.arithgroup_perm import HsuExample10
-         sage: [g.matrix() for g in FareySymbol(HsuExample10()).generators()]
+         sage: FareySymbol(HsuExample10()).generators()
          [
          [1 2]  [-2  1]  [ 4 -3]
          [0 1], [-7  3], [ 3 -2]
@@ -117,7 +117,7 @@ cdef class Farey:
          ...         return M in Gamma0(8) and M in Gamma1(4)
          ...
 
-         sage: [g.matrix() for g in FareySymbol(GPrime()).generators()]
+         sage: FareySymbol(GPrime()).generators()
          [
          [1 1]  [ 5 -1]  [ 5 -2]
          [0 1], [16 -3], [ 8 -3]
@@ -134,7 +134,7 @@ cdef class Farey:
 
     Calculate the left coset representation of `\Gamma_H(8, [3])`::
 
-         sage: [g.matrix() for g in FareySymbol(GammaH(8, [3])).coset_reps()]
+         sage: FareySymbol(GammaH(8, [3])).coset_reps()
          [
          [1 0]  [ 4 -1]  [ 3 -1]  [ 2 -1]  [ 1 -1]  [ 3 -1]  [ 2 -1]  [-1  0]
          [0 1], [ 1  0], [ 1  0], [ 1  0], [ 1  0], [ 4 -1], [ 3 -1], [ 3 -1],
@@ -327,7 +327,7 @@ cdef class Farey:
 
         Calculate the left coset of `\Gamma_0(6)`::
 
-            sage: [g.matrix() for g in FareySymbol(Gamma0(6)).coset_reps()]
+            sage: FareySymbol(Gamma0(6)).coset_reps()
             [
             [1 0]  [ 3 -1]  [ 2 -1]  [ 1 -1]  [ 2 -1]  [ 3 -2]  [ 1 -1]  [-1  0]
             [0 1], [ 1  0], [ 1  0], [ 1  0], [ 3 -1], [ 2 -1], [ 2 -1], [ 2 -1],
@@ -345,7 +345,7 @@ cdef class Farey:
 
         Calculate the generators of `\Gamma_0(6)`::
 
-            sage: [g.matrix() for g in FareySymbol(Gamma0(6)).generators()]
+            sage: FareySymbol(Gamma0(6)).generators()
             [
             [1 1]  [ 5 -1]  [ 7 -3]  [-1  0]
             [0 1], [ 6 -1], [12 -5], [ 0 -1]
@@ -353,7 +353,7 @@ cdef class Farey:
 
         Calculate the generators of `{\rm SL}_2(\ZZ)`::
 
-            sage: [g.matrix() for g in FareySymbol(SL2Z).generators()]
+            sage: FareySymbol(SL2Z).generators()
             [
             [ 0 -1]  [ 0 -1]
             [ 1  0], [ 1 -1]
@@ -361,12 +361,12 @@ cdef class Farey:
 
         The unique index 2 even subgroup and index 4 odd subgroup each get handled correctly::
 
-            sage: [g.matrix() for g in FareySymbol(ArithmeticSubgroup_Permutation(S2="(1,2)", S3="()")).generators()]
+            sage: FareySymbol(ArithmeticSubgroup_Permutation(S2="(1,2)", S3="()")).generators()
             [
             [ 0 -1]  [-1  1]
             [ 1  1], [-1  0]
             ]
-            sage: [g.matrix() for g in FareySymbol(ArithmeticSubgroup_Permutation(S2="(1,2, 3, 4)", S3="(1,3)(2,4)")).generators()]
+            sage: FareySymbol(ArithmeticSubgroup_Permutation(S2="(1,2, 3, 4)", S3="(1,3)(2,4)")).generators()
             [
             [ 0  1]  [-1  1]
             [-1 -1], [-1  0]
@@ -436,7 +436,7 @@ cdef class Farey:
 
         EXAMPLES::
 
-            sage: [m.matrix() for m in FareySymbol(Gamma0(6)).pairing_matrices()]
+            sage: FareySymbol(Gamma0(6)).pairing_matrices()
             [
             [1 1]  [ 5 -1]  [ 7 -3]  [ 5 -3]  [ 1 -1]  [-1  1]
             [0 1], [ 6 -1], [12 -5], [12 -7], [ 6 -5], [ 0 -1]
