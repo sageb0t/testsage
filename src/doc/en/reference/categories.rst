@@ -33,6 +33,9 @@ Functorial constructions
    sage/categories/subobjects
    sage/categories/isomorphic_objects
 
+   sage/categories/realizations
+   sage/categories/with_realizations
+
 Categories
 ==========
 
@@ -157,6 +160,7 @@ Examples of parents using categories
    sage/categories/examples/semigroups
    sage/categories/examples/semigroups_cython
    sage/categories/examples/sets_cat
+   sage/categories/examples/with_realizations
 
 Miscellaneous
 =============
