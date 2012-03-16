@@ -249,6 +249,7 @@ ext_modules = [
 
     Extension('sage.ext.multi_modular',
               sources = ['sage/ext/multi_modular.pyx'],
+              extra_compile_args = ['-std=c99'],
               libraries=['gmp']),
 
     ################################
@@ -1168,6 +1169,7 @@ ext_modules = [
               libraries = ['gmp']),
 
     Extension('sage.modules.vector_modn_dense',
+              extra_compile_args = ['-std=c99'],
               sources = ['sage/modules/vector_modn_dense.pyx']),
 
     Extension('sage.modules.vector_mod2_dense',

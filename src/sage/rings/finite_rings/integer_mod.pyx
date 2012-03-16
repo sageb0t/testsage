@@ -71,6 +71,9 @@ cdef extern from "mpz_pylong.h":
 
 import operator
 
+cdef bint use_32bit_type(int_fast64_t modulus):
+    return modulus <= INTEGER_MOD_INT32_LIMIT
+
 ## import arith
 import sage.rings.rational as rational
 from sage.libs.pari.all import pari, PariError
@@ -211,7 +214,7 @@ cdef class NativeIntStruct:
         self.sageInteger = z
         if mpz_cmp_si(z.value, INTEGER_MOD_INT64_LIMIT) <= 0:
             self.int64 = mpz_get_si(z.value)
-            if self.int64 <= INTEGER_MOD_INT32_LIMIT:
+            if use_32bit_type(self.int64):
                 self.int32 = self.int64
 
     def __reduce__(NativeIntStruct self):
