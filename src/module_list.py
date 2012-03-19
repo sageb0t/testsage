@@ -1087,6 +1087,9 @@ ext_modules = [
     Extension('sage.misc.session',
               sources = ['sage/misc/session.pyx']),
 
+    Extension('sage.misc.stopgap',
+              sources = ['sage/misc/stopgap.pyx']),
+
     ################################
     ##
     ## sage.modular
