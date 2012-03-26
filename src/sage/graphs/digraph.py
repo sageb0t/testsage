@@ -1564,7 +1564,7 @@ class DiGraph(GenericGraph):
             sage: cycle.vertex_cover(value_only=True)
             3
             sage: feedback = dcycle.feedback_vertex_set()
-            sage: feedback.cardinality()
+            sage: len(feedback)
             3
             sage: (u,v,l) = cycle.edge_iterator().next()
             sage: u in feedback or v in feedback
