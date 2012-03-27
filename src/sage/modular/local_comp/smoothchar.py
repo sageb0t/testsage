@@ -996,8 +996,8 @@ class SmoothCharacterGroupUnramifiedQuadratic(SmoothCharacterGroupGeneric):
         Return the character group of the same field, but with values in a
         different coefficient ring. This need not have anything to do with the
         original base ring, and in particular there won't generally be a
-        coercion map from self to the new group -- use :meth:`base_extend` if
-        you want this.
+        coercion map from self to the new group -- use
+        :meth:`~SmoothCharacterGroupGeneric.base_extend` if you want this.
 
         EXAMPLE::
 
@@ -1052,8 +1052,8 @@ class SmoothCharacterGroupUnramifiedQuadratic(SmoothCharacterGroupGeneric):
         r"""
         Return the ideal `p^c` of ``self.number_field()``. The result is
         cached, since we use the methods
-        :meth:`~sage.rings.number_field.number_field_ideal.idealstar` and
-        :meth:`~sage.rings.number_field.number_field_ideal.ideallog` which
+        :meth:`~sage.rings.number_field.number_field_ideal.NumberFieldFractionalIdeal.idealstar` and
+        :meth:`~sage.rings.number_field.number_field_ideal.NumberFieldFractionalIdeal.ideallog` which
         cache a Pari ``bid`` structure.
 
         EXAMPLES::
@@ -1405,8 +1405,8 @@ class SmoothCharacterGroupRamifiedQuadratic(SmoothCharacterGroupGeneric):
         Return the character group of the same field, but with values in a
         different coefficient ring. This need not have anything to do with the
         original base ring, and in particular there won't generally be a
-        coercion map from self to the new group -- use :meth:`base_extend` if
-        you want this.
+        coercion map from self to the new group -- use
+        :meth:`~SmoothCharacterGroupGeneric.base_extend` if you want this.
 
         EXAMPLE::
 
@@ -1452,8 +1452,8 @@ class SmoothCharacterGroupRamifiedQuadratic(SmoothCharacterGroupGeneric):
         r"""
         Return the ideal `p^c` of ``self.number_field()``. The result is
         cached, since we use the methods
-        :meth:`~sage.rings.number_field.number_field_ideal.idealstar` and
-        :meth:`~sage.rings.number_field.number_field_ideal.ideallog` which
+        :meth:`~sage.rings.number_field.number_field_ideal.NumberFieldFractionalIdeal.idealstar` and
+        :meth:`~sage.rings.number_field.number_field_ideal.NumberFieldFractionalIdeal.ideallog` which
         cache a Pari ``bid`` structure.
 
         EXAMPLES::
