@@ -543,8 +543,7 @@ cdef int p1_normalize_xgcdtable(int N, int u, int v,
 
     -  ``N, u, v`` - integers
 
-    -  ``compute_s`` - do not compute s if compute_s ==
-       0.
+    -  ``compute_s`` - do not compute s if compute_s == 0.
 
     -  ``t_g, t_a, t_b`` - int arrays of
 
@@ -961,6 +960,9 @@ cdef class P1List:
             sage: all([L.index(L[i][0],L[i][1])==i for i in range(len(L))])
             True
         """
+        if self.__N == 1:
+            # there is exactly 1 class [(0,0)].
+            return 0
         cdef int uu, vv, ss
         p1_normalize_xgcdtable(self.__N, u, v, 0, self.g, self.s, self.t, &uu, &vv, &ss)
         if uu == 1:
@@ -976,9 +978,10 @@ cdef class P1List:
 
     cdef index_and_scalar(self, int u, int v, int* i, int* s):
         r"""
-        Returns the index of the class of `(u,v)` in the fixed list
-        of representatives of
-        `\mathbb{P}^1(\ZZ/N\ZZ)`.
+        Compute the index of the class of `(u,v)` in the fixed list
+        of representatives of `\mathbb{P}^1(\ZZ/N\ZZ)` and scalar s
+        such that (s*a,s*b) = (u,v), with (a,b) the normalized
+        representative.
 
         INPUT:
 
@@ -990,6 +993,12 @@ cdef class P1List:
 
         -  ``s`` - normalizing scalar.
         """
+        if self.__N == 1:
+            # there is exactly 1 class [(0,0)].
+            i[0] = 0
+            s[0] = 1
+            return
+
         cdef int uu, vv, ss
         p1_normalize_xgcdtable(self.__N, u, v, 1, self.g, self.s, self.t, &uu, &vv, s)
         if uu == 1:
