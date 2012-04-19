@@ -573,6 +573,9 @@ def find_sage_dangling_links(app, env, node, contnode):
     newnode.append(contnode)
     return newnode
 
+from sage.misc.sageinspect import sage_getargspec
+autodoc_builtin_argspec = sage_getargspec
+
 def setup(app):
     app.connect('autodoc-process-docstring', process_docstring_cython)
     app.connect('autodoc-process-docstring', process_directives)
