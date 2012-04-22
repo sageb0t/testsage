@@ -755,7 +755,7 @@ class IntervalExchangeTransformation(SageObject):
             sage: t = iet.IntervalExchangeTransformation(('a b c d','d a c b'),[1,1,1,1])
             sage: t.plot_function(rgbcolor=(0,1,0))
         """
-        from sage.plot.plot import Graphics
+        from sage.plot.all import Graphics
         from sage.plot.plot import line2d
 
         G = Graphics()
@@ -800,7 +800,7 @@ class IntervalExchangeTransformation(SageObject):
             sage: t = iet.IntervalExchangeTransformation(('a b','b a'),[1,1])
             sage: t.plot_two_intervals()
         """
-        from sage.plot.plot import Graphics
+        from sage.plot.all import Graphics
         from sage.plot.plot import line2d
         from sage.plot.plot import text
         from sage.plot.colors import rainbow
