@@ -5095,8 +5095,8 @@ exponent %s: the length of the word (%s) times the exponent \
             University Press, U.K., 2002.
         """
         if self.length() < 2:
-            raise ValueError, ("Standard factorization not defined on"
-                               " words of length less than 2")
+            raise ValueError("Standard factorization not defined on"
+                             " words of length less than 2")
         for l in xrange(1, self.length()):
             suff = self[l:]
             if suff.is_lyndon():
