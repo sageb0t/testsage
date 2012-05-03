@@ -368,6 +368,9 @@ cdef class CPLEXBackend(GenericBackend):
         status = CPXchgobj(self.env, self.lp, n, c_indices, c_coeff)
         check(status)
 
+        sage_free(c_coeff)
+        sage_free(c_indices)
+
     cpdef set_verbosity(self, int level):
         r"""
         Sets the log (verbosity) level
@@ -559,6 +562,11 @@ cdef class CPLEXBackend(GenericBackend):
         check(status)
         status = CPXchgcoeflist(self.env, self.lp, n, c_row, c_indices, c_coeff)
         check(status)
+
+        # Free memory
+        sage_free(c_coeff)
+        sage_free(c_indices)
+        sage_free(c_row)
 
     cpdef row(self, int index):
         r"""
@@ -753,6 +761,10 @@ cdef class CPLEXBackend(GenericBackend):
 
         status = CPXchgcoeflist(self.env, self.lp, n, c_indices, c_col, c_coeff)
         check(status)
+
+        sage_free(c_coeff)
+        sage_free(c_indices)
+        sage_free(c_col)
 
     cpdef int solve(self) except -1:
         r"""
@@ -1322,7 +1334,13 @@ cdef class CPLEXBackend(GenericBackend):
         r"""
         Destructor for the class
         """
-        CPXcloseCPLEX(self.env)
+        cdef int status
+
+        if self.lp != NULL:
+            status = CPXfreeprob(self.env, &self.lp)
+
+        if self.env != NULL:
+            status = CPXcloseCPLEX(&self.env)
 
 cdef check(number):
     r"""
