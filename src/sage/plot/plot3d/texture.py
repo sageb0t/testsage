@@ -135,23 +135,22 @@ def Texture(id=None, **kwds):
     """
     if isinstance(id, Texture_class):
         return id
-    if kwds.has_key('texture'):
+    if 'texture' in kwds:
         t = kwds['texture']
         if is_Texture(t):
             return t
         else:
-            raise TypeError, "texture keyword must be a texture object"
+            raise TypeError("texture keyword must be a texture object")
     if isinstance(id, dict):
         kwds = id
-        if kwds.has_key('rgbcolor'):
+        if 'rgbcolor' in kwds:
             kwds['color'] = kwds['rgbcolor']
         id = None
     elif isinstance(id, Color):
         kwds['color'] = id.rgb()
         id = None
-    elif isinstance(id, str) and colors.has_key(id):
+    elif isinstance(id, str) and id in colors:
         kwds['color'] = id
-        #kwds = {"color": id}
         id = None
     elif isinstance(id, tuple):
         kwds['color'] = id
@@ -192,6 +191,8 @@ def parse_color(info, base=None):
 
         sage: parse_color('red')
         RGB color (1.0, 0.0, 0.0)
+        sage: parse_color('#ff0000')
+        RGB color (1.0, 0.0, 0.0)
 
     From a non valid color str::
 
@@ -210,9 +211,9 @@ def parse_color(info, base=None):
         return info.rgb()
     elif isinstance(info, str):
         try:
-            return colors[info]
+            return Color(info)
         except KeyError:
-            raise ValueError, "unknown color '%s'"%info
+            raise ValueError("unknown color '%s'"%info)
     else:
         r, g, b = base
         # We don't want to lose the data when we split it into its respective components.
@@ -225,7 +226,8 @@ class Texture_class(SageObject):
     r"""
     Construction of a texture.
 
-    See documentation of :meth:`Texture <sage.plot.plot3d.texture.Texture>` for more details and examples.
+    See documentation of :meth:`Texture <sage.plot.plot3d.texture.Texture>`
+    for more details and examples.
 
     EXAMPLES:
 
@@ -248,7 +250,8 @@ class Texture_class(SageObject):
         r"""
         Construction of a texture.
 
-        See documentation of :meth:`Texture <sage.plot.plot3d.texture.Texture>` for more details and examples.
+        See documentation of :meth:`Texture <sage.plot.plot3d.texture.Texture>`
+        for more details and examples.
 
         EXAMPLES::
 
