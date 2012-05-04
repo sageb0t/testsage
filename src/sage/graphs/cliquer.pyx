@@ -32,6 +32,7 @@ Methods
 #*****************************************************************************
 
 include "../ext/interrupt.pxi"
+include '../ext/stdsage.pxi'
 
 def max_clique(graph):
     """
@@ -79,6 +80,9 @@ def max_clique(graph):
     cdef int i
     for i in range(size):
         b.append(list[i])
+
+    sage_free(list)
+    graph_free(g)
     return list_composition(b,d_inv)
 
 # computes all the maximum clique of a graph and return its list
@@ -148,6 +152,10 @@ def all_max_clique(graph):
         else:
             b.append(list_composition(c,d_inv))
             c=[]
+
+    sage_free(list)
+    graph_free(g)
+
     return sorted(b)
 
 #computes the clique number of a graph
@@ -184,6 +192,7 @@ def clique_number(graph):
     cdef int c
     sig_on()
     c = sage_clique_number(g)
+    graph_free(g)
     sig_off()
     return c
 
