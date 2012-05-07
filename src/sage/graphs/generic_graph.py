@@ -12980,6 +12980,14 @@ class GenericGraph(GenericGraph_pyx):
         and `((u,v), (w,x))` is an edge iff either - `(u, w)` is an edge of self
         and `v = x`, or - `(v, x)` is an edge of other and `u = w`.
 
+        .. SEEALSO::
+
+            - :meth:`~sage.graphs.graph_decompositions.graph_products.is_cartesian_product`
+              -- factorization of graphs according to the cartesian product
+
+            - :mod:`~sage.graphs.graph_decompositions.graph_products`
+              -- a module on graph products.
+
         TESTS:
 
         Cartesian product of graphs::
