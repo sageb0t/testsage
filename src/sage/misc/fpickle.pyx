@@ -4,7 +4,7 @@ Function pickling
 REFERENCE: The python cookbook.
 """
 
-import new, types, copy_reg, cPickle
+import types, copy_reg, cPickle
 
 def code_ctor(*args):
     """
@@ -16,7 +16,7 @@ def code_ctor(*args):
         sage: unpickle_function(pickle_function(foo))
         <function foo at ...>
     """
-    return new.code(*args)
+    return types.CodeType(*args)
 
 def reduce_code(co):
     """
@@ -69,7 +69,7 @@ def unpickle_function(pickled):
         15
     """
     recovered = cPickle.loads(pickled)
-    return new.function(recovered, globals())
+    return types.FunctionType(recovered, globals())
 
 def call_pickled_function(fpargs):
     import sage.all
@@ -96,9 +96,8 @@ def unpickleMethod(im_name,
         unbound = getattr(im_class,im_name)
         if im_self is None:
             return unbound
-        bound=new.instancemethod(unbound.im_func,
-                                 im_self,
-                                 im_class)
+        bound=types.MethodType(unbound.im_func,
+                                 im_self)
         return bound
     except AttributeError:
         assert im_self is not None,"No recourse: no instance to guess from."
@@ -108,9 +107,8 @@ def unpickleMethod(im_name,
         unbound = getattr(im_self.__class__,im_name)
         if im_self is None:
             return unbound
-        bound=new.instancemethod(unbound.im_func,
-                                 im_self,
-                                 im_self.__class__)
+        bound=types.MethodType(unbound.im_func,
+                                 im_self)
         return bound
 
 copy_reg.pickle(types.MethodType,
