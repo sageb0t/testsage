@@ -1420,7 +1420,7 @@ cdef class Parent(category_object.CategoryObject):
         elif op == 5: #>=
             return r >= 0
 
-    # Should be moved and merged into the EnumeratedSets() category
+    # Should be moved and merged into the EnumeratedSets() category (#12955)
     def __len__(self):
         """
         Returns the number of elements in self. This is the naive algorithm
@@ -1435,7 +1435,7 @@ cdef class Parent(category_object.CategoryObject):
         """
         return len(self.list())
 
-    # Should be moved and merged into the EnumeratedSets() category
+    # Should be moved and merged into the EnumeratedSets() category (#12955)
     def __getitem__(self, n):
         """
         Returns the `n^{th}` item or slice `n` of self,
@@ -1460,8 +1460,28 @@ cdef class Parent(category_object.CategoryObject):
              (0, 1, 0),
              (1, 1, 0),
              (2, 1, 0)]
+
+        TESTS:
+
+        We test the workaround described in #12956 to let categories
+        override this default implementation::
+
+            sage: class As(Category):
+            ...       def super_categories(self): return [Sets()]
+            ...       class ParentMethods:
+            ...           def __getitem__(self, n):
+            ...               return 'coucou'
+            sage: class A(Parent):
+            ...       def __init__(self):
+            ...           Parent.__init__(self, category=As())
+            sage: a = A()
+            sage: a[1]
+            'coucou'
         """
-        return self.list()[n]
+        try:
+            return super(Parent, self).__getitem__(n)
+        except AttributeError:
+            return self.list()[n]
 
     #################################################################################
     # Generators and Homomorphisms
