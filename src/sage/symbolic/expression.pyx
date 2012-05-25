@@ -1838,7 +1838,8 @@ cdef class Expression(CommutativeRingElement):
             sage: SR(1./2^10000).is_trivial_zero()
             False
 
-        The :meth:`is_zero` method is more capable::
+        The :meth:`~sage.structure.element.Element.is_zero` method
+        is more capable::
 
             sage: t = pi + (pi - 1)*pi - pi^2
             sage: t.is_trivial_zero()
@@ -2820,7 +2821,8 @@ cdef class Expression(CommutativeRingElement):
 
         .. seealso::
 
-            :meth:`_derivative`
+            This is implemented in the `_derivative` method (see the
+            source code).
 
         EXAMPLES::
 
@@ -7673,7 +7675,7 @@ cdef class Expression(CommutativeRingElement):
         .. note::
 
            If you already have a factored expression and just want to
-           get at the individual factors, use :meth:`_factor_list`
+           get at the individual factors, use the `_factor_list` method
            instead.
 
         EXAMPLES::
@@ -8864,7 +8866,7 @@ cdef class Expression(CommutativeRingElement):
     def integral(self, *args, **kwds):
         """
         Compute the integral of self.  Please see
-        :obj:`sage.symbolic.integration.integral.integrate` for more details.
+        :func:`sage.symbolic.integration.integral.integrate` for more details.
 
         EXAMPLES::
 
