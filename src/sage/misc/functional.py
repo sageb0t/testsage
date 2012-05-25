@@ -1160,6 +1160,7 @@ def norm(x):
         sage: v = vector([a, b, c])
         sage: bool(norm(v).simplify() == sqrt(a^2 + b^2 + c^2))
         True
+        sage: forget()
     """
     return x.norm()
 
