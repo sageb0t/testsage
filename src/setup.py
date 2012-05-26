@@ -67,17 +67,7 @@ include_dirs = ['%s/include'%SAGE_LOCAL,
                 '%s/sage/sage/ext'%SAGE_DEVEL]
 
 # search for dependencies only
-extra_include_dirs = ['%s/include/python%s'%(SAGE_LOCAL,platform.python_version().rsplit('.', 1)[0]),
-                      # finally, standard C/C++ include dirs
-                      '/usr/local/include/',
-                      '/usr/include']
-
-try:
-    from subprocess import Popen, PIPE
-    gccinclude = Popen(['gcc', '--print-file-name=include'], stdout=PIPE).communicate()[0]
-    extra_include_dirs.extend( gccinclude.splitlines() )
-except OSError:
-    pass
+extra_include_dirs = [ '%s/include/python%s'%(SAGE_LOCAL,platform.python_version().rsplit('.', 1)[0]) ]
 
 extra_compile_args = [ ]
 extra_link_args = [ ]
@@ -271,8 +261,9 @@ def execute_list_of_commands(command_list):
     # normalize the command_list to handle strings correctly
     command_list = [ [run_command, x] if isinstance(x, str) else x for x in command_list ]
 
-    # No need for more threads than there are commands
+    # No need for more threads than there are commands, but at least one
     nthreads = min(len(command_list), nthreads)
+    nthreads = max(1, nthreads)
 
     def plural(n,noun):
         if n == 1:
@@ -514,6 +505,14 @@ CYTHON_INCLUDE_DIRS=[
 import re
 dep_regex = re.compile(r'^ *(?:(?:cimport +([\w\. ,]+))|(?:from +([\w.]+) +cimport)|(?:include *[\'"]([^\'"]+)[\'"])|(?:cdef *extern *from *[\'"]([^\'"]+)[\'"]))', re.M)
 
+# system headers should have pointy brackets, as in
+#   cdef extern from "<math.h>":
+# but we didn't add them consistently. Workaround:
+system_header_files = \
+    ['complex.h', 'signal.h', 'math.h', 'limits.h', 'stdlib.h',
+     'arpa/inet.h', 'float.h', 'string.h', 'stdint.h', 'stdio.h',
+     'dlfcn.h', 'setjmp.h' ]
+
 class DependencyTree:
     """
     This class stores all the information about the dependencies of a set of
@@ -603,7 +602,7 @@ class DependencyTree:
                     raw_deps.append((path, base_dependency_name))
             else: # include or extern from
                 extern_file = groups[2] or groups[3]
-                path = '%s/%s'%(dirname, extern_file)
+                path = os.path.join(dirname, extern_file)
                 if not os.path.exists(path):
                     path = extern_file
                 raw_deps.append((path, extern_file))
@@ -616,9 +615,11 @@ class DependencyTree:
             # we didn't find the file locally, so check the
             # Cython include path.
             else:
-                found_include = False
+                found_include = path.startswith('<') and path.endswith('>')
+                if path in system_header_files:
+                    found_include = True
                 for idir in ext_module.include_dirs + CYTHON_INCLUDE_DIRS + include_dirs + extra_include_dirs:
-                    new_path = os.path.normpath(idir + '/' + base_dependency_name)
+                    new_path = os.path.normpath(os.path.join(idir, base_dependency_name))
                     if os.path.exists(new_path):
                         deps.add(new_path)
                         found_include = True
