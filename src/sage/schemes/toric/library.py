@@ -42,7 +42,9 @@ from sage.matrix.all import matrix, identity_matrix
 from sage.geometry.fan import Fan
 from sage.geometry.lattice_polytope import LatticePolytope
 from sage.rings.all import ZZ
-from sage.schemes.toric.variety import ToricVariety
+from sage.schemes.toric.variety import (DEFAULT_PREFIX,
+                                        ToricVariety,
+                                        normalize_names)
 from sage.schemes.toric.fano_variety import CPRFanoToricVariety
 
 # The combinatorial data of the toric varieties is stored separately here
@@ -206,9 +208,8 @@ class ToricVarietyFactory(SageObject):
         if coordinate_names is None:
             dict_key = '_cached_'+name
         else:
-            import toric_variety
-            coordinate_names = toric_variety.\
-                normalize_names(coordinate_names, len(rays), toric_variety.DEFAULT_PREFIX)
+            coordinate_names = normalize_names(coordinate_names, len(rays),
+                                               DEFAULT_PREFIX)
             dict_key = '_cached_'+name+'_'+'_'.join(coordinate_names)
         if dict_key not in self.__dict__:
             fan = Fan(cones, rays, check=self._check)
@@ -244,9 +245,8 @@ class ToricVarietyFactory(SageObject):
         if coordinate_names is None:
             dict_key = '_cached_'+name
         else:
-            import toric_variety
-            coordinate_names = toric_variety.\
-                normalize_names(coordinate_names, len(rays), toric_variety.DEFAULT_PREFIX)
+            coordinate_names = normalize_names(coordinate_names, len(rays),
+                                               DEFAULT_PREFIX)
             dict_key = '_cached_'+name+'_'+'_'.join(coordinate_names)
         if dict_key not in self.__dict__:
             polytope = LatticePolytope( matrix(rays).transpose() )
