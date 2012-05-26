@@ -158,7 +158,7 @@ from sage.rings.all import (PolynomialRing, QQ,
                             is_FractionField, is_Field,
                             is_MPolynomialRing, is_PolynomialRing)
 from sage.schemes.generic.algebraic_scheme import AlgebraicScheme_subscheme_toric
-from sage.schemes.generic.toric_variety import (
+from sage.schemes.toric.variety import (
                                             ToricVariety_field,
                                             normalize_names)
 from sage.symbolic.all import SR
@@ -189,7 +189,7 @@ def is_CPRFanoToricVariety(x):
 
     EXAMPLES::
 
-        sage: from sage.schemes.generic.fano_toric_variety import (
+        sage: from sage.schemes.toric.fano_variety import (
         ...     is_CPRFanoToricVariety)
         sage: is_CPRFanoToricVariety(1)
         False
@@ -219,7 +219,7 @@ def CPRFanoToricVariety(Delta=None,
     .. NOTE::
 
         See documentation of the module
-        :mod:`~sage.schemes.generic.fano_toric_variety` for the used
+        :mod:`~sage.schemes.toric.fano_variety` for the used
         definitions and supported varieties.
 
     Due to the large number of available options, it is recommended to always
@@ -261,7 +261,7 @@ def CPRFanoToricVariety(Delta=None,
       be subdivided to include all of the requested ``coordinate_points``;
 
     - ``coordinate_names`` -- names of variables for the coordinate ring, see
-      :func:`~sage.schemes.generic.toric_variety.normalize_names`
+      :func:`~sage.schemes.toric.variety.normalize_names`
       for acceptable formats. If not given, indexed variable names will be
       created automatically;
 
@@ -616,7 +616,7 @@ class CPRFanoToricVariety_field(ToricVariety_field):
     .. NOTE::
 
         See documentation of the module
-        :mod:`~sage.schemes.generic.fano_toric_variety` for the used
+        :mod:`~sage.schemes.toric.fano_variety` for the used
         definitions and supported varieties.
 
     INPUT:
@@ -634,7 +634,7 @@ class CPRFanoToricVariety_field(ToricVariety_field):
 
     - ``coordinate_names`` -- names of the variables of the coordinate ring in
       the format accepted by
-      :func:`~sage.schemes.generic.toric_variety.normalize_names`;
+      :func:`~sage.schemes.toric.variety.normalize_names`;
 
     - ``coordinate_name_indices`` -- indices for indexed variables,
       if ``None``, will be equal to ``coordinate_points``;
@@ -742,7 +742,7 @@ class CPRFanoToricVariety_field(ToricVariety_field):
             hypersurfaces;
 
         - ``coefficient_names`` -- names for the monomial coefficients, see
-          :func:`~sage.schemes.generic.toric_variety.normalize_names`
+          :func:`~sage.schemes.toric.variety.normalize_names`
           for acceptable formats. If not given, indexed coefficient names will
           be created automatically;
 
@@ -1063,7 +1063,7 @@ class CPRFanoToricVariety_field(ToricVariety_field):
 
         - ``coefficient_names`` -- the `i`-th element of this list specifies
           names for the monomial coefficients of the `i`-th polynomial, see
-          :func:`~sage.schemes.generic.toric_variety.normalize_names`
+          :func:`~sage.schemes.toric.variety.normalize_names`
           for acceptable formats. If not given, indexed coefficient names will
           be created automatically;
 
@@ -1154,7 +1154,7 @@ class CPRFanoToricVariety_field(ToricVariety_field):
 
         - ``other`` -- a (possibly
           :class:`CPR-Fano <CPRFanoToricVariety_field>`) :class:`toric variety
-          <sage.schemes.generic.toric_variety.ToricVariety_field>`;
+          <sage.schemes.toric.variety.ToricVariety_field>`;
 
         - ``coordinate_names`` -- names of variables for the coordinate ring,
           see :func:`normalize_names` for acceptable formats. If not given,
@@ -1167,7 +1167,7 @@ class CPRFanoToricVariety_field(ToricVariety_field):
         OUTPUT:
 
         - a :class:`toric variety
-          <sage.schemes.generic.toric_variety.ToricVariety_field>`, which is
+          <sage.schemes.toric.variety.ToricVariety_field>`, which is
           :class:`CPR-Fano <CPRFanoToricVariety_field>` if ``other`` was.
 
         EXAMPLES::
@@ -1214,7 +1214,7 @@ class CPRFanoToricVariety_field(ToricVariety_field):
           subdividing fan;
 
         - all other arguments will be passed to
-          :meth:`~sage.schemes.generic.toric_variety.ToricVariety_field.resolve`
+          :meth:`~sage.schemes.toric.variety.ToricVariety_field.resolve`
           method of (general) toric varieties, see its documentation for
           details.
 
@@ -1222,7 +1222,7 @@ class CPRFanoToricVariety_field(ToricVariety_field):
 
         - :class:`CPR-Fano toric variety <CPRFanoToricVariety_field>` if there
           was no ``new_rays`` argument and :class:`toric variety
-          <sage.schemes.generic.toric_variety.ToricVariety_field>` otherwise.
+          <sage.schemes.toric.variety.ToricVariety_field>` otherwise.
 
         EXAMPLES::
 
@@ -1321,7 +1321,7 @@ class AnticanonicalHypersurface(AlgebraicScheme_subscheme_toric):
 
         sage: P1xP1 = CPRFanoToricVariety(
         ...       Delta_polar=lattice_polytope.octahedron(2))
-        sage: import sage.schemes.generic.fano_toric_variety as ftv
+        sage: import sage.schemes.toric.fano_variety as ftv
         sage: ftv.AnticanonicalHypersurface(P1xP1)
         Closed subscheme of 2-d CPR-Fano toric variety
         covered by 4 affine patches defined by:
@@ -1341,7 +1341,7 @@ class AnticanonicalHypersurface(AlgebraicScheme_subscheme_toric):
 
             sage: P1xP1 = CPRFanoToricVariety(
             ...       Delta_polar=lattice_polytope.octahedron(2))
-            sage: import sage.schemes.generic.fano_toric_variety as ftv
+            sage: import sage.schemes.toric.fano_variety as ftv
             sage: ftv.AnticanonicalHypersurface(P1xP1)
             Closed subscheme of 2-d CPR-Fano toric variety
             covered by 4 affine patches defined by:
@@ -1447,7 +1447,7 @@ class NefCompleteIntersection(AlgebraicScheme_subscheme_toric):
             sage: np
             Nef-partition {0, 1, 3} U {2, 4, 5}
             sage: X = CPRFanoToricVariety(Delta_polar=o)
-            sage: from sage.schemes.generic.fano_toric_variety import *
+            sage: from sage.schemes.toric.fano_variety import *
             sage: NefCompleteIntersection(X, np)
             Closed subscheme of 3-d CPR-Fano toric variety
             covered by 8 affine patches defined by:
@@ -1571,7 +1571,7 @@ def add_variables(field, variables):
 
     We start with the rational field and slowly add more variables::
 
-        sage: from sage.schemes.generic.fano_toric_variety import *
+        sage: from sage.schemes.toric.fano_variety import *
         sage: F = add_variables(QQ, []); F      # No extension
         Rational Field
         sage: F = add_variables(QQ, ["a"]); F

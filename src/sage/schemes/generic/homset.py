@@ -47,7 +47,7 @@ from sage.schemes.generic.morphism import (
     SchemeMorphism_point_affine,
     SchemeMorphism_point_projective_ring,
     SchemeMorphism_point_projective_field )
-from sage.schemes.generic.toric_morphism import SchemeMorphism_point_toric_field
+from sage.schemes.toric.morphism import SchemeMorphism_point_toric_field
 
 def is_SchemeHomset(H):
     r"""
