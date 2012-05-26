@@ -854,8 +854,6 @@ cdef class MPolynomial(CommutativeRingElement):
         """
         Return the Newton polytope of this polynomial.
 
-        You should have the optional polymake package installed.
-
         EXAMPLES::
 
             sage: R.<x,y> = QQ[]
