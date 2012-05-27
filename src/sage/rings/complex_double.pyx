@@ -594,7 +594,7 @@ cdef class ComplexDoubleField_class(sage.rings.ring.Field):
 #         x._set_multiplicative_order( n ) # not implemented for CDF
         return x
 
-cdef public api ComplexDoubleElement new_ComplexDoubleElement():
+cdef ComplexDoubleElement new_ComplexDoubleElement():
     """
     Creates a new (empty) ComplexDoubleElement.
     """

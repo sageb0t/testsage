@@ -185,18 +185,6 @@ cdef extern from "mpz_pylong.h":
 # rather than silently corrupting memory.
 cdef long mpz_t_offset = 1000000000
 
-# The unique running Pari instance.
-cdef PariInstance pari_instance, P
-pari_instance = PariInstance(16000000, 500000)
-P = pari_instance   # shorthand notation
-
-# PariInstance.__init__ must not create gen objects because their parent is not constructed yet
-sig_on()
-pari_instance.PARI_ZERO = pari_instance.new_gen_noclear(gen_0)
-pari_instance.PARI_ONE  = pari_instance.new_gen_noclear(gen_1)
-pari_instance.PARI_TWO  = pari_instance.new_gen_noclear(gen_2)
-sig_off()
-
 # so Galois groups are represented in a sane way
 # See the polgalois section of the PARI users manual.
 new_galois_format = 1
@@ -362,6 +350,18 @@ def prec_words_to_dec(int prec_in_words):
         [(3, 19), (4, 38), (5, 57), (6, 77), (7, 96), (8, 115), (9, 134)] # 64-bit
     """
     return prec_bits_to_dec(prec_words_to_bits(prec_in_words))
+
+# The unique running Pari instance.
+cdef PariInstance pari_instance, P
+pari_instance = PariInstance(16000000, 500000)
+P = pari_instance   # shorthand notation
+
+# PariInstance.__init__ must not create gen objects because their parent is not constructed yet
+sig_on()
+pari_instance.PARI_ZERO = pari_instance.new_gen_noclear(gen_0)
+pari_instance.PARI_ONE  = pari_instance.new_gen_noclear(gen_1)
+pari_instance.PARI_TWO  = pari_instance.new_gen_noclear(gen_2)
+sig_off()
 
 # Also a copy of PARI accessible from external pure python code.
 pari = pari_instance
@@ -10093,7 +10093,7 @@ class PariError (RuntimeError):
 # THE TRY CODE IS NOT REENTRANT -- NO CALLS TO PARI FROM HERE !!!
 #              - Gonzalo Tornario
 
-cdef void _pari_trap "_pari_trap" (long errno, long retries) except *:
+cdef public void _pari_trap "_pari_trap" (long errno, long retries) except *:
     """
     TESTS::
 

@@ -504,7 +504,7 @@ cdef class ParentWithAdditiveAbelianGens(ParentWithGens):
         """
         return gens_py.abelian_iterator(self)
 
-class localvars:
+cdef class localvars:
     r"""
     Context manager for safely temporarily changing the variables
     names of an object with generators.
@@ -551,6 +551,11 @@ class localvars:
 
     - William Stein (2006-10-31)
     """
+    cdef object _obj
+    cdef object _names
+    cdef object _latex_names
+    cdef object _orig
+
     def __init__(self, obj, names, latex_names=None, normalize=True):
         self._obj = obj
         if normalize:
