@@ -76,3 +76,4 @@ and testing to make sure nothing funny is going on).
    sage/interfaces/sage0
    sage/interfaces/singular
    sage/interfaces/tachyon
+   sage/interfaces/jmoldata
