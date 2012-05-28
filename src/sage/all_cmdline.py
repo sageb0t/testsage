@@ -1,3 +1,9 @@
+"""
+all_cmdline.py
+
+This is all.py (load all sage functions) plus set-up for the Sage commandline.
+"""
+
 #############################################################################
 #       Copyright (C) 2007 William Stein <wstein@gmail.com>
 #  Distributed under the terms of the GNU General Public License (GPL)
@@ -24,3 +30,6 @@ except ValueError as msg:
     raise ValueError(msg)
 
 sage.misc.session.init()
+
+import sage.misc.displayhook
+sage.misc.displayhook.install()
