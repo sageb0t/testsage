@@ -461,7 +461,7 @@ class Function_log_integral(BuiltinFunction):
         return mpmath_utils_call(mpmath.li, z, parent=parent)
 
     def _derivative_(self, z, diff_param=None):
-        """
+        r"""
         The derivative of `\operatorname{li}(z) is `1/log(z)`.
 
         EXAMPLES::
@@ -651,9 +651,10 @@ class Function_sin_integral(BuiltinFunction):
         return mpmath_utils_call(mpmath.si, z, parent=parent)
 
     def _derivative_(self, z, diff_param=None):
-        """
-        The derivative of `\operatorname{Si}(z)` is `\sin(z)/z` if `z` is not zero. The derivative
-        at `z = 0` is `1` (but this exception is not currently implimented).
+        r"""
+        The derivative of `\operatorname{Si}(z)` is `\sin(z)/z` if `z`
+        is not zero. The derivative at `z = 0` is `1` (but this
+        exception is not currently implemented).
 
         EXAMPLES::
 
@@ -793,7 +794,7 @@ class Function_cos_integral(BuiltinFunction):
         return mpmath_utils_call(mpmath.ci, z, parent=parent)
 
     def _derivative_(self, z, diff_param=None):
-        """
+        r"""
         The derivative of `\operatorname{Ci}(z)` is `\cos(z)/z` if `z` is not zero.
 
         EXAMPLES::
@@ -945,7 +946,7 @@ class Function_sinh_integral(BuiltinFunction):
         return mpmath_utils_call(mpmath.shi, z, parent=parent)
 
     def _derivative_(self, z, diff_param=None):
-        """
+        r"""
         The derivative of `\operatorname{Shi}(z)` is `\sinh(z)/z`.
 
         EXAMPLES::
