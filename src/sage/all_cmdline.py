@@ -23,9 +23,4 @@ except ValueError as msg:
         msg = str(msg) + '\n\n** In Sage, the easiest fix for this problem is to type "sage -ba"\n   to rebuild all the Cython code (this takes several minutes).\n   Alternatively, touch the last .pyx file in the traceback above. **\n'
     raise ValueError(msg)
 
-def _init_cmdline(globs):
-    from sage.misc.inline_fortran import InlineFortran
-    fortran = InlineFortran(globs)
-    globs['fortran'] = fortran
-
 sage.misc.session.init()
