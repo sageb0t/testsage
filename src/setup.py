@@ -988,6 +988,7 @@ code = setup(name = 'sage',
                      'sage.schemes.plane_quartics',
                      'sage.schemes.elliptic_curves',
                      'sage.schemes.hyperelliptic_curves',
+                     'sage.schemes.toric',
 
                      'sage.server',
                      'sage.server.simple',
