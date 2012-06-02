@@ -1104,6 +1104,9 @@ cdef class Ring(ParentWithGens):
             NotImplementedError
 
         """
+        if self.is_field():
+            return True
+
         if self.is_zero():
             return False
 
