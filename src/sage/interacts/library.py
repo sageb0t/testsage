@@ -1446,7 +1446,7 @@ def cellular_automaton(
 
     from sage.interacts.library_cython import cellular
     M = cellular(rule, N)
-    plot_M = matrix_plot(M)
+    plot_M = matrix_plot(M, cmap='binary')
     plot_M.show(figsize=[size,size])
 
 @library_interact
