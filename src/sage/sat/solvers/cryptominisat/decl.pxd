@@ -46,6 +46,7 @@ cdef extern from "Solver.h" namespace "CMSat":
 
     cdef cppclass SolverConf:
         SolverConf()
+        SolverConf(SolverConf &)
         float    random_var_freq    #The frequency with which the decision heuristic tries to choose
                                     #a random variable.  (default 0.02) NOTE: This is really
                                     #strange. If the number of variables set is large, then the
@@ -196,6 +197,3 @@ cdef extern from "Solver.h" namespace "CMSat":
         void needProofGraph()       # Prepares the solver to output proof graphs during solving
 
         vector[Lit] get_unitary_learnts() # return the set of unitary learnt clauses
-
-cdef extern from "helper.h":
-     cdef uint32_t** get_sorted_learnts_helper(Solver* solver, uint32_t* num)
