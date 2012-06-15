@@ -26,7 +26,7 @@ Create your own forked copy of `Sage Notebook`_
 
    .. image:: forking_button.png
 
-   Now, after a short pause and some 'Hardcore forking action', you
-   should find yourself at the home page for your own forked copy of `Sage Notebook`_.
+   Now, after a short pause, you should find yourself at the home
+   page for your own forked copy of `Sage Notebook`_.
 
 .. include:: links.inc
