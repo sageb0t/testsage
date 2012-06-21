@@ -881,6 +881,8 @@ code = setup(name = 'sage',
 
                      'sage.databases',
 
+                     'sage.doctest',
+
                      'sage.ext',
                      'sage.ext.interpreters',
 
