@@ -2738,7 +2738,7 @@ cdef class Polynomial(CommutativeAlgebraElement):
 
             sage: pari.default("debug", 3)
             sage: F = pol.factor()
-
+            <BLANKLINE>
             Entering nffactor:
             ...
             sage: pari.default("debug", 0)
@@ -4687,9 +4687,7 @@ cdef class Polynomial(CommutativeAlgebraElement):
              (... + 1.25992104989*I, 1),
              (1.09112363597 - 0.629960524947*I, 1)]
             sage: f.roots(multiplicities=False)
-            [-1.09112363597 - 0.629960524947*I,
-             ... + 1.25992104989r*I,
-             1.09112363597 - 0.629960524947*I]
+            [-1.09112363597 - 0.629960524947*I, ... + 1.25992104989*I, 1.09112363597 - 0.629960524947*I]
             sage: [f(z) for z in f.roots(multiplicities=False)] # random, too close to 0
             [-2.56337823492e-15 - 6.66133814775e-15*I,
              3.96533069372e-16 + 1.99840144433e-15*I,

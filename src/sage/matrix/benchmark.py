@@ -8,7 +8,8 @@ the entries.  The systems supported are Sage and Magma.
 The basic command syntax is as follows::
 
     sage: import sage.matrix.benchmark as b
-    sage: b.report([b.det_ZZ], 'Test', systems=['sage'])
+    sage: print "starting"; import sys; sys.stdout.flush(); b.report([b.det_ZZ], 'Test', systems=['sage'])
+    starting...
     ======================================================================
               Test
     ======================================================================
@@ -37,7 +38,8 @@ def report(F, title, systems = ['sage', 'magma'], **kwds):
     EXAMPLES::
 
         sage: import sage.matrix.benchmark as b
-        sage: b.report([b.det_ZZ], 'Test', systems=['sage'])
+        sage: print "starting"; import sys; sys.stdout.flush(); b.report([b.det_ZZ], 'Test', systems=['sage'])
+        starting...
         ======================================================================
                   Test
         ======================================================================
@@ -91,7 +93,8 @@ def report_ZZ(**kwds):
     EXAMPLES::
 
         sage: import sage.matrix.benchmark as b
-        sage: b.report_ZZ(systems=['sage'])  # long time (15s on sage.math, 2012)
+        sage: print "starting"; import sys; sys.stdout.flush(); b.report_ZZ(systems=['sage'])  # long time (15s on sage.math, 2012)
+        starting...
         ======================================================================
         Dense benchmarks over ZZ
         ======================================================================
@@ -558,7 +561,8 @@ def report_GF(p=16411, **kwds):
     EXAMPLES::
 
         sage: import sage.matrix.benchmark as b
-        sage: b.report_GF(systems=['sage'])
+        sage: print "starting"; import sys; sys.stdout.flush(); b.report_GF(systems=['sage'])
+        starting...
         ======================================================================
         Dense benchmarks over GF with prime 16411
         ======================================================================

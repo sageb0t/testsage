@@ -147,6 +147,7 @@ class CombinatorialFreeModuleElement(Element):
             sage: F.print_options(monomial_cmp = lambda x,y: -cmp(x,y))
             sage: f._sorted_items_for_printing()
             [('c', 2), ('b', 3), ('a', 1)]
+            sage: F.print_options(monomial_cmp=cmp) #reset to original state
 
         .. seealso:: :meth:`_repr_`, :meth:`_latex_`, :meth:`print_options`
         """
@@ -1047,6 +1048,8 @@ class CombinatorialFreeModule(UniqueRepresentation, Module):
         sage: F4.prefix()
         'F'
 
+        sage: F2.print_options(prefix='F') #reset for following doctests
+
     The default category is the category of modules with basis over
     the base ring::
 
@@ -1062,6 +1065,7 @@ class CombinatorialFreeModule(UniqueRepresentation, Module):
     Customizing print and LaTeX representations of elements::
 
         sage: F = CombinatorialFreeModule(QQ, ['a','b'], prefix='x')
+        sage: original_print_options = F.print_options()
         sage: e = F.basis()
         sage: e['a'] - 3 * e['b']
         x['a'] - 3*x['b']
@@ -1116,6 +1120,7 @@ class CombinatorialFreeModule(UniqueRepresentation, Module):
         sage: tensor([f, g])
         2*x[1] # y[3] + x[1] # y[4] + 4*x[2] # y[3] + 2*x[2] # y[4]
 
+        sage: F.print_options(**original_print_options) # reset print options
     """
 
     @staticmethod
@@ -1671,7 +1676,7 @@ class CombinatorialFreeModule(UniqueRepresentation, Module):
 
             sage: sorted(F.print_options().items())
             [('bracket', '('), ('latex_bracket', False), ('latex_prefix', None), ('latex_scalar_mult', None), ('monomial_cmp', <built-in function cmp>), ('prefix', 'x'), ('scalar_mult', '*'), ('tensor_symbol', None)]
-
+            sage: F.print_options(bracket='[') # reset
         """
         # don't just use kwds.get(...) because I want to distinguish
         # between an argument like "option=None" and the option not
@@ -1726,6 +1731,7 @@ class CombinatorialFreeModule(UniqueRepresentation, Module):
             F['a'] + 2*F['b']
 
             sage: QS3 = CombinatorialFreeModule(QQ, Permutations(3), prefix="")
+            sage: original_print_options = QS3.print_options()
             sage: a = 2*QS3([1,2,3])+4*QS3([3,2,1])
             sage: a                      # indirect doctest
             2*[[1, 2, 3]] + 4*[[3, 2, 1]]
@@ -1741,6 +1747,8 @@ class CombinatorialFreeModule(UniqueRepresentation, Module):
             sage: QS3.print_options(bracket="|", scalar_mult=" *@* ")
             sage: a              # indirect doctest
             2 *@* |[1, 2, 3]| + 4 *@* |[3, 2, 1]|
+
+            sage: QS3.print_options(**original_print_options) # reset
 
         TESTS::
 
@@ -1803,6 +1811,7 @@ class CombinatorialFreeModule(UniqueRepresentation, Module):
             C_{a} + 2C_{b}
 
             sage: QS3 = CombinatorialFreeModule(QQ, Permutations(3), prefix="", scalar_mult="*")
+            sage: original_print_options = QS3.print_options()
             sage: a = 2*QS3([1,2,3])+4*QS3([3,2,1])
             sage: latex(a)                     # indirect doctest
             2[1, 2, 3] + 4[3, 2, 1]
@@ -1815,6 +1824,7 @@ class CombinatorialFreeModule(UniqueRepresentation, Module):
             sage: QS3.print_options(latex_bracket=('\\myleftbracket', '\\myrightbracket'))
             sage: latex(a)                     # indirect doctest
             2\myleftbracket[1, 2, 3]\myrightbracket + 4\myleftbracket[3, 2, 1]\myrightbracket
+            sage: QS3.print_options(**original_print_options) # reset
 
         TESTS::
 

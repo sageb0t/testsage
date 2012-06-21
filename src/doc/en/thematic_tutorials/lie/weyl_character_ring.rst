@@ -158,7 +158,7 @@ with itself. We see that the tensor square splits into four
 irreducibles, each with multiplicity one.
 
 The highest weights that appear here are available (with their
-coefficients) through the usual free module accessors::
+coefficients) through the usual free module accessors:
 
 .. link
 
@@ -243,11 +243,11 @@ itself, that is, the integral of `|tr(g)|^{10}`:
 So far we have been working with `n=3`. For general `n`::
 
    sage: def f(n,k):
-   ...      R = WeylCharacterRing(['A',n-1])
-   ...      tr = R(R.fundamental_weights()[1])
-   ...      return sum(d^2 for d in (tr^k).coefficients())
-   ...
-   sage: [f(n,5) for n in [2..7]]
+   ....:     R = WeylCharacterRing(['A',n-1])
+   ....:     tr = R(R.fundamental_weights()[1])
+   ....:     return sum(d^2 for d in (tr^k).coefficients())
+   ....:
+   sage: [f(n,5) for n in [2..7]] # long time
    [42, 103, 119, 120, 120, 120]
 
 We see that the 10-th moment of `tr(g)` is just `5!` when `n` is sufficiently
@@ -259,7 +259,7 @@ large. What if we fix `n` and vary `k`?
 
         sage: [f(2,k) for k in [1..10]]
         [1, 2, 5, 14, 42, 132, 429, 1430, 4862, 16796]
-        sage: [catalan_number(k) for k in [1..k]]
+        sage: [catalan_number(k) for k in [1..10]]
         [1, 2, 5, 14, 42, 132, 429, 1430, 4862, 16796]
 
 Frobenius-Schur indicator
@@ -527,7 +527,7 @@ large. What if we fix `n` and vary `k`?
 
         sage: [f(2,k) for k in [1..10]]
         [1, 2, 5, 14, 42, 132, 429, 1430, 4862, 16796]
-        sage: [catalan_number(k) for k in [1..k]]
+        sage: [catalan_number(k) for k in [1..10]]
         [1, 2, 5, 14, 42, 132, 429, 1430, 4862, 16796]
 
 Invariants and multiplicities
@@ -549,7 +549,7 @@ representation in some character. This may be found by the method
     [1, 0, 0, 1, 0, 1, 0]
 
 If we want the multiplicity of some other representation, we may
-obtain that using the method ``multiplicity``::
+obtain that using the method ``multiplicity``:
 
 .. link
 

@@ -605,6 +605,7 @@ class Function_arcsech(HyperbolicFunction):
             sage: import numpy
             sage: a = numpy.linspace(0,1,3)
             sage: arcsech(a)
+            Warning: divide by zero encountered in divide
             array([       inf,  1.3169579,  0.       ])
         """
         return arccosh(1.0 / x)
@@ -654,6 +655,7 @@ class Function_arccsch(HyperbolicFunction):
             sage: import numpy
             sage: a = numpy.linspace(0,1,3)
             sage: arccsch(a)
+            Warning: divide by zero encountered in divide
             array([        inf,  1.44363548,  0.88137359])
         """
         return arcsinh(1.0 / x)

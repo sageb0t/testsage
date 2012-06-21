@@ -356,6 +356,7 @@ class CuspidalSubmodule_eps(CuspidalSubmodule_modsym_qexp):
         sage: f.qexp(1)
         O(q^1)
     """
+    pass
 
     #def _repr_(self):
     #    A = self.ambient_module()
