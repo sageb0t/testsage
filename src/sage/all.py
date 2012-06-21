@@ -174,7 +174,7 @@ del message, name
 #try:
 #    import resource   # unix only...
 #    resource.setrlimit(resource.RLIMIT_AS, (-1,-1))
-#except:
+#except StandardError:
 #    pass
 
 # very useful 2-letter shortcuts

@@ -247,7 +247,7 @@ class ModularForm_abstract(ModuleElement):
         """
         try:
             self._ensure_is_compatible(other)
-        except:
+        except StandardError:
             return self.parent().__cmp__(other.parent())
         if self.element() == other.element():
             return 0
@@ -683,7 +683,7 @@ class Newform(ModularForm_abstract):
         """
         try:
             self._ensure_is_compatible(other)
-        except:
+        except StandardError:
             return False
         if isinstance(other, Newform):
             if self.q_expansion(self.parent().sturm_bound()) == other.q_expansion(other.parent().sturm_bound()):
@@ -712,7 +712,7 @@ class Newform(ModularForm_abstract):
         """
         try:
             self._ensure_is_compatible(other)
-        except:
+        except StandardError:
             return self.parent().__cmp__(other.parent())
         if isinstance(other, Newform):
             if self.q_expansion(self.parent().sturm_bound()) == other.q_expansion(other.parent().sturm_bound()):

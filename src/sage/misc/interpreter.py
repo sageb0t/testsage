@@ -190,7 +190,7 @@ def do_prefilter_paste(line, continuation):
     if line[:6] == 'iload ':
         try:
             name = str(eval(line[6:]))
-        except:
+        except StandardError:
             name = str(line[6:].strip())
         try:
             F = open(name)

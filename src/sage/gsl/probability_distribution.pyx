@@ -626,7 +626,7 @@ cdef class RealDistribution(ProbabilityDistribution):
           for x in parameters:
               try:
                   float(x)
-              except:
+              except StandardError:
                   raise TypeError, "Uniform distribution requires parameters coercible to float"
           self.parameters = <double*>sage_malloc(sizeof(double)*2)
           self.parameters[0] = parameters[0]
@@ -634,7 +634,7 @@ cdef class RealDistribution(ProbabilityDistribution):
         elif name == 'gaussian':
             try:
                 float(parameters)
-            except:
+            except StandardError:
                 raise TypeError, "gaussian distribution requires parameter sigma coercible to float"
             self.parameters = <double*>sage_malloc(sizeof(double))
             self.parameters[0] = float(parameters)
@@ -644,7 +644,7 @@ cdef class RealDistribution(ProbabilityDistribution):
                 raise TypeError, "pareto distribution has two parameters"
             try:
                 map(float, parameters)
-            except:
+            except StandardError:
                 raise TypeError, "parameters must be coercible to float"
             self.parameters = <double*>sage_malloc(sizeof(double)*2)
             self.parameters[0] = float(parameters[0])
@@ -654,7 +654,7 @@ cdef class RealDistribution(ProbabilityDistribution):
             self.distribution_type = rayleigh
             try:
                 float(parameters)
-            except:
+            except StandardError:
                 raise TypeError, "rayleigh distribution requires parameter sigma coercible to float"
             self.parameters = <double*>sage_malloc(sizeof(double))
             self.parameters[0] = float(parameters)
@@ -665,7 +665,7 @@ cdef class RealDistribution(ProbabilityDistribution):
             for x in parameters:
                 try:
                     float(x)
-                except:
+                except StandardError:
                     raise TypeError, "Lognormal distribution requires real parameters"
             self.parameters = <double*>sage_malloc(sizeof(double)*2)
             self.parameters[0] = float(parameters[0])
@@ -674,7 +674,7 @@ cdef class RealDistribution(ProbabilityDistribution):
         elif name == 't':
             try:
                 float(parameters)
-            except:
+            except StandardError:
                 raise TypeError, "parameter to t distribution must be coercible to float"
             self.parameters = <double*>sage_malloc(sizeof(double))
             self.parameters[0] = float(parameters)
@@ -684,7 +684,7 @@ cdef class RealDistribution(ProbabilityDistribution):
                 raise TypeError, "F-distribution requires two real parameters"
             try:
                 map(float, parameters)
-            except:
+            except StandardError:
                 raise TypeError, "F-distribution requires real parameters"
             self.parameters = <double *>malloc(sizeof(double)*2)
             self.parameters[0] = float(parameters[0])
@@ -693,7 +693,7 @@ cdef class RealDistribution(ProbabilityDistribution):
         elif name == 'chisquared':
             try:
                 float(parameters)
-            except:
+            except StandardError:
                 raise TypeError, "parameters to t distribution must be coercible to float"
             self.parameters = <double *>sage_malloc(sizeof(double))
             self.parameters[0] = float(parameters)
@@ -704,7 +704,7 @@ cdef class RealDistribution(ProbabilityDistribution):
             for x in parameters:
                 try:
                     float(x)
-                except:
+                except StandardError:
                     raise TypeError, "exponential power distribution requires real parameters"
             self.parameters = <double*>sage_malloc(sizeof(double)*2)
             self.parameters[0] = float(parameters[0])
@@ -715,7 +715,7 @@ cdef class RealDistribution(ProbabilityDistribution):
                 raise TypeError, "weibull distribution requires two real parameters"
             try:
                 map(float, parameters)
-            except:
+            except StandardError:
                 raise TypeError, "weibull distribution requires real parameters"
             self.parameters = <double *>sage_malloc(sizeof(double)*2)
             self.parameters[0] = float(parameters[0])
@@ -726,7 +726,7 @@ cdef class RealDistribution(ProbabilityDistribution):
                 raise TypeError, "beta distribution requires two real parameters"
             try:
                 map(float, parameters)
-            except:
+            except StandardError:
                 raise TypeError, "beta distribution requires real parameters"
             self.parameters = <double *>sage_malloc(sizeof(double)*2)
             self.parameters[0] = float(parameters[0])

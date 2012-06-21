@@ -61,7 +61,7 @@ def is_triangular_number(n):
             disc_sqrt = ZZ(sqrt(1+8*n))
             a = ZZ( (ZZ(-1) + disc_sqrt) / ZZ(2) )
             return a
-        except:
+        except StandardError:
             return False
 
 def extend_to_primitive(A_input):

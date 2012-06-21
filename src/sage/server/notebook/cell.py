@@ -1907,7 +1907,7 @@ class Cell(Cell_generic):
             except OSError:
                 try:
                     shutil.rmtree(F)
-                except:
+                except StandardError:
                     pass
 
     def version(self):

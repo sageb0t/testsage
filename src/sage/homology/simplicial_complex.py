@@ -804,7 +804,7 @@ class SimplicialComplex(GenericCellComplex):
             # build dictionary of generator names
             try:
                 gen_dict[v] = 'x%s'%int(v)
-            except:
+            except StandardError:
                 gen_dict[v] = v
         # build set of facets
         good_faces = []

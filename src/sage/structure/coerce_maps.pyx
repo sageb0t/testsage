@@ -33,7 +33,7 @@ cdef class DefaultConvertMap(Map):
     cpdef Element _call_(self, x):
         try:
             return self._codomain._element_constructor(self._codomain, x)
-        except:
+        except StandardError:
             if print_warnings:
                 print type(self._codomain), self._codomain
                 print type(self._codomain._element_constructor), self._codomain._element_constructor
@@ -52,7 +52,7 @@ cdef class DefaultConvertMap(Map):
                     return self._codomain._element_constructor(self._codomain, x, *args)
                 else:
                     return self._codomain._element_constructor(self._codomain, x, *args, **kwds)
-        except:
+        except StandardError:
             if print_warnings:
                 print type(self._codomain), self._codomain
                 print type(self._codomain._element_constructor), self._codomain._element_constructor
@@ -73,7 +73,7 @@ cdef class DefaultConvertMap_unique(DefaultConvertMap):
     cpdef Element _call_(self, x):
         try:
             return self._codomain._element_constructor(x)
-        except:
+        except StandardError:
             if print_warnings:
                 print type(self._codomain), self._codomain
                 print type(self._codomain._element_constructor), self._codomain._element_constructor
@@ -91,7 +91,7 @@ cdef class DefaultConvertMap_unique(DefaultConvertMap):
                     return self._codomain._element_constructor(x, *args)
                 else:
                     return self._codomain._element_constructor(x, *args, **kwds)
-        except:
+        except StandardError:
             if print_warnings:
                 print type(self._codomain), self._codomain
                 print type(self._codomain._element_constructor), self._codomain._element_constructor
@@ -257,7 +257,7 @@ cdef class CallableConvertMap(Map):
                 y = self._func(self._codomain, x)
             else:
                 y = self._func(x)
-        except:
+        except StandardError:
             if print_warnings:
                 print self._func
                 print self._codomain
@@ -293,7 +293,7 @@ cdef class CallableConvertMap(Map):
                 y = self._func(self._codomain, x, *args, **kwds)
             else:
                 y = self._func(x, *args, **kwds)
-        except:
+        except StandardError:
             if print_warnings:
                 print self._func
                 print self._codomain

@@ -834,7 +834,7 @@ class GenericGraph(GenericGraph_pyx):
                 return self._backend._nxg.copy()
             else:
                 return self._backend._nxg
-        except:
+        except StandardError:
             import networkx
             if self._directed and self.allows_multiple_edges():
                 class_type = networkx.MultiDiGraph
@@ -7552,7 +7552,7 @@ class GenericGraph(GenericGraph_pyx):
         """
         try:
             hash(vertex)
-        except:
+        except StandardError:
             return False
         return self._backend.has_vertex(vertex)
 
@@ -8104,16 +8104,16 @@ class GenericGraph(GenericGraph_pyx):
             if v is None:
                 try:
                     u, v, label = u
-                except:
+                except StandardError:
                     try:
                         u, v = u
-                    except:
+                    except StandardError:
                         pass
         else:
             if v is None:
                 try:
                     u, v = u
-                except:
+                except StandardError:
                     pass
         if not self.allows_loops() and u==v:
             return
@@ -8388,7 +8388,7 @@ class GenericGraph(GenericGraph_pyx):
             if v is None:
                 try:
                     u, v, label = u
-                except:
+                except StandardError:
                     u, v = u
                     label = None
         self._backend.del_edge(u, v, label, self._directed)
@@ -8564,7 +8564,7 @@ class GenericGraph(GenericGraph_pyx):
             if v is None:
                 try:
                     u, v, label = u
-                except:
+                except StandardError:
                     u, v = u
                     label = None
         return self._backend.has_edge(u, v, label)
@@ -10276,7 +10276,7 @@ class GenericGraph(GenericGraph_pyx):
             sage: for g in graphs(5):
             ...     try:
             ...         forget = g.is_chordal()
-            ...     except:
+            ...     except StandardError:
             ...         print("Oh no.")
 
         REFERENCES:
@@ -11422,7 +11422,7 @@ class GenericGraph(GenericGraph_pyx):
         e = self.eccentricity(with_labels=True)
         try:
             r = min(e.values())
-        except:
+        except StandardError:
             return []
         return [v for v in e if e[v]==r]
 
@@ -11755,7 +11755,7 @@ class GenericGraph(GenericGraph_pyx):
         e = self.eccentricity(with_labels=True)
         try:
             r = max(e.values())
-        except:
+        except StandardError:
             return []
         return [v for v in e if e[v]==r]
 
@@ -11973,7 +11973,7 @@ class GenericGraph(GenericGraph_pyx):
                 except AttributeError:
                     try:
                         L = networkx.bidirectional_dijkstra(self.networkx_graph(copy=False), u, v)[1]
-                    except:
+                    except StandardError:
                         L = False
             else:
                 L = networkx.dijkstra_path(self.networkx_graph(copy=False), u, v)
@@ -11987,7 +11987,7 @@ class GenericGraph(GenericGraph_pyx):
             else:
                 try:
                     L = networkx.single_source_shortest_path(self.networkx_graph(copy=False), u)[v]
-                except:
+                except StandardError:
                     L = False
         if L:
             return L

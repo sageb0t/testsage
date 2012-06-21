@@ -102,7 +102,7 @@ def email(to, subject, body = '', from_address = None, verbose = True, block = F
 
     try:
         pid = os.fork()
-    except:
+    except StandardError:
         print "Fork not possible -- the email command is not supported on this platform."
         return
 
