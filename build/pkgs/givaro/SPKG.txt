@@ -17,15 +17,20 @@ Website: http://www-lmc.imag.fr/CASYS/LOGICIELS/givaro/
 SPKG Repository: https://bitbucket.org/malb/givaro-spkg
 
 == License ==
- * GPL
+
+ * GNU GPL
 
 == Upstream Contact ==
+
  * Clement Pernet
 
 == Dependencies ==
- * GMP
+
+ * GNU patch
+ * GMP/MPIR
 
 == Maintainers  ==
+
   * Clement Pernet
   * Martin Albrecht <martinralbrecht@googlemail.com>
 
@@ -33,10 +38,44 @@ SPKG Repository: https://bitbucket.org/malb/givaro-spkg
 
 === givaro-3.7.0 (Martin Albrecht, June 7th, 2012) ===
  * #9511 updated to new upstram release
- * removed cruft from spkg-install
 
-=== givaro-3.6.0 (Martin Albrecht, June 6th, 2012) ===
- * #9511 updated to new upstram release
+=== givaro-3.2.13.p0 (Jeroen Demeyer, 25 May 2012) ===
+ * #12761: Restore upstream sources to vanilla 3.2.13 (the previous
+   src/ directory was some never-released CVS version between
+   givaro-3.2.13.rc1 and givaro-3.2.13, but bootstrapped with a
+   different automake).
+ * Remove gmp++.h.patch which is upstreamed (the old diff was wrong).
+ * Use `patch` to apply all patches.
+ * Fix patch for givtablelimits.h such that it can be applied on all
+   systems, not only Cygwin.
+ * Merged all GCC-4.7.0 patches into one: cplusplus_scoping.patch
+ * Don't touch .pyx files, instead fix module_list.py (also on #12761).
+
+=== givaro-3.2.13.rc1.p4 (Leif Leonhardy, March 27th 2012) ===
+ * #12761: Fix headers not conforming to C++11 to make Sage (especially the
+   Sage library) build with GCC 4.7.0 (and without `-fpermissive`).
+   Same for Givaro's test suite, which uses / instantiates much more!
+   (These headers get installed into `$SAGE_LOCAL/include/givaro/`.)
+   New patches:
+   - patches/src.kernel.integer.givintnumtheo.inl.patch
+   - patches/src.kernel.integer.givintrsa.inl.patch
+   - patches/src.library.poly1.givpoly1factor.inl.patch
+   - patches/src.library.poly1.givpoly1padic.h.patch
+   - patches/src.library.poly1.givpoly1proot.inl.patch
+ * Remove the obsolete Debian `dist/` directory.
+ * Remove obsolete GCC 4.3 patch.
+ * Rename diffs of prepatched files that are (still) copied over to `*.diff`
+   (rather than `*.patch`) such that they don't get "automatically" applied
+   by the `patch -p1` loop, which I added.
+ * Fix permissions of `SPKG.txt` and `spkg-install`, and two upstream files.
+ * Add "Special Update/Build Instructions" section.
+ * Clean up `spkg-check` and `spkg-install`.
+ * Also set up environment variables in `spkg-check`, as `make check` involves
+   compilation.  (Although `configure` should have put them into the generated
+   Makefiles.)
+ * Use `$MAKE` in `spkg-check` as well.
+ * Exit in case the build failed!
+ * Only `touch` extension modules (`*.pyx`) if they (already) exist.
 
 === givaro-3.2.13.rc1.p3 (Simon King, Dec 10th, 2011) ===
  * #12131: Use --libdir, to make the package work on openSUSE.
