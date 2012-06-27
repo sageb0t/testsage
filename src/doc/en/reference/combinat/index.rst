@@ -57,6 +57,7 @@ Combinatorics
 
    crystals
    posets
+   rigged_configurations
    designs
    species
    developer

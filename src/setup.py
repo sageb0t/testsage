@@ -854,6 +854,7 @@ code = setup(name = 'sage',
 
                      'sage.combinat',
                      'sage.combinat.crystals',
+                     'sage.combinat.rigged_configurations',
                      'sage.combinat.designs',
                      'sage.combinat.sf',
                      'sage.combinat.root_system',
