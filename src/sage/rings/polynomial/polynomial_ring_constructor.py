@@ -93,7 +93,7 @@ def PolynomialRing(base_ring, arg1=None, arg2=None,
 
     NOTE:
 
-    The following rules were introduced in trac ticket #9944, in order
+    The following rules were introduced in :trac:`9944`, in order
     to preserve the "unique parent assumption" in Sage (i.e., if two
     parents evaluate equal then they should actually be identical).
 
@@ -154,7 +154,7 @@ def PolynomialRing(base_ring, arg1=None, arg2=None,
 
     EXAMPLES:
 
-    1. ``PolynomialRing(base_ring, name,    sparse=False)``
+    1. ``PolynomialRing(base_ring, name, sparse=False)``
 
        ::
 
@@ -325,7 +325,7 @@ def PolynomialRing(base_ring, arg1=None, arg2=None,
 
     TESTS:
 
-    We test here some changes introduced in #9944.
+    We test here some changes introduced in :trac:`9944`.
 
     If there is no dense implementation for the given number of
     variables, then requesting a dense ring results yields the
@@ -357,13 +357,15 @@ def PolynomialRing(base_ring, arg1=None, arg2=None,
         sage: R.0 == 0
         True
 
+    We verify that :trac:`13187` is fixed::
+
+        sage: var('t')
+        t
+        sage: PolynomialRing(ZZ, name=t) == PolynomialRing(ZZ, name='t')
+        True
+
     """
     import sage.rings.polynomial.polynomial_ring as m
-
-    if is_Element(arg1) and not isinstance(arg1, (int, long, Integer)):
-        arg1 = repr(arg1)
-    if is_Element(arg2) and not isinstance(arg2, (int, long, Integer)):
-        arg2 = repr(arg2)
 
     if isinstance(arg1, (int, long, Integer)):
         arg1, arg2 = arg2, arg1
@@ -373,11 +375,16 @@ def PolynomialRing(base_ring, arg1=None, arg2=None,
     elif not name is None:
         arg1 = name
 
+    if is_Element(arg1) and not isinstance(arg1, (int, long, Integer)):
+        arg1 = repr(arg1)
+    if is_Element(arg2) and not isinstance(arg2, (int, long, Integer)):
+        arg2 = repr(arg2)
+
     if not m.ring.is_Ring(base_ring):
-        raise TypeError, 'base_ring must be a ring'
+        raise TypeError('base_ring must be a ring')
 
     if arg1 is None:
-        raise TypeError, "You must specify the names of the variables."
+        raise TypeError("You must specify the names of the variables.")
 
     R = None
     if isinstance(arg1, (list, tuple)):
@@ -387,7 +394,7 @@ def PolynomialRing(base_ring, arg1=None, arg2=None,
     if isinstance(arg2, (int, long, Integer)):
         # 3. PolynomialRing(base_ring, names, n, order='degrevlex'):
         if not isinstance(arg1, (list, tuple, str)):
-            raise TypeError, "You *must* specify the names of the variables."
+            raise TypeError("You *must* specify the names of the variables.")
         n = int(arg2)
         names = arg1
         R = _multi_variate(base_ring, names, n, sparse, order, implementation)
@@ -396,13 +403,13 @@ def PolynomialRing(base_ring, arg1=None, arg2=None,
         if not ',' in arg1:
             # 1. PolynomialRing(base_ring, name, sparse=False):
             if not arg2 is None:
-                raise TypeError, "if second arguments is a string with no commas, then there must be no other non-optional arguments"
+                raise TypeError("if second arguments is a string with no commas, then there must be no other non-optional arguments")
             name = arg1
             R = _single_variate(base_ring, name, sparse, implementation)
         else:
             # 2-4. PolynomialRing(base_ring, names, order='degrevlex'):
             if not arg2 is None:
-                raise TypeError, "invalid input to PolynomialRing function; please see the docstring for that function"
+                raise TypeError("invalid input to PolynomialRing function; please see the docstring for that function")
             names = arg1.split(',')
             n = len(names)
             R = _multi_variate(base_ring, names, n, sparse, order, implementation)
@@ -413,10 +420,10 @@ def PolynomialRing(base_ring, arg1=None, arg2=None,
             R = _multi_variate(base_ring, names, n, sparse, order, implementation)
 
     if arg1 is None and arg2 is None:
-        raise TypeError, "you *must* specify the indeterminates (as not None)."
+        raise TypeError("you *must* specify the indeterminates (as not None).")
     if R is None:
-        raise TypeError, "invalid input (%s, %s, %s) to PolynomialRing function; please see the docstring for that function"%(
-            base_ring, arg1, arg2)
+        raise TypeError("invalid input (%s, %s, %s) to PolynomialRing function; please see the docstring for that function"%(
+            base_ring, arg1, arg2))
 
     return R
 
@@ -435,8 +442,8 @@ def MPolynomialRing(*args, **kwds):
 def _get_from_cache(key):
     try:
         return _cache[key] #()
-    except TypeError, msg:
-        raise TypeError, 'key = %s\n%s'%(key,msg)
+    except TypeError as msg:
+        raise TypeError('key = %s\n%s'%(key,msg))
     except KeyError:
         return None
 
@@ -444,15 +451,16 @@ def _save_in_cache(key, R):
     try:
         #_cache[key] = weakref.ref(R)
          _cache[key] = R
-    except TypeError, msg:
-        raise TypeError, 'key = %s\n%s'%(key,msg)
+    except TypeError as msg:
+        raise TypeError('key = %s\n%s'%(key,msg))
 
 def _single_variate(base_ring, name, sparse, implementation):
     import sage.rings.polynomial.polynomial_ring as m
     name = normalize_names(1, name)
     key = (base_ring, name, sparse, implementation if not sparse else None)
     R = _get_from_cache(key)
-    if not R is None: return R
+    if not R is None:
+        return R
 
     if isinstance(base_ring, ring.CommutativeRing):
         if is_IntegerModRing(base_ring) and not sparse:
@@ -503,7 +511,7 @@ def _multi_variate(base_ring, names, n, sparse, order, implementation):
     # even though it is meaningless.
 
     if implementation is not None:
-        raise ValueError, "The %s implementation is not known for multivariate polynomial rings"%implementation
+        raise ValueError("The %s implementation is not known for multivariate polynomial rings"%implementation)
 
     names = normalize_names(n, names)
 
