@@ -31,6 +31,7 @@ cdef class BooleSet:
 
 cdef class CCuddNavigator:
     cdef PBNavigator _pbnav
+    cdef Py_ssize_t* _pbind
 
 cdef class BooleanMonomial(MonoidElement):
     cdef PBMonom _pbmonom
@@ -47,6 +48,7 @@ cdef class BooleanMonomialIterator:
     cdef BooleanMonomial obj
     cdef PBMonomIter _iter
     cdef PBMonomIter _end
+    cdef Py_ssize_t* pbind
 
 cdef class BooleanPolynomialIterator:
     cdef BooleanPolynomial obj
