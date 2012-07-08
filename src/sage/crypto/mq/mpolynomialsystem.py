@@ -75,9 +75,11 @@ pair and study it::
 As an example, we separate the system in independent subsystems or compute the coefficient matrix::
 
     sage: C = mq.MPolynomialSystem(r2).connected_components(); C
-    doctest:...: DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
-    [Polynomial System with 16 Polynomials in 16 Variables,
-     Polynomial System with 16 Polynomials in 16 Variables]
+    doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+    See http://trac.sagemath.org/1819 for details.
+    doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+    See http://trac.sagemath.org/1819 for details.
+    [Polynomial System with 16 Polynomials in 16 Variables, Polynomial System with 16 Polynomials in 16 Variables]
 
     sage: C[0].groebner_basis()
     Polynomial Sequence with 26 Polynomials in 16 Variables
@@ -146,7 +148,8 @@ def is_MPolynomialSystem(F):
         sage: P.<x,y> = PolynomialRing(QQ)
         sage: I = [[x^2 + y^2], [x^2 - y^2]]
         sage: F = mq.MPolynomialSystem(P,I); F
-        doctest:...: DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+        doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+        See http://trac.sagemath.org/1819 for details.
         Polynomial System with 2 Polynomials in 2 Variables
         sage: mq.is_MPolynomialSystem(F)
         True
@@ -166,7 +169,8 @@ def is_MPolynomialRoundSystem(F):
         sage: P.<x,y> = PolynomialRing(QQ)
         sage: I = [[x^2 + y^2], [x^2 - y^2]]
         sage: F = mq.MPolynomialSystem(P,I); F
-        doctest:...: DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+        doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+        See http://trac.sagemath.org/1819 for details.
         Polynomial System with 2 Polynomials in 2 Variables
         sage: mq.is_MPolynomialRoundSystem(F.round(0))
         True
@@ -210,7 +214,8 @@ def MPolynomialSystem(arg1, arg2=None):
     parts::
 
         sage: mq.MPolynomialSystem(I.ring(), [mq.MPolynomialRoundSystem(I.ring(),I.gens())])
-        doctest:1: DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+        doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+        See http://trac.sagemath.org/1819 for details.
         Polynomial System with 4 Polynomials in 4 Variables
 
     If an ideal is provided, the generators are used::
@@ -325,7 +330,8 @@ class MPolynomialRoundSystem_generic(SageObject):
             sage: sr = mq.SR(allow_zero_inversions=True,gf2=True,order='block')
             sage: F,s = sr.polynomial_system()
             sage: F = mq.MPolynomialSystem(F.ring(),tuple(F.parts()))
-            doctest... DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/1819 for details.
             sage: R0 = F.round(0)
             sage: print R0.ring().repr_long()
             Polynomial Ring
@@ -347,7 +353,8 @@ class MPolynomialRoundSystem_generic(SageObject):
             sage: sr = mq.SR(allow_zero_inversions=True,gf2=True,order='block')
             sage: F,s = sr.polynomial_system()
             sage: F = mq.MPolynomialSystem(F.ring(),tuple(F.parts()))
-            doctest... DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/1819 for details.
             sage: R0 = F.round(0)
             sage: R0.ngens()
             4
@@ -594,7 +601,8 @@ class MPolynomialSystem_generic(SageObject):
         ::
 
             sage: mq.MPolynomialSystem(I.ring(), [mq.MPolynomialRoundSystem(I.ring(),I.gens())])
-            doctest:...: DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/1819 for details.
             Polynomial System with 4 Polynomials in 4 Variables
 
         If an ideal is provided, the generators are used.
@@ -696,7 +704,8 @@ class MPolynomialSystem_generic(SageObject):
             sage: sr = mq.SR(allow_zero_inversions=True,gf2=True,order='block')
             sage: F,s = sr.polynomial_system()
             sage: F = mq.MPolynomialSystem(F.ring(),tuple(F))
-            doctest:...: DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/1819 for details.
             sage: F.ngens()
             56
         """
@@ -711,7 +720,8 @@ class MPolynomialSystem_generic(SageObject):
             sage: sr = mq.SR(allow_zero_inversions=True)
             sage: F,s = sr.polynomial_system()
             sage: F = mq.MPolynomialSystem(F.ring(),tuple(F))
-            doctest:...: DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/1819 for details.
             sage: l = F.gens()
             sage: len(l), type(l)
             (40, <type 'tuple'>)
@@ -730,7 +740,8 @@ class MPolynomialSystem_generic(SageObject):
 
             sage: P.<a,b,c,d> = PolynomialRing(GF(127),4)
             sage: F = mq.MPolynomialSystem(sage.rings.ideal.Katsura(P))
-            doctest:1: DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/1819 for details.
 
         ``ij``-th polynomial overall::
 
@@ -771,7 +782,8 @@ class MPolynomialSystem_generic(SageObject):
             sage: sr = mq.SR(allow_zero_inversions=True)
             sage: F,s = sr.polynomial_system()
             sage: F = mq.MPolynomialSystem(F.ring(),tuple(F.parts()))
-            doctest:1: DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/1819 for details.
             sage: l = F.rounds()
             sage: len(l)
             4
@@ -787,7 +799,8 @@ class MPolynomialSystem_generic(SageObject):
             sage: sr = mq.SR(allow_zero_inversions=True)
             sage: F,s = sr.polynomial_system()
             sage: F = mq.MPolynomialSystem(F.ring(),tuple(F.parts()))
-            doctest:1: DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/1819 for details.
             sage: R0 = F.round(1)
             sage: R0
             (k000^2 + k001, k001^2 + k002, k002^2 + k003, k003^2 + k000)
@@ -803,7 +816,8 @@ class MPolynomialSystem_generic(SageObject):
             sage: sr = mq.SR(allow_zero_inversions=True)
             sage: F,s = sr.polynomial_system()
             sage: F = mq.MPolynomialSystem(F.ring(),tuple(F.parts()))
-            doctest:1: DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/1819 for details.
             sage: type(iter(F))
             <type 'generator'>
         """
@@ -947,7 +961,8 @@ class MPolynomialSystem_generic(SageObject):
             + 2*c*d - b, b^2 + 2*a*c + 2*b*d - c]
 
             sage: F = mq.MPolynomialSystem(I)
-            doctest:1: DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/1819 for details.
             sage: A,v = F.coefficient_matrix()
             sage: A
             [  0   0   0   0   0   0   0   0   0   1   2   2   2 126]
@@ -1027,7 +1042,8 @@ class MPolynomialSystem_generic(SageObject):
             sage: P.<a,b,c,d> = PolynomialRing(GF(127))
             sage: I = sage.rings.ideal.Katsura(P)
             sage: F = mq.MPolynomialSystem(I); F
-            doctest:1: DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/1819 for details.
             Polynomial System with 4 Polynomials in 4 Variables
             sage: F._singular_()
             a+2*b+2*c+2*d-1,
@@ -1069,7 +1085,8 @@ class MPolynomialSystem_generic(SageObject):
             sage: P.<a,b,c,d> = PolynomialRing(GF(127))
             sage: I = sage.rings.ideal.Katsura(P)
             sage: F = mq.MPolynomialSystem(I); F # indirect doctest
-            doctest:1: DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/1819 for details.
             Polynomial System with 4 Polynomials in 4 Variables
         """
         return "Polynomial System with %d Polynomials in %d Variables"%(self.ngens(),self.nvariables())
@@ -1084,16 +1101,21 @@ class MPolynomialSystem_generic(SageObject):
             sage: P.<a,b,c,d> = PolynomialRing(GF(127))
             sage: I = sage.rings.ideal.Katsura(P)
             sage: F = mq.MPolynomialSystem(I)
-            doctest:1: DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/1819 for details.
             sage: F + [a^127 + a]
-            doctest:...: DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/1819 for details.
             Polynomial System with 5 Polynomials in 4 Variables
 
             sage: F + P.ideal([a^127 + a])
-            doctest:...: DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.            Polynomial System with 5 Polynomials in 4 Variables
+            doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/1819 for details.
+            Polynomial System with 5 Polynomials in 4 Variables
 
             sage: F + mq.MPolynomialSystem(P,[a^127 + a])
-            doctest:...: DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/1819 for details.
             Polynomial System with 5 Polynomials in 4 Variables
         """
         if is_MPolynomialSystem(right) and right.ring() == self.ring():
@@ -1115,7 +1137,8 @@ class MPolynomialSystem_generic(SageObject):
 
             sage: P.<a,b,c,d> = PolynomialRing(GF(127),4)
             sage: F = mq.MPolynomialSystem(sage.rings.ideal.Katsura(P))
-            doctest... DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/1819 for details.
 
         `ij`-th polynomial overall::
 
@@ -1158,7 +1181,8 @@ class MPolynomialSystem_generic(SageObject):
             sage: P.<x0,x1,x2,x3> = PolynomialRing(GF(37))
             sage: I = sage.rings.ideal.Katsura(P)
             sage: F = mq.MPolynomialSystem(I)
-            doctest:1: DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/1819 for details.
             sage: f = x0 + 2*x1 + 2*x2 + 2*x3 -1
             sage: f in F
             True
@@ -1182,7 +1206,8 @@ class MPolynomialSystem_generic(SageObject):
             sage: P.<x0,x1,x2,x3> = PolynomialRing(GF(37))
             sage: I = sage.rings.ideal.Katsura(P)
             sage: F = mq.MPolynomialSystem(P,I.gens())
-            doctest:1: DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/1819 for details.
             sage: list(F)
             [x0 + 2*x1 + 2*x2 + 2*x3 - 1,
             x0^2 + 2*x1^2 + 2*x2^2 + 2*x3^2 - x0,
@@ -1204,7 +1229,8 @@ class MPolynomialSystem_generic(SageObject):
 
             sage: B.<x,y,z> = BooleanPolynomialRing()
             sage: F = mq.MPolynomialSystem([x*y + y + 1, z + 1])
-            doctest:1: DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/1819 for details.
             sage: F.connection_graph()
             Graph on 3 vertices
         """
@@ -1232,7 +1258,8 @@ class MPolynomialSystem_generic(SageObject):
             sage: sr = mq.SR(2,4,4,8,gf2=True,polybori=True)
             sage: F,s = sr.polynomial_system()
             sage: F = mq.MPolynomialSystem(F.ring(),tuple(F.parts()))
-            doctest:1: DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/1819 for details.
             sage: Fz = mq.MPolynomialSystem(F.round(2))
             sage: Fz.connected_components()
             [Polynomial System with 128 Polynomials in 128 Variables,
@@ -1260,7 +1287,8 @@ class MPolynomialSystem_generic(SageObject):
 
             sage: P.<x,y,z> = PolynomialRing(GF(127))
             sage: F = mq.MPolynomialSystem([x*y + z, y + z + 1])
-            doctest:1: DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/1819 for details.
             sage: F._groebner_strategy()
             Groebner Strategy for ideal generated by 2 elements over
             Multivariate Polynomial Ring in x, y, z over Finite Field of size 127
@@ -1303,9 +1331,11 @@ class MPolynomialSystem_gf2(MPolynomialSystem_generic):
 
             sage: B.<a,b,c,d> = BooleanPolynomialRing()
             sage: F = mq.MPolynomialSystem([c + d + b + 1, a + c + d, a*b + c, b*c*d + c])
-            doctest:1: DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/1819 for details.
             sage: F.eliminate_linear_variables().gens() # everything vanishes
-            doctest... DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/1819 for details.
             ()
             sage: F.eliminate_linear_variables(maxlength=2).gens()
             (b + c + d + 1, b*c + b*d + c, b*c*d + c)
@@ -1317,7 +1347,8 @@ class MPolynomialSystem_gf2(MPolynomialSystem_generic):
             sage: B.<a,b,c,d> = BooleanPolynomialRing()
             sage: F = mq.MPolynomialSystem([a + b + d, a + b + c])
             sage: F,R = F.eliminate_linear_variables(return_reductors=True)
-            doctest:...: DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/1819 for details.
 
             sage: F.gens()
             (c + d,)
@@ -1411,7 +1442,8 @@ class MPolynomialSystem_gf2(MPolynomialSystem_generic):
 
             sage: P.<x,y,z> = PolynomialRing(GF(2))
             sage: F = mq.MPolynomialSystem([x*y + z, y + z + 1])
-            doctest:1: DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/1819 for details.
             sage: F._groebner_strategy()
             Groebner Strategy for ideal generated by 2 elements over
             Multivariate Polynomial Ring in x, y, z over Finite Field of size 2
@@ -1455,12 +1487,15 @@ class MPolynomialSystem_gf2e(MPolynomialSystem_generic):
             sage: P.<x,y> = PolynomialRing(k,2)
             sage: a = P.base_ring().gen()
             sage: F = mq.MPolynomialSystem(P,[x*y + 1, a*x + 1])
-            doctest:1: DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/1819 for details.
             sage: F
             Polynomial System with 2 Polynomials in 2 Variables
             sage: F2 = F.change_ring(GF(2)); F2
             doctest:1: DeprecationWarning: The use of this function is deprecated please use the weil_restriction() function instead.
-            doctest... DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/5576 for details.
+            doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/1819 for details.
             Polynomial System with 8 Polynomials in 4 Variables
             sage: F2.gens()
             (x1*y0 + x0*y1 + x1*y1,
@@ -1494,7 +1529,8 @@ class MPolynomialSystem_gf2e(MPolynomialSystem_generic):
             sage: P.<x,y> = PolynomialRing(k,2)
             sage: a = P.base_ring().gen()
             sage: F = mq.MPolynomialSystem(P,[x*y + 1, a*x + 1])
-            doctest... DeprecationWarning: (Since 4.6.2) This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            doctest:...: DeprecationWarning: This function is replaced by sage.rings.polynomial.multi_polynomial_sequence.PolynomialSequence.
+            See http://trac.sagemath.org/1819 for details.
             sage: F
             Polynomial System with 2 Polynomials in 2 Variables
             sage: F2 = F.weil_restriction(); F2

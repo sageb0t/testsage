@@ -1295,6 +1295,7 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
             doctest:...: DeprecationWarning: Eigenspaces of RDF/CDF matrices are
             deprecated as of Sage version 5.0,
             please use "eigenmatrix_left" instead
+            See http://trac.sagemath.org/11603 for details.
 
         ::
 
@@ -1381,6 +1382,7 @@ cdef class Matrix_double_dense(matrix_dense.Matrix_dense):
             doctest:...: DeprecationWarning: Eigenspaces of RDF/CDF matrices are
             deprecated as of Sage version 5.0,
             please use "eigenmatrix_right" instead
+            See http://trac.sagemath.org/11603 for details.
 
         ::
 

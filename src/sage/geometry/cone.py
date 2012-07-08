@@ -962,8 +962,9 @@ class IntegralRayCollection(SageObject,
 
             sage: c = Cone([(1,0), (0,1), (-1, 0)])
             sage: [ray for ray in c.ray_iterator()]
-            doctest:...: DeprecationWarning: (Since Sage Version 5.1)
+            doctest:...: DeprecationWarning:
             ray_iterator(...) is deprecated!
+            See http://trac.sagemath.org/12544 for details.
             [N(0, 1), N(1, 0), N(-1, 0)]
         """
         # I couldn't move it to the new Cython class due to some issues with
@@ -994,9 +995,10 @@ class IntegralRayCollection(SageObject,
 
             sage: c = Cone([(1,0), (0,1), (-1, 0)])
             sage: c.ray_matrix()
-            doctest:...: DeprecationWarning: (Since Sage Version 5.1)
+            doctest:...: DeprecationWarning:
             ray_matrix(...) is deprecated,
             please use rays().column_matrix() instead!
+            See http://trac.sagemath.org/12544 for details.
             [ 0  1 -1]
             [ 1  0  0]
         """
@@ -1018,8 +1020,9 @@ class IntegralRayCollection(SageObject,
 
             sage: c = Cone([(1,0), (0,1), (-1, 0)])
             sage: c.ray_set()
-            doctest:1: DeprecationWarning: (Since Sage Version 5.1)
+            doctest:1: DeprecationWarning:
             ray_set(...) is deprecated, please use rays().set() instead!
+            See http://trac.sagemath.org/12544 for details.
             frozenset([N(0, 1), N(1, 0), N(-1, 0)])
         """
         deprecation(12544, "ray_set(...) is deprecated, "
@@ -1080,9 +1083,10 @@ class IntegralRayCollection(SageObject,
 
             sage: c = Cone([(1,1,1,1), (1,-1,1,1), (-1,-1,1,1), (-1,1,1,1), (0,0,0,1)])
             sage: c.ray_basis()
-            doctest:...: DeprecationWarning: (Since Sage Version 5.1)
+            doctest:...: DeprecationWarning:
             ray_basis(...) is deprecated,
             please use rays().basis() instead!
+            See http://trac.sagemath.org/12544 for details.
             N( 1,  1, 1, 1),
             N( 1, -1, 1, 1),
             N(-1, -1, 1, 1),
@@ -1115,9 +1119,10 @@ class IntegralRayCollection(SageObject,
 
             sage: c = Cone([(1,1,1,1), (1,-1,1,1), (-1,-1,1,1), (-1,1,1,1), (0,0,0,1)])
             sage: c.ray_basis_matrix()
-            doctest:...: DeprecationWarning: (Since Sage Version 5.1)
+            doctest:...: DeprecationWarning:
             ray_basis_matrix(...) is deprecated,
             please use rays().basis().column_matrix() instead!
+            See http://trac.sagemath.org/12544 for details.
             [ 1  1 -1  0]
             [ 1 -1 -1  0]
             [ 1  1  1  0]
@@ -2853,8 +2858,9 @@ class ConvexRationalPolyhedralCone(IntegralRayCollection,
 
             sage: halfplane = Cone([(1,0), (0,1), (-1,0)])
             sage: halfplane.line_set()
-            doctest:1: DeprecationWarning: (Since Sage Version 5.1)
+            doctest:1: DeprecationWarning:
             line_set(...) is deprecated, please use lines().set() instead!
+            See http://trac.sagemath.org/12544 for details.
             frozenset([N(1, 0)])
             sage: fullplane = Cone([(1,0), (0,1), (-1,-1)])
             sage: fullplane.line_set()
