@@ -87,8 +87,8 @@ def dynkin_diagram(t):
         1   2   3
         A3
     """
-    from sage.misc.misc import deprecation
-    deprecation("dynkin_diagram is deprecated, use DynkinDiagram instead!")
+    from sage.misc.superseded import deprecation
+    deprecation(3654, "dynkin_diagram is deprecated, use DynkinDiagram instead!")
     return DynkinDiagram(t)
 
 class DynkinDiagram_class(DiGraph, CartanType_abstract):

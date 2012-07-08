@@ -210,7 +210,7 @@ from sage.geometry.toric_plotter import ToricPlotter, label_list
 from sage.graphs.digraph import DiGraph
 from sage.matrix.all import matrix, identity_matrix
 from sage.misc.all import cached_method, flatten, latex, prod
-from sage.misc.misc import deprecation
+from sage.misc.superseded import deprecation
 from sage.modules.all import span, vector
 from sage.rings.all import QQ, RR, ZZ, gcd
 from sage.structure.all import SageObject
@@ -970,8 +970,7 @@ class IntegralRayCollection(SageObject,
         # generators (may be resolved in 0.16). However, this particular
         # iterator does not really save time or memory, so I think it can just
         # go. -- Andrey Novoseltsev, 2012-03-06.
-        deprecation("ray_iterator(...) is deprecated!",
-                    "Sage Version 5.1")
+        deprecation(12544, "ray_iterator(...) is deprecated!")
         if ray_list is None:
             for ray in self._rays:
                 yield ray
@@ -1001,9 +1000,8 @@ class IntegralRayCollection(SageObject,
             [ 0  1 -1]
             [ 1  0  0]
         """
-        deprecation("ray_matrix(...) is deprecated, "
-                    "please use rays().column_matrix() instead!",
-                    "Sage Version 5.1")
+        deprecation(12544, "ray_matrix(...) is deprecated, "
+                    "please use rays().column_matrix() instead!")
         return self.rays().column_matrix()
 
     def ray_set(self):
@@ -1024,9 +1022,8 @@ class IntegralRayCollection(SageObject,
             ray_set(...) is deprecated, please use rays().set() instead!
             frozenset([N(0, 1), N(1, 0), N(-1, 0)])
         """
-        deprecation("ray_set(...) is deprecated, "
-                    "please use rays().set() instead!",
-                    "Sage Version 5.1")
+        deprecation(12544, "ray_set(...) is deprecated, "
+                    "please use rays().set() instead!")
         return self.rays().set()
 
     def rays(self, *args):
@@ -1092,9 +1089,8 @@ class IntegralRayCollection(SageObject,
             N( 0,  0, 0, 1)
             in 4-d lattice N
         """
-        deprecation("ray_basis(...) is deprecated, "
-                    "please use rays().basis() instead!",
-                    "Sage Version 5.1")
+        deprecation(12544, "ray_basis(...) is deprecated, "
+                    "please use rays().basis() instead!")
         return self.rays().basis()
 
     def ray_basis_matrix(self):
@@ -1127,9 +1123,8 @@ class IntegralRayCollection(SageObject,
             [ 1  1  1  0]
             [ 1  1  1  1]
         """
-        deprecation("ray_basis_matrix(...) is deprecated, "
-                    "please use rays().basis().column_matrix() instead!",
-                    "Sage Version 5.1")
+        deprecation(12544, "ray_basis_matrix(...) is deprecated, "
+                    "please use rays().basis().column_matrix() instead!")
         return self.rays().basis().column_matrix()
 
 # Derived classes MUST allow construction of their objects using ``ambient``
@@ -2865,9 +2860,8 @@ class ConvexRationalPolyhedralCone(IntegralRayCollection,
             sage: fullplane.line_set()
             frozenset([N(0, 1), N(1, 0)])
         """
-        deprecation("line_set(...) is deprecated, "
-                    "please use lines().set() instead!",
-                    "Sage Version 5.1")
+        deprecation(12544, "line_set(...) is deprecated, "
+                    "please use lines().set() instead!")
         if "_line_set" not in self.__dict__:
             self._line_set = frozenset(self.lines())
         return self._line_set

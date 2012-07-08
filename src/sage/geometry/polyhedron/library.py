@@ -107,7 +107,7 @@ class Polytopes():
         else:
             return 0
 
-    @rename_keyword(deprecated='Sage version 4.7.2', field='base_ring')
+    @rename_keyword(deprecation=11634, field='base_ring')
     def regular_polygon(self, n, base_ring=QQ):
         """
         Return a regular polygon with n vertices.  Over the rational
@@ -182,7 +182,7 @@ class Polytopes():
         if project: verts = [Polytopes.project_1(x) for x in verts]
         return Polyhedron(vertices=verts)
 
-    @rename_keyword(deprecated='Sage version 4.7.2', field='base_ring')
+    @rename_keyword(deprecation=11634, field='base_ring')
     def icosahedron(self, base_ring=QQ):
         """
         Return an icosahedron with edge length 1.
@@ -221,7 +221,7 @@ class Polytopes():
         verts = verts + [i([0,-r12,-g/2]) for i in AlternatingGroup(3)]
         return Polyhedron(vertices=verts, base_ring=base_ring)
 
-    @rename_keyword(deprecated='Sage version 4.7.2', field='base_ring')
+    @rename_keyword(deprecation=11634, field='base_ring')
     def dodecahedron(self, base_ring=QQ):
         """
         Return a dodecahedron.
@@ -261,7 +261,7 @@ class Polytopes():
                   [3/2, -1/2, 1/2], [3/2, 1/2,-1/2], [3/2, 1/2, 1/2] ]
         return Polyhedron(vertices=verts)
 
-    @rename_keyword(deprecated='Sage version 4.7.2', field='base_ring')
+    @rename_keyword(deprecation=11634, field='base_ring')
     def great_rhombicuboctahedron(self, base_ring=QQ):
         """
         Return an Archimedean solid with 48 vertices and 26 faces.
@@ -327,7 +327,7 @@ class Polytopes():
               [-one/2, one/2, 0], [-one/2, 0, -one/2], [-one/2, -one/2, 0] ]
         return Polyhedron(vertices=v)
 
-    @rename_keyword(deprecated='Sage version 4.7.2', field='base_ring')
+    @rename_keyword(deprecation=11634, field='base_ring')
     def buckyball(self, base_ring=QQ):
         """
         Also known as the truncated icosahedron, an Archimedean solid.
@@ -451,7 +451,7 @@ class Polytopes():
         verts = verts + [i([-q12,-g/2,-1/(g*2),0]) for i in AlternatingGroup(4)]
         return Polyhedron(vertices=verts)
 
-    @rename_keyword(deprecated='Sage version 4.7.2', field='base_ring')
+    @rename_keyword(deprecation=11634, field='base_ring')
     def cyclic_polytope(self, dim_n, points_n, base_ring=QQ):
         """
         Return a cyclic polytope.

@@ -318,8 +318,8 @@ class YangBaxterGraph_generic(SageObject):
             Yang-Baxter graph with root vertex (1, 0, 2, 1, 0)
         """
         from copy import copy
-        import sage.misc.misc
-        sage.misc.misc.deprecation("the .copy() method is deprecated; please use the copy() function instead, for example, copy(g)")
+        from sage.misc.superseded import deprecation
+        deprecation(6522, "the .copy() method is deprecated; please use the copy() function instead, for example, copy(g)")
         return copy(self)
 
     def _edges_in_bfs(self):
@@ -625,8 +625,8 @@ class YangBaxterGraph_partition(YangBaxterGraph_generic):
             Yang-Baxter graph of [3, 2], with top vertex (1, 0, 2, 1, 0)
         """
         from copy import copy
-        import sage.misc.misc
-        sage.misc.misc.deprecation("the .copy() method is deprecated; please use the copy() function instead, for example, copy(g)")
+        from sage.misc.superseded import deprecation
+        deprecation(6522, "the .copy() method is deprecated; please use the copy() function instead, for example, copy(g)")
         return copy(self)
 
     @lazy_attribute
