@@ -3753,6 +3753,8 @@ cdef class BooleanPolynomial(MPolynomial):
             sage: f = a + c*b
             sage: f.monomials()
             [c*b, a]
+            sage: P.zero().monomials()
+            []
         """
         return list(self)
 

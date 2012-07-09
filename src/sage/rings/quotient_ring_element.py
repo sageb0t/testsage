@@ -658,6 +658,8 @@ class QuotientRingElement(ring_element.RingElement):
             [a]
             sage: (a+a*b).monomials()
             [a*b, a]
+            sage: R.zero().monomials()
+            []
         """
         return [self.parent()(m) for m in self.__rep.monomials()]
 
