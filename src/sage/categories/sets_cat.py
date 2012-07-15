@@ -655,8 +655,7 @@ class Sets(Category_singleton):
                 sage: A.cartesian_product(A,A)
                 A (+) A (+) A
             """
-
-            return parents[0].CartesianProduct(parents, category = cartesian_product.category_from_parents(parents))
+            return parents[0].__class__.CartesianProduct(parents, category = cartesian_product.category_from_parents(parents))
 
         def algebra(self, base_ring, category = None):
             """
@@ -1195,6 +1194,26 @@ class Sets(Category_singleton):
                 assert realization.realization_of() is self
                 self._realizations.append(realization)
 
+            def inject_shorthands(self, verbose=True):
+                """
+                EXAMPLES::
+
+                    sage: A = Sets().WithRealizations().example(QQ); A
+                    The subset algebra of {1, 2, 3} over Rational Field
+                    sage: A.inject_shorthands()
+                    Injecting F as shorthand for The subset algebra of {1, 2, 3} over Rational Field on the fundamental basis
+                    Injecting In as shorthand for The subset algebra of {1, 2, 3} over Rational Field on the in basis
+                    ...
+                """
+                from sage.misc.misc import inject_variable
+                if not hasattr(self, "_shorthands"):
+                    raise NotImplementedError("no shorthands defined for %s" % self)
+                for shorthand in self._shorthands:
+                    realization = getattr(self, shorthand)()
+                    if verbose:
+                        print 'Injecting %s as shorthand for %s'%(shorthand, realization)
+                    inject_variable(shorthand, realization)
+
             def realizations(self):
                 """
                 Returns all the realizations of ``self`` that ``self`` is aware of.
@@ -1248,7 +1267,7 @@ class Sets(Category_singleton):
                         sage: A = Sets().WithRealizations().example(); A
                         The subset algebra of {1, 2, 3} over Rational Field
                         sage: A.Realizations().super_categories()
-                        [Join of Category of algebras over Rational Field and Category of realizations of sets, Category of algebras with basis over Rational Field]
+                        [Category of realizations of sets]
                     """
                     return [Sets().Realizations()]
 
@@ -1345,7 +1364,8 @@ class Sets(Category_singleton):
                 FIXME: Do we want ``In`` instead?
                 """
                 # The __base__ gets rid of the with_category
-                return self.__class__.__base__.__name__.lower()
+                # The split adds support for nested classes
+                return self.__class__.__base__.__name__.split('.')[-1].lower()
 
             def _repr_(self):
                 """
