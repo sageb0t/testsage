@@ -151,6 +151,10 @@ class EllipticCurvePoint(SchemeMorphism_point_projective_ring):
         Standard comparison function for points on elliptic curves, to
         allow sorting and equality testing.
 
+        .. NOTE::
+
+            ``__eq__`` and ``__ne__`` are implemented in SchemeMorphism_point_projective_ring
+
         EXAMPLES:
             sage: E=EllipticCurve(QQ,[1,1])
             sage: P=E(0,1)
@@ -369,6 +373,10 @@ class EllipticCurvePoint_field(SchemeMorphism_point_abelian_variety_field):
     def __cmp__(self, other):
         """
         Comparison function for points to allow sorting and equality testing.
+
+        .. NOTE::
+
+            ``__eq__`` and ``__ne__`` are implemented in SchemeMorphism_point_projective_field
 
         EXAMPLES::
 
