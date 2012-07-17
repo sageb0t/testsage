@@ -430,9 +430,10 @@ cdef extern from "pb_wrap.h":
     void PBPolyVector_set(PBPolyVector v, int i, PBPoly p)
 
     ctypedef struct PBConstant "struct BooleConstant":
-        bint is_zero()
-        bint is_one()
-        bint is_constant()
+        bint isZero()
+        bint isOne()
+        bint isConstant()
+        bint hasConstantPart()
         int deg()
 
     PBConstant* PBConstant_construct "Construct_p<BooleConstant, int>" \
