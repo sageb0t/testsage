@@ -1201,8 +1201,8 @@ class Sets(Category_singleton):
                     sage: A = Sets().WithRealizations().example(QQ); A
                     The subset algebra of {1, 2, 3} over Rational Field
                     sage: A.inject_shorthands()
-                    Injecting F as shorthand for The subset algebra of {1, 2, 3} over Rational Field on the fundamental basis
-                    Injecting In as shorthand for The subset algebra of {1, 2, 3} over Rational Field on the in basis
+                    Injecting F as shorthand for The subset algebra of {1, 2, 3} over Rational Field on the Fundamental basis
+                    Injecting In as shorthand for The subset algebra of {1, 2, 3} over Rational Field on the In basis
                     ...
                 """
                 from sage.misc.misc import inject_variable
@@ -1223,7 +1223,7 @@ class Sets(Category_singleton):
                     sage: A = Sets().WithRealizations().example(); A
                     The subset algebra of {1, 2, 3} over Rational Field
                     sage: A.realizations()
-                    [The subset algebra of {1, 2, 3} over Rational Field on the fundamental basis, The subset algebra of {1, 2, 3} over Rational Field on the in basis, The subset algebra of {1, 2, 3} over Rational Field on the out basis]
+                    [The subset algebra of {1, 2, 3} over Rational Field on the Fundamental basis, The subset algebra of {1, 2, 3} over Rational Field on the In basis, The subset algebra of {1, 2, 3} over Rational Field on the Out basis]
 
                 .. note::
 
@@ -1243,7 +1243,7 @@ class Sets(Category_singleton):
                 sage: A = Sets().WithRealizations().example(); A
                 The subset algebra of {1, 2, 3} over Rational Field
                 sage: A.facade_for()
-                [The subset algebra of {1, 2, 3} over Rational Field on the fundamental basis, The subset algebra of {1, 2, 3} over Rational Field on the in basis, The subset algebra of {1, 2, 3} over Rational Field on the out basis]
+                [The subset algebra of {1, 2, 3} over Rational Field on the Fundamental basis, The subset algebra of {1, 2, 3} over Rational Field on the In basis, The subset algebra of {1, 2, 3} over Rational Field on the Out basis]
 
                 sage: A = Sets().WithRealizations().example(); A
                 The subset algebra of {1, 2, 3} over Rational Field
@@ -1321,9 +1321,9 @@ class Sets(Category_singleton):
 
                     sage: A = Sets().WithRealizations().example()
                     sage: A.realizations()    # indirect doctest
-                    [The subset algebra of {1, 2, 3} over Rational Field on the fundamental basis,
-                     The subset algebra of {1, 2, 3} over Rational Field on the in basis,
-                     The subset algebra of {1, 2, 3} over Rational Field on the out basis]
+                    [The subset algebra of {1, 2, 3} over Rational Field on the Fundamental basis,
+                     The subset algebra of {1, 2, 3} over Rational Field on the In basis,
+                     The subset algebra of {1, 2, 3} over Rational Field on the Out basis]
                 """
                 self.realization_of()._register_realization(self)
 
@@ -1337,7 +1337,7 @@ class Sets(Category_singleton):
                     sage: A = Sets().WithRealizations().example(); A
                     The subset algebra of {1, 2, 3} over Rational Field
                     sage: In = A.In(); In
-                    The subset algebra of {1, 2, 3} over Rational Field on the in basis
+                    The subset algebra of {1, 2, 3} over Rational Field on the In basis
                     sage: In.realization_of()
                     The subset algebra of {1, 2, 3} over Rational Field
                 """
@@ -1357,15 +1357,13 @@ class Sets(Category_singleton):
                     sage: A = Sets().WithRealizations().example(); A
                     The subset algebra of {1, 2, 3} over Rational Field
                     sage: In = A.In(); In
-                    The subset algebra of {1, 2, 3} over Rational Field on the in basis
+                    The subset algebra of {1, 2, 3} over Rational Field on the In basis
                     sage: In._realization_name()
-                    'in'
-
-                FIXME: Do we want ``In`` instead?
+                    'In'
                 """
                 # The __base__ gets rid of the with_category
                 # The split adds support for nested classes
-                return self.__class__.__base__.__name__.split('.')[-1].lower()
+                return self.__class__.__base__.__name__.split('.')[-1]
 
             def _repr_(self):
                 """
@@ -1374,7 +1372,7 @@ class Sets(Category_singleton):
                     sage: A = Sets().WithRealizations().example(); A
                     The subset algebra of {1, 2, 3} over Rational Field
                     sage: In = A.In(); In
-                    The subset algebra of {1, 2, 3} over Rational Field on the in basis
+                    The subset algebra of {1, 2, 3} over Rational Field on the In basis
 
                 In the example above, :meth:`repr` was overriden by
                 the category ``A.Realizations()``. We now add a new
@@ -1387,6 +1385,6 @@ class Sets(Category_singleton):
                     ...       pass
                     sage: P = Blah(category = Sets.WithRealizations.ParentMethods.Realizations(A))
                     sage: P     # indirect doctest
-                    The subset algebra of {1, 2, 3} over Rational Field in the realization blah
+                    The subset algebra of {1, 2, 3} over Rational Field in the realization Blah
                 """
                 return "%s in the realization %s"%(self.realization_of(), self._realization_name())
