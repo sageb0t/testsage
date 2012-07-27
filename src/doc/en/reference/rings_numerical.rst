@@ -26,4 +26,5 @@ when implementations aren't otherwise available.
    sage/rings/real_mpfr
    sage/rings/complex_field
    sage/rings/complex_number
+   sage/rings/complex_mpc
    sage/rings/real_mpfi
