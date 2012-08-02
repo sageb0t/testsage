@@ -203,6 +203,9 @@ class SymmetricGroup(PermutationGroup_symalt):
 
          - ``n`` - a positive integer, or list or tuple thereof
 
+        .. note::
+          This group is also available via ``groups.permutation.Symmetric()``.
+
         EXAMPLES::
 
             sage: G = SymmetricGroup(8)
@@ -230,6 +233,9 @@ class SymmetricGroup(PermutationGroup_symalt):
         TESTS::
 
             sage: TestSuite(SymmetricGroup(0)).run()
+
+            sage: groups.permutation.Symmetric(4)
+            Symmetric group of order 4! as a permutation group
         """
         from sage.categories.finite_weyl_groups import FiniteWeylGroups
         from sage.categories.finite_permutation_groups import FinitePermutationGroups
@@ -394,6 +400,9 @@ class AlternatingGroup(PermutationGroup_symalt):
 
             ``n`` -- a positive integer, or list or tuple thereof
 
+        .. note::
+          This group is also available via ``groups.permutation.Alternating()``.
+
         EXAMPLES::
 
             sage: G = AlternatingGroup(6)
@@ -413,6 +422,11 @@ class AlternatingGroup(PermutationGroup_symalt):
             sage: G.category()
             Category of finite permutation groups
             sage: TestSuite(G).run()
+
+        TESTS::
+
+            sage: groups.permutation.Alternating(6)
+            Alternating group of order 6!/2 as a permutation group
         """
         PermutationGroup_symalt.__init__(self, gap_group='AlternatingGroup(%s)'%len(domain), domain=domain)
 
@@ -447,6 +461,9 @@ class CyclicPermutationGroup(PermutationGroup_unique):
         INPUT:
             n -- a positive integer
 
+        .. note::
+          This group is also available via ``groups.permutation.Cyclic()``.
+
         EXAMPLES::
 
             sage: G = CyclicPermutationGroup(8)
@@ -463,6 +480,11 @@ class CyclicPermutationGroup(PermutationGroup_unique):
             sage: C = CyclicPermutationGroup(10)
             sage: C.as_AbelianGroup()
             Multiplicative Abelian Group isomorphic to C2 x C5
+
+        TESTS::
+
+            sage: groups.permutation.Cyclic(6)
+            Cyclic group of order 6 as a permutation group
         """
         n = Integer(n)
         if n < 1:
@@ -553,6 +575,9 @@ class DiCyclicGroup(PermutationGroup_unique):
     `i+1` and code `a^{i}x` as the symbol `2n+i+1`.  The two generators
     are then represented using a left regular representation.
 
+    .. note::
+        This group is also available via ``groups.permutation.DiCyclic()``.
+
     EXAMPLES:
 
     A dicyclic group of order 384, with a large power of 2 as a divisor::
@@ -613,6 +638,11 @@ class DiCyclicGroup(PermutationGroup_unique):
         sage: K = AlternatingGroup(6)
         sage: G.is_isomorphic(H) or G.is_isomorphic(K)
         False
+
+    TESTS::
+
+        sage: groups.permutation.DiCyclic(6)
+        Diyclic group of order 24 as a permutation group
 
     REFERENCES:
 
@@ -707,6 +737,9 @@ class KleinFourGroup(PermutationGroup_unique):
         OUTPUT:
             -- the Klein 4 group of order 4, as a permutation group of degree 4.
 
+        .. note::
+          This group is also available via ``groups.permutation.KleinFour()``.
+
         EXAMPLES:
             sage: G = KleinFourGroup(); G
             The Klein 4 group of order 4, as a permutation group
@@ -718,6 +751,9 @@ class KleinFourGroup(PermutationGroup_unique):
             sage: G.category()
             Category of finite permutation groups
             sage: TestSuite(G).run()
+
+            sage: groups.permutation.KleinFour()
+            The Klein 4 group of order 4, as a permutation group
 
         AUTHOR:
             -- Bobby Moretti (2006-10)
@@ -741,6 +777,9 @@ class QuaternionGroup(DiCyclicGroup):
         The quaternion group of order 8, as a permutation group.
         See the ``DiCyclicGroup`` class for a generalization of this
         construction.
+
+    .. note::
+        This group is also available via ``groups.permutation.Quaternion()``.
 
     EXAMPLES:
 
@@ -770,6 +809,11 @@ class QuaternionGroup(DiCyclicGroup):
         True
         sage: neg_one in Q.center()
         True
+
+    TESTS::
+
+        sage: groups.permutation.Quaternion()
+        Quaternion group of order 8 as a permutation group
 
     AUTHOR:
         -- Rob Beezer (2009-10-09)
@@ -1017,6 +1061,9 @@ class DihedralGroup(PermutationGroup_unique):
         OUTPUT:
             -- the dihedral group of order 2*n, as a permutation group
 
+        .. note::
+          This group is also available via ``groups.permutation.Dihedral()``.
+
         EXAMPLES:
             sage: DihedralGroup(1)
             Dihedral group of order 2 as a permutation group
@@ -1053,6 +1100,9 @@ class DihedralGroup(PermutationGroup_unique):
             sage: G.category()
             Category of finite permutation groups
             sage: TestSuite(G).run()
+
+            sage: groups.permutation.Dihedral(6)
+            Dihedral group of order 12 as a permutation group
         """
         n = Integer(n)
         if n <= 0:
@@ -1355,6 +1405,9 @@ class MathieuGroup(PermutationGroup_unique):
         OUTPUT:
             -- the Mathieu group of degree n, as a permutation group
 
+        .. note::
+          This group is also available via ``groups.permutation.Mathieu()``.
+
         EXAMPLES::
 
             sage: G = MathieuGroup(12)
@@ -1366,6 +1419,9 @@ class MathieuGroup(PermutationGroup_unique):
             sage: G.category()
             Category of finite permutation groups
             sage: TestSuite(G).run(skip=["_test_enumerated_set_contains", "_test_enumerated_set_iter_list"])
+
+            sage: groups.permutation.Mathieu(9)
+            Mathieu group of degree 9 and order 72 as a permutation group
 
         Note: this is a fairly big group, so we skip some tests that
         currently require to list all the elements of the group,
@@ -1398,6 +1454,9 @@ class TransitiveGroup(PermutationGroup_unique):
         OUTPUT:
             the n-th transitive group of degree d
 
+        .. note::
+          This group is also available via ``groups.permutation.Transitive()``.
+
         EXAMPLES::
 
             sage: TransitiveGroup(0,1)
@@ -1429,6 +1488,9 @@ class TransitiveGroup(PermutationGroup_unique):
             NotImplementedError: Only the transitive groups of order less than 30 are available in GAP's database
 
         TESTS::
+
+            sage: groups.permutation.Transitive(1, 1)
+            Transitive group number 1 of degree 1
 
             sage: TestSuite(TransitiveGroup(0,1)).run()
             sage: TestSuite(TransitiveGroup(1,1)).run()
@@ -2158,6 +2220,9 @@ class PGL(PermutationGroup_plg):
         OUTPUT:
             PGL(n,q)
 
+        .. note::
+          This group is also available via ``groups.permutation.PGL()``.
+
         EXAMPLES:
             sage: G = PGL(2,3); G
             Permutation Group with generators [(3,4), (1,2,4)]
@@ -2176,6 +2241,11 @@ class PGL(PermutationGroup_plg):
             sage: G.category()
             Category of finite permutation groups
             sage: TestSuite(G).run()
+
+        TESTS::
+
+            sage: groups.permutation.PGL(2, 3)
+            Permutation Group with generators [(3,4), (1,2,4)]
         """
         id = 'Group([()])' if n == 1 else 'PGL(%s,%s)'%(n,q)
         PermutationGroup_generic.__init__(self, gap_group=id)
@@ -2206,6 +2276,9 @@ class PSL(PermutationGroup_plg):
         OUTPUT:
             PSL(n,q)
 
+        .. note::
+          This group is also available via ``groups.permutation.PSL()``.
+
         EXAMPLES:
             sage: G = PSL(2,3); G
             Permutation Group with generators [(2,3,4), (1,2)(3,4)]
@@ -2229,6 +2302,11 @@ class PSL(PermutationGroup_plg):
             sage: G.category()
             Category of finite permutation groups
             sage: TestSuite(G).run()
+
+        TESTS::
+
+            sage: groups.permutation.PSL(2, 3)
+            Permutation Group with generators [(2,3,4), (1,2)(3,4)]
         """
         if n == 1:
             id = 'Group([()])'
@@ -2350,6 +2428,9 @@ class PSp(PermutationGroup_plg):
         OUTPUT:
             PSp(n,q)
 
+        .. note::
+          This group is also available via ``groups.permutation.PSp()``.
+
         EXAMPLES:
             sage: G = PSp(2,3); G
             Permutation Group with generators [(2,3,4), (1,2)(3,4)]
@@ -2368,6 +2449,11 @@ class PSp(PermutationGroup_plg):
             Permutation Group with generators [(3,8,6,4,9,7,5), (1,2,3)(4,7,5)(6,9,8)]
             sage: G.base_ring()
             Finite Field in alpha of size 2^3
+
+        TESTS::
+
+            sage: groups.permutation.PSp(2, 3)
+            Permutation Group with generators [(2,3,4), (1,2)(3,4)]
         """
         if n%2 == 1:
             raise TypeError, "The degree n must be even"
@@ -2410,6 +2496,9 @@ class PSU(PermutationGroup_pug):
         OUTPUT:
             PSU(n,q)
 
+        .. note::
+          This group is also available via ``groups.permutation.PSU()``.
+
         EXAMPLES:
             sage: PSU(2,3)
             The projective special unitary group of degree 2 over Finite Field of size 3
@@ -2418,6 +2507,11 @@ class PSU(PermutationGroup_pug):
             The projective special unitary group of degree 2 over Finite Field in alpha of size 2^3
             sage: G.base_ring()
             Finite Field in alpha of size 2^3
+
+        TESTS::
+
+            sage: groups.permutation.PSU(2, 3)
+            The projective special unitary group of degree 2 over Finite Field of size 3
         """
         id = 'PSU(%s,%s)'%(n,q)
         PermutationGroup_generic.__init__(self, gap_group=id)
@@ -2448,6 +2542,9 @@ class PGU(PermutationGroup_pug):
         OUTPUT:
             PGU(n,q)
 
+        .. note::
+          This group is also available via ``groups.permutation.PGU()``.
+
         EXAMPLES:
             sage: PGU(2,3)
             The projective general unitary group of degree 2 over Finite Field of size 3
@@ -2456,6 +2553,11 @@ class PGU(PermutationGroup_pug):
             The projective general unitary group of degree 2 over Finite Field in alpha of size 2^3
             sage: G.base_ring()
             Finite Field in alpha of size 2^3
+
+        TESTS::
+
+            sage: groups.permutation.PGU(2, 3)
+            The projective general unitary group of degree 2 over Finite Field of size 3
         """
         id = 'PGU(%s,%s)'%(n,q)
         PermutationGroup_generic.__init__(self, gap_group=id)
@@ -2492,10 +2594,14 @@ class SuzukiGroup(PermutationGroup_unique):
 
         - A Suzuki group.
 
+        .. note::
+          This group is also available via ``groups.permutation.Suzuki()``.
+
         EXAMPLES::
 
             sage: SuzukiGroup(8)
-            Permutation Group with generators [(1,2)(3,10)(4,42)(5,18)(6,50)(7,26)(8,58)(9,34)(12,28)(13,45)(14,44)(15,23)(16,31)(17,21)(19,39)(20,38)(22,25)(24,61)(27,60)(29,65)(30,55)(32,33)(35,52)(36,49)(37,59)(40,54)(41,62)(43,53)(46,48)(47,56)(51,63)(57,64), (1,28,10,44)(3,50,11,42)(4,43,53,64)(5,9,39,52)(6,36,63,13)(7,51,60,57)(8,33,37,16)(12,24,55,29)(14,30,48,47)(15,19,61,54)(17,59,22,62)(18,23,34,31)(20,38,49,25)(21,26,45,58)(27,32,41,65)(35,46,40,56)]
+            Permutation Group with generators [(1,2)(3,10)(4,42)(5,18)(6,50)(7,26)(8,58)(9,34)(12,28)(13,45)(14,44)(15,23)(16,31)(17,21)(19,39)(20,38)(22,25)(24,61)(27,60)(29,65)(30,55)(32,33)(35,52)(36,49)(37,59)(40,54)(41,62)(43,53)(46,48)(47,56)(51,63)(57,64),
+            (1,28,10,44)(3,50,11,42)(4,43,53,64)(5,9,39,52)(6,36,63,13)(7,51,60,57)(8,33,37,16)(12,24,55,29)(14,30,48,47)(15,19,61,54)(17,59,22,62)(18,23,34,31)(20,38,49,25)(21,26,45,58)(27,32,41,65)(35,46,40,56)]
             sage: print SuzukiGroup(8)
             The Suzuki group over Finite Field in a of size 2^3
 
@@ -2506,6 +2612,12 @@ class SuzukiGroup(PermutationGroup_unique):
             2^10 * 5^2 * 31 * 41
             sage: G.base_ring()
             Finite Field in alpha of size 2^5
+
+        TESTS::
+
+            sage: groups.permutation.Suzuki(8)
+            Permutation Group with generators [(1,2)(3,10)(4,42)(5,18)(6,50)(7,26)(8,58)(9,34)(12,28)(13,45)(14,44)(15,23)(16,31)(17,21)(19,39)(20,38)(22,25)(24,61)(27,60)(29,65)(30,55)(32,33)(35,52)(36,49)(37,59)(40,54)(41,62)(43,53)(46,48)(47,56)(51,63)(57,64),
+            (1,28,10,44)(3,50,11,42)(4,43,53,64)(5,9,39,52)(6,36,63,13)(7,51,60,57)(8,33,37,16)(12,24,55,29)(14,30,48,47)(15,19,61,54)(17,59,22,62)(18,23,34,31)(20,38,49,25)(21,26,45,58)(27,32,41,65)(35,46,40,56)]
 
         REFERENCES:
 
