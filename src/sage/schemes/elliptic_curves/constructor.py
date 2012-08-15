@@ -24,6 +24,8 @@ AUTHORS:
 #*****************************************************************************
 
 import sage.rings.all as rings
+from sage.categories.fields import Fields
+_Fields = Fields()
 
 from sage.structure.sequence import Sequence
 from sage.structure.element import parent
@@ -237,7 +239,7 @@ def EllipticCurve(x=None, y=None, j=None, minimal_twist=True):
         <class 'sage.schemes.elliptic_curves.ell_field.EllipticCurve_field_with_category'>
         sage: E.category()
         Category of schemes over Symbolic Ring
-        sage: is_field(SR)
+        sage: SR in Fields()
         True
 
         sage: F = FractionField(PolynomialRing(QQ,'t'))
@@ -334,7 +336,7 @@ def EllipticCurve(x=None, y=None, j=None, minimal_twist=True):
             return ell_padic_field.EllipticCurve_padic_field(x, y)
         elif rings.is_NumberField(x):
             return ell_number_field.EllipticCurve_number_field(x, y)
-        elif rings.is_Field(x):
+        elif x in _Fields:
             return ell_field.EllipticCurve_field(x, y)
         return ell_generic.EllipticCurve_generic(x, y)
 
@@ -367,7 +369,7 @@ def EllipticCurve(x=None, y=None, j=None, minimal_twist=True):
     elif rings.is_FiniteField(R) or (rings.is_IntegerModRing(R) and R.characteristic().is_prime()):
         return ell_finite_field.EllipticCurve_finite_field(x, y)
 
-    elif rings.is_Field(R):
+    elif R in _Fields:
         return ell_field.EllipticCurve_field(x, y)
 
     return ell_generic.EllipticCurve_generic(x, y)
@@ -389,7 +391,7 @@ def EllipticCurve_from_c4c6(c4, c6):
         K = c4.parent()
     except AttributeError:
         K = rings.RationalField()
-    if not rings.is_Field(K):
+    if K not in _Fields:
         K = K.fraction_field()
     return EllipticCurve([-K(c4)/K(48), -K(c6)/K(864)])
 
@@ -450,7 +452,7 @@ def EllipticCurve_from_j(j, minimal_twist=True):
         K = j.parent()
     except AttributeError:
         K = rings.RationalField()
-    if not rings.is_Field(K):
+    if K not in _Fields:
         K = K.fraction_field()
 
     char=K.characteristic()
