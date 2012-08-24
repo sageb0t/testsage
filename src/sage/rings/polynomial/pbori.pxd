@@ -67,6 +67,7 @@ cdef class BooleanPolynomialEntry:
 
 cdef class ReductionStrategy:
     cdef PBRedStrategy *_strat
+    cdef bint _borrowed
     cdef BooleanPolynomialRing _parent
 
 cdef class GroebnerStrategy:
