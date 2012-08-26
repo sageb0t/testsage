@@ -21,7 +21,7 @@ and                         Boolesches und
 not                         Boolesches nicht
 in, not in                  Zugehörigkeit
 is, is not                  Identitätstest
->, <=, >, >=, ==, !=, <>    Vergleich
+>, <=, >, >=, ==, !=        Vergleich
 +, -                        Addition, Subtraktion
 \*, /, %                    Multiplikation, Division, Restbildung
 \*\*, ^                     Exponentiation
