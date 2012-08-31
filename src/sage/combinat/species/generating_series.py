@@ -294,7 +294,7 @@ def CycleIndexSeriesRing(R):
 
         sage: from sage.combinat.species.generating_series import CycleIndexSeriesRing
         sage: R = CycleIndexSeriesRing(QQ); R
-        Cycle Index Series Ring over Symmetric Function Algebra over Rational Field, Power symmetric functions as basis
+        Cycle Index Series Ring over Symmetric Functions over Rational Field in the powersum basis
         sage: R([1]).coefficients(4)
         [1, 1, 1, 1]
 
@@ -314,7 +314,7 @@ class CycleIndexSeriesRing_class(LazyPowerSeriesRing):
 
             sage: from sage.combinat.species.generating_series import CycleIndexSeriesRing
             sage: R = CycleIndexSeriesRing(QQ); R
-            Cycle Index Series Ring over Symmetric Function Algebra over Rational Field, Power symmetric functions as basis
+            Cycle Index Series Ring over Symmetric Functions over Rational Field in the powersum basis
             sage: R == loads(dumps(R))
             True
         """
@@ -327,7 +327,7 @@ class CycleIndexSeriesRing_class(LazyPowerSeriesRing):
 
             sage: from sage.combinat.species.generating_series import CycleIndexSeriesRing
             sage: CycleIndexSeriesRing(QQ)
-            Cycle Index Series Ring over Symmetric Function Algebra over Rational Field, Power symmetric functions as basis
+            Cycle Index Series Ring over Symmetric Functions over Rational Field in the powersum basis
         """
         return "Cycle Index Series Ring over %s"%self.base_ring()
 
