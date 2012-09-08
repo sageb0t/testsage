@@ -1852,6 +1852,14 @@ ext_modules = [
     Extension('sage.tests.cython',
               sources = ['sage/tests/cython.pyx']),
 
+    ################################
+    ##
+    ## sage.sat
+    ##
+    ################################
+
+    Extension('sage.sat.solvers.satsolver',
+              sources = ['sage/sat/solvers/satsolver.pyx']),
     ]
 
 # Optional extensions :
@@ -1888,6 +1896,20 @@ if is_package_installed('cbc'):
                   language = 'c++',
                   libraries = ["csage", "stdc++", "Cbc", "CbcSolver", "Cgl", "Clp", "CoinUtils", "OsiCbc", "OsiClp", "Osi"])
         )
+
+if is_package_installed('cryptominisat'):
+    ext_modules.extend([
+        Extension("sage.sat.solvers.cryptominisat.cryptominisat",
+                  ["sage/sat/solvers/cryptominisat/cryptominisat.pyx"],
+                  include_dirs = [SAGE_INC, SAGE_INC+"/cmsat"],
+                  language = "c++",
+                  libraries = ['cryptominisat', 'z']),
+        Extension("sage.sat.solvers.cryptominisat.solverconf",
+                  ["sage/sat/solvers/cryptominisat/solverconf.pyx", "sage/sat/solvers/cryptominisat/solverconf_helper.cpp"],
+                  include_dirs = [SAGE_INC, SAGE_INC+"/cmsat"],
+                  language = "c++",
+                  libraries = ['cryptominisat', 'z'])
+        ])
 
 # Only include darwin_utilities on OS_X >= 10.5
 UNAME = os.uname()
