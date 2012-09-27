@@ -68,7 +68,8 @@ def prod(x, z=None, Py_ssize_t recursion_cutoff = 5):
     This assumes that your multiplication is associative; we don't promise
     which end of the list we start at.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: prod([1,2,34])
         68
         sage: prod([2,3], 5)
@@ -81,9 +82,10 @@ def prod(x, z=None, Py_ssize_t recursion_cutoff = 5):
         -2006
 
     AUTHORS:
-        Joel B. Mohler (2007-10-03 -- Reimplemented in Cython and optimized)
-        Robert Bradshaw (2007-10-26) -- Balanced product tree, other optimizations, (lazy) generator support
-        Robert Bradshaw (2008-03-26) -- Balanced product tree for generators and iterators
+
+        - Joel B. Mohler (2007-10-03): Reimplemented in Cython and optimized
+        - Robert Bradshaw (2007-10-26): Balanced product tree, other optimizations, (lazy) generator support
+        - Robert Bradshaw (2008-03-26): Balanced product tree for generators and iterators
     """
     cdef Py_ssize_t n
 
@@ -170,7 +172,8 @@ cpdef iterator_prod(L, z=None):
 
     A StopIteration is raised if the iterator is empty and z is not given.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: from sage.misc.misc_c import iterator_prod
         sage: iterator_prod(1..5)
         120
@@ -224,7 +227,8 @@ class NonAssociative:
     """
     This class is to test the balance nature of prod.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: from sage.misc.misc_c import NonAssociative
         sage: L = [NonAssociative(label) for label in 'abcdef']
         sage: prod(L)
@@ -240,7 +244,8 @@ class NonAssociative:
     """
     def __init__(self, left, right=None):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.misc.misc_c import NonAssociative
             sage: NonAssociative('a')
             a
@@ -252,7 +257,8 @@ class NonAssociative:
 
     def __repr__(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.misc.misc_c import NonAssociative
             sage: NonAssociative(1)
             1
@@ -266,7 +272,8 @@ class NonAssociative:
 
     def __mul__(self, other):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sage.misc.misc_c import NonAssociative
             sage: a, b, c = [NonAssociative(label) for label in 'abc']
             sage: (a*b)*c
@@ -290,7 +297,8 @@ def balanced_sum(x, z=None, Py_ssize_t recursion_cutoff = 5):
     This assumes that your addition is associative; we don't promise
     which end of the list we start at.
 
-    EXAMPLES:
+    EXAMPLES::
+
         sage: balanced_sum([1,2,34])
         37
         sage: balanced_sum([2,3], 5)
@@ -303,14 +311,15 @@ def balanced_sum(x, z=None, Py_ssize_t recursion_cutoff = 5):
         sage: balanced_sum([[i] for i in range(10)], [], recursion_cutoff=3)
         [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-    We make copies when appropriate so that we don't accidentally modify the arguments.
+    We make copies when appropriate so that we don't accidentally modify the arguments::
 
         sage: range(10e4)==balanced_sum([[i] for i in range(10e4)], [])
         True
         sage: range(10e4)==balanced_sum([[i] for i in range(10e4)], [])
         True
 
-    TESTS:
+    TESTS::
+
         sage: balanced_sum((1..3)) # nonempty, z=None
         6
         sage: balanced_sum((1..-1)) # empty, z=None
@@ -321,8 +330,9 @@ def balanced_sum(x, z=None, Py_ssize_t recursion_cutoff = 5):
         5
 
     AUTHORS:
-        Joel B. Mohler (2007-10-03 -- Reimplemented in Cython and optimized)
-        Robert Bradshaw (2007-10-26) -- Balanced product tree, other optimizations, (lazy) generator support
+
+        - Joel B. Mohler (2007-10-03): Reimplemented in Cython and optimized
+        - Robert Bradshaw (2007-10-26): Balanced product tree, other optimizations, (lazy) generator support
     """
     if recursion_cutoff<3:
         raise ValueError, "recursion_cutoff must be at least 3"
