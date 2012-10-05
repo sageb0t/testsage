@@ -60,7 +60,7 @@ wget --timestamping http://pari.math.u-bordeaux.fr/pub/pari/packages/galdata.tgz
 wget --timestamping http://pari.math.u-bordeaux.fr/pub/pari/packages/seadata-small.tgz
 
 # Use the specified git version
-git checkout pari-2.5.2
+git checkout pari-2.5.3
 
 # make pari (must run bison, etc...) but disable optimization to speed
 # up compilation (the output of the compiling is not used anyway).
