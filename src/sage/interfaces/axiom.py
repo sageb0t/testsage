@@ -252,7 +252,7 @@ class PanAxiom(Expect):
 
         ::
 
-            sage: filename = tmp_filename()+'.input'
+            sage: filename = tmp_filename(ext='.input')
             sage: f = open(filename, 'w')
             sage: f.write('xx := 22;\n')
             sage: f.close()
