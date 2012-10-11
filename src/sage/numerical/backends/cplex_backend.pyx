@@ -345,7 +345,7 @@ cdef class CPLEXBackend(GenericBackend):
             status = CPXchgprobname(self.env, self.lp, name)
             check(status)
 
-    cpdef set_objective(self, list coeff, double d = 0.0):
+    cpdef set_objective(self, list coeff, d = 0.0):
         r"""
         Sets the objective function.
 
@@ -868,7 +868,7 @@ cdef class CPLEXBackend(GenericBackend):
 
         return 0
 
-    cpdef double get_objective_value(self):
+    cpdef get_objective_value(self):
         r"""
         Returns the value of the objective function.
 
@@ -901,7 +901,7 @@ cdef class CPLEXBackend(GenericBackend):
 
         return value + self.obj_constant_term
 
-    cpdef double get_variable_value(self, int variable):
+    cpdef get_variable_value(self, int variable):
         r"""
         Returns the value of a variable given by the solver.
 

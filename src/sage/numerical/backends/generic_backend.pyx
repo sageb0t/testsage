@@ -14,6 +14,7 @@ class.
 AUTHORS:
 
 - Nathann Cohen (2010-10): initial implementation
+- Risan (2012-02)        : extension for PPL backend
 
 """
 
@@ -26,7 +27,10 @@ AUTHORS:
 
 cdef class GenericBackend:
 
-    cpdef int add_variable(self, lower_bound=0.0, upper_bound=None, binary=False, continuous=True, integer=False, obj=0.0, name=None) except -1:
+    cpdef zero(self):
+        return 0.0
+
+    cpdef int add_variable(self, lower_bound=None, upper_bound=None, binary=False, continuous=True, integer=False, obj=None, name=None) except -1:
         """
         Add a variable.
 
@@ -78,7 +82,7 @@ cdef class GenericBackend:
         """
         raise NotImplementedError()
 
-    cpdef int add_variables(self, int n, lower_bound=0.0, upper_bound=None, binary=False, continuous=True, integer=False, obj=0.0, names=None) except -1:
+    cpdef int add_variables(self, int n, lower_bound=None, upper_bound=None, binary=False, continuous=True, integer=False, obj=None, names=None) except -1:
         """
         Add ``n`` variables.
 
@@ -196,7 +200,7 @@ cdef class GenericBackend:
         """
         raise NotImplementedError()
 
-    cpdef  set_objective(self, list coeff, double d = 0.0):
+    cpdef  set_objective(self, list coeff, d = 0.0):
         """
         Set the objective function.
 
@@ -410,7 +414,7 @@ cdef class GenericBackend:
         """
         raise NotImplementedError()
 
-    cpdef double get_objective_value(self):
+    cpdef get_objective_value(self):
         """
         Return the value of the objective function.
 
@@ -438,7 +442,7 @@ cdef class GenericBackend:
 
         raise NotImplementedError()
 
-    cpdef double get_variable_value(self, int variable):
+    cpdef get_variable_value(self, int variable):
         """
         Return the value of a variable given by the solver.
 
@@ -962,8 +966,11 @@ cpdef GenericBackend get_solver(constraint_generation = False, solver = None):
         - Gurobi (``solver="Gurobi"``). See the `Gurobi
           <http://www.gurobi.com/>`_ web site.
 
+        - PPL (``solver="PPL"``). See the `PPL
+          <http://bugseng.com/products/ppl>` _ web site.
+
         ``solver`` should then be equal to one of ``"GLPK"``, ``"Coin"``,
-        ``"CPLEX"``, ``"Gurobi"``, or ``None``. If ``solver=None`` (default),
+        ``"CPLEX"``, ``"Gurobi"``, ``"PPL"``, or ``None``. If ``solver=None`` (default),
         the default solver is used (see ``default_mip_solver`` method.
 
     - ``constraint_generation`` (boolean) -- whether the solver
@@ -1010,5 +1017,9 @@ cpdef GenericBackend get_solver(constraint_generation = False, solver = None):
         from sage.numerical.backends.gurobi_backend import GurobiBackend
         return GurobiBackend()
 
+    elif solver == "Ppl":
+        from sage.numerical.backends.ppl_backend import PPLBackend
+        return PPLBackend()
+
     else:
-        raise ValueError("'solver' should be set to 'GLPK', 'Coin', 'CPLEX', 'Gurobi' or None (in which case the default one is used).")
+        raise ValueError("'solver' should be set to 'GLPK', 'Coin', 'CPLEX', 'Gurobi', 'PPL' or None (in which case the default one is used).")

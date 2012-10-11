@@ -29,4 +29,7 @@ Constraint next_cs_iterator(cs_iterator_ptr);
 bool is_end_cs_iterator(const Constraint_System &cs, cs_iterator_ptr csi_ptr);
 void delete_cs_iterator(cs_iterator_ptr);
 
+// workarounds for Cython issues with exceptions while returning references
+Generator* new_MIP_optimizing_point(const MIP_Problem& problem);
+
 #endif
