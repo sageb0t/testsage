@@ -23,5 +23,5 @@ def pager():
     if EMBEDDED_MODE:
         return cat
     else:
-        import IPython.genutils
-        return IPython.genutils.page
+        import IPython.core.page
+        return IPython.core.page.page
