@@ -6434,7 +6434,7 @@ def heegner_index(self, D,  min_p=2, prec=5, descent_second_limit=12, verbose_mw
 
     However when we search higher, we find the points we need::
 
-        sage: E.heegner_index(-8, descent_second_limit=16)
+        sage: E.heegner_index(-8, descent_second_limit=16, check_rank=False)
         1.00000?
 
     Two higher rank examples (of ranks 2 and 3)::
