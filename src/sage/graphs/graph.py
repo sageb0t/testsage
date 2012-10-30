@@ -2280,7 +2280,7 @@ class Graph(GenericGraph):
             3
         """
 
-        from sage.numerical.mip import MixedIntegerLinearProgram, MIPSolverException, Sum
+        from sage.numerical.mip import MixedIntegerLinearProgram, MIPSolverException
 
         p = MixedIntegerLinearProgram(maximization=False, solver=solver)
         b = p.new_variable()
@@ -2302,9 +2302,9 @@ class Graph(GenericGraph):
 
         for v in self:
             minimum,maximum = f_bounds(v)
-            p.add_constraint(Sum([ b[reorder(x,y)]*weight(l) for x,y,l in self.edges_incident(v)]), min=minimum, max=maximum)
+            p.add_constraint(p.sum([ b[reorder(x,y)]*weight(l) for x,y,l in self.edges_incident(v)]), min=minimum, max=maximum)
 
-        p.set_objective(Sum([ b[reorder(x,y)]*weight(l) for x,y,l in self.edge_iterator()]))
+        p.set_objective(p.sum([ b[reorder(x,y)]*weight(l) for x,y,l in self.edge_iterator()]))
         p.set_binary(b)
 
         try:
@@ -2817,7 +2817,7 @@ class Graph(GenericGraph):
             2.5
         """
 
-        from sage.numerical.mip import MixedIntegerLinearProgram, Sum
+        from sage.numerical.mip import MixedIntegerLinearProgram
 
         g = self.copy()
         p = MixedIntegerLinearProgram(constraint_generation = True)
@@ -2827,7 +2827,7 @@ class Graph(GenericGraph):
         R = lambda x,y : r[x][y] if x<y else r[y][x]
 
         # We want to maximize the sum of weights on the edges
-        p.set_objective( Sum( R(u,v) for u,v in g.edges(labels = False)))
+        p.set_objective( p.sum( R(u,v) for u,v in g.edges(labels = False)))
 
         # Each edge being by itself a matching, its weight can not be more than
         # 1
@@ -2856,7 +2856,7 @@ class Graph(GenericGraph):
             if verbose_constraints:
                 print "Adding a constraint on matching : ",matching
 
-            p.add_constraint( Sum( R(u,v) for u,v,_ in matching), max = 1)
+            p.add_constraint( p.sum( R(u,v) for u,v,_ in matching), max = 1)
 
             # And solve again
             obj = p.solve(log = verbose)
@@ -2939,7 +2939,7 @@ class Graph(GenericGraph):
 
         """
 
-        from sage.numerical.mip import MixedIntegerLinearProgram, Sum
+        from sage.numerical.mip import MixedIntegerLinearProgram
         p=MixedIntegerLinearProgram(solver=solver)
 
         # Boolean variable indicating whether the vertex
@@ -2962,12 +2962,12 @@ class Graph(GenericGraph):
             [lists[v].append(i) for v in f]
 
             # a classss has exactly one representant
-            p.add_constraint(Sum([classss[v][i] for v in f]),max=1,min=1)
+            p.add_constraint(p.sum([classss[v][i] for v in f]),max=1,min=1)
 
         # A vertex represents at most one classss (vertex_taken is binary), and
         # vertex_taken[v]==1 if v is the representative of some classss
 
-        [p.add_constraint(Sum([classss[v][i] for i in lists[v]])-vertex_taken[v],max=0) for v in self.vertex_iterator()]
+        [p.add_constraint(p.sum([classss[v][i] for i in lists[v]])-vertex_taken[v],max=0) for v in self.vertex_iterator()]
 
         # Two adjacent vertices can not both be representants of a set
 
@@ -3082,7 +3082,7 @@ class Graph(GenericGraph):
             ValueError: This graph has no minor isomorphic to H !
         """
 
-        from sage.numerical.mip import MixedIntegerLinearProgram, MIPSolverException, Sum
+        from sage.numerical.mip import MixedIntegerLinearProgram, MIPSolverException
         p = MixedIntegerLinearProgram(solver=solver)
 
         # sorts an edge
@@ -3094,7 +3094,7 @@ class Graph(GenericGraph):
         rs = p.new_variable(dim=2)
 
         for v in self:
-            p.add_constraint(Sum([rs[h][v] for h in H]), max = 1)
+            p.add_constraint(p.sum([rs[h][v] for h in H]), max = 1)
 
         # We ensure that the set of representatives of a
         # vertex h contains a tree, and thus is connected
@@ -3113,7 +3113,7 @@ class Graph(GenericGraph):
         # of its representative set minus 1
 
         for h in H:
-            p.add_constraint(Sum([edges[h][S(e)] for e in self.edges(labels=None)])-Sum([rs[h][v] for v in self]), min=-1, max=-1)
+            p.add_constraint(p.sum([edges[h][S(e)] for e in self.edges(labels=None)])-p.sum([rs[h][v] for v in self]), min=-1, max=-1)
 
         # a tree  has no cycle
         epsilon = 1/(5*Integer(self.order()))
@@ -3124,7 +3124,7 @@ class Graph(GenericGraph):
                 p.add_constraint(r_edges[h][(u,v)] + r_edges[h][(v,u)] - edges[h][S((u,v))], min = 0)
 
             for v in self:
-                p.add_constraint(Sum([r_edges[h][(u,v)] for u in self.neighbors(v)]), max = 1-epsilon)
+                p.add_constraint(p.sum([r_edges[h][(u,v)] for u in self.neighbors(v)]), max = 1-epsilon)
 
         # Once the representative sets are described, we must ensure
         # there are arcs corresponding to those of H between them
@@ -3140,7 +3140,7 @@ class Graph(GenericGraph):
                 p.add_constraint(h_edges[(h2,h1)][S((v1,v2))] - rs[h1][v2], max = 0)
                 p.add_constraint(h_edges[(h2,h1)][S((v1,v2))] - rs[h2][v1], max = 0)
 
-            p.add_constraint(Sum([h_edges[(h1,h2)][S(e)] + h_edges[(h2,h1)][S(e)] for e in self.edges(labels=None) ]), min = 1)
+            p.add_constraint(p.sum([h_edges[(h1,h2)][S(e)] + h_edges[(h2,h1)][S(e)] for e in self.edges(labels=None) ]), min = 1)
 
         p.set_binary(rs)
         p.set_binary(edges)
@@ -3504,7 +3504,7 @@ class Graph(GenericGraph):
         # Useful alias ...
         G = self
 
-        from sage.numerical.mip import MixedIntegerLinearProgram, Sum, MIPSolverException
+        from sage.numerical.mip import MixedIntegerLinearProgram, MIPSolverException
         p = MixedIntegerLinearProgram()
 
         # This is an existence problem
@@ -3521,11 +3521,11 @@ class Graph(GenericGraph):
 
         # Exactly one representant per vertex of H
         for h in H:
-            p.add_constraint( Sum( v_repr[h][g] for g in G), min = 1, max = 1)
+            p.add_constraint( p.sum( v_repr[h][g] for g in G), min = 1, max = 1)
 
         # A vertex of G can only represent one vertex of H
         for g in G:
-            p.add_constraint( Sum( v_repr[h][g] for h in H), max = 1)
+            p.add_constraint( p.sum( v_repr[h][g] for h in H), max = 1)
 
         ###################
         # Is representent #
@@ -3556,8 +3556,8 @@ class Graph(GenericGraph):
         # This lambda function returns the balance of flow
         # corresponding to commodity C at vertex v v
 
-        flow_in = lambda C, v : Sum( flow[C][(v,u)] for u in G.neighbors(v) )
-        flow_out = lambda C, v : Sum( flow[C][(u,v)] for u in G.neighbors(v) )
+        flow_in = lambda C, v : p.sum( flow[C][(v,u)] for u in G.neighbors(v) )
+        flow_out = lambda C, v : p.sum( flow[C][(u,v)] for u in G.neighbors(v) )
 
         flow_balance = lambda C, v : flow_in(C,v) - flow_out(C,v)
 
@@ -3593,7 +3593,7 @@ class Graph(GenericGraph):
         # the vertex is a representent
 
         for g in G:
-            p.add_constraint( Sum( is_internal[C][g] for C in H.edges(labels = False))
+            p.add_constraint( p.sum( is_internal[C][g] for C in H.edges(labels = False))
                               + is_repr[g], max = 1 )
 
         # (The following inequalities are not necessary, but they seem
@@ -3606,8 +3606,8 @@ class Graph(GenericGraph):
 
         for g1,g2 in G.edges(labels = None):
 
-            p.add_constraint(   Sum( flow[C][(g1,g2)] for C in H.edges(labels = False) )
-                              + Sum( flow[C][(g2,g1)] for C in H.edges(labels = False) ),
+            p.add_constraint(   p.sum( flow[C][(g1,g2)] for C in H.edges(labels = False) )
+                              + p.sum( flow[C][(g2,g1)] for C in H.edges(labels = False) ),
                                 max = 1)
 
         # Now we can solve the problem itself !
@@ -4216,12 +4216,12 @@ class Graph(GenericGraph):
 
         elif algorithm == "MILP":
 
-            from sage.numerical.mip import MixedIntegerLinearProgram, Sum
+            from sage.numerical.mip import MixedIntegerLinearProgram
             p = MixedIntegerLinearProgram(maximization=False, solver=solver)
             b = p.new_variable()
 
             # minimizes the number of vertices in the set
-            p.set_objective(Sum([b[v] for v in g.vertices()]))
+            p.set_objective(p.sum([b[v] for v in g.vertices()]))
 
             # an edge contains at least one vertex of the minimum vertex cover
             for (u,v) in g.edges(labels=None):
