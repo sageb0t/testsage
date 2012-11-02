@@ -482,7 +482,7 @@ class SageFunction(FunctionElement):
         EXAMPLES::
 
             sage: sage0(4).gcd
-            <built-in method gcd of sage.rings.integer.Integer object at 0x...>
+            <function gcd>
         """
 
         return str(self._obj.parent().eval('%s.%s'%(self._obj._name, self._name)))
