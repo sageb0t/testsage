@@ -1093,7 +1093,7 @@ cdef class GurobiBackend(GenericBackend):
             1
             sage: p.add_linear_constraint([[0, 1], [1, 2]], None, 3)                # optional - Gurobi
             sage: p.set_objective([2, 5])                                           # optional - Gurobi
-            sage: p.write_lp(SAGE_TMP+"/lp_problem.lp")                             # optional - Gurobi
+            sage: p.write_lp(os.path.join(SAGE_TMP, "lp_problem.lp"))               # optional - Gurobi
         """
         check(self.env, GRBwrite(self.model[0], filename))
 
@@ -1113,7 +1113,7 @@ cdef class GurobiBackend(GenericBackend):
             1
             sage: p.add_linear_constraint([[0, 1], [1, 2]], None, 3)                # optional - Gurobi
             sage: p.set_objective([2, 5])                                           # optional - Gurobi
-            sage: p.write_lp(SAGE_TMP+"/lp_problem.lp")                             # optional - Gurobi
+            sage: p.write_lp(os.path.join(SAGE_TMP, "lp_problem.lp"))               # optional - Gurobi
         """
         check(self.env, GRBwrite(self.model[0], filename))
 

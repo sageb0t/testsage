@@ -202,7 +202,7 @@ class BipartiteGraph(Graph):
 
     5. From an alist file::
 
-         sage: file_name = SAGE_TMP + 'deleteme.alist.txt'
+         sage: file_name = os.path.join(SAGE_TMP, 'deleteme.alist.txt')
          sage: fi = open(file_name, 'w')
          sage: fi.write("7 4 \n 3 4 \n 3 3 1 3 1 1 1 \n 3 3 3 4 \n\
                          1 2 4 \n 1 3 4 \n 1 0 0 \n 2 3 4 \n\
@@ -902,7 +902,7 @@ class BipartiteGraph(Graph):
 
         EXAMPLE::
 
-            sage: file_name = SAGE_TMP + 'deleteme.alist.txt'
+            sage: file_name = os.path.join(SAGE_TMP, 'deleteme.alist.txt')
             sage: fi = open(file_name, 'w')
             sage: fi.write("7 4 \n 3 4 \n 3 3 1 3 1 1 1 \n 3 3 3 4 \n\
                             1 2 4 \n 1 3 4 \n 1 0 0 \n 2 3 4 \n\
@@ -998,7 +998,7 @@ class BipartiteGraph(Graph):
             [0 1 0 1 0 1 0]
             [1 1 0 1 0 0 1]
             sage: b = BipartiteGraph(M)
-            sage: file_name = SAGE_TMP + 'deleteme.alist.txt'
+            sage: file_name = os.path.join(SAGE_TMP, 'deleteme.alist.txt')
             sage: b.save_afile(file_name)
             sage: b2 = BipartiteGraph(file_name)
             sage: b == b2
@@ -1006,7 +1006,7 @@ class BipartiteGraph(Graph):
 
         TESTS::
 
-            sage: file_name = SAGE_TMP + 'deleteme.alist.txt'
+            sage: file_name = os.path.join(SAGE_TMP, 'deleteme.alist.txt')
             sage: for order in range(3, 13, 3):
             ...       num_chks = int(order / 3)
             ...       num_vars = order - num_chks
