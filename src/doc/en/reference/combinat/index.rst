@@ -67,4 +67,5 @@ Combinatorics
    words
    iet
 
+   ../sage/combinat/dict_addition
    ../sage/combinat/misc
