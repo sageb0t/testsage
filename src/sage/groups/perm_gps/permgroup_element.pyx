@@ -55,7 +55,7 @@ degree.
 
 import random
 
-import sage.groups.group as group
+import sage.groups.old as group
 
 include "../../ext/stdsage.pxi"
 include "../../ext/interrupt.pxi"

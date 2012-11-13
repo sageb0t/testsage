@@ -1867,7 +1867,7 @@ cdef class PrincipalIdealDomain(IntegralDomain):
         EXAMPLES::
 
             sage: QQ.class_group()
-            Trivial Abelian Group
+            Trivial Abelian group
         """
         from sage.groups.abelian_gps.abelian_group import AbelianGroup
         return AbelianGroup([])
