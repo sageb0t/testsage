@@ -2743,10 +2743,7 @@ class FinitePoset(UniqueRepresentation, Parent):
         from sage.homology.simplicial_complex import SimplicialComplex
         L = self.list()
         if on_ints:
-            vertices = range(len(L))
-            iso = dict( [ (L[i],i) for i in vertices ] )
-        else:
-            vertices = self._elements
+            iso = dict( [ (L[i],i) for i in range(len(L)) ] )
 
         facets = []
         for f in self.maximal_chains():
@@ -2759,7 +2756,7 @@ class FinitePoset(UniqueRepresentation, Parent):
             else:
                 facets.append([a.element for a in f])
 
-        return SimplicialComplex(vertices, facets)
+        return SimplicialComplex(facets)
 
     def promotion(self, i=1):
         r"""
