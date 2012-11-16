@@ -1149,11 +1149,10 @@ class TransitiveGroup(PermutationGroup_unique):
         .. warning:: this follows GAP's naming convention of indexing
           the transitive groups starting from ``1``::
 
-            sage: TransitiveGroup(5,0)
+            sage: TransitiveGroup(5,0)                 # requires optional database_gap
             Traceback (most recent call last):
             ...
-              assert n > 0
-            AssertionError
+            ValueError: Index n must be in {1,..,5}
 
         .. warning:: only transitive groups of "small" degree are
           available in GAP's database::
@@ -1169,17 +1168,18 @@ class TransitiveGroup(PermutationGroup_unique):
             sage: TestSuite(TransitiveGroup(1,1)).run()
             sage: TestSuite(TransitiveGroup(5,2)).run()# requires optional database_gap
 
-            sage: TransitiveGroup(1,5)
+            sage: TransitiveGroup(1,5)                 # requires optional database_gap
             Traceback (most recent call last):
             ...
-            AssertionError: n should be in {1,..,1}
+            ValueError: Index n must be in {1,..,1}
         """
         d = Integer(d)
         n = Integer(n)
-        assert d >= 0
-        assert n > 0
+        if d < 0:
+            raise ValueError("Degree d must not be negative")
         max_n = TransitiveGroups(d).cardinality()
-        assert n <= max_n, "n should be in {1,..,%s}"%max_n
+        if n > max_n or n <= 0:
+            raise ValueError("Index n must be in {1,..,%s}" % max_n)
         gap_group = 'Group([()])' if d in [0,1] else 'TransitiveGroup(%s,%s)'%(d,n)
         try:
             PermutationGroup_generic.__init__(self, gap_group=gap_group)
@@ -1236,8 +1236,9 @@ def TransitiveGroups(d=None):
     if d == None:
         return TransitiveGroupsAll()
     else:
-        d == Integer(d)
-        assert d >= 0, "A transitive group acts on a non negative integer number of positions"
+        d = Integer(d)
+        if d < 0:
+            raise ValueError("A transitive group acts on a non negative integer number of positions")
         return TransitiveGroupsOfDegree(d)
 
 class TransitiveGroupsAll(DisjointUnionEnumeratedSets):
@@ -1374,11 +1375,10 @@ class TransitiveGroupsOfDegree(UniqueRepresentation, Parent):
         .. warning:: this follows GAP's naming convention of indexing
         the transitive groups starting from ``1``::
 
-            sage: TransitiveGroups(5)[0]
+            sage: TransitiveGroups(5)[0]          # requires optional database_gap
             Traceback (most recent call last):
             ...
-                assert n > 0
-            AssertionError
+            ValueError: Index n must be in {1,..,5}
         """
         return TransitiveGroup(self._degree, n)
 
@@ -1476,10 +1476,10 @@ class PrimitiveGroup(PermutationGroup_unique):
         this follows GAP's naming convention of indexing the primitive
         groups starting from ``1``::
 
-            sage: PrimitiveGroup(5,0)
+            sage: PrimitiveGroup(5,0)               # requires optional database_gap
             Traceback (most recent call last):
             ...
-            AssertionError: group database index starts at 1
+            ValueError: Index n must be in {1,..,5}
 
     Only primitive groups of "small" degree are available in GAP's
     database::
@@ -1504,17 +1504,18 @@ class PrimitiveGroup(PermutationGroup_unique):
             sage: TestSuite(PrimitiveGroup(0,1)).run()
             sage: TestSuite(PrimitiveGroup(1,1)).run()
             sage: TestSuite(PrimitiveGroup(5,2)).run()  # requires optional database_gap
-            sage: PrimitiveGroup(6,5)
+            sage: PrimitiveGroup(6,5)                   # requires optional database_gap
             Traceback (most recent call last):
             ...
-            AssertionError: n should be in {1,..,4}
+            ValueError: Index n must be in {1,..,4}
         """
         d = Integer(d)
         n = Integer(n)
-        assert d >= 0
-        assert n > 0, "group database index starts at 1"
+        if d < 0:
+            raise ValueError("Degree d must not be negative")
         max_n = PrimitiveGroups(d).cardinality()
-        assert n <= max_n, "n should be in {1,..,%s}"%max_n
+        if n > max_n or n <= 0:
+            raise ValueError("Index n must be in {1,..,%s}" % max_n)
         if d in [0,1]:
             gap_group = gap.Group("[()]")
             self._pretty_name = "Trivial group"
@@ -1541,7 +1542,7 @@ class PrimitiveGroup(PermutationGroup_unique):
 
         EXAMPLES::
 
-            sage: G = PrimitiveGroup(5,1); G
+            sage: G = PrimitiveGroup(5,1); G             # requires optional database_gap
             C(5)
         """
         return self._pretty_name
@@ -1558,7 +1559,7 @@ class PrimitiveGroup(PermutationGroup_unique):
 
         EXAMPLES::
 
-            sage: G = PrimitiveGroup(5,2); G.group_primitive_id()
+            sage: G = PrimitiveGroup(5,2); G.group_primitive_id()  # requires optional database_gap
             2
         """
         return self._n
@@ -1613,8 +1614,9 @@ def PrimitiveGroups(d=None):
     if d == None:
         return PrimitiveGroupsAll()
     else:
-        d == Integer(d)
-        assert d >= 0, "A primitive group acts on a non negative integer number of positions"
+        d = Integer(d)
+        if d < 0:
+            raise ValueError("A primitive group acts on a non negative integer number of positions")
         return PrimitiveGroupsOfDegree(d)
 
 class PrimitiveGroupsAll(DisjointUnionEnumeratedSets):
@@ -1784,10 +1786,10 @@ class PrimitiveGroupsOfDegree(UniqueRepresentation, Parent):
             this follows GAP's naming convention of indexing the
             primitive groups starting from ``1``::
 
-                sage: PrimitiveGroups(5)[0]
+                sage: PrimitiveGroups(5)[0]      # requires optional database_gap
                 Traceback (most recent call last):
                 ...
-                AssertionError: group database index starts at 1
+                ValueError: Index n must be in {1,..,5}
         """
         return PrimitiveGroup(self._degree, n)
 
