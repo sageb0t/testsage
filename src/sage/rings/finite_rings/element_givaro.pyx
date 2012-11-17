@@ -1,18 +1,18 @@
 r"""
-Finite Extension Fields of cardinality up to $2^{16}$
+Givaro Field Elements
 
 Sage includes the Givaro finite field library, for highly optimized
 arithmetic in finite fields.
 
-NOTES:
+.. NOTE::
 
-The arithmetic is performed by the Givaro C++ library which uses Zech
-logs internally to represent finite field elements. This
-implementation is the default finite extension field implementation in
-Sage for the cardinality $< 2^{16}$, as it is vastly faster than the
-PARI implementation which uses polynomials to represent finite field
-elements. Some functionality in this class however is implemented
-using the PARI implementation.
+    The arithmetic is performed by the Givaro C++ library which uses Zech
+    logs internally to represent finite field elements. This
+    implementation is the default finite extension field implementation in
+    Sage for the cardinality less than `2^{16}`, as it is vastly faster than
+    the PARI implementation which uses polynomials to represent finite field
+    elements. Some functionality in this class however is implemented
+    using the PARI implementation.
 
 EXAMPLES::
 
@@ -93,6 +93,7 @@ cdef object FreeModuleElement
 
 cdef void late_import():
     """
+    Late import of modules
     """
     global is_IntegerMod, \
            Integer, \
@@ -137,40 +138,50 @@ cdef void late_import():
 cdef class Cache_givaro(SageObject):
     def __init__(self, parent, p, k, modulus=None, repr="poly", cache=False):
         """
-        Finite Field. These are implemented using Zech logs and the
-        cardinality must be < 2^16. By default conway polynomials are
-        used as minimal polynomial.
+        Finite Field.
+
+        These are implemented using Zech logs and the
+        cardinality must be less than `2^{16}`. By default conway polynomials
+        are used as minimal polynomial.
 
         INPUT:
-            q     -- p^n (must be prime power)
-            name  -- variable used for poly_repr (default: 'a')
-            modulus -- you may provide a polynomial to use for reduction or
-                     a string:
-                     'conway': force the use of a Conway polynomial, will
-                     raise a RuntimeError if none is found in the database;
-                     'random': use a random irreducible polynomial.
-                     'default':a Conway polynomial is used if found. Otherwise
-                     a random polynomial is used.
 
-                     Furthermore, for binary fields we allow two more options:
-                     'minimal_weight': use a minimal weight polynomial, should
-                     result in faster arithmetic;
-                     'first_lexicographic': use the first irreducible polynomial
-                     in lexicographic order.
-            repr  -- controls the way elements are printed to the user:
-                     (default: 'poly')
-                     'log': repr is element.log_repr()
-                     'int': repr is element.int_repr()
-                     'poly': repr is element.poly_repr()
-            cache -- if True a cache of all elements of this field is
-                     created. Thus, arithmetic does not create new
-                     elements which speeds calculations up. Also, if
-                     many elements are needed during a calculation
-                     this cache reduces the memory requirement as at
-                     most self.order() elements are created. (default: False)
+        - ``q`` -- `p^n` (must be prime power)
+
+        - ``name`` -- variable used for poly_repr (default: ``'a'``)
+
+        - ``modulus`` -- you may provide a polynomial to use for reduction or
+          one of the following strings:
+
+          - ``'conway'`` -- force the use of a Conway polynomial, will
+            raise a ``RuntimeError`` if none is found in the database
+          - ``'random'`` -- use a random irreducible polynomial
+          - ``'default'`` -- a Conway polynomial is used if found. Otherwise
+            a random polynomial is used
+
+          Furthermore, for binary fields we allow two more options:
+
+          - ``'minimal_weight'`` -- use a minimal weight polynomial, should
+            result in faster arithmetic;
+          - ``'first_lexicographic'`` -- use the first irreducible polynomial
+            in lexicographic order.
+
+        - ``repr``  -- (default: 'poly') controls the way elements are printed
+          to the user:
+
+          - 'log': repr is :meth:`~FiniteField_givaroElement.log_repr()`
+          - 'int': repr is :meth:`~FiniteField_givaroElement.int_repr()`
+          - 'poly': repr is :meth:`~FiniteField_givaroElement.poly_repr()`
+
+        - ``cache`` -- (default: ``False``) if ``True`` a cache of all
+          elements of this field is created. Thus, arithmetic does not
+          create new elements which speeds calculations up. Also, if many
+          elements are needed during a calculation this cache reduces the
+          memory requirement as at most :meth:`order()` elements are created.
 
         OUTPUT:
-            Givaro finite field with characteristic p and cardinality p^n.
+
+        Givaro finite field with characteristic `p` and cardinality `p^n`.
 
         EXAMPLES:
 
@@ -278,8 +289,8 @@ cdef class Cache_givaro(SageObject):
 
     cdef gen_array(self):
         """
-        Generates an array/list/tuple containing all elements of self indexed by their
-        power with respect to the internal generator.
+        Generates an array/list/tuple containing all elements of ``self``
+        indexed by their power with respect to the internal generator.
         """
         cdef int i
 
@@ -298,7 +309,8 @@ cdef class Cache_givaro(SageObject):
         """
         Return the characteristic of this field.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: p = GF(19^3,'a')._cache.characteristic(); p
             19
         """
@@ -329,8 +341,8 @@ cdef class Cache_givaro(SageObject):
         return self.objectptr.cardinality()
 
     cpdef int exponent(self):
-        """
-        Returns the degree of this field over GF(p).
+        r"""
+        Returns the degree of this field over `\GF{p}`.
 
         EXAMPLES::
 
@@ -341,13 +353,10 @@ cdef class Cache_givaro(SageObject):
 
     def random_element(self, *args, **kwds):
         """
-        Return a random element of self.
+        Return a random element of ``self``.
 
-        INPUT:
-            *args -- ignored
-            **kwds -- ignored
+        EXAMPLES::
 
-        EXAMPLES:
             sage: k = GF(23**3, 'a')
             sage: e = k._cache.random_element(); e
             2*a^2 + 14*a + 21
@@ -366,7 +375,7 @@ cdef class Cache_givaro(SageObject):
 
     cpdef FiniteField_givaroElement element_from_data(self, e):
         """
-        Coerces several data types to self.
+        Coerces several data types to ``self``.
 
         INPUT:
 
@@ -380,7 +389,8 @@ cdef class Cache_givaro(SageObject):
             sage: k(e) #indirect doctest
             a
 
-        For more examples, see sage.rings.finite_rings.finite_field_givaro.FiniteField_givaro._element_constructor_
+        For more examples, see
+        ``finite_field_givaro.FiniteField_givaro._element_constructor_``
         """
         cdef int res
         cdef int g
@@ -508,17 +518,20 @@ cdef class Cache_givaro(SageObject):
 
     def log_to_int(self, int n):
         r"""
-        Given an integer $n$ this method returns $i$ where $i$
-        satisfies \code{self.gen()^n == i}, if the result is
-        interpreted as an integer.
+        Given an integer `n` this method returns `i` where `i`
+        satisfies `g^n = i` where `g` is the generator of ``self``; the
+        result is interpreted as an integer.
 
         INPUT:
-            n -- log representation of a finite field element
+
+        - ``n`` -- log representation of a finite field element
 
         OUTPUT:
-            integer representation of a finite field element.
 
-        EXAMPLE:
+        integer representation of a finite field element.
+
+        EXAMPLES::
+
             sage: k = GF(2**8, 'a')
             sage: k._cache.log_to_int(4)
             16
@@ -538,16 +551,20 @@ cdef class Cache_givaro(SageObject):
 
     def int_to_log(self, int n):
         r"""
-        Given an integer $n$ this method returns $i$ where $i$ satisfies
-        \code{self.gen()^i==(n\%self.characteristic())}.
+        Given an integer `n` this method returns `i` where `i` satisfies
+        `g^i = n \mod p` where `g` is the generator and `p` is the
+        characteristic of ``self``.
 
         INPUT:
-            n -- integer representation of an finite field element
+
+        - ``n`` -- integer representation of an finite field element
 
         OUTPUT:
-            log representation of n
 
-        EXAMPLE:
+        log representation of ``n``
+
+        EXAMPLES::
+
             sage: k = GF(7**3, 'a')
             sage: k._cache.int_to_log(4)
             228
@@ -564,11 +581,12 @@ cdef class Cache_givaro(SageObject):
 
     def fetch_int(self, int n):
         r"""
-        Given an integer $n$ return a finite field element in self
-        which equals $n$ under the condition that  self.gen() is set to
-        self.characteristic().
+        Given an integer ``n`` return a finite field element in ``self``
+        which equals ``n`` under the condition that :meth:`gen()` is set to
+        :meth:`characteristic()`.
 
-        EXAMPLE:
+        EXAMPLES::
+
             sage: k.<a> = GF(2^8)
             sage: k._cache.fetch_int(8)
             a^3
@@ -600,7 +618,8 @@ cdef class Cache_givaro(SageObject):
         """
         Wrapper for log, int, and poly representations.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: k.<a> = GF(3^4); k
             Finite Field in a of size 3^4
             sage: k._cache._element_repr(a^20)
@@ -629,7 +648,8 @@ cdef class Cache_givaro(SageObject):
         being the *internal* multiplicative generator of this finite
         field.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: k.<a> = GF(3^4); k
             Finite Field in a of size 3^4
             sage: k._cache._element_log_repr(a^20)
@@ -640,14 +660,15 @@ cdef class Cache_givaro(SageObject):
         return str(int(e.element))
 
     def _element_int_repr(self, FiniteField_givaroElement e):
-        """
-        Return integer representation of e.
+        r"""
+        Return integer representation of ``e``.
 
         Elements of this field are represented as ints in as follows:
-        for $e \in \FF_p[x]$ with $e = a_0 + a_1x + a_2x^2 + \cdots $, $e$ is
-        represented as: $n= a_0 + a_1  p + a_2  p^2 + \cdots$.
+        for `e \in \GF{p}[x]` with `e = a_0 + a_1x + a_2x^2 + \cdots`, `e` is
+        represented as: `n = a_0 + a_1  p + a_2  p^2 + \cdots`.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: k.<a> = GF(3^4); k
             Finite Field in a of size 3^4
             sage: k._cache._element_int_repr(a^20)
@@ -657,9 +678,10 @@ cdef class Cache_givaro(SageObject):
 
     def _element_poly_repr(self, FiniteField_givaroElement e, varname = None):
         """
-        Return a polynomial expression in base.gen() of self.
+        Return a polynomial expression in the generator of ``self``.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: k.<a> = GF(3^4); k
             Finite Field in a of size 3^4
             sage: k._cache._element_poly_repr(a^20)
@@ -695,15 +717,15 @@ cdef class Cache_givaro(SageObject):
 
     def a_times_b_plus_c(self,FiniteField_givaroElement a, FiniteField_givaroElement b, FiniteField_givaroElement c):
         """
-        Return r = a*b + c. This is faster than multiplying a and b
-        first and adding c to the result.
+        Return ``a*b + c``. This is faster than multiplying ``a`` and ``b``
+        first and adding ``c`` to the result.
 
         INPUT:
-            a -- FiniteField_givaroElement
-            b -- FiniteField_givaroElement
-            c -- FiniteField_givaroElement
 
-        EXAMPLE:
+        - ``a,b,c`` -- :class:`FiniteField_givaroElement`
+
+        EXAMPLES::
+
             sage: k.<a> = GF(2**8)
             sage: k._cache.a_times_b_plus_c(a,a,k(1))
             a^2 + 1
@@ -715,14 +737,14 @@ cdef class Cache_givaro(SageObject):
 
     def a_times_b_minus_c(self,FiniteField_givaroElement a, FiniteField_givaroElement b, FiniteField_givaroElement c):
         """
-        Return r = a*b - c.
+        Return ``a*b - c``.
 
         INPUT:
-            a -- FiniteField_givaroElement
-            b -- FiniteField_givaroElement
-            c -- FiniteField_givaroElement
 
-        EXAMPLE:
+        - ``a,b,c`` -- :class:`FiniteField_givaroElement`
+
+        EXAMPLES::
+
             sage: k.<a> = GF(3**3)
             sage: k._cache.a_times_b_minus_c(a,a,k(1))
             a^2 + 2
@@ -735,14 +757,14 @@ cdef class Cache_givaro(SageObject):
     def c_minus_a_times_b(self,FiniteField_givaroElement a,
                           FiniteField_givaroElement b, FiniteField_givaroElement c):
         """
-        Return r = c - a*b.
+        Return ``c - a*b``.
 
         INPUT:
-            a -- FiniteField_givaroElement
-            b -- FiniteField_givaroElement
-            c -- FiniteField_givaroElement
 
-        EXAMPLE:
+        - ``a,b,c`` -- :class:`FiniteField_givaroElement`
+
+        EXAMPLES::
+
             sage: k.<a> = GF(3**3)
             sage: k._cache.c_minus_a_times_b(a,a,k(1))
             2*a^2 + 1
@@ -775,7 +797,8 @@ cdef class Cache_givaro(SageObject):
 
 def unpickle_Cache_givaro(parent, p, k, modulus, rep, cache):
     """
-    EXAMPLE:
+    EXAMPLES::
+
        sage: k = GF(3**7, 'a')
        sage: loads(dumps(k)) == k # indirect doctest
        True
@@ -866,12 +889,15 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
         log_g of the value you wish to assign.
 
         INPUT:
-            parent -- base field
+
+        - ``parent`` -- base field
 
         OUTPUT:
-            finite field element.
 
-        EXAMPLE:
+        A finite field element.
+
+        EXAMPLES::
+
             sage: k.<a> = GF(5^2)
             sage: from sage.rings.finite_rings.element_givaro import FiniteField_givaroElement
             sage: FiniteField_givaroElement(k)
@@ -890,7 +916,8 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
 
     def _repr_(FiniteField_givaroElement self):
         """
-        EXAMPLE:
+        EXAMPLE::
+
             sage: k.<FOOBAR> = GF(3^4)
             sage: FOOBAR #indirect doctest
             FOOBAR
@@ -919,9 +946,10 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
 
     def __nonzero__(FiniteField_givaroElement self):
         r"""
-        Return True if \code{self != k(0)}.
+        Return ``True`` if ``self != k(0)``.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: k.<a> = GF(3^4); k
             Finite Field in a of size 3^4
             sage: a.is_zero()
@@ -933,9 +961,10 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
 
     def is_one(FiniteField_givaroElement self):
         r"""
-        Return True if \code{self == k(1)}.
+        Return ``True`` if ``self == k(1)``.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: k.<a> = GF(3^4); k
             Finite Field in a of size 3^4
             sage: a.is_one()
@@ -947,10 +976,11 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
 
     def is_unit(FiniteField_givaroElement self):
         """
-        Return True if self is nonzero, so it is a unit as an element of the
-        finite field.
+        Return ``True`` if self is nonzero, so it is a unit as an element of
+        the finite field.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: k.<a> = GF(3^4); k
             Finite Field in a of size 3^4
             sage: a.is_unit()
@@ -966,9 +996,15 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
 
     def is_square(FiniteField_givaroElement self):
         """
-        Return True if self is a square in self.parent()
+        Return ``True`` if ``self`` is a square in ``self.parent()``
 
-        EXAMPLES:
+        ALGORITHM:
+
+        Elements are stored as powers of generators, so we simply check
+        to see if it is an even power of a generator.
+
+        EXAMPLES::
+
             sage: k.<a> = GF(9); k
             Finite Field in a of size 3^2
             sage: a.is_square()
@@ -979,11 +1015,8 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
             sage: [x.is_square() for x in k if not x in v]
             [False, False, False, False]
 
-        ALGORITHM:
-            Elements are stored as powers of generators, so we simply check
-            to see if it is an even power of a generator.
+        TESTS::
 
-        TESTS:
             sage: K = GF(27, 'a')
             sage: set([a*a for a in K]) == set([a for a in K if a.is_square()])
             True
@@ -1005,20 +1038,32 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
     def sqrt(FiniteField_givaroElement self, extend=False, all=False):
         """
         Return a square root of this finite field element in its
-        parent, if there is one.  Otherwise, raise a ValueError.
+        parent, if there is one.  Otherwise, raise a ``ValueError``.
 
         INPUT:
-            extend -- bool (default: True); if True, return a square
-                 root in an extension ring, if necessary. Otherwise,
-                 raise a ValueError if the root is not in the base
-                 ring.  Warning: this option is not implemented!
-            all -- bool (default: False); if True, return all square
-                 roots of self, instead of just one.
 
-        WARNING:
-            The 'extend' option is not implemented (yet).
+        - ``extend`` -- bool (default: ``True``); if ``True``, return a
+          square root in an extension ring, if necessary. Otherwise,
+          raise a ``ValueError`` if the root is not in the base ring.
 
-        EXAMPLES:
+          .. WARNING::
+
+              this option is not implemented!
+
+        - ``all`` -- bool (default: ``False``); if ``True``, return all square
+          roots of ``self``, instead of just one.
+
+        .. WARNING::
+
+            The ``extend`` option is not implemented (yet).
+
+        ALGORITHM:
+
+        ``self`` is stored as `a^k` for some generator `a`.
+        Return `a^{k/2}` for even `k`.
+
+        EXAMPLES::
+
             sage: k.<a> = GF(7^2)
             sage: k(2).sqrt()
             3
@@ -1034,11 +1079,8 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
             ...
             ValueError: must be a perfect square.
 
-        ALGORITHM:
-            Self is stored as $a^k$ for some generator $a$.
-            Return $a^(k/2)$ for even $k$.
+        TESTS::
 
-        TESTS:
             sage: K = GF(49, 'a')
             sage: all([a.sqrt()*a.sqrt() == a for a in K if a.is_square()])
             True
@@ -1068,7 +1110,8 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
         """
         Add two elements.
 
-        EXAMPLE:
+        EXAMPLES::
+
             sage: k.<b> = GF(9**2)
             sage: b^10 + 2*b # indirect doctest
             2*b^3 + 2*b^2 + 2*b + 1
@@ -1082,7 +1125,8 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
         """
         Add two elements inplace.
 
-        EXAMPLE:
+        EXAMPLES::
+
             sage: k.<b> = GF(9**2)
             sage: b^10 + 2*b # indirect doctest
             2*b^3 + 2*b^2 + 2*b + 1
@@ -1094,9 +1138,10 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
 
     cpdef RingElement _mul_(self, RingElement right):
         """
-        Multiply two elements:
+        Multiply two elements.
 
-        EXAMPLE:
+        EXAMPLES::
+
             sage: k.<c> = GF(7**4)
             sage: 3*c # indirect doctest
             3*c
@@ -1112,7 +1157,8 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
         """
         Multiply two elements inplace.
 
-        EXAMPLE:
+        EXAMPLES::
+
             sage: k.<c> = GF(7**4)
             sage: 3*c # indirect doctest
             3*c
@@ -1128,7 +1174,8 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
         """
         Divide two elements
 
-        EXAMPLE:
+        EXAMPLES::
+
             sage: k.<g> = GF(2**8)
             sage: g/g # indirect doctest
             1
@@ -1149,7 +1196,8 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
         """
         Divide two elements inplace
 
-        EXAMPLE:
+        EXAMPLES::
+
             sage: k.<g> = GF(2**8)
             sage: g/g # indirect doctest
             1
@@ -1169,9 +1217,10 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
 
     cpdef ModuleElement _sub_(self, ModuleElement right):
         """
-        Subtract two elements
+        Subtract two elements.
 
-        EXAMPLE:
+        EXAMPLES::
+
             sage: k.<a> = GF(3**4)
             sage: k(3) - k(1) # indirect doctest
             2
@@ -1185,9 +1234,10 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
 
     cpdef ModuleElement _isub_(self, ModuleElement right):
         """
-        Subtract two elements inplace
+        Subtract two elements inplace.
 
-        EXAMPLE:
+        EXAMPLES::
+
             sage: k.<a> = GF(3**4)
             sage: k(3) - k(1) # indirect doctest
             2
@@ -1203,7 +1253,8 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
         """
         Negative of an element.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: k.<a> = GF(9); k
             Finite Field in a of size 3^2
             sage: -a
@@ -1218,7 +1269,8 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
         """
         Return the multiplicative inverse of an element.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: k.<a> = GF(9); k
             Finite Field in a of size 3^2
             sage: ~a
@@ -1249,7 +1301,7 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
 
         TESTS:
 
-        The following checks that #7923 is resolved::
+        The following checks that :trac:`7923` is resolved::
 
             sage: K.<a> = GF(3^10)
             sage: b = a^9 + a^7 + 2*a^6 + a^4 + a^3 + 2*a^2 + a + 2
@@ -1258,10 +1310,11 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
 
         ALGORITHM:
 
-        Givaro objects are stored as integers $i$ such that $self=a^i$, where
-        $a$ is a generator of $K$ (though not necessarily the one returned by K.gens()).
-        Now it is trivial to compute $(a^i)^exp = a^(i*exp)$, and reducing the exponent
-        mod the multiplicative order of $K$.
+        Givaro objects are stored as integers `i` such that ``self`` `= a^i`,
+        where `a` is a generator of `K` (though not necessarily the one
+        returned by ``K.gens()``).  Now it is trivial to compute
+        `(a^i)^e = a^{i \cdot e}`, and reducing the exponent
+        mod the multiplicative order of `K`.
 
         AUTHOR:
 
@@ -1308,7 +1361,8 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
 
     def __richcmp__(left, right, int op):
         """
-        EXAMPLE:
+        EXAMPLES::
+
             sage: k.<a> = GF(9); k
             Finite Field in a of size 3^2
             sage: a == k('a') # indirect doctest
@@ -1321,11 +1375,12 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
     cdef int _cmp_c_impl(left, Element right) except -2:
         """
         Comparison of finite field elements is correct or equality
-        tests and somewhat random for < and > type of
+        tests and somewhat random for ``<`` and ``>`` type of
         comparisons. This implementation performs these tests by
         comparing the underlying int representations.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: k.<a> = GF(9); k
             Finite Field in a of size 3^2
             sage: a == k('a')
@@ -1333,9 +1388,11 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
             sage: a == a + 1
             False
 
-            Even though inequality tests do return answers, they
-            really make no sense as finite fields are unordered. Thus,
-            you cannot rely on the result as it is implementation specific.
+        Even though inequality tests do return answers, they
+        really make no sense as finite fields are unordered. Thus,
+        you cannot rely on the result as it is implementation specific.
+
+        ::
 
             sage: a < a^2
             True
@@ -1348,11 +1405,12 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
 
     def __int__(FiniteField_givaroElement self):
         """
-        Return the int representation of self.  When self is in the
-        prime subfield, the integer returned is equal to self, otherwise
+        Return the int representation of ``self``.  When ``self`` is in the
+        prime subfield, the integer returned is equal to ``self``, otherwise
         an error is raised.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: k.<b> = GF(5^2); k
             Finite Field in b of size 5^2
             sage: int(k(4))
@@ -1370,15 +1428,16 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
 
     def integer_representation(FiniteField_givaroElement self):
         """
-        Return the integer representation of self.  When self is in the
-        prime subfield, the integer returned is equal to self and not
-        to \code{log_repr}.
+        Return the integer representation of ``self``.  When ``self`` is in the
+        prime subfield, the integer returned is equal to ``self`` and not
+        to ``log_repr``.
 
         Elements of this field are represented as ints in as follows:
-        for $e \in \FF_p[x]$ with $e = a_0 + a_1x + a_2x^2 + \cdots $, $e$ is
-        represented as: $n= a_0 + a_1  p + a_2  p^2 + \cdots$.
+        for `e \in \GF{p}[x]` with `e = a_0 + a_1x + a_2x^2 + \cdots`, `e` is
+        represented as: `n= a_0 + a_1  p + a_2  p^2 + \cdots`.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: k.<b> = GF(5^2); k
             Finite Field in b of size 5^2
             sage: k(4).integer_representation()
@@ -1392,7 +1451,7 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
 
     def _integer_(FiniteField_givaroElement self, ZZ=None):
         """
-        Convert self to an integer if it is in the prime subfield.
+        Convert ``self`` to an integer if it is in the prime subfield.
 
         EXAMPLES::
 
@@ -1412,14 +1471,15 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
 
     def log_to_int(FiniteField_givaroElement self):
         r"""
-        Returns the int representation of self, as a Sage integer.   Use
-        int(self) to directly get a Python int.
+        Returns the int representation of ``self``, as a Sage integer.   Use
+        ``int(self)`` to directly get a Python int.
 
         Elements of this field are represented as ints in as follows:
-        for $e \in \FF_p[x]$ with $e = a_0 + a_1x + a_2x^2 + \cdots $, $e$ is
-        represented as: $n= a_0 + a_1  p + a_2  p^2 + \cdots$.
+        for `e \in \GF{p}[x]` with `e = a_0 + a_1x + a_2x^2 + \cdots`, `e` is
+        represented as: `n = a_0 + a_1  p + a_2  p^2 + \cdots`.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: k.<b> = GF(5^2); k
             Finite Field in b of size 5^2
             sage: k(4).log_to_int()
@@ -1433,14 +1493,17 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
 
     def log(FiniteField_givaroElement self, base):
         """
-        Return the log to the base b of self, i.e., an integer n
-        such that b^n = self.
+        Return the log to the base `b` of ``self``, i.e., an integer `n`
+        such that `b^n =` ``self``.
 
-        WARNING:  TODO -- This is currently implemented by solving the discrete
-        log problem -- which shouldn't be needed because of how finite field
-        elements are represented.
+        .. WARNING::
 
-        EXAMPLES:
+            TODO -- This is currently implemented by solving the discrete
+            log problem -- which shouldn't be needed because of how finite field
+            elements are represented.
+
+        EXAMPLES::
+
             sage: k.<b> = GF(5^2); k
             Finite Field in b of size 5^2
             sage: a = b^7
@@ -1452,10 +1515,11 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
 
     def int_repr(FiniteField_givaroElement self):
         r"""
-        Return the string representation of self as an int (as returned
-        by \code{log_to_int}).
+        Return the string representation of ``self`` as an int (as returned
+        by :meth:`log_to_int`).
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: k.<b> = GF(5^2); k
             Finite Field in b of size 5^2
             sage: (b+1).int_repr()
@@ -1465,11 +1529,12 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
 
     def log_repr(FiniteField_givaroElement self):
         r"""
-        Return the log representation of self as a string.  See the
-        documentation of the \code{_element_log_repr} function of the
+        Return the log representation of ``self`` as a string.  See the
+        documentation of the ``_element_log_repr`` function of the
         parent field.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: k.<b> = GF(5^2); k
             Finite Field in b of size 5^2
             sage: (b+2).log_repr()
@@ -1482,7 +1547,8 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
         Return representation of this finite field element as a polynomial
         in the generator.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: k.<b> = GF(5^2); k
             Finite Field in b of size 5^2
             sage: (b+2).poly_repr()
@@ -1492,9 +1558,11 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
 
     def polynomial(FiniteField_givaroElement self, name=None):
         """
-        Return self viewed as a polynomial over self.parent().prime_subfield().
+        Return self viewed as a polynomial over
+        ``self.parent().prime_subfield()``.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: k.<b> = GF(5^2); k
             Finite Field in b of size 5^2
             sage: f = (b^2+1).polynomial(); f
@@ -1521,16 +1589,22 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
 
     def _finite_field_ext_pari_element(FiniteField_givaroElement self, k=None):
         """
-        Return an element of k supposed to match this element.  No
-        checks if k equals self.parent() are performed.
+        Return an element of ``k`` supposed to match this element.
+
+        .. WARNING::
+
+            No checks if ``k == self.parent()`` are performed.
 
         INPUT:
-            k -- (optional) FiniteField_ext_pari
+
+        - ``k`` -- (optional) :class:`FiniteField_ext_pari`
 
         OUTPUT:
-            k.gen()^(self.log_repr())
 
-        EXAMPLES:
+        ``k.gen()^(self.log_repr())``
+
+        EXAMPLES::
+
             sage: S.<b> = GF(5^2); S
             Finite Field in b of size 5^2
             sage: b.charpoly('x')
@@ -1544,7 +1618,8 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
             sage: c.charpoly('x')
             x^2 + 4*x + 2
 
-        The PARI field is automatically determined if it is not given:
+        The PARI field is automatically determined if it is not given::
+
             sage: d = b._finite_field_ext_pari_element(); d
             b
             sage: type(d)
@@ -1576,7 +1651,7 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
 
         INPUT:
 
-            ``var`` -- optional variable string (default: ``None``)
+        - ``var`` -- (default: ``None``) optional variable string
 
         EXAMPLES::
 
@@ -1606,26 +1681,34 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
         Return a string representation of self that MAGMA can
         understand.
 
-        EXAMPLE:
+        EXAMPLE::
+
             sage: k.<a> = GF(3^5)
 
-        String rep of parent:
+        String rep of parent::
+
             sage: k._magma_init_(magma)        # optional - magma
             'SageCreateWithNames(ext<GF(3)|_sage_[...]![GF(3)!1,GF(3)!2,GF(3)!0,GF(3)!0,GF(3)!0,GF(3)!1]>,["a"])'
 
-        Magma repr of element:
+        Magma repr of element::
+
             sage: a._magma_init_(magma)        # optional - magma
              '_sage_[...]!(_sage_[...])'
 
-        Because of caching the string representation of an element must not change:
+        Because of caching the string representation of an element must
+        not change::
+
             sage: a._magma_init_(magma) == a._magma_init_(magma)   # optional - magma
             True
 
-        We test a conversion back and forth:
+        We test a conversion back and forth::
+
             sage: k.<a> = GF(3^6)
             sage: b = magma(a^5 + 2*a^2 + 1)             # optional - magma
 
-        Note that small fields print using a log representation in Magma (unlike Sage):
+        Note that small fields print using a log representation in Magma
+        (unlike Sage)::
+
             sage: b                                      # optional - magma
             a^436
             sage: b.sage()                               # optional - magma
@@ -1639,7 +1722,8 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
         """
         Return the multiplicative order of this field element.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: S.<b> = GF(5^2); S
             Finite Field in b of size 5^2
             sage: b.multiplicative_order()
@@ -1672,10 +1756,11 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
 
     def __copy__(self):
         """
-        Return a copy of this element.  Actually just returns self, since
+        Return a copy of this element.  Actually just returns ``self``, since
         finite field elements are immutable.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: S.<b> = GF(5^2); S
             Finite Field in b of size 5^2
             sage: c = copy(b); c
@@ -1692,11 +1777,12 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
         Return a string that evaluates to the GAP representation of
         this element.
 
-        A NotImplementedError is raised if self.parent().modulus() is
+        A ``NotImplementedError`` is raised if ``self.parent().modulus()`` is
         not a Conway polynomial, as the isomorphism of finite fields is
         not implemented yet.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: S.<b> = GF(5^2); S
             Finite Field in b of size 5^2
             sage: (4*b+3)._gap_init_()
@@ -1729,7 +1815,8 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
         Return the hash of this finite field element.  We hash the parent
         and the underlying integer representation of this element.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: S.<a> = GF(5^3); S
             Finite Field in a of size 5^3
             sage: hash(a)
@@ -1739,14 +1826,16 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
 
     def _vector_(FiniteField_givaroElement self, reverse=False):
         """
-        Return a vector in self.parent().vector_space() matching
-        self. The most significant bit is to the right.
+        Return a vector in ``self.parent().vector_space()`` matching
+        ``self``. The most significant bit is to the right.
 
         INPUT:
-            reverse -- reverse the order of the bits
-                       from little endian to big endian.
 
-        EXAMPLES:
+        - ``reverse`` -- reverse the order of the bits from little endian to
+          big endian.
+
+        EXAMPLES::
+
             sage: k.<a> = GF(2^4)
             sage: e = a^2 + 1
             sage: v = vector(e)
@@ -1763,7 +1852,7 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
             sage: k(v)
             2*a^2 + 1
 
-        You can also compute the vector in the other order:
+        You can also compute the vector in the other order::
 
             sage: e._vector_(reverse=True)
             (0, 2, 0, 1)
@@ -1790,7 +1879,8 @@ cdef class FiniteField_givaroElement(FinitePolyExtElement):
         """
         Used for supporting pickling of finite field elements.
 
-        EXAMPLE:
+        EXAMPLES::
+
             sage: k = GF(2**8, 'a')
             sage: e = k.random_element()
             sage: TestSuite(e).run() # indirect doctest

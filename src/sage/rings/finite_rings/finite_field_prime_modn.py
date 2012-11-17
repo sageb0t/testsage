@@ -4,6 +4,7 @@ Finite Prime Fields
 AUTHORS:
 
 - William Stein: initial version
+
 - Martin Albrecht (2008-01): refactoring
 
 TESTS::
@@ -43,24 +44,34 @@ import sage.structure.factorization as factorization
 from sage.structure.parent import Parent
 
 class FiniteField_prime_modn(FiniteField_generic, integer_mod_ring.IntegerModRing_generic):
+    r"""
+    Finite field of order `p` where `p` is prime.
+
+    EXAMPLES::
+
+        sage: FiniteField(3)
+        Finite Field of size 3
+
+        sage: FiniteField(next_prime(1000))
+        Finite Field of size 1009
+    """
     def __init__(self, p, name=None, check=True):
         """
-        Return a new finite field of order $p$ where $p$ is prime.
+        Return a new finite field of order `p` where `p` is prime.
 
         INPUT:
 
-        - p -- an integer >= 2
+        - ``p`` -- an integer at least 2
+
         - ``name`` -- ignored
-        - ``check`` -- bool (default: True); if False, do not
-          check p for primality
+
+        - ``check`` -- bool (default: ``True``); if ``False``, do not
+          check ``p`` for primality
 
         EXAMPLES::
 
-            sage: FiniteField(3)
+            sage: F = FiniteField(3); F
             Finite Field of size 3
-
-            sage: FiniteField(next_prime(1000))
-            Finite Field of size 1009
         """
         p = integer.Integer(p)
         if check and not arith.is_prime(p):
@@ -74,6 +85,8 @@ class FiniteField_prime_modn(FiniteField_generic, integer_mod_ring.IntegerModRin
 
     def __reduce__(self):
         """
+        For pickling.
+
         EXAMPLES::
 
             sage: k = FiniteField(5); type(k)
@@ -85,8 +98,10 @@ class FiniteField_prime_modn(FiniteField_generic, integer_mod_ring.IntegerModRin
 
     def __cmp__(self, other):
         r"""
-        Compare \code{self} with \code{other}. Two finite prime fields
-        are considered equal if their characteristic is equal.
+        Compare ``self`` with ``other``.
+
+        Two finite prime fields are considered equal if their characteristic
+        is equal.
 
         EXAMPLES::
 
@@ -102,7 +117,7 @@ class FiniteField_prime_modn(FiniteField_generic, integer_mod_ring.IntegerModRin
 
     def __richcmp__(left, right, op):
         r"""
-        Compare \code{self} with \code{right}.
+        Compare ``self`` with ``right``.
 
         EXAMPLES::
 
@@ -118,7 +133,7 @@ class FiniteField_prime_modn(FiniteField_generic, integer_mod_ring.IntegerModRin
 
     def _is_valid_homomorphism_(self, codomain, im_gens):
         """
-        This is called implicitly by the hom constructor.
+        This is called implicitly by the ``hom`` constructor.
 
         EXAMPLES::
 
@@ -187,7 +202,7 @@ class FiniteField_prime_modn(FiniteField_generic, integer_mod_ring.IntegerModRin
 
     def modulus(self):
         """
-        Return the minimal polynomial of self, which is always $x - 1$.
+        Return the minimal polynomial of ``self``, which is always `x - 1`.
 
         EXAMPLES::
 
@@ -204,7 +219,7 @@ class FiniteField_prime_modn(FiniteField_generic, integer_mod_ring.IntegerModRin
 
     def is_prime_field(self):
         """
-        Return True
+        Return ``True`` since this is a prime field.
 
         EXAMPLES::
 
@@ -220,7 +235,7 @@ class FiniteField_prime_modn(FiniteField_generic, integer_mod_ring.IntegerModRin
 
     def polynomial(self, name=None):
         """
-        Returns the polynomial \var{name}.
+        Returns the polynomial ``name``.
 
         EXAMPLES::
 
@@ -260,8 +275,10 @@ class FiniteField_prime_modn(FiniteField_generic, integer_mod_ring.IntegerModRin
         Return generator of this finite field as an extension of its
         prime field.
 
-        NOTE: If you want a primitive element for this finite field
-        instead, use \code{self.multiplicative_generator()}.
+        .. NOTE::
+
+            If you want a primitive element for this finite field
+            instead, use :meth:`multiplicative_generator()`.
 
         EXAMPLES::
 
@@ -279,6 +296,8 @@ class FiniteField_prime_modn(FiniteField_generic, integer_mod_ring.IntegerModRin
 
     def __iter__(self):
         """
+        Return an iterator over ``self``.
+
         EXAMPLES::
 
             sage: list(GF(7))
