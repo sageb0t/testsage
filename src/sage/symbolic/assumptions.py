@@ -74,6 +74,23 @@ class GenericDeclaration(SageObject):
         else:
             return cmp(type(self), type(other))
 
+    def has(self, arg):
+        """
+        Check if this assumption contains the argument ``arg``.
+
+        EXAMPLES::
+
+            sage: from sage.symbolic.assumptions import GenericDeclaration as GDecl
+            sage: var('y')
+            y
+            sage: d = GDecl(x, 'integer')
+            sage: d.has(x)
+            True
+            sage: d.has(y)
+            False
+        """
+        return (arg - self._var).is_trivial_zero()
+
     def assume(self):
         """
         TEST::
@@ -473,7 +490,7 @@ def assumptions(*args):
         sage: assumptions()
         []
 
-    It is also possible to ask the assumptions of variables independently.
+    It is also possible to query for assumptions on a variable independently::
 
         sage: x, y, z = var('x y z')
         sage: assume(x, 'integer')
@@ -483,7 +500,7 @@ def assumptions(*args):
         sage: assumptions()
         [x is integer, y > 0, y^2 + z^2 == 1, x < 0]
         sage: assumptions(x)
-        ['integer', x < 0]
+        [x is integer, x < 0]
         sage: assumptions(x, y)
         [x is integer, x < 0, y > 0, y^2 + z^2 == 1]
         sage: assumptions(z)
@@ -494,11 +511,8 @@ def assumptions(*args):
 
     result = []
     if len(args) == 1:
-        for statement in list(_assumptions):
-            if '%s is integer' % str(args[0]) in str(statement):
-                result.append('integer')
-            elif str(args[0]) in str(statement):
-                result.append(statement)
+        result.extend([statement for statement in _assumptions
+            if statement.has(args[0])])
     else:
         for v in args:
             result += [ statement for statement in list(_assumptions) \
@@ -513,6 +527,7 @@ def _forget_all():
 
     EXAMPLES::
 
+        sage: forget()
         sage: var('x,y')
         (x, y)
         sage: assume(x > 0, y < 0)
