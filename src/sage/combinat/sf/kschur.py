@@ -11,7 +11,7 @@ k-Schur Functions
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 #    General Public License for more details.
 #
-
+#
 #  The full text of the GPL is available at:
 #
 #                  http://www.gnu.org/licenses/
