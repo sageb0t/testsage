@@ -216,6 +216,7 @@ import copy
 from necklace import Necklaces
 from sage.misc.misc import uniq
 from backtrack import GenericBacktracker
+from sage.combinat.combinatorial_map import combinatorial_map
 
 permutation_options = {'display':'list', 'mult':'l2r'}
 
@@ -1517,6 +1518,7 @@ class Permutation_class(CombinatorialObject):
         """
         return self.number_of_inversions()
 
+    @combinatorial_map(order=2,name='inverse')
     def inverse(self):
         r"""
         Returns the inverse of a permutation
@@ -2113,6 +2115,7 @@ class Permutation_class(CombinatorialObject):
         """
         return len(self.idescents(final_descent))
 
+    @combinatorial_map(name='descent composition')
     def descents_composition(self):
         """
         Returns the composition corresponding to the descents of the
@@ -2750,6 +2753,7 @@ class Permutation_class(CombinatorialObject):
 
         return __builtin__.list(itertools.ifilter(lambda pos: to_standard(map(lambda z: p[z], pos)) == patt, iter(subword.Subwords(range(len(p)), len(patt))) ))
 
+    @combinatorial_map(order=2,name='reverse')
     def reverse(self):
         """
         Returns the permutation obtained by reversing the list.
@@ -2763,6 +2767,7 @@ class Permutation_class(CombinatorialObject):
         """
         return Permutation_class( [i for i in reversed(self)] )
 
+    @combinatorial_map(order=2,name='complement')
     def complement(self):
         """
         Returns the complement of the permutation which is obtained by
@@ -2881,6 +2886,7 @@ class Permutation_class(CombinatorialObject):
 
         return [tableau.Tableau(p),tableau.Tableau(q)]
 
+    @combinatorial_map(name='Robinson-Schensted insertion tableau')
     def left_tableau(self):
         """
         Returns the right standard tableau after performing the RSK
@@ -2893,6 +2899,7 @@ class Permutation_class(CombinatorialObject):
         """
         return self.robinson_schensted()[0]
 
+    @combinatorial_map(name='Robinson-Schensted recording tableau')
     def right_tableau(self):
         """
         Returns the right standard tableau after performing the RSK
@@ -2904,6 +2911,18 @@ class Permutation_class(CombinatorialObject):
             [[1, 2], [3], [4]]
         """
         return self.robinson_schensted()[1]
+
+    @combinatorial_map(name='Robinson-Schensted tableau shape')
+    def RS_partition(self):
+        """
+        Returns the partition corresponding to the tableaux of the RSK algorithm.
+
+        EXAMPLES::
+
+            sage: Permutation([1,4,3,2]).RS_partition()
+            [2, 1, 1]
+        """
+        return self.robinson_schensted()[1].shape()
 
     def remove_extra_fixed_points(self):
         """
