@@ -967,6 +967,19 @@ cdef class Parent(category_object.CategoryObject):
             True
             sage: pi in CDF
             True
+
+        TESTS:
+
+        Check that :trac:`13824` is fixed::
+
+            sage: 4/3 in GF(3)
+            False
+            sage: 15/50 in GF(25, 'a')
+            False
+            sage: 7/4 in Integers(4)
+            False
+            sage: 15/36 in Integers(6)
+            False
         """
         P = parent_c(x)
         if P is self or P == self:
@@ -991,7 +1004,7 @@ cdef class Parent(category_object.CategoryObject):
                     # comparisons.
                     return True
                 return False
-        except (TypeError, ValueError):
+        except (TypeError, ValueError, ZeroDivisionError):
             return False
 
     cpdef coerce(self, x):
