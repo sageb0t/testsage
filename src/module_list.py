@@ -456,6 +456,9 @@ ext_modules = [
     Extension('sage.graphs.genus',
               sources = ['sage/graphs/genus.pyx']),
 
+    Extension('sage.graphs.hyperbolicity',
+              sources = ['sage/graphs/hyperbolicity.pyx']),
+
         ################################
         ##
         ## sage.graphs.base
