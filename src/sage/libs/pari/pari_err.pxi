@@ -1,4 +1,8 @@
-# vim:ft=pyrex:
+# We don't need anything from here, as we have PARI-specific signal
+# handling.  We still include this such that Cython detects the
+# dependency on interrupt.h for recompiling gen.pyx.
+cdef extern from 'interrupt.h':
+    pass
 
 cdef extern from 'pari_err.h':
     int _pari_catch
