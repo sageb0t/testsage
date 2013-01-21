@@ -9934,8 +9934,17 @@ class GenericGraph(GenericGraph_pyx):
         """
         from sage.graphs.generic_graph_pyx import SubgraphSearch
         from sage.graphs.graph_generators import GraphGenerators
+
         if G.order() == 0:
             return GraphGenerators().EmptyGraph()
+
+        # SubgraphSearch assumes the graph we are searching for has order at least 2.
+        if G.order() == 1:
+            if self.order() >= 1:
+                import graph
+                return graph.Graph({ self.vertices()[0]:[]})
+            else:
+                return None
 
         S = SubgraphSearch(self, G, induced = induced)
 
@@ -10022,6 +10031,9 @@ class GenericGraph(GenericGraph_pyx):
         if self.order() == 0:
             return 0
 
+        if G.order() == 1:
+            return self.order()
+
         S = SubgraphSearch(self, G, induced = induced)
 
         return S.cardinality()
@@ -10083,6 +10095,9 @@ class GenericGraph(GenericGraph_pyx):
         elif self.order() == 0:
             return []
 
+        elif G.order() == 1:
+            import graph
+            return iter([graph.Graph({v:[]}) for v in self.vertices()])
         else:
             from sage.graphs.generic_graph_pyx import SubgraphSearch
             return SubgraphSearch(self, G, induced = induced)
