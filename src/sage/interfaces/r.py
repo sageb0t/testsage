@@ -550,7 +550,7 @@ class R(Expect):
         EXAMPLES::
 
             sage: r.version()
-            ((2, 14, 0), 'R version 2.14.0 (2011-10-31)')
+            ((2, 15, 2), 'R version 2.15.2 (2012-10-26)')
         """
         major_re = re.compile('^major\s*(\d.*?)$', re.M)
         minor_re = re.compile('^minor\s*(\d.*?)$', re.M)
@@ -2032,7 +2032,7 @@ def r_version():
     EXAMPLES::
 
         sage: r.version()
-        ((2, 14, 0), 'R version 2.14.0 (2011-10-31)')
+        ((2, 15, 2), 'R version 2.15.2 (2012-10-26)')
     """
     return r.version()
 
