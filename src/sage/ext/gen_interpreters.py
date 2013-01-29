@@ -3295,7 +3295,7 @@ cdef class Wrapper_{{ s.name }}(Wrapper):
 {% if do_cleanup %}
         try:
 {% print indent_lines(4, the_call) %}
-        except StandardError:
+        except BaseException:
 {%   for ch in s.chunks %}
 {%     if ch.needs_cleanup_on_error() %}
 {%       print indent_lines(12, ch.handle_cleanup()) %}
@@ -3316,7 +3316,7 @@ cdef class Wrapper_{{ s.name }}(Wrapper):
 {% if do_cleanup %}
         try:
 {% print indent_lines(4, the_call_c) %}
-        except StandardError:
+        except BaseException:
 {%   for ch in s.chunks %}
 {%     if ch.needs_cleanup_on_error() %}
 {%       print indent_lines(12, ch.handle_cleanup()) %}
@@ -3804,7 +3804,7 @@ cdef class Wrapper_{{ s.name }}(Wrapper):
                             , <PyObject*>self._domain
                             , self._code
                             )
-                    except StandardError:
+                    except BaseException:
                         for i in range(self._n_stack):
                             Py_CLEAR(self._stack[i])
                         raise

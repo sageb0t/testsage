@@ -3020,5 +3020,5 @@ class WeightRing(CombinatorialFreeModule):
             else:
                 try:
                     return self.demazure_lusztig(i.reduced_word(),v)
-                except:
+                except StandardError:
                     raise ValueError, "unknown index %s"%i

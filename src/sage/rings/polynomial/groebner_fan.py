@@ -512,7 +512,7 @@ class PolyhedralFan(SageObject):
         """
         try:
             return self._fan
-        except:
+        except AttributeError:
             cdnt = []
             cones = self.cones()
             for x in cones:
