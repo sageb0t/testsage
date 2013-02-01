@@ -17,13 +17,14 @@ def reduced_binary_form1(self):
     EXAMPLES::
 
         sage: QuadraticForm(ZZ,2,[5,5,2]).reduced_binary_form1()
-        (Quadratic form in 2 variables over Integer Ring with coefficients:
+        (
+        Quadratic form in 2 variables over Integer Ring with coefficients:
         [ 2 -1 ]
-        [ * 2 ]
-        ,
+        [ * 2 ]                                                            ,
+        <BLANKLINE>
         [ 0 -1]
-        [ 1  1])
-
+        [ 1  1]
+        )
     """
     if self.dim() != 2:
         raise TypeError, "This must be a binary form for now..."
@@ -79,13 +80,14 @@ def reduced_binary_form(self):
     EXAMPLES::
 
         sage: QuadraticForm(ZZ,2,[5,5,2]).reduced_binary_form()
-        (Quadratic form in 2 variables over Integer Ring with coefficients:
+        (
+        Quadratic form in 2 variables over Integer Ring with coefficients:
         [ 2 -1 ]
-        [ * 2 ]
-        ,
+        [ * 2 ]                                                            ,
+        <BLANKLINE>
         [ 0 -1]
-        [ 1  1])
-
+        [ 1  1]
+        )
     """
     R = self.base_ring()
     n = self.dim()
@@ -162,17 +164,18 @@ def minkowski_reduction(self):
         [ * * 64 25 ]
         [ * * * 110 ]
         sage: Q.minkowski_reduction()
-        (Quadratic form in 4 variables over Integer Ring with coefficients:
+        (
+        Quadratic form in 4 variables over Integer Ring with coefficients:
         [ 30 17 11 -5 ]
         [ * 29 25 4 ]
         [ * * 64 0 ]
-        [ * * * 77 ]
-        ,
-         [ 1  0  0  0]
+        [ * * * 77 ]                                                       ,
+        <BLANKLINE>
+        [ 1  0  0  0]
         [ 0  1  0 -1]
         [ 0  0  1  0]
-        [ 0  0  0  1])
-
+        [ 0  0  0  1]
+        )
     """
     R = self.base_ring()
     n = self.dim()
@@ -256,17 +259,18 @@ def minkowski_reduction_for_4vars__SP(self):
         [ * * 64 25 ]
         [ * * * 110 ]
         sage: Q.minkowski_reduction_for_4vars__SP()
-        (Quadratic form in 4 variables over Integer Ring with coefficients:
+        (
+        Quadratic form in 4 variables over Integer Ring with coefficients:
         [ 29 -17 25 4 ]
         [ * 30 -11 5 ]
         [ * * 64 0 ]
-        [ * * * 77 ]
-        ,
-         [ 0  1  0  0]
+        [ * * * 77 ]                                                       ,
+        <BLANKLINE>
+        [ 0  1  0  0]
         [ 1  0  0 -1]
         [ 0  0  1  0]
-        [ 0  0  0  1])
-
+        [ 0  0  0  1]
+        )
     """
     R = self.base_ring()
     n = self.dim()
