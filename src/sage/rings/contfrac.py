@@ -94,6 +94,11 @@ class ContinuedFractionField_class(Field):
 
             sage: ContinuedFractionField()
             Field of all continued fractions
+
+        TESTS::
+
+            sage: CFF._repr_option('element_is_atomic')
+            False
         """
         Field.__init__(self, self)
         self._assign_names(('x'),normalize=False)
@@ -309,17 +314,6 @@ class ContinuedFractionField_class(Field):
         EXAMPLES::
 
             sage: CFF.is_finite()
-            False
-        """
-        return False
-
-    def is_atomic_repr(self):
-        """
-        Return False, since continued fractions are not atomic.
-
-        EXAMPLES::
-
-            sage: CFF.is_atomic_repr()
             False
         """
         return False

@@ -248,8 +248,6 @@ class MPowerSeriesRing_generic(PowerSeriesRing_generic, Nonexact):
     #
     # random_element : works just fine
     #
-    # is_atomic_repr : works just fine
-    #
     # is_field : works just fine
     #
     # is_finite : works just fine
