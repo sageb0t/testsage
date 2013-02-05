@@ -1987,6 +1987,15 @@ if (os.path.isfile(SAGE_INC + "gurobi_c.h") and
                   libraries = ["csage", "stdc++", "gurobi"])
         )
 
+if is_package_installed('coxeter3'):
+    ext_modules.append(
+        Extension('sage.libs.coxeter3.coxeter',
+                  sources = ['sage/libs/coxeter3/coxeter.pyx'],
+                  include_dirs = [os.path.join(SAGE_LOCAL, 'include', 'coxeter')],
+                  language="c++",
+                  libraries = ['csage', 'coxeter3', 'stdc++'])
+        )
+
 if (os.path.isfile(SAGE_INC + "cplex.h") and
     os.path.isfile(SAGE_LOCAL + "/lib/libcplex.a")):
     ext_modules.append(
