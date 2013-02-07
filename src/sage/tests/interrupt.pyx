@@ -17,13 +17,6 @@ AUTHORS:
 
 import signal
 
-cdef extern from 'stdlib.h':
-    void abort()
-
-cdef extern from 'signal.h':
-    int SIGHUP, SIGINT, SIGQUIT, SIGILL, SIGABRT, SIGFPE, SIGKILL, \
-        SIGSEGV, SIGPIPE, SIGALRM, SIGTERM, SIGBUS
-
 cdef extern from '../tests/c_lib.h':
     void ms_sleep(long ms)
     void signal_after_delay(int signum, long ms)
@@ -32,6 +25,7 @@ cdef extern from '../tests/c_lib.h':
 cdef extern from *:
     ctypedef int volatile_int "volatile int"
 
+include '../ext/signals.pxi'
 include '../ext/interrupt.pxi'
 include '../ext/stdsage.pxi'
 
