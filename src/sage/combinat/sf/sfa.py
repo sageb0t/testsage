@@ -407,8 +407,8 @@ def zee(part):
         sage: zee([2,1,1])
         4
     """
-    if not isinstance(part, sage.combinat.partition.Partition_class):
-        part = sage.combinat.partition.Partition_class(part)
+    if not isinstance(part, sage.combinat.partition.Partition):
+        part = sage.combinat.partition.Partition(part)
     return part.centralizer_size()
 
 def is_SymmetricFunction(x):
@@ -1027,6 +1027,9 @@ class SymmetricFunctionAlgebra_generic(CombinatorialFreeModule):
         for part,c in element.monomial_coefficients().iteritems():
             if sum(part) not in cache_dict:
                 cache_function(sum(part))
+            # Make sure it is a partition (for #13605), this is
+            #   needed for the old kschur functions - TCS
+            part = Partitions()(part)
             for part2, c2 in cache_dict[sum(part)][part].iteritems():
                 if hasattr(c2,'subs'): # c3 may be in the base ring
                     c3 = c*BR(c2.subs(**subs_dict))
@@ -1863,7 +1866,7 @@ class SymmetricFunctionAlgebra_generic_Element(CombinatorialFreeModule.Element):
 
         #Takes in n, and returns a function which takes in a partition and
         #scales all of the parts of that partition by n
-        scale_part = lambda n: lambda m: m.__class__([i*n for i in m])
+        scale_part = lambda n: lambda m: m.__class__(m.parent(), [i*n for i in m])
 
         raise_c = lambda n: lambda c: c.subs(**dict((str(g),g**n) for g in degree_one if g != 1))
 

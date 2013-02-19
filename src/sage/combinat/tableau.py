@@ -8,6 +8,12 @@ AUTHORS:
 - Jason Bandlow (2011): updated to use Parent/Element model, and many
   minor fixes
 
+- Andrew Mathas (2012): completed the transition to the parent/element model
+  begun by Jason Bandlow
+
+- Travis Scrimshaw (11-22-2012): Added tuple options, changed ``*katabolism*``
+  to ``*catabolism*``. Cleaned up documentation.
+
 This file consists of the following major classes:
 
 Element classes:
@@ -37,6 +43,8 @@ Parent classes:
 * :class:`StandardTableaux_size`
 * :class:`StandardTableaux_shape`
 
+For display options, see :meth:`Tableaux.global_options`.
+
 .. TODO:
 
     - Move methods that only apply to semistandard tableaux from tableau to
@@ -63,9 +71,11 @@ from sage.sets.disjoint_union_enumerated_sets import DisjointUnionEnumeratedSets
 from sage.sets.family import Family
 from sage.sets.non_negative_integers import NonNegativeIntegers
 from sage.structure.element import Element
+from sage.structure.global_options import GlobalOptions
 from sage.structure.unique_representation import UniqueRepresentation
 from sage.structure.parent import Parent
 from sage.misc.classcall_metaclass import ClasscallMetaclass
+from sage.misc.decorators import rename_keyword
 from sage.rings.finite_rings.integer_mod_ring import IntegerModRing
 from sage.rings.infinity import PlusInfinity
 from sage.rings.arith import factorial
@@ -86,6 +96,73 @@ from sage.categories.infinite_enumerated_sets import InfiniteEnumeratedSets
 from sage.categories.sets_cat import Sets
 import __builtin__
 from sage.combinat.combinatorial_map import combinatorial_map
+
+TableauOptions=GlobalOptions(name='tableaux',
+    doc=r"""
+    Sets the global options for elements of the tableau, skew_tableau,
+    and tableau tuple classes. The defaults are for tableau to be
+    displayed as a list, latexed as a Young diagram using the English
+    convention.
+    """,
+    end_doc=r"""
+
+    .. NOTE::
+
+        Changing the ``convention`` for tableaux also changes the
+        ``convention`` for partitions.
+
+    If no parameters are set, then the function returns a copy of the
+    options dictionary.
+
+    EXAMPLES::
+
+        sage: T = Tableau([[1,2,3],[4,5]])
+        sage: T
+        [[1, 2, 3], [4, 5]]
+        sage: Tableaux.global_options(display="array")
+        sage: T
+          1  2  3
+          4  5
+        sage: Tableaux.global_options(convention="french")
+        sage: T
+          4  5
+          1  2  3
+
+    Changing the ``convention`` for tableaux also changes the ``convention``
+    for partitions and vice versa::
+
+        sage: P = Partition([3,3,1])
+        sage: print P.ferrers_diagram()
+        *
+        ***
+        ***
+        sage: Partitions.global_options(convention="english")
+        sage: print P.ferrers_diagram()
+        ***
+        ***
+        *
+        sage: T
+          1  2  3
+          4  5
+        sage: Tableaux.global_options.reset()
+    """,
+    display=dict(default="list",
+                 description='Controls the way in which tableaux are printed',
+                 values=dict(list='print tableaux as lists',
+                             diagram='display as Young diagram (simlar to :meth:`~sage.combinat.tableau.Tableau.pp()`',
+                             compact='minimal length string representation'),
+                 alias=dict(array="diagram", ferrers_diagram="diagram", young_diagram="diagram")
+                ),
+    latex=dict(default="diagram",
+               description='Controls the way in wich tableaux are latexed',
+               values=dict(list='as a list', diagram='as a Young diagram'),
+               alias=dict(array="diagram", ferrers_diagram="diagram", young_diagram="diagram")
+              ),
+    convention=dict(default="english",
+                    description='Sets the convention used for displaying tableaux and partitions',
+                    values=dict(English='use the English convention',French='use the French convention')),
+    notation = dict(alt_name="convention")
+)
 
 class Tableau(CombinatorialObject, Element):
     """
@@ -155,8 +232,8 @@ class Tableau(CombinatorialObject, Element):
     @staticmethod
     def __classcall_private__(self, t):
         r"""
-        This ensures that a Tableau is only ever constructed as an
-        element_class call of an appropriate parent.
+        This ensures that a tableau is only ever constructed as an
+        ``element_class`` call of an appropriate parent.
 
         TESTS::
 
@@ -205,7 +282,7 @@ class Tableau(CombinatorialObject, Element):
         if not all(isinstance(row, __builtin__.list) for row in t):
             raise ValueError, "A tableau must be a list of lists."
 
-        if not map(len,t) in sage.combinat.partition.Partitions_all():
+        if not map(len,t) in sage.combinat.partition.Partitions():
             raise ValueError, "A tableau must be a list of lists of weakly decreasing length."
 
     def __setstate__(self, state):
@@ -228,47 +305,124 @@ class Tableau(CombinatorialObject, Element):
             self._set_parent(state[0])
             self.__dict__ = state[1]
 
-    def _latex_(self):
-        r"""
-        Returns a LaTeX version of self.
+    def _repr_(self):
+        """
+        Return a string representation of ``self``.
 
         EXAMPLES::
 
-            sage: latex(Tableau([[1,1,2],[2,3],[3]]))    # indirect doctest
+            sage: t = Tableau([[1,2,3],[4,5]])
+            sage: Tableaux.global_options(display="list")
+            sage: t
+            [[1, 2, 3], [4, 5]]
+            sage: Tableaux.global_options(display="array")
+            sage: t
+              1  2  3
+              4  5
+            sage: Tableaux.global_options(display="compact"); t
+            1,2,3/4,5
+            sage: Tableaux.global_options.reset()
+        """
+        return self.parent().global_options.dispatch(self,'_repr_','display')
+
+    def _repr_list(self):
+        """
+        Return a string representation of ``self`` as a list.
+
+        EXAMPLES::
+
+            sage: T = Tableau([[1,2,3],[4,5]])
+            sage: T._repr_list()
+            '[[1, 2, 3], [4, 5]]'
+        """
+        return repr(self._list)
+
+    def _repr_diagram(self):
+        """
+        Return a string representation of ``self`` as an array.
+
+        EXAMPLES::
+
+            sage: t = Tableau([[1,2,3],[4,5]])
+            sage: print t._repr_diagram()
+              1  2  3
+              4  5
+            sage: Tableaux.global_options(convention="french")
+            sage: print t._repr_diagram()
+              4  5
+              1  2  3
+            sage: Tableaux.global_options.reset()
+        """
+        if self.parent().global_options('convention') == "english":
+            return '\n'.join(["".join(map(lambda x: "%3s"%str(x) , row)) for row in self])
+        else:
+            return '\n'.join(["".join(map(lambda x: "%3s"%str(x) , row)) for row in reversed(self)])
+
+    def _repr_compact(self):
+        """
+        Return a compact string representation of ``self``.
+
+        EXAMPLES::
+
+            sage: Tableau([[1,2,3],[4,5]])._repr_compact()
+            '1,2,3/4,5'
+            sage: Tableau([])._repr_compact()
+            '-'
+        """
+        if len(self._list)==0:
+            return '-'
+        else: return '/'.join(','.join('%s'%r for r in row) for row in self._list)
+
+    def _latex_(self):
+        r"""
+        Returns a LaTeX version of ``self``.
+
+        EXAMPLES::
+
+            sage: t = Tableau([[1,1,2],[2,3],[3]])
+            sage: latex(t)    # indirect doctest
             {\def\lr#1{\multicolumn{1}{|@{\hspace{.6ex}}c@{\hspace{.6ex}}|}{\raisebox{-.3ex}{$#1$}}}
-            \raisebox{-.6ex}{$\begin{array}[b]{ccc}
-            \cline{1-1}\cline{2-2}\cline{3-3}
-            \lr{1}&\lr{1}&\lr{2}\\
-            \cline{1-1}\cline{2-2}\cline{3-3}
-            \lr{2}&\lr{3}\\
-            \cline{1-1}\cline{2-2}
-            \lr{3}\\
-            \cline{1-1}
+            \raisebox{-.6ex}{$\begin{array}[b]{*{3}c}\cline{1-3}
+            \lr{1}&\lr{1}&\lr{2}\\\cline{1-3}
+            \lr{2}&\lr{3}\\\cline{1-2}
+            \lr{3}\\\cline{1-1}
+            \end{array}$}
+            }
+            sage: Tableaux.global_options(convention="french")
+            sage: latex(t)    # indirect doctest
+            {\def\lr#1{\multicolumn{1}{|@{\hspace{.6ex}}c@{\hspace{.6ex}}|}{\raisebox{-.3ex}{$#1$}}}
+            \raisebox{-.6ex}{$\begin{array}[t]{*{3}c}\cline{1-1}
+            \lr{3}\\\cline{1-2}
+            \lr{2}&\lr{3}\\\cline{1-3}
+            \lr{1}&\lr{1}&\lr{2}\\\cline{1-3}
+            \end{array}$}
+            }
+            sage: Tableaux.global_options.reset()
+        """
+        return self.parent().global_options.dispatch(self,'_latex_', 'latex')
+
+    _latex_list=_repr_list
+
+    def _latex_diagram(self):
+        r"""
+        Return a LaTeX representation of ``self`` as a Young diagram.
+
+        EXAMPLES::
+
+            sage: t = Tableau([[1,1,2],[2,3],[3]])
+            sage: print t._latex_diagram()
+            {\def\lr#1{\multicolumn{1}{|@{\hspace{.6ex}}c@{\hspace{.6ex}}|}{\raisebox{-.3ex}{$#1$}}}
+            \raisebox{-.6ex}{$\begin{array}[b]{*{3}c}\cline{1-3}
+            \lr{1}&\lr{1}&\lr{2}\\\cline{1-3}
+            \lr{2}&\lr{3}\\\cline{1-2}
+            \lr{3}\\\cline{1-1}
             \end{array}$}
             }
         """
         if len(self) == 0:
-            return "{\emptyset}"
-        return self._tex_from_array()
-
-    def _tex_from_array(self):
-        r"""
-        EXAMPLES::
-
-            sage: print Tableau([[1,2],[3,4]])._tex_from_array()
-            {\def\lr#1{\multicolumn{1}{|@{\hspace{.6ex}}c@{\hspace{.6ex}}|}{\raisebox{-.3ex}{$#1$}}}
-            \raisebox{-.6ex}{$\begin{array}[b]{cc}
-            \cline{1-1}\cline{2-2}
-            \lr{1}&\lr{2}\\
-            \cline{1-1}\cline{2-2}
-            \lr{3}&\lr{4}\\
-            \cline{1-1}\cline{2-2}
-            \end{array}$}
-            }
-        """
-        import output
-        m = max(len(self), len(self[0]))
-        return output.tex_from_array(self)
+            return "{\\emptyset}"
+        from output import tex_from_array
+        return tex_from_array(self)
 
     def __div__(self, t):
         """
@@ -428,12 +582,19 @@ class Tableau(CombinatorialObject, Element):
 
         EXAMPLES::
 
-            sage: Tableau([[1,2,3],[3,4],[5]]).pp()
+            sage: T = Tableau([[1,2,3],[3,4],[5]])
+            sage: T.pp()
               1  2  3
               3  4
               5
+            sage: Tableaux.global_options(convention="french")
+            sage: T.pp()
+              5
+              3  4
+              1  2  3
+            sage: Tableaux.global_options.reset()
         """
-        print '\n'.join([ "".join(map(lambda x: "%3s"%str(x) , row))  for row in self])
+        print self._repr_diagram()
 
     def to_word_by_row(self):
         """
@@ -1664,20 +1825,22 @@ class Tableau(CombinatorialObject, Element):
                 return Tableau(tab)
 
     ##############
-    # katabolism #
+    # catabolism #
     ##############
 
-    def katabolism(self):
+    def catabolism(self):
         """
+        Removes the top row of ``self`` and inserts it back in.
+
         EXAMPLES::
 
-            sage: Tableau([]).katabolism()
+            sage: Tableau([]).catabolism()
             []
-            sage: Tableau([[1,2,3,4,5]]).katabolism()
+            sage: Tableau([[1,2,3,4,5]]).catabolism()
             [[1, 2, 3, 4, 5]]
-            sage: Tableau([[1,1,3,3],[2,3],[3]]).katabolism()
+            sage: Tableau([[1,1,3,3],[2,3],[3]]).catabolism()
             [[1, 1, 2, 3, 3, 3], [3]]
-            sage: Tableau([[1, 1, 2, 3, 3, 3], [3]]).katabolism()
+            sage: Tableau([[1, 1, 2, 3, 3, 3], [3]]).catabolism()
             [[1, 1, 2, 3, 3, 3, 3]]
         """
         h = self.height()
@@ -1687,12 +1850,15 @@ class Tableau(CombinatorialObject, Element):
             #Remove the top row and insert it back in
             return Tableau(self[1:]).insert_word(self[0],left=True)
 
-    def katabolism_sequence(self):
+    def catabolism_sequence(self):
         """
+        Perform :meth:`catabolism` on ``self`` until returns a tableau
+        consisting of a single row.
+
         EXAMPLES::
 
             sage: t = Tableau([[1,2,3,4,5,6,8],[7,9]])
-            sage: t.katabolism_sequence()
+            sage: t.catabolism_sequence()
             [[[1, 2, 3, 4, 5, 6, 8], [7, 9]],
              [[1, 2, 3, 4, 5, 6, 7, 9], [8]],
              [[1, 2, 3, 4, 5, 6, 7, 8], [9]],
@@ -1701,45 +1867,45 @@ class Tableau(CombinatorialObject, Element):
         h = self.height()
         res = [self]
         while h != 1:
-            res.append( res[-1].katabolism() )
+            res.append( res[-1].catabolism() )
             h = res[-1].height()
         return res
 
-    def lambda_katabolism(self, part):
+    def lambda_catabolism(self, part):
         r"""
-        For a partition ``lambda`` and a tableau ``T``, the
-        ``lambda``-katabolism of ``T`` is defined by performing the following
+        For a partition `\lambda` and a tableau `T`, the
+        `\lambda`-catabolism of `T` is defined by performing the following
         steps.
 
-        1. Truncate the parts of ``lambda`` so that ``lambda`` is contained
-        in the shape of ``T``.  Let ``m`` be the length of this partition.
+        1. Truncate the parts of `\lambda` so that `\lambda` is contained
+           in the shape of `T`.  Let `m` be the length of this partition.
 
-        2. Let ``T_a`` be the first ``m`` rows of ``T``, and ``T_b`` be the
-        remaining rows.
+        2. Let `T_a` be the first `m` rows of `T`, and `T_b` be the
+           remaining rows.
 
-        3. Let ``S_a`` be the skew tableau ``T_a / lambda``.
+        3. Let `S_a` be the skew tableau `T_a / \lambda`.
 
-        4. Concatenate the reading words of ``S_a`` and ``T_b``, and insert
-        into a tableau.
+        4. Concatenate the reading words of `S_a` and `T_b`, and insert
+           into a tableau.
 
         EXAMPLES::
 
-            sage: Tableau([[1,1,3],[2,4,5]]).lambda_katabolism([2,1])
+            sage: Tableau([[1,1,3],[2,4,5]]).lambda_catabolism([2,1])
             [[3, 5], [4]]
             sage: t = Tableau([[1,1,3,3],[2,3],[3]])
-            sage: t.lambda_katabolism([])
+            sage: t.lambda_catabolism([])
             [[1, 1, 3, 3], [2, 3], [3]]
-            sage: t.lambda_katabolism([1])
+            sage: t.lambda_catabolism([1])
             [[1, 2, 3, 3, 3], [3]]
-            sage: t.lambda_katabolism([1,1])
+            sage: t.lambda_catabolism([1,1])
             [[1, 3, 3, 3], [3]]
-            sage: t.lambda_katabolism([2,1])
+            sage: t.lambda_catabolism([2,1])
             [[3, 3, 3, 3]]
-            sage: t.lambda_katabolism([4,2,1])
+            sage: t.lambda_catabolism([4,2,1])
             []
-            sage: t.lambda_katabolism([5,1])
+            sage: t.lambda_catabolism([5,1])
             [[3, 3]]
-            sage: t.lambda_katabolism([4,1])
+            sage: t.lambda_catabolism([4,1])
             [[3, 3]]
         """
         #Reduce the partition if it is too big for the tableau
@@ -1757,24 +1923,24 @@ class Tableau(CombinatorialObject, Element):
 
         return Tableau([]).insert_word(w2+w1)
 
-    def reduced_lambda_katabolism(self, part):
+    def reduced_lambda_catabolism(self, part):
         """
         EXAMPLES::
 
             sage: t = Tableau([[1,1,3,3],[2,3],[3]])
-            sage: t.reduced_lambda_katabolism([])
+            sage: t.reduced_lambda_catabolism([])
             [[1, 1, 3, 3], [2, 3], [3]]
-            sage: t.reduced_lambda_katabolism([1])
+            sage: t.reduced_lambda_catabolism([1])
             [[1, 2, 3, 3, 3], [3]]
-            sage: t.reduced_lambda_katabolism([1,1])
+            sage: t.reduced_lambda_catabolism([1,1])
             [[1, 3, 3, 3], [3]]
-            sage: t.reduced_lambda_katabolism([2,1])
+            sage: t.reduced_lambda_catabolism([2,1])
             [[3, 3, 3, 3]]
-            sage: t.reduced_lambda_katabolism([4,2,1])
+            sage: t.reduced_lambda_catabolism([4,2,1])
             []
-            sage: t.reduced_lambda_katabolism([5,1])
+            sage: t.reduced_lambda_catabolism([5,1])
             0
-            sage: t.reduced_lambda_katabolism([4,1])
+            sage: t.reduced_lambda_catabolism([4,1])
             0
         """
         part1 = part
@@ -1782,7 +1948,7 @@ class Tableau(CombinatorialObject, Element):
         if self == []:
             return self
 
-        res = self.lambda_katabolism(part)
+        res = self.lambda_catabolism(part)
 
         if res == []:
             return res
@@ -1801,23 +1967,23 @@ class Tableau(CombinatorialObject, Element):
         else:
             return 0
 
-    def katabolism_projector(self, parts):
+    def catabolism_projector(self, parts):
         """
         EXAMPLES::
 
             sage: t = Tableau([[1,1,3,3],[2,3],[3]])
-            sage: t.katabolism_projector([[4,2,1]])
+            sage: t.catabolism_projector([[4,2,1]])
             [[1, 1, 3, 3], [2, 3], [3]]
-            sage: t.katabolism_projector([[1]])
+            sage: t.catabolism_projector([[1]])
             []
-            sage: t.katabolism_projector([[2,1],[1]])
+            sage: t.catabolism_projector([[2,1],[1]])
             []
-            sage: t.katabolism_projector([[1,1],[4,1]])
+            sage: t.catabolism_projector([[1,1],[4,1]])
             [[1, 1, 3, 3], [2, 3], [3]]
         """
         res = self
         for p in parts:
-            res = res.reduced_lambda_katabolism(p)
+            res = res.reduced_lambda_catabolism(p)
             if res == 0:
                 return 0
 
@@ -1825,6 +1991,13 @@ class Tableau(CombinatorialObject, Element):
             return self
         else:
             return Tableau([])
+
+    from sage.misc.superseded import deprecated_function_alias
+    katabolism = deprecated_function_alias(13605, catabolism)
+    katabolism_sequence = deprecated_function_alias(13605, catabolism_sequence)
+    lambda_katabolism = deprecated_function_alias(13605, lambda_catabolism)
+    reduced_lambda_katabolism = deprecated_function_alias(13605, reduced_lambda_catabolism)
+    katabolism_projector = deprecated_function_alias(13605, catabolism_projector)
 
     def promotion_operator(self, i):
         """
@@ -1929,7 +2102,7 @@ class Tableau(CombinatorialObject, Element):
             sage: Tableau([[1,2,3],[4,5],[6]]).atom()
             [3, 2, 1]
         """
-        ll = [ t.socle() for t in self.katabolism_sequence() ]
+        ll = [ t.socle() for t in self.catabolism_sequence() ]
         lres = ll[:]
         for i in range(1,len(ll)):
             lres[i] = ll[i] - ll[i-1]
@@ -1979,7 +2152,7 @@ class SemistandardTableau(Tableau):
 
     INPUT:
 
-    - ``t`` -- a Tableau, a list of lists, or an empty list
+    - ``t`` -- a tableau, a list of lists, or an empty list
 
     OUTPUT:
 
@@ -1987,9 +2160,6 @@ class SemistandardTableau(Tableau):
 
     A semistandard tableau is a tableau whose entries are positive integers,
     which are weakly increasing in rows and strictly increasing down columns.
-
-    Note that Sage uses the English convention for partitions and
-    tableaux; the longer rows are displayed on top.
 
     EXAMPLES::
 
@@ -2007,7 +2177,8 @@ class SemistandardTableau(Tableau):
         []
 
     When using code that will generate a lot of tableaux, it is slightly more
-    efficient to construct a SemistandardTableau from the appropriate Parent object::
+    efficient to construct a SemistandardTableau from the appropriate
+    :class:`Parent` object::
 
         sage: SST = SemistandardTableaux()
         sage: SST([[1, 2, 3], [4, 5]])
@@ -2112,7 +2283,7 @@ class StandardTableau(SemistandardTableau):
     - A StandardTableau object constructed from ``t``.
 
     A standard tableau is a semistandard tableau whose entries are exactly the
-    positive integers from 1 to ``n``, where ``n`` is the size of the tableau.
+    positive integers from 1 to `n`, where `n` is the size of the tableau.
 
     EXAMPLES::
 
@@ -2129,7 +2300,8 @@ class StandardTableau(SemistandardTableau):
         []
 
     When using code that will generate a lot of tableaux, it is slightly more
-    efficient to construct a StandardTableau from the appropriate Parent object::
+    efficient to construct a StandardTableau from the appropriate
+    :class:`Parent` object::
 
         sage: ST = StandardTableaux()
         sage: ST([[1, 2, 3], [4, 5]])
@@ -2157,8 +2329,8 @@ class StandardTableau(SemistandardTableau):
     @staticmethod
     def __classcall_private__(self, t):
         r"""
-        This ensures that a StandardTableau is only ever constructed as an
-        element_class call of an appropriate parent.
+        This ensures that a :class:`StandardTableau` is only ever constructed
+        as an ``element_class`` call of an appropriate parent.
 
         TESTS::
 
@@ -2208,8 +2380,9 @@ class StandardTableau(SemistandardTableau):
         ``k`` appears in row `r` and column `c` of the tableau then we
         return `c-r`.
 
-        The ``multicharge`` is a list of length 1 which gives an offset for all of
-        the contents. It is included mainly for compatibility with :class:`TableauTuple`.
+        The ``multicharge`` is a list of length 1 which gives an offset for
+        all of the contents. It is included mainly for compatibility with
+        :class:`TableauTuple`.
 
         EXAMPLES::
 
@@ -2220,7 +2393,6 @@ class StandardTableau(SemistandardTableau):
             Traceback (most recent call last):
             ...
             ValueError: 6 does not appear in tableau
-
         """
         for r in range(len(self)):
           try:
@@ -2277,23 +2449,27 @@ def from_chain(chain):
                 res[j][k] = i -1
     return Tableau(res)
 
-def from_shape_and_word(shape, w, order = "French"):
+@rename_keyword(deprecation=13605, order='convention')
+def from_shape_and_word(shape, w, convention="French"):
     r"""
     Returns a tableau from a shape and word.
 
     INPUT:
 
     - ``shape`` -- a partition
+
     - ``w`` -- a word whose length equals that of the partition
-    - ``order`` -- a string which can take values "French" or "English"; the default is "French"
+
+    - ``convention`` -- a string which can take values ``"French"`` or
+      ``"English"``; the default is ``"French"``
 
     OUTPUT:
 
     A tableau, whose shape is ``shape`` and whose reading word is ``w``.
-    If the order is specified to "French", the reading word is to be read starting
-    from the top row in French notation (= the bottom row in English notation).
-    If the order is specified to "English", the reading word is to be read starting with the
-    top row in English notation.
+    If the ``convention`` is specified as ``"French"``, the reading word is to be read
+    starting from the top row in French convention (= the bottom row in English
+    convention). If the ``convention`` is specified as ``"English"``, the reading word
+    is to be read starting with the top row in English convention.
 
     EXAMPLES::
 
@@ -2306,17 +2482,17 @@ def from_shape_and_word(shape, w, order = "French"):
         sage: from_shape_and_word(shape, word)
         [[1, 3], [2], [4]]
         sage: word = Word(flatten(t))
-        sage: from_shape_and_word(shape, word, order = "English")
+        sage: from_shape_and_word(shape, word, convention = "English")
         [[1, 3], [2], [4]]
     """
     res = []
     j = 0
-    if order == "French":
+    if convention == "French":
         shape = reversed(shape)
     for l in shape:
         res.append( list(w[j:j+l]) )
         j += l
-    if order == "French":
+    if convention == "French":
         res.reverse()
     return Tableau(res)
 
@@ -2427,11 +2603,12 @@ class Tableaux(UniqueRepresentation, Parent):
             return Tableaux_size(n)
 
     Element = Tableau
+    global_options = TableauOptions
 
     def _element_constructor_(self, t):
         r"""
-        Constructs an object from t as an element of self, if possible. This
-        is inherited by all Tableaux, SemistandardTableaux, and
+        Constructs an object from ``t`` as an element of ``self``, if
+        possible. This is inherited by all Tableaux, SemistandardTableaux, and
         StandardTableaux classes.
 
         INPUT:
@@ -2458,6 +2635,31 @@ class Tableaux(UniqueRepresentation, Parent):
             raise ValueError, "%s is not an element of %s."%(t, self)
 
         return self.element_class(self, t)
+
+#    def list(self):
+#        """
+#        Raises a ``NotImplementedError`` since there is not a method to
+#        enumerate all tableaux.
+#
+#        TESTS::
+#
+#            sage: Tableaux().list()
+#            Traceback (most recent call last):
+#            ...
+#            NotImplementedError
+#        """
+#        raise NotImplementedError
+#
+#    def __iter__(self):
+#        """
+#        TESTS::
+#
+#            sage: iter(Tableaux())
+#            Traceback (most recent call last):
+#            ...
+#            NotImplementedError
+#        """
+#        raise NotImplementedError
 
 class Tableaux_all(Tableaux):
 
@@ -2523,32 +2725,14 @@ class Tableaux_all(Tableaux):
         """
         return self.element_class(self, [[1, 1], [1]])
 
-    def list(self):
-        """
-        TESTS::
-
-            sage: Tableaux().list()
-            Traceback (most recent call last):
-            ...
-            NotImplementedError
-        """
-        raise NotImplementedError
-
-    def __iter__(self):
-        """
-        TESTS::
-
-            sage: iter(Tableaux())
-            Traceback (most recent call last):
-            ...
-            NotImplementedError
-        """
-        raise NotImplementedError
-
 class Tableaux_size(Tableaux):
+    """
+    Tableaux of a fixed size `n`.
+    """
+
     def __init__(self, n):
         r"""
-        Initializes the class of tableaux of size n
+        Initializes the class of tableaux of size ``n``.
 
         TESTS::
 
@@ -2610,28 +2794,6 @@ class Tableaux_size(Tableaux):
 
         return self.element_class(self, [[1]*(self.size-1),[1]])
 
-    def list(self):
-        """
-        TESTS::
-
-            sage: Tableaux(3).list()
-            Traceback (most recent call last):
-            ...
-            NotImplementedError
-        """
-        raise NotImplementedError
-
-    def __iter__(self):
-        """
-        TESTS::
-
-            sage: iter(Tableaux(3))
-            Traceback (most recent call last):
-            ...
-            NotImplementedError
-        """
-        raise NotImplementedError
-
 ##########################
 # Semi-standard tableaux #
 ##########################
@@ -2646,14 +2808,15 @@ class SemistandardTableaux(Tableaux):
     - ``size`` -- The size of the tableaux
     - ``shape`` -- The shape of the tableaux
     - ``eval`` -- The weight (also called content or weight) of the tableaux
-    - `max_entry` -- A maximum entry for the tableaux.  This can be a positive
-      integer or infinity (oo). If ``size`` or ``shape`` are specified, `max_entry`
-      defaults to be ``size`` or the size of ``shape``.
+    - ``max_entry`` -- A maximum entry for the tableaux.  This can be a
+      positive integer or infinity (``oo``). If ``size`` or ``shape`` are
+      specified, ``max_entry`` defaults to be ``size`` or the size of
+      ``shape``.
 
     Positional arguments:
 
-    - The first argument is interpreted as either ``size`` or ``shape`` according to
-      whether it is an integer or a partition
+    - The first argument is interpreted as either ``size`` or ``shape``
+      according to  whether it is an integer or a partition
     - The second keyword argument will always be interpreted as ``eval``
 
     OUTPUT:
@@ -2666,8 +2829,8 @@ class SemistandardTableaux(Tableaux):
     Note that Sage uses the English convention for partitions and tableaux;
     the longer rows are displayed on top.
 
-    Classes of semistandard tableaux can be iterated over if and only if there is some
-    restriction.
+    Classes of semistandard tableaux can be iterated over if and only if there
+    is some restriction.
 
     EXAMPLES::
 
@@ -2739,8 +2902,8 @@ class SemistandardTableaux(Tableaux):
     def __classcall_private__(cls, *args, **kwargs):
         r"""
         This is a factory class which returns the appropriate parent based on
-        arguments.  See the documentation for :class:`SemistandardTableaux` for more
-        information.
+        arguments.  See the documentation for :class:`SemistandardTableaux`
+        for more information.
 
         TESTS::
 
@@ -2913,8 +3076,8 @@ class SemistandardTableaux(Tableaux):
 
     def __getitem__(self, r):
         r"""
-        The default implementation of __getitem__ for enumerated sets does not
-        allow slices so we override it.
+        The default implementation of ``__getitem``__ for enumerated sets
+        does not allow slices so we override it.
 
         EXAMPLES::
 
@@ -2961,7 +3124,7 @@ class SemistandardTableaux(Tableaux):
             sage: StandardTableaux([2,2])[1]   # indirect doctest
             [[1, 2], [3, 4]]
 
-        TESTS:
+        TESTS::
 
             sage: SemistandardTableaux()[5]
             [[1], [2]]
@@ -3003,11 +3166,17 @@ class SemistandardTableaux(Tableaux):
         raise IndexError, 'value out of range'
 
 class SemistandardTableaux_all(DisjointUnionEnumeratedSets, SemistandardTableaux):
+    """
+    All semistandard tableaux.
+
+    .. WARNING::
+
+        Input is not checked; please use :class:`SemistandardTableaux` to
+        ensure the options are properly parsed.
+    """
     def __init__(self, max_entry=None):
         r"""
-        Initializes the class of all semistandard tableaux. Input is not
-        checked; please use :class:`SemistandardTableaux` to ensure the
-        options are properly parsed.
+        Initializes the class of all semistandard tableaux.
 
         TESTS::
 
@@ -3029,7 +3198,8 @@ class SemistandardTableaux_all(DisjointUnionEnumeratedSets, SemistandardTableaux
 
     def __contains__(self, t):
         """
-        Returns true if ``t`` can be interpreted as a SemistandardTableau
+        Returns ``True`` if ``t`` can be interpreted as a
+        :class:`SemistandardTableau`.
 
         TESTS::
 
@@ -3088,12 +3258,18 @@ class SemistandardTableaux_all(DisjointUnionEnumeratedSets, SemistandardTableaux
         raise NotImplementedError
 
 class SemistandardTableaux_size_inf(SemistandardTableaux):
+    """
+    Semistandard tableaux of fixed size `n` with no maximum entry.
+
+    .. WARNING::
+
+        Input is not checked; please use :class:`SemistandardTableaux` to
+        ensure the options are properly parsed.
+    """
     def __init__(self, n):
         r"""
         Initializes the class of semistandard tableaux of size ``n`` with no
-        maximum entry. Input is not checked; please use
-        :class:`SemistandardTableaux` to ensure the options are properly
-        parsed.
+        maximum entry.
 
         TESTS::
 
@@ -3115,7 +3291,8 @@ class SemistandardTableaux_size_inf(SemistandardTableaux):
 
     def __contains__(self, t):
         """
-        Returns true if ``t`` can be interpreted as an element of the class.
+        Returns ``True`` if ``t`` can be interpreted as an element of this
+        class.
 
         TESTS::
 
@@ -3185,12 +3362,18 @@ class SemistandardTableaux_size_inf(SemistandardTableaux):
         raise NotImplementedError
 
 class SemistandardTableaux_shape_inf(SemistandardTableaux):
+    """
+    Semistandard tableaux of fixed shape `p` and no maximum entry.
+
+    .. WARNING::
+
+        Input is not checked; please use :class:`SemistandardTableaux` to
+        ensure the options are properly parsed.
+    """
     def __init__(self, p):
         r"""
         Initializes the class of semistandard tableaux of shape ``p`` and no
-        maximum entry. Input is not checked; please use
-        :class:`SemistandardTableaux` to ensure the options are properly
-        parsed.
+        maximum entry.
 
         TESTS::
 
@@ -3234,8 +3417,8 @@ class SemistandardTableaux_shape_inf(SemistandardTableaux):
 
     def __iter__(self):
         """
-        An iterator for the semistandard partitions of shape p and no maximum entry.
-        Iterates through with maximum entry as order.
+        An iterator for the semistandard partitions of shape ``p`` and no
+        maximum entry. Iterates through with maximum entry as order.
 
         EXAMPLES::
 
@@ -3269,11 +3452,17 @@ class SemistandardTableaux_shape_inf(SemistandardTableaux):
             i += 1
 
 class SemistandardTableaux_size(SemistandardTableaux):
+    """
+    Semistandard tableaux of fixed size `n`.
+
+    .. WARNING::
+
+        Input is not checked; please use :class:`SemistandardTableaux`
+        to ensure the options are properly parsed.
+    """
     def __init__(self, n, max_entry=None):
         r"""
-        Initializes the class of semistandard tableaux of size ``n``. Input is
-        not checked; please use :class:`SemistandardTableaux` to ensure the
-        options are properly parsed.
+        Initializes the class of semistandard tableaux of size ``n``.
 
         TESTS::
 
@@ -3340,6 +3529,8 @@ class SemistandardTableaux_size(SemistandardTableaux):
 
     def cardinality(self):
         """
+        Return the cardinality of ``self``.
+
         EXAMPLES::
 
             sage: SemistandardTableaux(3).cardinality()
@@ -3404,12 +3595,18 @@ class SemistandardTableaux_size(SemistandardTableaux):
                 yield self.element_class(self, sst)
 
 class SemistandardTableaux_shape_weight(SemistandardTableaux):
+    r"""
+    Semistandard tableaux of fixed shape `p` and weight `\mu`.
+
+    .. WARNING::
+
+        Input is not checked; please use :class:`SemistandardTableaux` to
+        ensure the options are properly parsed.
+    """
     def __init__(self, p, mu):
         r"""
         Initializes the class of all semistandard tableaux of shape ``p`` and
-        weight ``mu``. Input is not checked; please use
-        :class:`SemistandardTableaux` to ensure the options are properly
-        parsed.
+        weight ``mu``.
 
         TESTS::
 
@@ -3467,7 +3664,7 @@ class SemistandardTableaux_shape_weight(SemistandardTableaux):
     def cardinality(self):
         """
         Returns the number of semistandard tableaux of the given shape and
-        weight, as computed by kostka_number function of symmetrica.
+        weight, as computed by ``kostka_number`` function of symmetrica.
 
         EXAMPLES::
 
@@ -3497,6 +3694,9 @@ class SemistandardTableaux_shape_weight(SemistandardTableaux):
 
     def list(self):
         """
+        Return a list of semistandard tableau in ``self`` generated by
+        semmetrica.
+
         EXAMPLES::
 
             sage: SemistandardTableaux([2,2], [2, 1, 1]).list()
@@ -3511,12 +3711,24 @@ class SemistandardTableaux_shape_weight(SemistandardTableaux):
         return symmetrica.kostka_tab(self.shape, self.weight)
 
 class SemistandardTableaux_shape(SemistandardTableaux):
+    """
+    Semistandard tableaux of fixed shape `p` with a given max entry.
+
+    INPUT:
+
+    - ``p`` -- A partition
+
+    - ``max_entry`` -- The max entry; defaults to the size of ``p``.
+
+    .. WARNING::
+
+        Input is not checked; please use :class:`SemistandardTableaux` to
+        ensure the options are properly parsed.
+    """
     def __init__(self, p, max_entry=None):
         r"""
         Initializes the class of semistandard tableaux of shape ``p``, with a
-        given max_entry. max_entry defaults to the size of ``p``. Input is not
-        checked; please use :class:`SemistandardTableaux` to ensure the
-        options are properly parsed.
+        given ``max_entry``.
 
         TESTS::
 
@@ -3615,6 +3827,8 @@ class SemistandardTableaux_shape(SemistandardTableaux):
 
     def cardinality(self):
         """
+        Returns the cardinality of ``self``.
+
         EXAMPLES::
 
             sage: SemistandardTableaux([2,1]).cardinality()
@@ -3638,12 +3852,18 @@ class SemistandardTableaux_shape(SemistandardTableaux):
         return c
 
 class SemistandardTableaux_size_weight(SemistandardTableaux):
+    r"""
+    Semistandard tableaux of fixed size `n` and weight `\mu`.
+
+    .. WARNING::
+
+        Input is not checked; please use :class:`SemistandardTableaux` to
+        ensure the options are properly parsed.
+    """
     def __init__(self, n, mu):
         r"""
         Initializes the class of semistandard tableaux of size ``n`` and
-        weight ``mu``. Input is not checked; please use
-        :class:`SemistandardTableaux` to ensure the options are properly
-        parsed.
+        weight ``mu``.
 
         TESTS::
 
@@ -3683,6 +3903,8 @@ class SemistandardTableaux_size_weight(SemistandardTableaux):
 
     def cardinality(self):
         """
+        Return the cardinality of ``self``.
+
         EXAMPLES::
 
             sage: SemistandardTableaux(3, [2,1]).cardinality()
@@ -3776,8 +3998,8 @@ class StandardTableaux(SemistandardTableaux):
     def __classcall_private__(cls, *args, **kwargs):
         r"""
         This is a factory class which returns the appropriate parent based on
-        arguments.  See the documentation for :class:`StandardTableaux` for more
-        information.
+        arguments.  See the documentation for :class:`StandardTableaux` for
+        more information.
 
         TESTS::
 
@@ -3820,6 +4042,9 @@ class StandardTableaux(SemistandardTableaux):
     Element = StandardTableau
 
 class StandardTableaux_all(DisjointUnionEnumeratedSets, StandardTableaux):
+    """
+    All standard tableaux.
+    """
     def __init__(self):
         r"""
         Initializes the class of all standard tableaux.
@@ -3866,11 +4091,17 @@ class StandardTableaux_all(DisjointUnionEnumeratedSets, StandardTableaux):
         return "Standard tableaux"
 
 class StandardTableaux_size(StandardTableaux):
+    """
+    Semistandard tableaux of fixed size `n`.
+
+    .. WARNING::
+
+        Input is not checked; please use :class:`StandardTableaux` to ensure
+        the options are properly parsed.
+    """
     def __init__(self, n):
         r"""
-        Initializes the class of all standard tableaux of size ``n``. Input is
-        not checked; please use :class:`StandardTableaux` to ensure the
-        options are properly parsed.
+        Initializes the class of all standard tableaux of size ``n``.
 
         TESTS::
 
@@ -3944,6 +4175,8 @@ class StandardTableaux_size(StandardTableaux):
 
     def cardinality(self):
         """
+        Return the cardinality of ``self``.
+
         EXAMPLES::
 
             sage: StandardTableaux(3).cardinality()
@@ -3959,11 +4192,17 @@ class StandardTableaux_size(StandardTableaux):
         return c
 
 class StandardTableaux_shape(StandardTableaux):
+    """
+    Semistandard tableaux of a fixed shape `p`.
+
+    .. WARNING::
+
+        Input is not checked; please use :class:`SemistandardTableaux` to
+        ensure the options are properly parsed.
+    """
     def __init__(self, p):
         r"""
         Initializes the class of all semistandard tableaux of a given shape.
-        Input is not checked; please use :class:`SemistandardTableaux` to
-        ensure the options are properly parsed.
 
         TESTS::
 
@@ -4030,7 +4269,11 @@ class StandardTableaux_shape(StandardTableaux):
             3 1
             1
 
-        The hook length formula returns 6!/(5\*3\*1\*3\*1\*1) = 16.
+        The hook length formula returns
+
+        .. MATH::
+
+            \frac{6!}{(5 \cdot 3 \cdot 1 \cdot 3 \cdot 1 \cdot 1} = 16.
 
         EXAMPLES::
 
@@ -4062,7 +4305,7 @@ class StandardTableaux_shape(StandardTableaux):
     def __iter__(self):
         r"""
         An iterator for the standard Young tableaux associated to the
-        partition pi.
+        shape `p` of ``self``.
 
         EXAMPLES::
 
