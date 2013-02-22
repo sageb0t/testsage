@@ -1413,6 +1413,20 @@ cdef class PermutationGroupElement(MultiplicativeGroupElement):
             print "         ",l5
         return l1,l2
 
+    def conjugacy_class(self):
+        r"""
+        Returns the conjugacy class of ``self``
+
+        EXAMPLES::
+
+            sage: D = DihedralGroup(5)
+            sage: g = D((1,3,5,2,4))
+            sage: g.conjugacy_class()
+            Conjugacy class of (1,3,5,2,4) in Dihedral group of order 10 as a permutation group
+        """
+        from sage.groups.conjugacy_classes import ConjugacyClassGAP
+        return ConjugacyClassGAP(self.parent(), self)
+
 cdef bint is_valid_permutation(int* perm, int n):
     """
     This is used in the __init__ method.
