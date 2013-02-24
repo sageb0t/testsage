@@ -2528,6 +2528,11 @@ class Polyhedron_base(Element):
             sage: cube.intersection(oct*2)
             A 3-dimensional polyhedron in ZZ^3 defined as the convex hull of 12 vertices
 
+       As a shorthand, one may use::
+
+            sage: cube & oct*2
+            A 3-dimensional polyhedron in ZZ^3 defined as the convex hull of 12 vertices
+
        The intersection of two `\ZZ`-polyhedra is not necessarily a `\ZZ`-polyhedron::
 
             sage: P = Polyhedron([(0,0),(1,1)], base_ring=ZZ)
@@ -2550,6 +2555,8 @@ class Polyhedron_base(Element):
                 return parent.element_class(parent, None, [new_ieqs, new_eqns])
             else:
                 raise TypeError(msg)
+
+    __and__ = intersection
 
     def edge_truncation(self, cut_frac = Integer(1)/3):
         r"""
@@ -3162,6 +3169,13 @@ class Polyhedron_base(Element):
             sage: P.contains( P.center() )  # true for any convex set
             True
 
+        As a shorthand, one may use the usual ``in`` operator::
+
+            sage: P.center() in P
+            True
+            sage: [-1,-1] in P
+            False
+
         The point need not have coordinates in the same field as the
         polyhedron::
 
@@ -3207,6 +3221,8 @@ class Polyhedron_base(Element):
             if not H.contains(p):
                 return False
         return True
+
+    __contains__ = contains
 
     def interior_contains(self, point):
         """
