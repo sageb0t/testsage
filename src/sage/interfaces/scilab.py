@@ -327,7 +327,7 @@ class Scilab(Expect):
         Starts Scilab console.
 
         EXAMPLES:
-            sage: scilab.console()          # optional - scilab and not tested
+            sage: scilab.console()          # optional - scilab; not tested
 
         """
         scilab_console()
@@ -466,7 +466,7 @@ def scilab_console():
 
     EXAMPLES:
         sage: from sage.interfaces.scilab import scilab_console # optional - scilab
-        sage: scilab_console()                               # optional - scilab and not tested
+        sage: scilab_console()                               # optional - scilab; not tested
                 ___________________________________________
                                scilab-5.0.3
 
