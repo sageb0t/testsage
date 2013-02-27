@@ -842,7 +842,6 @@ cdef class CPLEXBackend(GenericBackend):
             ...
             MIPSolverException: ...
         """
-
         cdef int status
         cdef int ptype
         cdef int solnmethod_p, solntype_p, pfeasind_p, dfeasind_p
@@ -861,10 +860,13 @@ cdef class CPLEXBackend(GenericBackend):
         status = CPXsolninfo(self.env, self.lp, &solnmethod_p, &solntype_p, &pfeasind_p, &dfeasind_p)
         check(status)
 
-        if not pfeasind_p:
-            raise MIPSolverException("CPLEX: The primal has no feasible solution")
-        if not dfeasind_p:
-            raise MIPSolverException("CPLEX: The problem is unbounded")
+        if solntype_p == CPX_NO_SOLN:
+            if not pfeasind_p:
+                raise MIPSolverException("CPLEX: The primal has no feasible solution")
+            elif not dfeasind_p:
+                raise MIPSolverException("CPLEX: The problem is unbounded")
+            else:
+                raise MIPSolverException("CPLEX: No solution has been found, but no idea why")
 
         return 0
 
