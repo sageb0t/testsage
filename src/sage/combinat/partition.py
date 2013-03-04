@@ -284,6 +284,7 @@ import sage.combinat.skew_partition # This is needed for correct imports...
 from sage.misc.all import prod
 from sage.misc.prandom import randrange
 from sage.misc.classcall_metaclass import ClasscallMetaclass
+from sage.misc.cachefunc import cached_method, cached_function
 
 from sage.categories.infinite_enumerated_sets import InfiniteEnumeratedSets
 from sage.categories.finite_enumerated_sets import FiniteEnumeratedSets
@@ -875,41 +876,6 @@ class Partition(CombinatorialObject, Element):
             [[3, 2]]
         """
         return [ self ]
-
-    def young_subgroup(self):
-        """
-        Return the corresponding Young, or parabolic, subgroup of the symmetric
-        group.
-
-        EXAMPLE::
-
-            sage: Partition([4,2]).young_subgroup()
-            Permutation Group with generators [(), (5,6), (3,4), (2,3), (1,2)]
-        """
-        gens=[]
-        m=0
-        for row in self:
-            gens.extend([ (c,c+1) for c in range(m+1,m+row)])
-            m+=row
-        gens.append( range(1,self.size()+1) )  # to ensure we get a subgroup of Sym_n
-        return PermutationGroup( gens )
-
-    def young_subgroup_generators(self):
-        """
-        Return an indexing set for the generators of the corresponding Young
-        subgroup.
-
-        EXAMPLE::
-
-            sage: Partition([4,2]).young_subgroup_generators()
-            [1, 2, 3, 5]
-        """
-        gens=[]
-        m=0
-        for row in self:
-            gens.extend([c for c in range(m+1,m+row)])
-            m+=row
-        return gens
 
     def _latex_(self):
         r"""
@@ -1830,6 +1796,7 @@ class Partition(CombinatorialObject, Element):
         t[row+1][col-b+1:col+1]=[m+a+col-b+1+i for i in range(b)]
         return tableau.StandardTableau(t)
 
+    @cached_method
     def young_subgroup(self):
         """
         Return the corresponding Young, or parabolic, subgroup of the symmetric
@@ -3945,6 +3912,8 @@ class Partitions(UniqueRepresentation, Parent):
                     return Partitions_n(n)
                 else:
                     raise ValueError("n must be an integer")
+            if len(kwargs) == 1 and 'max_part' in kwargs:
+                return PartitionsGreatestLE(n, kwargs['max_part'])
 
             # FIXME: should inherit from IntegerListLex, and implement repr, or _name as a lazy attribute
             kwargs['name'] = "Partitions of the integer %s satisfying constraints %s"%(n, ", ".join( ["%s=%s"%(key, kwargs[key]) for key in sorted(kwargs.keys())] ))
@@ -4483,7 +4452,7 @@ class Partitions_all_bounded(Partitions):
         n = 0
         while True:
             for p in Partitions(n, max_part=self.k):
-                yield self._element_constructor_(p)
+                yield self.element_class(self, p)
             n += 1
 
 class Partitions_n(Partitions):
@@ -5650,6 +5619,7 @@ class PartitionsGreatestLE(IntegerListsLex, UniqueRepresentation):
             sage: TestSuite(p).run()
         """
         IntegerListsLex.__init__(self, n, max_slope = 0, min_part=1, max_part = k)
+        self.n = n
         self.k = k
 
     def _repr_(self):
@@ -5665,6 +5635,17 @@ class PartitionsGreatestLE(IntegerListsLex, UniqueRepresentation):
 
     Element = Partition
     global_options = PartitionOptions
+
+    def __hash__(self):
+        """
+        Return a hash value of ``self``.
+
+        TESTS::
+
+            sage: hash(PartitionsGreatestLE(10, 2)) == hash(PartitionsGreatestLE(10, 2))
+            True
+        """
+        return long((-251*self.k << 5) | (131*self.n << 2))
 
 def PartitionsGreatestLE_nk(n, k):
     """
@@ -6189,7 +6170,6 @@ _numpart = deprecated_function_alias(13072, sage.combinat.partitions.number_of_p
 # number_of_partitions functions which is currently that implemented by Bober,
 # although this will soon need to be replaced by the FLINT implementation.
 # AM :trac:`13072`
-from sage.misc.all import cached_function
 cached_number_of_partitions = cached_function( bober_number_of_partitions )
 
 def cyclic_permutations_of_partition(partition):
