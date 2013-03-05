@@ -1,3 +1,5 @@
+.. _linear_programming:
+
 Linear Programming (Mixed Integer)
 ==================================
 
