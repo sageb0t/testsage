@@ -468,8 +468,10 @@ class Tachyon(SageObject):
 
         -  ``phongtype`` - (default: "PLASTIC")
 
-        EXAMPLES: We draw a scene with 4 sphere that illustrates various
-        uses of the texture command::
+        EXAMPLES:
+
+        We draw a scene with 4 spheres that illustrates various uses of
+        the texture command::
 
             sage: t = Tachyon(camera_center=(2,5,4), look_at=(2,0,0), raydepth=6)
             sage: t.light((10,3,4), 1, (1,1,1))
@@ -480,7 +482,7 @@ class Tachyon(SageObject):
             sage: t.sphere((0,-1,1), 1, 'mirror')
             sage: t.sphere((2,-1,1), 0.5, 'mirror')
             sage: t.sphere((2,1,1), 0.5, 'mirror')
-            sage: show(t)
+            sage: show(t)  # known bug (:trac:`7232`)
         """
         if texfunc and not isinstance(texfunc, Texfunc):
             texfunc = self.texfunc(int(texfunc))
