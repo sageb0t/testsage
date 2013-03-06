@@ -5582,7 +5582,7 @@ def OrderedPartitions_nk(n, k):
 # Partitions Greatest LE #
 ##########################
 
-class PartitionsGreatestLE(IntegerListsLex, UniqueRepresentation):
+class PartitionsGreatestLE(UniqueRepresentation, IntegerListsLex):
     """
     The class of all (unordered) "restricted" partitions of the integer `n`
     having parts less than or equal to the integer `k`.
@@ -5635,17 +5635,6 @@ class PartitionsGreatestLE(IntegerListsLex, UniqueRepresentation):
 
     Element = Partition
     global_options = PartitionOptions
-
-    def __hash__(self):
-        """
-        Return a hash value of ``self``.
-
-        TESTS::
-
-            sage: hash(PartitionsGreatestLE(10, 2)) == hash(PartitionsGreatestLE(10, 2))
-            True
-        """
-        return long((-251*self.k << 5) | (131*self.n << 2))
 
 def PartitionsGreatestLE_nk(n, k):
     """
