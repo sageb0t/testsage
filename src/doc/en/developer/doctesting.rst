@@ -69,15 +69,6 @@ module. Notice that the syntax is ::
     All tests passed!
     ------------------------------------------------------------------------
     Total time for all tests: 4.9 seconds
-    [jdemeyer@sage sage-5.9]$ ./sage -t "devel/sage-main/sage/games/sudoku.py
-    Running doctests with ID 2012-07-03-03-39-02-da6accbb.
-    Doctesting 1 file.
-    sage -t devel/sage-main/sage/games/sudoku.py
-        [103 tests, 3.6 s]
-    ------------------------------------------------------------------------
-    All tests passed!
-    ------------------------------------------------------------------------
-    Total time for all tests: 4.9 seconds
         cpu time: 3.6 seconds
         cumulative wall time: 3.6 seconds
 
