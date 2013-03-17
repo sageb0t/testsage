@@ -7,12 +7,13 @@
 # See below for targets to build the documentation in other formats,
 # to run various types of test suites, and to remove parts of the build etc.
 
-PIPE = spkg/pipestatus
+PIPE = build/pipestatus
 
 all: start doc  # indirectly depends on build
 
 build:
-	cd spkg && \
+	@mkdir -p logs/pkgs
+	cd build && \
 	"../$(PIPE)" \
 		"env SAGE_PARALLEL_SPKG_BUILD='$(SAGE_PARALLEL_SPKG_BUILD)' ./install all 2>&1" \
 		"tee -a ../install.log"
