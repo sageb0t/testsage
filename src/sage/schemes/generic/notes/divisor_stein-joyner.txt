@@ -36,7 +36,7 @@ from sage.structure.all import FormalSum
 
 from sage.groups.group import AbelianGroup
 
-from sage.rings.all import Z
+from sage.rings.all import ZZ as Z
 
 class Divisor_generic(FormalSum):
     def scheme(self):
