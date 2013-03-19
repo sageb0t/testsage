@@ -514,6 +514,7 @@ if not sdist:
 
     open(version_file, 'w').write(Cython.__version__)
     print "Finished compiling Cython code (time = %s seconds)" % (time.time() - t)
+    sys.stdout.flush()
 
 #########################################################
 ### Distutils
