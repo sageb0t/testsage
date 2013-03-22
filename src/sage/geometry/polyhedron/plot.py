@@ -956,7 +956,7 @@ class Projection(SageObject):
             sage: cube = polytopes.n_cube(3)
             sage: cube_proj = cube.projection()
             sage: wire = cube_proj.render_wireframe_3d()
-            sage: print wire.tachyon().split('\n')[77]  # for testing
+            sage: print wire.tachyon().split('\n')[76]  # for testing
             FCylinder base -1.0 1.0 -1.0 apex -1.0 -1.0 -1.0 rad 0.005 texture...
         """
         wireframe = [];

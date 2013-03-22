@@ -1675,7 +1675,7 @@ def sage_getsourcelines(obj, is_binary=False):
 
         sage: from sage.misc.sageinspect import sage_getsourcelines
         sage: sage_getsourcelines(matrix, True)[1]
-        731
+        726
         sage: sage_getsourcelines(matrix, False)[0][0][6:]
         'MatrixFactory(object):\n'
 
