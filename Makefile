@@ -16,7 +16,7 @@ build:
 	cd build && \
 	"../$(PIPE)" \
 		"env SAGE_PARALLEL_SPKG_BUILD='$(SAGE_PARALLEL_SPKG_BUILD)' ./install all 2>&1" \
-		"tee -a ../install.log"
+		"tee -a ../logs/install.log"
 	./sage -b
 
 # ssl: build Sage, and also install pyOpenSSL. This is necessary for
@@ -48,16 +48,16 @@ start: build
 doc: doc-html
 
 doc-html: build
-	$(PIPE) "./sage --docbuild --no-pdf-links all html $(SAGE_DOCBUILD_OPTS) 2>&1" "tee -a dochtml.log"
+	$(PIPE) "./sage --docbuild --no-pdf-links all html $(SAGE_DOCBUILD_OPTS) 2>&1" "tee -a logs/dochtml.log"
 
 doc-html-mathjax: build
-	$(PIPE) "./sage --docbuild --no-pdf-links all html -j $(SAGE_DOCBUILD_OPTS) 2>&1" "tee -a dochtml.log"
+	$(PIPE) "./sage --docbuild --no-pdf-links all html -j $(SAGE_DOCBUILD_OPTS) 2>&1" "tee -a logs/dochtml.log"
 
 # Keep target 'doc-html-jsmath' for backwards compatibility.
 doc-html-jsmath: doc-html-mathjax
 
 doc-pdf: build
-	$(PIPE) "./sage --docbuild all pdf $(SAGE_DOCBUILD_OPTS) 2>&1" "tee -a docpdf.log"
+	$(PIPE) "./sage --docbuild all pdf $(SAGE_DOCBUILD_OPTS) 2>&1" "tee -a logs/docpdf.log"
 
 doc-clean:
 	@echo "Deleting devel/sage/doc/output..."
@@ -106,37 +106,37 @@ TESTDIRS = src/doc/common src/doc/[a-z][a-z] src/sage
 
 test: all # i.e. build and doc
 	$(TESTPRELIMS)
-	$(PIPE) "./sage -t --sagenb $(TESTDIRS) 2>&1" "tee -a test.log"
+	$(PIPE) "./sage -t --sagenb $(TESTDIRS) 2>&1" "tee -a logs/test.log"
 
 check: test
 
 testall: all # i.e. build and doc
 	$(TESTPRELIMS)
-	$(PIPE) "./sage -t --sagenb --optional $(TESTDIRS) 2>&1" "tee -a testall.log"
+	$(PIPE) "./sage -t --sagenb --optional $(TESTDIRS) 2>&1" "tee -a logs/testall.log"
 
 testlong: all # i.e. build and doc
 	$(TESTPRELIMS)
-	$(PIPE) "./sage -t --sagenb --long $(TESTDIRS) 2>&1" "tee -a testlong.log"
+	$(PIPE) "./sage -t --sagenb --long $(TESTDIRS) 2>&1" "tee -a logs/testlong.log"
 
 testalllong: all # i.e. build and doc
 	$(TESTPRELIMS)
-	$(PIPE) "./sage -t --sagenb --optional --long $(TESTDIRS) 2>&1" "tee -a testalllong.log"
+	$(PIPE) "./sage -t --sagenb --optional --long $(TESTDIRS) 2>&1" "tee -a logs/testalllong.log"
 
 ptest: all # i.e. build and doc
 	$(TESTPRELIMS)
-	$(PIPE) "./sage -tp --sagenb $(TESTDIRS) 2>&1" "tee -a ptest.log"
+	$(PIPE) "./sage -tp --sagenb $(TESTDIRS) 2>&1" "tee -a logs/ptest.log"
 
 ptestall: all # i.e. build and doc
 	$(TESTPRELIMS)
-	$(PIPE) "./sage -tp --sagenb --optional $(TESTDIRS) 2>&1" "tee -a ptestall.log"
+	$(PIPE) "./sage -tp --sagenb --optional $(TESTDIRS) 2>&1" "tee -a logs/ptestall.log"
 
 ptestlong: all # i.e. build and doc
 	$(TESTPRELIMS)
-	$(PIPE) "./sage -tp --sagenb --long $(TESTDIRS) 2>&1" "tee -a ptestlong.log"
+	$(PIPE) "./sage -tp --sagenb --long $(TESTDIRS) 2>&1" "tee -a logs/ptestlong.log"
 
 ptestalllong: all # i.e. build and doc
 	$(TESTPRELIMS)
-	$(PIPE) "./sage -tp --sagenb --optional --long $(TESTDIRS) 2>&1" "tee -a ptestalllong.log"
+	$(PIPE) "./sage -tp --sagenb --optional --long $(TESTDIRS) 2>&1" "tee -a logs/ptestalllong.log"
 
 testoptional: testall # just an alias
 
