@@ -212,9 +212,9 @@ def pyx_preparse(s):
         '.../include',
         '.../include/python2.7',
         '.../lib/python/site-packages/numpy/core/include',
-        '.../devel/sage/sage/ext',
-        '.../devel/sage',
-        '.../devel/sage/sage/gsl'],
+        '.../sage/ext',
+        '...',
+        '.../sage/gsl'],
         'c',
         [], ['-w', '-O2'])
         sage: s, libs, inc, lang, f, args = pyx_preparse("# clang c++\n #clib foo\n # cinclude bar\n")
@@ -240,9 +240,9 @@ def pyx_preparse(s):
         '.../include',
         '.../include/python2.7',
         '.../lib/python/site-packages/numpy/core/include',
-        '.../devel/sage/sage/ext',
-        '.../devel/sage',
-        '.../devel/sage/sage/gsl']
+        '.../sage/ext',
+        '...',
+        '.../sage/gsl']
 
         sage: s, libs, inc, lang, f, args = pyx_preparse("# cargs -O3 -ggdb\n")
         sage: args
