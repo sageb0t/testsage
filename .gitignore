@@ -1,0 +1,6 @@
+*.pyc
+/.BUILDSTART
+/build/artifacts
+/local
+/logs
+/upstream
