@@ -1124,7 +1124,7 @@ class SageDocTestRunner(doctest.DocTestRunner):
                     self.debugger.interaction(None, exc_tb)
                 except KeyboardInterrupt:
                     # Assume this is a *real* interrupt. We need to
-                    # escalate this to the master docbuilding process.
+                    # escalate this to the main docbuilding process.
                     if not self.options.serial:
                         os.kill(os.getppid(), signal.SIGINT)
                     raise
@@ -1264,7 +1264,7 @@ class DocTestDispatcher(SageObject):
         """
         Run the doctests from the controller's specified sources in parallel.
 
-        This creates :class:DocTestWorker subprocesses, while the master
+        This creates :class:DocTestWorker subprocesses, while the main
         process checks for timeouts and collects and displays the results.
 
         EXAMPLES::
@@ -1444,7 +1444,7 @@ class DocTestDispatcher(SageObject):
                         assert len(finished) == 0
                         break
 
-                    # The master pselect() call
+                    # The main pselect() call
                     rlist = [w.rmessages for w in workers if w.rmessages is not None]
                     tmout = min(w.deadline for w in workers) - now
                     if tmout > 5:  # Wait at most 5 seconds
@@ -1554,7 +1554,7 @@ class DocTestWorker(multiprocessing.Process):
     process group kills this process together with its child processes.
 
     The class has additional methods and attributes for bookkeeping
-    by the master process. Except in :meth:`run`, nothing from this
+    by the main process. Except in :meth:`run`, nothing from this
     class should be accessed by the child process.
 
     INPUT:
@@ -1619,11 +1619,11 @@ class DocTestWorker(multiprocessing.Process):
         self.result_queue = multiprocessing.Queue(1)
 
         # Temporary file for stdout/stderr of the child process.
-        # Normally, this isn't used in the master process except to
+        # Normally, this isn't used in the main process except to
         # debug timeouts/crashes.
         self.outtmpfile = os.tmpfile()
 
-        # Create string for the master process to store the messages
+        # Create string for the main process to store the messages
         # (usually these are the doctest failures) of the child.
         # These messages are read through the pipe created above.
         self.messages = ""
@@ -1656,7 +1656,7 @@ class DocTestWorker(multiprocessing.Process):
         for f in self.funclist:
             f()
 
-        # Write one byte to the pipe to signal to the master process
+        # Write one byte to the pipe to signal to the main process
         # that we have started properly.
         os.write(self.wmessages, "X")
 
@@ -1675,7 +1675,7 @@ class DocTestWorker(multiprocessing.Process):
                 os.dup2(f.fileno(), 0)
             sys.stdin = os.fdopen(0, "r")
 
-        # Close the reading end of the pipe (only the master should
+        # Close the reading end of the pipe (only the main should
         # read from the pipe) and open the writing end.
         os.close(self.rmessages)
         msgpipe = os.fdopen(self.wmessages, "w")
@@ -1728,7 +1728,7 @@ class DocTestWorker(multiprocessing.Process):
 
     def read_messages(self):
         """
-        In the master process, read from the pipe and store the data
+        In the main process, read from the pipe and store the data
         read in the ``messages`` attribute.
 
         .. NOTE::

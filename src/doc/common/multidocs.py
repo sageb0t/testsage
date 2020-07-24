@@ -8,7 +8,7 @@
     The goal of this extension is to manage a multi documentation in Sphinx.
     To be able to compile Sage's huge documentation in parallel, the
     documentation is cut into a bunch of independent documentations called
-    "subdocs", which are compiled separately. There is a master document which
+    "subdocs", which are compiled separately. There is a main document which
     points to all the subdocs. The intersphinx extension ensures that the
     cross-link between the subdocs are correctly resolved. However some work
     is needed to build a global index. This is the goal of multidocs.
@@ -232,15 +232,15 @@ def fetch_citation(app, env):
 
 def init_subdoc(app):
     """
-    Init the merger depending on if we are compiling a subdoc or the master
+    Init the merger depending on if we are compiling a subdoc or the main
     doc itself.
     """
-    if app.config.multidocs_is_master:
-        app.info(bold("Compiling the master document"))
+    if app.config.multidocs_is_main:
+        app.info(bold("Compiling the main document"))
         app.connect('env-updated', merge_environment)
         app.connect('html-collect-pages', merge_js_index)
         if app.config.multidocs_subdoc_list:
-            # Master file with indexes computed by merging indexes:
+            # Main file with indexes computed by merging indexes:
             # Monkey patch index fetching to silence warning about broken index
             def load_indexer(docnames):
                 app.builder.info(bold('Skipping loading of indexes'), nonl=1)
@@ -254,7 +254,7 @@ def init_subdoc(app):
         # Monkey patch copy_static_files to make a symlink to "../"
         def link_static_files():
             """
-            Instead of copying static files, make a link to the master static file.
+            Instead of copying static files, make a link to the main static file.
             See sphinx/builder/html.py line 536::
 
                 class StandaloneHTMLBuilder(Builder):
@@ -264,13 +264,13 @@ def init_subdoc(app):
             """
             app.builder.info(bold('linking _static directory.'))
             static_dir = os.path.join(app.builder.outdir, '_static')
-            master_static_dir = os.path.join('..', '_static')
+            main_static_dir = os.path.join('..', '_static')
             if os.path.exists(static_dir):
                 if os.path.isdir(static_dir) and not os.path.islink(static_dir):
                     shutil.rmtree(static_dir)
                 else:
                     os.unlink(static_dir)
-            os.symlink(master_static_dir, static_dir)
+            os.symlink(main_static_dir, static_dir)
 
         app.builder.copy_static_files = link_static_files
 
@@ -278,7 +278,7 @@ def init_subdoc(app):
         app.config.intersphinx_mapping = {}
 
 def setup(app):
-    app.add_config_value('multidocs_is_master', True, True)
+    app.add_config_value('multidocs_is_main', True, True)
     app.add_config_value('multidocs_subdoc_list', [], True)
     app.add_config_value('multidoc_first_pass', 0, False)   # 1 = deactivate the loading of the inventory
     app.connect('builder-inited', init_subdoc)

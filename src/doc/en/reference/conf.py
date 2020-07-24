@@ -62,7 +62,7 @@ latex_elements['preamble'] += r'''
 #Ignore all .rst in the _sage subdirectory
 exclude_trees = exclude_trees + ['_sage']
 
-multidocs_is_master = True
+multidocs_is_main = True
 
 # List of subdocs
 multidocs_subdoc_list = [

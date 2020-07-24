@@ -102,7 +102,7 @@ def sidon_sets(N, g = 1):
 
     return sidon_sets_rec(N, g = g)
 
-# This recursive and cached slave function is mainly here because
+# This recursive and cached subordinate function is mainly here because
 # caching the user entry function 'sidon_sets' prevents it from
 # appearing in the built documentation.
 @cached_function

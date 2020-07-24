@@ -2179,8 +2179,8 @@ class SIE_dict(SageInputExpression):
             sage: from sage.misc.sage_input import SageInputBuilder
 
             sage: sib = SageInputBuilder()
-            sage: sib.dict({'keaton':'general', 'chan':'master'})
-            {dict: {{atomic:'keaton'}:{atomic:'general'}, {atomic:'chan'}:{atomic:'master'}}}
+            sage: sib.dict({'keaton':'general', 'chan':'main'})
+            {dict: {{atomic:'keaton'}:{atomic:'general'}, {atomic:'chan'}:{atomic:'main'}}}
         """
         return "{dict: {%s}}" % \
             ', '.join([repr(key) + ':' + repr(val)

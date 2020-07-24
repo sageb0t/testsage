@@ -1718,7 +1718,7 @@ class Cell(Cell_generic):
                 # freshenv=True.
                 confdir = os.path.join(SAGE_DOC, 'en/introspect')
                 doctreedir = os.path.normpath(base_name)
-                confoverrides = {'html_context' : {}, 'master_doc' : hash}
+                confoverrides = {'html_context' : {}, 'main_doc' : hash}
 
                 # To suppress output, use this:
 

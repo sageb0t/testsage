@@ -473,7 +473,7 @@ class ReferenceBuilder(AllBuilder):
             # the other documents.
             getattr(DocBuilder(self.name, lang), format)(*args, **kwds)
 
-            # PDF: we need to build master index file which lists all
+            # PDF: we need to build main index file which lists all
             # of the PDF file.  So we create an html file, based on
             # the file index.html from the "website" target.
             if format == 'pdf':

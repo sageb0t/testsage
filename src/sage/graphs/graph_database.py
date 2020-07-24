@@ -384,7 +384,7 @@ class GraphQuery(GenericGraphQuery):
             #if display_cols is None:
             #    raise TypeError, 'Nonetype display_cols cannot retrieve data.'
 
-            master_join = {}
+            main_join = {}
 
             for key in kwds:
                 # check validity
@@ -425,7 +425,7 @@ class GraphQuery(GenericGraphQuery):
                 # include search params (keys) in join clause
                 # again, we exclude graph_data because it is the base table
                 if qdict['table_name'] != 'graph_data':
-                    master_join[qdict['table_name']] = ('graph_id', 'graph_id')
+                    main_join[qdict['table_name']] = ('graph_id', 'graph_id')
 
             # display columns from each table
             aut_grp_disp = ['aut_grp']
@@ -446,14 +446,14 @@ class GraphQuery(GenericGraphQuery):
                                         elif col in misc: misc_disp.append(col)
                                         elif col in spectrum: spectrum_disp.append(col)
 
-                                # finish filling master join with display tables
+                                # finish filling main join with display tables
                                 for tab in disp_tables:
                                         if len(tab) > 1:
-                                                master_join[tab[0]] = ('graph_id', 'graph_id')
+                                                main_join[tab[0]] = ('graph_id', 'graph_id')
 
                                 # join clause for display tables
                                 join_str = 'FROM graph_data '
-                                for tab in master_join:
+                                for tab in main_join:
                                         join_str += 'INNER JOIN %s ON graph_data.graph_id=%s.graph_id '%(tab, tab)
 
                                 # construct sql syntax substring for display cols

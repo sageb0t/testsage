@@ -300,7 +300,7 @@ class Expect(Interface):
 
     def _install_hints(self):
         r"""
-        Hints for installing needed slave program on your computer.
+        Hints for installing needed subordinate program on your computer.
 
         There are no hints by default.
         """
@@ -313,17 +313,17 @@ class Expect(Interface):
         """
         # Written by Paul-Olivier Dehaye 2007/08/23
         return """
-In order for Sage (on "local") to launch a "slave" process on "remote", the following command needs to work from local's console, without the need to enter any password:
+In order for Sage (on "local") to launch a "subordinate" process on "remote", the following command needs to work from local's console, without the need to enter any password:
 
-       "ssh -t remote slave",
+       "ssh -t remote subordinate",
 
-where "slave" could be "math" (for text-mode Mathematica), "gap", "magma", "sage", "maple", etc.
+where "subordinate" could be "math" (for text-mode Mathematica), "gap", "magma", "sage", "maple", etc.
 
 This thus requires passwordless authentication to be setup, which can be done with commands like these:
         cd; ssh-keygen -t rsa; scp .ssh/id_rsa.pub remote:.ssh/authorized_keys2\n
 (WARNING: this would overwrite your current list of authorized keys on "remote")
 
-In many cases, the server that can actually run "slave" is not accessible from the internet directly, but you have to hop through an intermediate trusted server, say "gate".
+In many cases, the server that can actually run "subordinate" is not accessible from the internet directly, but you have to hop through an intermediate trusted server, say "gate".
 If that is your case, get help with _install_hints_ssh_through_gate().
 
 """
@@ -335,9 +335,9 @@ If that is your case, get help with _install_hints_ssh_through_gate().
         # Written by Paul-Olivier Dehaye 2007/08/23
         return """
 
- We assume you would like to run a "slave" process  on a machine called "remote" from a machine running Sage called "local". We also assume "remote" can only be accessed from "local" by ssh'ing first to "gate" (this is a fairly common setup). Sometimes, "gate" and "remote" have a shared filesystem, and this helps a bit.
+ We assume you would like to run a "subordinate" process  on a machine called "remote" from a machine running Sage called "local". We also assume "remote" can only be accessed from "local" by ssh'ing first to "gate" (this is a fairly common setup). Sometimes, "gate" and "remote" have a shared filesystem, and this helps a bit.
 
-  Note: You cannot just create shell scripts on "local" and "gate" that would use two successive SSH connections to "remote" in order to simulate running "slave" locally. This is because Sage will sometimes use files (and scp)  to communicate with "remote", which shell scripts would not take care of.
+  Note: You cannot just create shell scripts on "local" and "gate" that would use two successive SSH connections to "remote" in order to simulate running "subordinate" locally. This is because Sage will sometimes use files (and scp)  to communicate with "remote", which shell scripts would not take care of.
 
 You need to setup:
  * passwordless authentication to "gate" from "local"

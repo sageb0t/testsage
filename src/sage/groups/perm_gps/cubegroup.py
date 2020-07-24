@@ -16,7 +16,7 @@ right to left, so for example, R\*U means move U first and then R.
 See ``CubeGroup.parse()`` for all possible input
 notations.
 
-The "Singmaster notation":
+The "Singmain notation":
 
 - moves: U, D, R, L, F, B as in the
   diagram below,
@@ -245,7 +245,7 @@ def create_poly(face, color):
 
 ####################################################
 
-singmaster_indices = {
+singmain_indices = {
     1: "ulb",
     2: "ub",
     3: "ubr",
@@ -296,18 +296,18 @@ singmaster_indices = {
     32: "rbd",
 }
 
-def index2singmaster(facet):
+def index2singmain(facet):
     """
-    Translates index used (eg, 43) to Singmaster facet notation (eg,
+    Translates index used (eg, 43) to Singmain facet notation (eg,
     fdr).
 
     EXAMPLES::
 
         sage: from sage.groups.perm_gps.cubegroup import *
-        sage: index2singmaster(41)
+        sage: index2singmain(41)
         'dlf'
     """
-    return singmaster_indices[facet]
+    return singmain_indices[facet]
 
 def color_of_square(facet, colors=['lpurple', 'yellow', 'red', 'green', 'orange', 'blue']):
     """
@@ -530,7 +530,7 @@ class CubeGroup(PermutationGroup_generic):
            self.faces())
 
         -  ``str`` - either cycle notation (passed to GAP) or
-           a product of generators or Singmaster notation
+           a product of generators or Singmain notation
 
         -  ``perm_group element`` - returned as an element of
            self.group()
@@ -741,7 +741,7 @@ class CubeGroup(PermutationGroup_generic):
 
     def plot_cube(self, mv, title=True, colors = [lpurple, yellow, red, green, orange, blue]):
         """
-        Input the move mv, as a string in the Singmaster notation, and
+        Input the move mv, as a string in the Singmain notation, and
         output the 2-d plot of the cube in that state.
 
         Type P.show() to display any of the plots below.
@@ -759,7 +759,7 @@ class CubeGroup(PermutationGroup_generic):
         g = self.parse(mv)
         state = self.facets(g)
         #print state
-        cubies = [create_poly(index2singmaster(state[x]), color_of_square(x+1, colors)) for x in range(48)]
+        cubies = [create_poly(index2singmain(state[x]), color_of_square(x+1, colors)) for x in range(48)]
         centers = [create_poly('%s_center' % "ulfrbd"[i], colors[i]) for i in range(6)]
         clrs = sum(cubies) + sum(centers)
         clrs.axes(show=False)
@@ -773,7 +773,7 @@ class CubeGroup(PermutationGroup_generic):
     def plot3d_cube(self,mv,title=True):
         """
         Displays F,U,R faces of the cube after the given move mv, where mv
-        is a string in the Singmaster notation. Mostly included for the
+        is a string in the Singmain notation. Mostly included for the
         purpose of drawing pictures and checking moves.
 
         The first one below is "superflip+4 spot" (in 26q\* moves) and the
